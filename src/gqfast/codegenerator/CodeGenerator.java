@@ -1235,9 +1235,12 @@ class CodeGenerator {
 
 		initialDeclarations(globalsCppCode, aggregation, query);
 		// Opening Line
-	
 		mainCppCode.add(openingLine(query, aggregation));
 	
+		String benchmarkingString = "\n\tbenchmark_t1 = chrono::steady_clock::now();\n";
+		
+		mainCppCode.add(benchmarkingString);
+		
 		// Array initializations
 		mainCppCode.add(bufferInitCode(metadata));
 	
@@ -1322,7 +1325,7 @@ class CodeGenerator {
 		aliases.add("author2");
 		aliases.add("year");
 		
-		MetaQuery q5Optimal = new MetaQuery(0, "test_q5_array", 1,
+		MetaQuery q5Optimal = new MetaQuery(0, "t_q5_opt", 1,
 				5, 1, 0, aliases);
 		
 		metadata.queryList.add(q5Optimal);		
@@ -1335,7 +1338,7 @@ class CodeGenerator {
 		int indexID = 0;
 		int numColumns = 1;
 		List<Integer> columnEncodingsList0 = new ArrayList<Integer>();
-		columnEncodingsList0.add(Metadata.ENCODING_UA);
+		columnEncodingsList0.add(Metadata.ENCODING_BB);
 		List<Integer> columnEncodedByteSizesList0 = new ArrayList<Integer>();
 		columnEncodedByteSizesList0.add(Metadata.BYTES_4);
 		
@@ -1346,7 +1349,7 @@ class CodeGenerator {
 		indexID = 1;
 		numColumns = 1;
 		List<Integer> columnEncodingsList1 = new ArrayList<Integer>();
-		columnEncodingsList1.add(Metadata.ENCODING_UA);
+		columnEncodingsList1.add(Metadata.ENCODING_BCA);
 		List<Integer> columnEncodedByteSizesList1 = new ArrayList<Integer>();
 		columnEncodedByteSizesList1.add(Metadata.BYTES_4);
 		
@@ -1357,8 +1360,8 @@ class CodeGenerator {
 		indexID = 2;
 		numColumns = 2;
 		List<Integer> columnEncodingsList2 = new ArrayList<Integer>();
-		columnEncodingsList2.add(Metadata.ENCODING_UA);
-		columnEncodingsList2.add(Metadata.ENCODING_UA);
+		columnEncodingsList2.add(Metadata.ENCODING_BB);
+		columnEncodingsList2.add(Metadata.ENCODING_HUFFMAN);
 		
 		List<Integer >columnEncodedByteSizesList2 = new ArrayList<Integer>();
 		columnEncodedByteSizesList2.add(Metadata.BYTES_4);
@@ -1371,8 +1374,8 @@ class CodeGenerator {
 		indexID = 3;
 		numColumns = 2;
 		List<Integer> columnEncodingsList3 = new ArrayList<Integer>();
-		columnEncodingsList3.add(Metadata.ENCODING_UA);
-		columnEncodingsList3.add(Metadata.ENCODING_UA);
+		columnEncodingsList3.add(Metadata.ENCODING_BB);
+		columnEncodingsList3.add(Metadata.ENCODING_HUFFMAN);
 		
 		List<Integer >columnEncodedByteSizesList3 = new ArrayList<Integer>();
 		columnEncodedByteSizesList3.add(Metadata.BYTES_4);
@@ -1385,7 +1388,7 @@ class CodeGenerator {
 		indexID = 4;
 		numColumns = 1;
 		List<Integer> columnEncodingsList4 = new ArrayList<Integer>();
-		columnEncodingsList4.add(Metadata.ENCODING_UA);
+		columnEncodingsList4.add(Metadata.ENCODING_BCA);
 		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
 		columnEncodedByteSizesList4.add(Metadata.BYTES_4);
 		
