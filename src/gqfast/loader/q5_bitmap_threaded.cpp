@@ -30,7 +30,7 @@ uint32_t* q5_bitmap_threaded_authors_bits_info;
 uint32_t* q5_bitmap_threaded_year_bitmap_bits_info;
 
 int* RC_bitmap;
-int* R_bitmap;
+double* R_bitmap;
 
 extern inline void q5_bitmap_decode_threaded_BB_da1_docs(unsigned char* byte_pos, uint32_t bytes_size, int & size) __attribute__((always_inline));
 extern inline void q5_bitmap_decode_threaded_BB_dt1_terms(unsigned char* byte_pos, uint32_t bytes_size, int & size) __attribute__((always_inline));
@@ -337,7 +337,7 @@ void* pthread_bitmap_worker(void* arguments) {
                     // cerr << "q5_bitmap_decoded_threaded_da2_authors[it4] = " <<  curr << "\n";
                     RC_bitmap[curr] = 1;
                     pthread_spin_lock(&spin_locks[4][curr]);
-                    R_bitmap[curr] += (fre1 * fre2)/(2017 - year_bitmap);
+                    R_bitmap[curr] += (double)(fre1 * fre2)/(2017 - year_bitmap);
                     pthread_spin_unlock(&spin_locks[4][curr]);
                             // // cerr << "adding " << (fre1*fre2)/(2015-year_bitmap) << " at " << a2 << "; is now " << R[0][a2] << "\n";
                     // cerr << "end loop four\n";
@@ -352,7 +352,7 @@ void* pthread_bitmap_worker(void* arguments) {
 
 extern "C" int* q5_bitmap_threaded(int** null_checks) {
 
-    clock_gettime(CLOCK_MONOTONIC, &start);
+    benchmark_t1 = chrono::steady_clock::now();
 
 
     //// cerr << "in function\n";
@@ -373,7 +373,7 @@ extern "C" int* q5_bitmap_threaded(int** null_checks) {
     RC_bitmap = new int[metadata.idx_domains[4][0]]();
     // cerr << "next2\n";
     
-    R_bitmap = new int[metadata.idx_domains[4][0]]();
+    R_bitmap = new double[metadata.idx_domains[4][0]]();
 
     // cerr << "next3\n";
 	q5_bitmap_threaded_dt1_huffman_tree_array = idx[2]->huffman_tree_array[1];
