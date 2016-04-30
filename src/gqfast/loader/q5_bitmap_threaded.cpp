@@ -350,7 +350,7 @@ void* pthread_bitmap_worker(void* arguments) {
 }
 
 
-extern "C" int* q5_bitmap_threaded(int** null_checks) {
+extern "C" double* q5_bitmap_threaded(int** null_checks) {
 
     benchmark_t1 = chrono::steady_clock::now();
 
