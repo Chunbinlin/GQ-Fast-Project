@@ -18,7 +18,7 @@ void save_index(fastr_index** s, const char * filename){
     for (int i=0; i<num_loaded_indices; i++) {
         oa << s[i]->domain_size;
         oa << s[i]->num_fragment_data;
-        cerr << "num frag data = " << s[i]->num_fragment_data;
+        //cerr << "num frag data = " << s[i]->num_fragment_data;
         for (int j=0; j<s[i]->num_fragment_data; j++) {
             oa << s[i]->fragment_data_length[j];
         }
