@@ -708,7 +708,7 @@ fastr_index * buildIndex(string filename, Encodings encodings[], int num_encodin
     metadata.idx_max_fragment_sizes[index_id] = max_size;
     metadata.idx_num_encodings[index_id] = num_encodings;
     for (int i=1; i<num_encodings+1; i++) {
-        metadata.idx_domains[index_id].push_back(max_column_ids[i]);
+        metadata.idx_domains[index_id].push_back(max_column_ids[i]+1);
     }
 
     // Memory clean-up 

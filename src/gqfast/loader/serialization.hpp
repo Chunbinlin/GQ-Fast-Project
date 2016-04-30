@@ -46,7 +46,7 @@ void save_index(fastr_index** s, const char * filename){
 }
 
 void load_index(fastr_index** s, const char * filename) {
-    cerr << "loading database\n";
+    //cerr << "loading database\n";
     std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
     std::ifstream ifs(filename);
     boost::archive::text_iarchive ia(ifs);
