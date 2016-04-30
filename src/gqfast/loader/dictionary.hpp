@@ -2,8 +2,6 @@
 #define dictionary__
 
 #include <cmath>
-#include <boost/archive/binary_oarchive.hpp>
-#include <boost/archive/binary_iarchive.hpp>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/version.hpp>
 #include <boost/cstdint.hpp>

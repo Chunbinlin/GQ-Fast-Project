@@ -11,26 +11,20 @@
 
 using namespace std;
 
-struct args_s{
-    uint32_t start;
-    uint32_t end;
-    int thread_id;
-};
-
 // Thread param
-args_s arguments[NUM_THREADS];
+static args_threading arguments[NUM_THREADS];
 
-int* q5_bitmap_threaded_dt1_huffman_tree_array;
-bool* q5_bitmap_threaded_dt1_huffman_terminator_array; 
+static int* q5_bitmap_threaded_dt1_huffman_tree_array;
+static bool* q5_bitmap_threaded_dt1_huffman_terminator_array; 
 
-int* q5_bitmap_threaded_dt2_huffman_tree_array;
-bool* q5_bitmap_threaded_dt2_huffman_terminator_array; 
+static int* q5_bitmap_threaded_dt2_huffman_tree_array;
+static bool* q5_bitmap_threaded_dt2_huffman_terminator_array; 
 
-uint32_t* q5_bitmap_threaded_authors_bits_info;
-uint32_t* q5_bitmap_threaded_year_bitmap_bits_info;
+static uint32_t* q5_bitmap_threaded_authors_bits_info;
+static uint32_t* q5_bitmap_threaded_year_bitmap_bits_info;
 
-int* RC_bitmap;
-int* R_bitmap;
+static int* RC_bitmap;
+static double* R_bitmap;
 
 extern inline void q5_bitmap_decode_threaded_BB_da1_docs(unsigned char* byte_pos, uint32_t bytes_size, int & size) __attribute__((always_inline));
 extern inline void q5_bitmap_decode_threaded_BB_dt1_terms(unsigned char* byte_pos, uint32_t bytes_size, int & size) __attribute__((always_inline));
@@ -280,7 +274,7 @@ void q5_bitmap_decode_threaded_Huffman_dt2_fre(int thread_id, unsigned char* byt
 
 void* pthread_bitmap_worker(void* arguments) {
 
-    args_s* args = (args_s *) arguments;
+    args_threading* args = (args_threading *) arguments;
     
     uint32_t it2 = args->start;
     uint32_t it2_end = args->end;
@@ -337,7 +331,7 @@ void* pthread_bitmap_worker(void* arguments) {
                     // cerr << "q5_bitmap_decoded_threaded_da2_authors[it4] = " <<  curr << "\n";
                     RC_bitmap[curr] = 1;
                     pthread_spin_lock(&spin_locks[4][curr]);
-                    R_bitmap[curr] += (fre1 * fre2)/(2017 - year_bitmap);
+                    R_bitmap[curr] += (double)(fre1 * fre2)/(2017 - year_bitmap);
                     pthread_spin_unlock(&spin_locks[4][curr]);
                             // // cerr << "adding " << (fre1*fre2)/(2015-year_bitmap) << " at " << a2 << "; is now " << R[0][a2] << "\n";
                     // cerr << "end loop four\n";
@@ -350,12 +344,12 @@ void* pthread_bitmap_worker(void* arguments) {
 }
 
 
-extern "C" int* q5_bitmap_threaded(int** null_checks, int a1) {
+extern "C" double* q5_bitmap_threaded(int** null_checks) {
 
-    clock_gettime(CLOCK_MONOTONIC, &start);
+    benchmark_t1 = chrono::steady_clock::now();
 
 
-    //cerr << "in function\n";
+    //// cerr << "in function\n";
     // Allocate buffers
     for (int i=0; i<NUM_BUFFERS; i++) {
         int max_frag = metadata.idx_max_fragment_sizes[i];
@@ -373,7 +367,7 @@ extern "C" int* q5_bitmap_threaded(int** null_checks, int a1) {
     RC_bitmap = new int[metadata.idx_domains[4][0]]();
     // cerr << "next2\n";
     
-    R_bitmap = new int[metadata.idx_domains[4][0]]();
+    R_bitmap = new double[metadata.idx_domains[4][0]]();
 
     // cerr << "next3\n";
 	q5_bitmap_threaded_dt1_huffman_tree_array = idx[2]->huffman_tree_array[1];
@@ -387,8 +381,8 @@ extern "C" int* q5_bitmap_threaded(int** null_checks, int a1) {
 
     // cerr << "next4\n";
     // DA1
-	uint32_t* r1 = idx[0]->index_map[a1];
-	uint32_t d1_bytes = idx[0]->index_map[a1+1][0] - r1[0];
+	uint32_t* r1 = idx[0]->index_map[4945389];
+	uint32_t d1_bytes = idx[0]->index_map[4945389+1][0] - r1[0];
     // cerr << "next5\n";
 	
 	unsigned char* d1_ptr = &(idx[0]->fragment_data[0][r1[0]]);
@@ -441,10 +435,10 @@ extern "C" int* q5_bitmap_threaded(int** null_checks, int a1) {
 
 
 		}
-		//  cerr << "end loop one\n";
+		//  // cerr << "end loop one\n";
 	}	
 
-    //cerr << "deallocating\n";
+    //// cerr << "deallocating\n";
 
     // Deallocate buffers
     for (int i=0; i<NUM_BUFFERS; i++) {
@@ -458,7 +452,7 @@ extern "C" int* q5_bitmap_threaded(int** null_checks, int a1) {
         }
     }
 
-    //cerr << "returning\n";
+    //// cerr << "returning\n";
 
     *null_checks = RC_bitmap;
 	return R_bitmap;

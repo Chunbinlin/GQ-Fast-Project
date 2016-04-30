@@ -6,8 +6,6 @@
 #include "byte_aligned_bitmap.hpp"
 #include "dictionary.hpp"
 #include "encodings.hpp"
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/version.hpp>
 #include <cstring>

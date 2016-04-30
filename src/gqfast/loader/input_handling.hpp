@@ -85,21 +85,21 @@ pair<int, double> * top_k(double* result, int k, int domain) {
 
 void handle_input(string func_name, int r_pos, char result_data_type) {
     
-    cerr << "a1\n";
+    // cerr << "a1\n";
     int domain_temp = metadata.idx_domains[r_pos][0];
     string filename = "./" + func_name + ".so";
-    cerr << "metadata idx_max_frag_sizes[0]" << metadata.idx_max_fragment_sizes[0] << "\n";
+    // cerr << "metadata idx_max_frag_sizes[0]" << metadata.idx_max_fragment_sizes[0] << "\n";
     int* cold_checks;
     int* null_checks;
     int count = 0;
-    cerr << "a2\n";
+    // cerr << "a2\n";
     if (result_data_type == 'd') {
     // load the symbol
         cout << "Opening " << filename << "\n";
         
         void* handle = dlopen(filename.c_str(), RTLD_NOW);
         if (!handle) {
-            cerr << "Cannot open library: " << dlerror() << '\n';
+            // cerr << "Cannot open library: " << dlerror() << '\n';
             return;
         }
 
@@ -111,7 +111,7 @@ void handle_input(string func_name, int r_pos, char result_data_type) {
         query_type query = (query_type) dlsym(handle, func_name.c_str());
         const char *dlsym_error = dlerror();
         if (dlsym_error) {
-            cerr << "Cannot load symbol 'query_type': " << dlsym_error <<
+            // cerr << "Cannot load symbol 'query_type': " << dlsym_error <<
             '\n';
             dlclose(handle);
             return;
@@ -221,14 +221,14 @@ void handle_input(string filename, string func_name, int r_pos, int q_id) {
     int* null_checks;
     int count = 0;
     struct timespec start2;
-    cerr << "Calling query_type_A...\n";
+    // cerr << "Calling query_type_A...\n";
     // open the library
-    cout << "Opening " << filename << "\n";
+    cerr << "Opening " << filename << "\n";
     
     clock_gettime(CLOCK_MONOTONIC, &start2);
     void* handle = dlopen(filename.c_str(), RTLD_NOW);
     if (!handle) {
-        cerr << "Cannot open library: " << dlerror() << '\n';
+         cerr << "Cannot open library: " << dlerror() << '\n';
     }
     
     // load the symbol
@@ -240,7 +240,7 @@ void handle_input(string filename, string func_name, int r_pos, int q_id) {
     query_type_A query = (query_type_A) dlsym(handle, func_name.c_str());
     const char *dlsym_error = dlerror();
     if (dlsym_error) {
-        cerr << "Cannot load symbol 'query_type_A': " << dlsym_error <<
+         cerr << "Cannot load symbol 'query_type_A': " << dlsym_error <<
             '\n';
         dlclose(handle);
     }
@@ -258,7 +258,7 @@ void handle_input(string filename, string func_name, int r_pos, int q_id) {
     }
 
     // close the library
-    cerr << "Closing library...\n";
+     cerr << "Closing library...\n";
     dlclose(handle);
 
 

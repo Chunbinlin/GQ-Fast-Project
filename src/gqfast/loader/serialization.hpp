@@ -1,21 +1,24 @@
 #ifndef serialization_
 #define serialization_
 
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
 #include "global_vars.hpp"
 #include <fstream>
 void save_index(fastr_index** s, const char * filename){
     
     std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
     // make an archive
-    std::ofstream ofs(filename, ios::binary);
-    boost::archive::binary_oarchive oa(ofs);
+    std::ofstream ofs(filename);
+    boost::archive::text_oarchive oa(ofs);
     
     oa << num_loaded_indices;
     
     for (int i=0; i<num_loaded_indices; i++) {
         oa << s[i]->domain_size;
         oa << s[i]->num_fragment_data;
-        cerr << "num frag data = " << s[i]->num_fragment_data;
+        //cerr << "num frag data = " << s[i]->num_fragment_data;
         for (int j=0; j<s[i]->num_fragment_data; j++) {
             oa << s[i]->fragment_data_length[j];
         }
@@ -43,10 +46,10 @@ void save_index(fastr_index** s, const char * filename){
 }
 
 void load_index(fastr_index** s, const char * filename) {
-    cerr << "loading database\n";
+    //cerr << "loading database\n";
     std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
-    std::ifstream ifs(filename, ios::binary);
-    boost::archive::binary_iarchive ia(ifs);
+    std::ifstream ifs(filename);
+    boost::archive::text_iarchive ia(ifs);
     // read class state from archive
     ia >> num_loaded_indices;
     for (int i=0; i<num_loaded_indices; i++) {
