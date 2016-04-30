@@ -49,6 +49,12 @@ struct Metadata {
     }
 };
 
+struct args_threading{
+    uint32_t start;
+    uint32_t end;
+    int thread_id;
+};
+
 
 extern pthread_t threads[MAX_THREADS];
 extern pthread_spinlock_t * spin_locks[MAX_INDICES];

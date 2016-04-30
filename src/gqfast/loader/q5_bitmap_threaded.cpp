@@ -11,26 +11,20 @@
 
 using namespace std;
 
-struct args_s{
-    uint32_t start;
-    uint32_t end;
-    int thread_id;
-};
-
 // Thread param
-args_s arguments[NUM_THREADS];
+static args_threading arguments[NUM_THREADS];
 
-int* q5_bitmap_threaded_dt1_huffman_tree_array;
-bool* q5_bitmap_threaded_dt1_huffman_terminator_array; 
+static int* q5_bitmap_threaded_dt1_huffman_tree_array;
+static bool* q5_bitmap_threaded_dt1_huffman_terminator_array; 
 
-int* q5_bitmap_threaded_dt2_huffman_tree_array;
-bool* q5_bitmap_threaded_dt2_huffman_terminator_array; 
+static int* q5_bitmap_threaded_dt2_huffman_tree_array;
+static bool* q5_bitmap_threaded_dt2_huffman_terminator_array; 
 
-uint32_t* q5_bitmap_threaded_authors_bits_info;
-uint32_t* q5_bitmap_threaded_year_bitmap_bits_info;
+static uint32_t* q5_bitmap_threaded_authors_bits_info;
+static uint32_t* q5_bitmap_threaded_year_bitmap_bits_info;
 
-int* RC_bitmap;
-double* R_bitmap;
+static int* RC_bitmap;
+static double* R_bitmap;
 
 extern inline void q5_bitmap_decode_threaded_BB_da1_docs(unsigned char* byte_pos, uint32_t bytes_size, int & size) __attribute__((always_inline));
 extern inline void q5_bitmap_decode_threaded_BB_dt1_terms(unsigned char* byte_pos, uint32_t bytes_size, int & size) __attribute__((always_inline));
@@ -280,7 +274,7 @@ void q5_bitmap_decode_threaded_Huffman_dt2_fre(int thread_id, unsigned char* byt
 
 void* pthread_bitmap_worker(void* arguments) {
 
-    args_s* args = (args_s *) arguments;
+    args_threading* args = (args_threading *) arguments;
     
     uint32_t it2 = args->start;
     uint32_t it2_end = args->end;
