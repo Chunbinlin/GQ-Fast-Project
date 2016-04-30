@@ -12,9 +12,10 @@ import java.util.List;
 
 class CodeGenerator {
 	
+	
 	private static String initialImportsAndConstants(MetaQuery query) {
 		
-
+	
 		String initCppCode = "";
 		// Initial Code
 		initCppCode += "#ifndef " + query.queryName + "_\n"; 
@@ -26,11 +27,11 @@ class CodeGenerator {
 		initCppCode += "#define NUM_BUFFERS " + query.numBuffers + "\n";
 		initCppCode += "#define BUFFER_POOL_SIZE " + query.bufferPoolSize + "\n";
 		initCppCode += "\nusing namespace std;\n";
-		
+				
 		return initCppCode;
 	}
-	
-	
+
+
 	private static String openingLine(MetaQuery query, AggregationOperator aggregation) {
 
 		String openingCppCode = "\nextern \"C\" ";
@@ -233,7 +234,7 @@ class CodeGenerator {
 			AggregationOperator aggregation, MetaQuery query) {
 		
 		if (query.numThreads > 1) {
-			String arguments = "\nstatic args_s arguments[NUM_THREADS];\n";
+			String arguments = "\nstatic args_threading arguments[NUM_THREADS];\n";
 			globalsCppCode.add(arguments);
 		}
 		
@@ -312,7 +313,7 @@ class CodeGenerator {
 	 * 			A string that represents the body of the function in cpp that is the decoding of a fragment
 	 * 
 	 */
-	private static String generateDecodeFunctionBody(int indexID, String alias,
+	private static String generateDecodeFunctionBody(boolean preThreading, int indexID, String alias,
 			int currentEncoding, int columnIteration, int currentCol, String sizeName,
 			String currentFragmentBytesName, String pointerName,
 			int[][] bufferPoolTrackingArray, int currPool, int currentByteSize) {
@@ -320,9 +321,13 @@ class CodeGenerator {
 		String function = "\n";
 		String tabString = "\t";
 		
-		
-		
-		String bufferArraysPart = "buffer_arrays[" + indexID + "][" + currentCol + "][0][" + currPool + "]";
+		String bufferArraysPart = new String();
+		if (preThreading) {
+			bufferArraysPart = "buffer_arrays[" + indexID + "][" + currentCol + "][0][" + currPool + "]";
+		}
+		else {
+			bufferArraysPart = "buffer_arrays[" + indexID + "][" + currentCol + "][thread_id][" + currPool + "]";
+		}
 		if (columnIteration == 0) {
 			// Size is initially 0, is passed by reference, and will calculated in the function
 			if (currentEncoding == Metadata.ENCODING_UA) {			
@@ -584,7 +589,7 @@ class CodeGenerator {
 	 *	Output:
 	 *			A String that continues the cpp code for the original function
 	 */
-	private static String joinGenerateDecodeFragmentFunction(String alias, int aliasID, int columnIteration, StringBuilder tabString,
+	private static String joinGenerateDecodeFragmentFunction(boolean preThreading, String alias, int aliasID, int columnIteration, StringBuilder tabString,
 			MetaIndex currMetaIndex, MetaQuery query, List<String> functionHeadersCppCode,
 			List<String> functionsCppCode, int indexID, int currentCol,
 			String currentFragmentRow, String currentFragmentBytesName, int[][] bufferPoolTrackingArray, boolean entityFlag) {
@@ -600,6 +605,9 @@ class CodeGenerator {
 		String pointerName = alias + "_col" + currentCol + "_ptr";
 		String pointerString = new String();
 		String functionParameters = "(";
+		if (!preThreading && !entityFlag) {
+			functionParameters += "int thread_id, ";
+		}
 		// UA pointer points to type of size of element
 		if (currentEncoding == Metadata.ENCODING_UA) {
 			switch (currentBytesSize) {
@@ -660,6 +668,10 @@ class CodeGenerator {
 		}
 
 		}
+
+		if (!preThreading && !entityFlag) {
+			functionName += "_threaded";
+		}
 		
 		
 		if (entityFlag) {
@@ -706,7 +718,7 @@ class CodeGenerator {
 			int currPool = ++bufferPoolTrackingArray[indexID][currentCol];
 			query.setBufferPoolID(aliasID, currentCol, currPool);
 			
-			currFunction += generateDecodeFunctionBody(indexID, alias, currentEncoding, columnIteration, 
+			currFunction += generateDecodeFunctionBody(preThreading, indexID, alias, currentEncoding, columnIteration, 
 					currentCol, sizeName, currentFragmentBytesName, pointerName, bufferPoolTrackingArray, currPool, currentBytesSize);
 			currFunction += "}\n";
 
@@ -759,7 +771,7 @@ class CodeGenerator {
 	 * 
 	 */
 		
-	private static String evaluateJoin(int i, List<Operator> operators, Operator currentOp, Metadata metadata, 
+	private static String evaluateJoin(boolean preThreading, int i, List<Operator> operators, Operator currentOp, Metadata metadata, 
 			StringBuilder tabString, int[] closingBraces, int[][] bufferPoolTrackingArray, MetaQuery query, List<String> functionHeadersCppCode, List<String> functionsCppCode) {
 
 		int indexID;
@@ -767,6 +779,7 @@ class CodeGenerator {
 		int drivingAliasCol;
 		int currentAliasID;
 		boolean entityFlag;
+		boolean threadID = true;
 		List<Integer> columnIDs;
 		if (currentOp.type == Operator.JOIN_OPERATOR) {
 			JoinOperator currentJoinOp = (JoinOperator) currentOp;
@@ -791,6 +804,12 @@ class CodeGenerator {
 		
 		String drivingAlias = query.aliases.get(drivingAliasID);
 		String currAlias = query.aliases.get(currentAliasID);
+		if (preThreading) {
+			query.preThreading[currentAliasID] = true;
+		}
+		if (query.preThreading[drivingAliasID]) {
+			threadID = false;
+		}
 		MetaIndex currMetaIndex = metadata.indexList.get(indexID);
 		int indexByteSize = currMetaIndex.indexMapByteSize;
 		String mainString = new String();
@@ -841,12 +860,22 @@ class CodeGenerator {
 						int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
 						SemiJoinOperator tempOp = (SemiJoinOperator)currentOp;
 						int drivingIndexID = tempOp.drivingAliasIndexID;
-						mainString += "\n" + tabString + "if (!(" + drivingAlias 
+						if (threadID) {
+							mainString += "\n" + tabString + "if (!(" + drivingAlias 
+									+ "_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
+								closingBraces[0]++;
+								tabString.append("\t");
+								mainString += tabString + drivingAlias + 
+									"_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
+						}
+						else {
+							mainString += "\n" + tabString + "if (!(" + drivingAlias 
 								+ "_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
-						closingBraces[0]++;
-						tabString.append("\t");
-						mainString += tabString + drivingAlias + 
+							closingBraces[0]++;
+							tabString.append("\t");
+							mainString += tabString + drivingAlias + 
 								"_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
+						}
 					}
 					
 					String elementString = drivingAlias  + "_col" + drivingAliasCol + "_element";
@@ -868,7 +897,7 @@ class CodeGenerator {
 							tabString.append("\t");
 						}
 
-						mainString += joinGenerateDecodeFragmentFunction(currAlias, currentAliasID, k, tabString, currMetaIndex, query, functionHeadersCppCode, functionsCppCode,indexID, currentCol, currentFragmentRow, 
+						mainString += joinGenerateDecodeFragmentFunction(preThreading, currAlias, currentAliasID, k, tabString, currMetaIndex, query, functionHeadersCppCode, functionsCppCode,indexID, currentCol, currentFragmentRow, 
 								currentFragmentBytesName, bufferPoolTrackingArray, entityFlag);
 					}
 				}
@@ -888,12 +917,22 @@ class CodeGenerator {
 						int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
 						SemiJoinOperator tempOp = (SemiJoinOperator)currentOp;
 						int drivingIndexID = tempOp.drivingAliasIndexID;
-						mainString += "\n" + tabString + "if (!(" + drivingAlias 
+						if (threadID) {
+							mainString += "\n" + tabString + "if (!(" + drivingAlias 
+									+ "_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
+								closingBraces[0]++;
+								tabString.append("\t");
+								mainString += tabString + drivingAlias + 
+									"_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
+						}
+						else {
+							mainString += "\n" + tabString + "if (!(" + drivingAlias 
 								+ "_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
-						closingBraces[0]++;
-						tabString.append("\t");
-						mainString += tabString + drivingAlias + 
+							closingBraces[0]++;
+							tabString.append("\t");
+							mainString += tabString + drivingAlias + 
 								"_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
+						}
 					}
 					
 					for (int previousColID : previousColumnIDs) {
@@ -901,11 +940,16 @@ class CodeGenerator {
 						int colBytes = metadata.indexList.get(previousIndexID).columnEncodedByteSizesList.get(previousColID);
 						mainString += tabString + getPrimitive(colBytes) + " ";
 
-
-						mainString += previousAlias + "_col" + previousColID + "_element = " +
-								"buffer_arrays[" + previousIndexID + "][" + previousColID + "][0]" +
+						if (threadID) {
+							mainString += previousAlias + "_col" + previousColID + "_element = " +
+								"buffer_arrays[" + previousIndexID + "][" + previousColID + "][thread_id]" +
 								"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
-			
+						}
+						else {
+							mainString += previousAlias + "_col" + previousColID + "_element = " +
+									"buffer_arrays[" + previousIndexID + "][" + previousColID + "][0]" +
+									"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
+						}
 						
 					}
 
@@ -931,7 +975,7 @@ class CodeGenerator {
 							tabString.append("\t");
 						}
 
-						mainString += joinGenerateDecodeFragmentFunction(currAlias, currentAliasID, k, tabString, currMetaIndex, query, functionHeadersCppCode, functionsCppCode,indexID, currentCol, currentFragmentRow, 
+						mainString += joinGenerateDecodeFragmentFunction(preThreading, currAlias, currentAliasID, k, tabString, currMetaIndex, query, functionHeadersCppCode, functionsCppCode,indexID, currentCol, currentFragmentRow, 
 								currentFragmentBytesName, bufferPoolTrackingArray, entityFlag);
 
 					}
@@ -971,7 +1015,7 @@ class CodeGenerator {
 						tabString.append("\t");
 					}
 
-					mainString += joinGenerateDecodeFragmentFunction(currAlias, currentAliasID, k, tabString, currMetaIndex, query, functionHeadersCppCode, functionsCppCode,indexID, currentCol, currentFragmentRow, 
+					mainString += joinGenerateDecodeFragmentFunction(preThreading, currAlias, currentAliasID, k, tabString, currMetaIndex, query, functionHeadersCppCode, functionsCppCode,indexID, currentCol, currentFragmentRow, 
 							currentFragmentBytesName, bufferPoolTrackingArray, entityFlag);
 
 				}
@@ -1005,7 +1049,7 @@ class CodeGenerator {
 		return mainSelectionString;
 	}
 
-	private static String evaluateAggregation(int i, List<Operator> operators,
+	private static String evaluateAggregation(boolean preThreading, int i, List<Operator> operators,
 			Operator currentOp, Metadata metadata, StringBuilder tabString,
 			int[] closingBraces, int[][] bufferPoolTrackingArray, MetaQuery query) {
 		
@@ -1022,6 +1066,9 @@ class CodeGenerator {
 				
 				int previousAliasID = previousJoinOp.alias;
 				String previousAlias = query.aliases.get(previousAliasID);
+				boolean previousThreadID = query.preThreading[previousAliasID];
+				
+				
 				mainString += "\n" + tabString + "for (uint32_t " + previousAlias + "_it = 0; " + previousAlias + "_it " +
 						"< " + previousAlias + "_fragment_size; " + previousAlias + "_it++) {\n";
 				closingBraces[0]++;
@@ -1033,11 +1080,16 @@ class CodeGenerator {
 					int colBytes = metadata.indexList.get(previousIndexID).columnEncodedByteSizesList.get(previousColID);
 					mainString += tabString + getPrimitive(colBytes) + " ";
 
-
-					mainString += previousAlias + "_col" + previousColID + "_element = " +
+					if (previousThreadID) {
+						mainString += previousAlias + "_col" + previousColID + "_element = " +
 							"buffer_arrays[" + previousIndexID + "][" + previousColID + "][0]" +
 							"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
-			
+					}
+					else {
+						mainString += previousAlias + "_col" + previousColID + "_element = " +
+								"buffer_arrays[" + previousIndexID + "][" + previousColID + "][thread_id]" +
+								"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
+					}
 				}
 			}
 		}
@@ -1049,11 +1101,15 @@ class CodeGenerator {
 		int drivingAliasID = aggregationOp.drivingAlias;
 		String drivingAlias = query.aliases.get(drivingAliasID); 
 		int drivingAliasCol = aggregationOp.drivingAliasColumn;
-		
+		int drivingAliasIndex = aggregationOp.drivingAliasIndexID;
 		String elementString = drivingAlias + "_col" + drivingAliasCol + "_element";
 		
+
 		mainString += "\n" + tabString + "RC[" + elementString + "] = 1;\n";
 		
+		if (!preThreading) {
+			mainString += "\n" + tabString + "pthread_spin_lock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
+		}
 		String delims = "[ ]+";
 		String[] tokens = aggregationOp.aggregationString.split(delims);
 		String reconstructedString = new String();
@@ -1078,8 +1134,11 @@ class CodeGenerator {
 		
 		mainString += tabString + "R[" + elementString +"] += " + reconstructedString;
 	
+		if (!preThreading) {
+			mainString += "\n" + tabString + "pthread_spin_unlock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
+		}
 
-		mainString += ";\n";
+		mainString += "\n";
 
 			
 
@@ -1087,6 +1146,53 @@ class CodeGenerator {
 	}
 	
 
+	private static String initThreading(Operator currentOp, Metadata metadata,
+			StringBuilder tabString, MetaQuery query,
+			List<String> functionHeadersCppCode, List<String> functionsCppCode) {
+		
+		String mainString = new String();
+		
+		ThreadingOperator threadingOp = (ThreadingOperator) currentOp;
+		int aliasID = threadingOp.drivingAliasID;
+		String alias = query.aliases.get(aliasID);
+		
+		mainString += "\n" + tabString + "uint32_t thread_size = " + alias + "_fragment_size/NUM_THREADS;\n"; 
+		mainString += tabString + "uint32_t position = 0;\n";
+		mainString += "\n" + tabString + "for (int i=0; i<NUM_THREADS; i++) {\n";
+		tabString.append("\t");
+		mainString += tabString + "arguments[i].start = position;\n";
+		mainString += tabString + "position += thread_size;\n";
+		mainString += tabString + "arguments[i].end = position;\n";
+		mainString += tabString + "arguments[i].thread_id = i;\n";
+		tabString.setLength(tabString.length() - 1);
+		mainString += tabString + "}\n";
+		mainString += tabString + "arguments[NUM_THREADS-1].end = " + alias + "_fragment_size\n";
+		mainString += "\n" + tabString + "for (int i=0; i<NUM_THREADS; i++) {\n";
+		tabString.append("\t");
+		mainString += tabString + "pthread_create(&threads[i], NULL, &pthread_" + query.queryName + 
+				"_worker, (void *) &arguments[i]);\n";
+		tabString.setLength(tabString.length() - 1);
+		mainString += tabString + "}\n";
+		mainString += "\n" + tabString + "for (int i=0; i<NUM_THREADS; i++) {\n";
+		tabString.append("\t");
+		mainString += tabString + "pthread_join(threads[i], NULL);\n";
+		tabString.setLength(tabString.length() - 1);
+		mainString += tabString + "}\n";
+	
+		
+		String threadingFunction = new String();
+		String threadFunctionHeader = "\nvoid* pthread_" + query.queryName + "_worker(void* arguments);\n";
+		threadingFunction += "\nvoid* pthread_" + query.queryName + "_worker(void* arguments) {\n";
+		threadingFunction += "\n\targs_threading* args = (args_threading *) arguments;\n";
+		threadingFunction += "\n\tuint32_t " + alias + "_it = args->start;\n";
+		threadingFunction += "\tuint32_t " + alias + "_fragment_size = args->end;\n";
+		threadingFunction += "\tint thread_id = args->thread_id;\n";
+		
+		functionsCppCode.add(threadingFunction);
+		functionHeadersCppCode.add(threadFunctionHeader);
+		return mainString;
+	}
+	
 
 	/* Function:	evaluateOpearators
 	*  Input:		
@@ -1111,6 +1217,12 @@ class CodeGenerator {
 		StringBuilder tabString = new StringBuilder("\t");
 		int[] closingBraces = {1};
 	
+		// Buffer Pool Tracking:
+		// Since buffers are indexed by gq-fast indices, we may run into a situation where the same index is used
+		// multiple times in the same query. In this case, we provide a pool of buffers per index. Currently, since
+		// the pool number is considered to be small, we use MAX(number of occurrences of an index) for every index buffer.
+		// The Code Generator needs to keep track of which pool is being used for what alias. This is achieved by
+		// storing the pool ID for each alias in the query meta-data.
 		int[][] bufferPoolTrackingArray = new int[metadata.getMaxIndexID()+1][];
 		for (int i=0; i<metadata.getMaxIndexID()+1; i++) {
 			if (metadata.indexList.get(i) != null) {
@@ -1118,22 +1230,57 @@ class CodeGenerator {
 				Arrays.fill(bufferPoolTrackingArray[i], -1);
 			}
 		}
-	
+		
+		boolean preThreadingOp = true;
+		int threadingFunctionID = -1;
+		StringBuilder threadingTabString = new StringBuilder("\t");
+		int[] threadingClosingBraces = {1};
+		
 		for (int i = 0; i<operators.size(); i++) {
 			Operator currentOp = operators.get(i);
 			int opType = currentOp.type;
 			if (opType == Operator.SELECTION_OPERATOR) {
-				mainCppCode.add(evaluateSelection(i, currentOp, tabString, query));
+				if (preThreadingOp) {
+					mainCppCode.add(evaluateSelection(i, currentOp, tabString, query));
+				}
+				else {
+					
+				}
 			}
 			else if (opType == Operator.JOIN_OPERATOR || opType == Operator.SEMIJOIN_OPERATOR) {
-				
-				mainCppCode.add(evaluateJoin(i, operators, currentOp, metadata, tabString, closingBraces, bufferPoolTrackingArray, query, functionHeadersCppCode, functionsCppCode));
+				if (preThreadingOp) {
+					mainCppCode.add(evaluateJoin(preThreadingOp, i, operators, currentOp, 
+							metadata, tabString, closingBraces, bufferPoolTrackingArray, query, 
+							functionHeadersCppCode, functionsCppCode));
+				}
+				else {
+					String temp = functionsCppCode.get(threadingFunctionID);
+					temp += evaluateJoin(preThreadingOp, i, operators, currentOp,
+							metadata, threadingTabString, threadingClosingBraces, bufferPoolTrackingArray, query,
+							functionHeadersCppCode, functionsCppCode);
+					functionsCppCode.set(threadingFunctionID, temp);
+				}
 			}
 			else if (opType == Operator.INTERSECTION_OPERATOR) {
 				
 			}
 			else if (opType == Operator.AGGREGATION_OPERATOR) {
-				mainCppCode.add(evaluateAggregation(i, operators, currentOp, metadata, tabString, closingBraces, bufferPoolTrackingArray, query));
+				if (preThreadingOp) {
+					mainCppCode.add(evaluateAggregation(preThreadingOp, i, operators, currentOp, metadata, tabString, 
+							closingBraces, bufferPoolTrackingArray, query));
+				}
+				else {
+					String temp = functionsCppCode.get(threadingFunctionID);
+					temp += evaluateAggregation(preThreadingOp, i, operators, currentOp, metadata, threadingTabString, 
+							threadingClosingBraces, bufferPoolTrackingArray, query);
+					functionsCppCode.set(threadingFunctionID, temp);
+				}
+			}
+			else if (opType == Operator.THREADING_OPERATOR) {
+				mainCppCode.add(initThreading(currentOp, metadata, tabString, query, 
+						functionHeadersCppCode, functionsCppCode));
+				preThreadingOp = false;
+				threadingFunctionID = functionsCppCode.size()-1;
 			}
 			else {
 				System.err.println("Error: Unknown Operator");
@@ -1151,23 +1298,19 @@ class CodeGenerator {
 		closingBracesString += "\n";
 		mainCppCode.add(closingBracesString);
 		
-	}
-	
-
-
-
-
-
-
-	private static void evaluateOperatorsThreaded(List<Operator> operators,
-			MetaQuery query, Metadata metadata, List<String> mainCppCode,
-			List<String> functionHeadersCppCode, List<String> functionsCppCode) {
-
-		// TODO: Implementation for threaded code
+		if (!preThreadingOp) {
+			closingBracesString = new String();
+			for (int i=0; i<threadingClosingBraces[0]; i++) {
+				threadingTabString.setLength(threadingTabString.length() - 1);
+				closingBracesString += threadingTabString + "}\n";
+			}
+			closingBracesString += "\n";
+			String temp = functionsCppCode.get(threadingFunctionID);
+			temp += closingBracesString;
+			functionsCppCode.set(threadingFunctionID, temp);
+		}
 		
-	
 	}
-
 
 
 	private static void initQueryBufferPool(MetaQuery query,
@@ -1251,13 +1394,10 @@ class CodeGenerator {
 		initDecodeVars(operators, mainCppCode, globalsCppCode, metadata, query);
 		
 		// Operator evaluation
-		if (query.numThreads > 1) {
-			evaluateOperatorsThreaded(operators, query, metadata, mainCppCode, functionHeadersCppCode, functionsCppCode);
-		}
-		else {
-			evaluateOperators(operators, query, metadata, mainCppCode, functionHeadersCppCode, functionsCppCode);
-			mainCppCode.add(bufferDeallocation(metadata));
-		}
+	
+		evaluateOperators(operators, query, metadata, mainCppCode, functionHeadersCppCode, functionsCppCode);
+		mainCppCode.add(bufferDeallocation(metadata));
+		
 		
 		mainCppCode.add(semiJoinBufferDeallocation(operators, metadata));
 		
@@ -1300,7 +1440,7 @@ class CodeGenerator {
 
 	private static void writeToFile(String fullCppCode, String queryName) {
 
-		try(  PrintWriter out = new PrintWriter(new File("../loader/" + queryName + ".cpp"))){
+		try(  PrintWriter out = new PrintWriter(new File("./src/gqfast/loader/" + queryName + ".cpp"))){
 		    out.println(fullCppCode);
 		} catch (FileNotFoundException e) {
 			System.err.println("Error in writeToFile: FileNotFoundException");
@@ -1325,8 +1465,10 @@ class CodeGenerator {
 		aliases.add("author2");
 		aliases.add("year");
 		
-		MetaQuery q5Optimal = new MetaQuery(0, "t_q5_opt", 1,
-				5, 1, 0, aliases);
+		// public MetaQuery(int queryID, String queryName, int numThreads,
+		// int numBuffers, int bufferPoolSize, int threadingCutOffPoint, List<String> aliases)
+		MetaQuery q5Optimal = new MetaQuery(0, "t_q5_opt_threaded", 4, 5, 1, aliases);
+		
 		
 		metadata.queryList.add(q5Optimal);		
 	}
@@ -1397,6 +1539,77 @@ class CodeGenerator {
 
 	}
 	
+	private static void initQ5OperatorsThreaded(List<Operator> operators) {
+	
+		
+		
+		List<Integer> selections = new ArrayList<Integer>();
+		selections.add(4945389);
+		Operator selection1 = new SelectionOperator(selections, 0);
+		operators.add(selection1);
+		
+		
+		
+		int join1indexID = 0;
+		List<Integer> column1IDs = new ArrayList<Integer>();
+		column1IDs.add(0);
+		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
+		Operator join1 = new JoinOperator(join1indexID, false, column1IDs, 1, 0, 0, 0);
+		
+		operators.add(join1);
+		
+		int join2indexID = 2;
+		List<Integer> column2IDs = new ArrayList<Integer>();
+		column2IDs.add(0);
+		column2IDs.add(1);
+		Operator join2 = new JoinOperator(join2indexID, false, column2IDs, 2, 0, 1, 0);
+		
+		operators.add(join2);
+		
+		Operator threadOp = new ThreadingOperator(2);
+		operators.add(threadOp);
+		
+		int join3indexID = 3;
+		List<Integer> column3IDs = new ArrayList<Integer>();
+		column3IDs.add(0);
+		column3IDs.add(1);
+		Operator join3 = new JoinOperator(join3indexID, false, column3IDs, 3, 0, 2, 0);
+		
+		operators.add(join3);
+		
+		int join4indexID = 1;
+		List<Integer> column4IDs = new ArrayList<Integer>();
+		column4IDs.add(0);
+		Operator join4 = new JoinOperator(join4indexID, true, column4IDs, 5, 0, 3, 0);
+		
+		operators.add(join4);
+		
+		int join5indexID = 4;
+		List<Integer> column5IDs = new ArrayList<Integer>();
+		column5IDs.add(0);
+		Operator join5 = new JoinOperator(join5indexID, false, column5IDs, 4, 0, 3, 0);
+		
+		operators.add(join5);
+		
+		int aggregationindexID = 4;
+		
+		String aggString = "(double)( op0 * op1 )/(2017 - op2 )";
+		
+		List<Integer> aggAliasList = new ArrayList<Integer>();
+		aggAliasList.add(2);
+		aggAliasList.add(3);
+		aggAliasList.add(5);
+		
+		List<Integer> aggOpColList = new ArrayList<Integer>();
+		aggOpColList.add(1);
+		aggOpColList.add(1);
+		aggOpColList.add(0);
+		
+		Operator agg = new AggregationOperator(aggregationindexID, 
+				AggregationOperator.AGGREGATION_DOUBLE, aggString, aggAliasList, aggOpColList, 4, 0, 6, 4);
+	
+		operators.add(agg);
+	}
 
 	private static void initQ5Operators(List<Operator> operators) {
 	
@@ -1462,7 +1675,7 @@ class CodeGenerator {
 		aggOpColList.add(0);
 		
 		Operator agg = new AggregationOperator(aggregationindexID, 
-				AggregationOperator.AGGREGATION_DOUBLE, aggString, aggAliasList, aggOpColList, 4, 0, 5);
+				AggregationOperator.AGGREGATION_DOUBLE, aggString, aggAliasList, aggOpColList, 4, 0, 5, 4);
 	
 		operators.add(agg);
 	}
@@ -1532,7 +1745,7 @@ class CodeGenerator {
 		List<Integer> aggOpColList = new ArrayList<Integer>();
 
 		Operator agg = new AggregationOperator(aggregationindexID, 
-				AggregationOperator.AGGREGATION_INT, aggString, aggAliasList, aggOpColList, 6, 0, 6);
+				AggregationOperator.AGGREGATION_INT, aggString, aggAliasList, aggOpColList, 6, 0, 6, 5);
 	
 		operators.add(agg);
 		
@@ -1551,7 +1764,7 @@ class CodeGenerator {
 		aliases.add("concept2");
 		
 		MetaQuery q5Optimal = new MetaQuery(1, "test_smdb_optimal", 1,
-				6, 1, 0, aliases);
+				6, 1, aliases);
 		
 		metadata.queryList.add(q5Optimal);	
 		
@@ -1638,8 +1851,8 @@ class CodeGenerator {
 		
 		initPubmedIndexes(metadata);
 		initPubmedQueries(metadata);
-		initQ5Operators(operators);
-		
+		//initQ5Operators(operators);
+		initQ5OperatorsThreaded(operators);
 		
 		// SemmedDB Atropine Optimal
 		//initSemmedDBIndexes(metadata);
