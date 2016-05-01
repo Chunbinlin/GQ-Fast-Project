@@ -2,11 +2,15 @@ package codegenerator;
 
 public class ThreadingOperator extends Operator {
 
-	int drivingAliasID;
+	private int drivingAliasID;
 	
 	public ThreadingOperator(int drivingAliasID) {
 		super(Operator.THREADING_OPERATOR);
 		this.drivingAliasID = drivingAliasID;
+	}
+
+	public int getDrivingAliasID() {
+		return drivingAliasID;
 	}
 
 }

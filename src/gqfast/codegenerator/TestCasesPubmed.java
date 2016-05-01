@@ -22,8 +22,8 @@ public class TestCasesPubmed {
 		MetaQuery q5Optimal = new MetaQuery(0, queryName, numThreads, 5, 1, aliases);
 		
 		
-		metadata.queryList.add(q5Optimal);
-		metadata.currentQueryID = metadata.queryList.size()-1;
+		metadata.getQueryList().add(q5Optimal);
+		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);
 	}
 
 	private static void initPubmedIndexes(Metadata metadata, int encodingType) {
@@ -37,7 +37,7 @@ public class TestCasesPubmed {
 		columnEncodedByteSizesList0.add(Metadata.BYTES_4);
 		
 		MetaIndex DA1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
-		metadata.indexList.add(DA1);
+		metadata.getIndexList().add(DA1);
 
 		// DY
 		indexID = 1;
@@ -48,7 +48,7 @@ public class TestCasesPubmed {
 		columnEncodedByteSizesList1.add(Metadata.BYTES_4);
 		
 		MetaIndex DY = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
-		metadata.indexList.add(DY);
+		metadata.getIndexList().add(DY);
 
 		// DT1
 		indexID = 2;
@@ -62,7 +62,7 @@ public class TestCasesPubmed {
 		columnEncodedByteSizesList2.add(Metadata.BYTES_1);
 		
 		MetaIndex DT1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.indexList.add(DT1);
+		metadata.getIndexList().add(DT1);
 		
 		// DT2
 		indexID = 3;
@@ -76,7 +76,7 @@ public class TestCasesPubmed {
 		columnEncodedByteSizesList3.add(Metadata.BYTES_1);
 		
 		MetaIndex DT2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.indexList.add(DT2);
+		metadata.getIndexList().add(DT2);
 		
 		// DA2
 		indexID = 4;
@@ -87,7 +87,7 @@ public class TestCasesPubmed {
 		columnEncodedByteSizesList4.add(Metadata.BYTES_4);
 		
 		MetaIndex DA2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
-		metadata.indexList.add(DA2);
+		metadata.getIndexList().add(DA2);
 
 	}
 	private static void initPubmedIndexes(Metadata metadata) {
@@ -101,7 +101,7 @@ public class TestCasesPubmed {
 		columnEncodedByteSizesList0.add(Metadata.BYTES_4);
 		
 		MetaIndex DA1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
-		metadata.indexList.add(DA1);
+		metadata.getIndexList().add(DA1);
 
 		// DY
 		indexID = 1;
@@ -112,7 +112,7 @@ public class TestCasesPubmed {
 		columnEncodedByteSizesList1.add(Metadata.BYTES_4);
 		
 		MetaIndex DY = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
-		metadata.indexList.add(DY);
+		metadata.getIndexList().add(DY);
 
 		// DT1
 		indexID = 2;
@@ -126,7 +126,7 @@ public class TestCasesPubmed {
 		columnEncodedByteSizesList2.add(Metadata.BYTES_1);
 		
 		MetaIndex DT1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.indexList.add(DT1);
+		metadata.getIndexList().add(DT1);
 		
 		// DT2
 		indexID = 3;
@@ -140,7 +140,7 @@ public class TestCasesPubmed {
 		columnEncodedByteSizesList3.add(Metadata.BYTES_1);
 		
 		MetaIndex DT2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.indexList.add(DT2);
+		metadata.getIndexList().add(DT2);
 		
 		// DA2
 		indexID = 4;
@@ -151,7 +151,7 @@ public class TestCasesPubmed {
 		columnEncodedByteSizesList4.add(Metadata.BYTES_4);
 		
 		MetaIndex DA2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
-		metadata.indexList.add(DA2);
+		metadata.getIndexList().add(DA2);
 
 	}
 	

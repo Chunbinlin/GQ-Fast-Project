@@ -15,10 +15,11 @@ public class Metadata {
 	public static final int BYTES_2 = 2;
 	public static final int BYTES_4 = 4;
 	public static final int BYTES_8 = 8;
-	List<MetaIndex> indexList;
-	List<MetaQuery> queryList;
 	
-	int currentQueryID;
+	private List<MetaIndex> indexList;
+	private List<MetaQuery> queryList;
+	
+	private int currentQueryID;
 	
 	public Metadata() {
 		indexList = new ArrayList<MetaIndex>();
@@ -26,11 +27,27 @@ public class Metadata {
 		currentQueryID = 0;
 	}
 	
+	public int getCurrentQueryID() {
+		return currentQueryID;
+	}
+
+	public void setCurrentQueryID(int currentQueryID) {
+		this.currentQueryID = currentQueryID;
+	}
+
+	public List<MetaIndex> getIndexList() {
+		return indexList;
+	}
+
+	public List<MetaQuery> getQueryList() {
+		return queryList;
+	}
+
 	public int getMaxIndexID() {
 		int max = 0;
 		for (MetaIndex index : indexList) {
-			if (max < index.indexID) {
-				max = index.indexID;
+			if (max < index.getIndexID()) {
+				max = index.getIndexID();
 			}
 		}
 		return max;

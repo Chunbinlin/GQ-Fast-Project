@@ -8,17 +8,19 @@ public class AggregationOperator extends Operator {
 	public static final int AGGREGATION_DOUBLE = 2;
 	
 	
-	final int dataType;
-	final int indexID;
+	private int dataType;
+	private int indexID;
 
-	String aggregationString;
-	List<Integer> aggregationVariablesAliases;
-	List<Integer> aggregationVariablesColumns;
+	private String aggregationString;
+
+
+	private List<Integer> aggregationVariablesAliases;
+	private List<Integer> aggregationVariablesColumns;
 	
-	int drivingAlias;
-	int drivingAliasColumn;
-	int drivingOperator;
-	int drivingAliasIndexID;
+	private int drivingAlias;
+	private int drivingAliasColumn;
+	private int drivingOperator;
+	private int drivingAliasIndexID;
 	
 	public AggregationOperator(int indexID, 
 			int dataType, String aggregationString, 
@@ -34,6 +36,43 @@ public class AggregationOperator extends Operator {
 		this.drivingAliasColumn = drivingAliasColumn;
 		this.drivingOperator = drivingOperator;
 		this.drivingAliasIndexID = drivingAliasIndexID;
+	}
+	
+	
+	public int getDataType() {
+		return dataType;
+	}
+
+	public int getIndexID() {
+		return indexID;
+	}
+
+	public String getAggregationString() {
+		return aggregationString;
+	}
+
+	public List<Integer> getAggregationVariablesAliases() {
+		return aggregationVariablesAliases;
+	}
+
+	public List<Integer> getAggregationVariablesColumns() {
+		return aggregationVariablesColumns;
+	}
+
+	public int getDrivingAlias() {
+		return drivingAlias;
+	}
+
+	public int getDrivingAliasColumn() {
+		return drivingAliasColumn;
+	}
+
+	public int getDrivingOperator() {
+		return drivingOperator;
+	}
+
+	public int getDrivingAliasIndexID() {
+		return drivingAliasIndexID;
 	}
 	
 }

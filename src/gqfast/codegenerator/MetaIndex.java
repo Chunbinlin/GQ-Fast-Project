@@ -4,11 +4,11 @@ import java.util.List;
 
 public class MetaIndex {
 
-	int indexID;
-	int numColumns;
-	int indexMapByteSize;
-	List<Integer> columnEncodingsList;
-	List<Integer> columnEncodedByteSizesList;
+	private int indexID;
+	private int numColumns;
+	private int indexMapByteSize;
+	private List<Integer> columnEncodingsList;
+	private List<Integer> columnEncodedByteSizesList;
 	
 	public MetaIndex(int indexID, int numColumns, int indexMapByteSize,
 			List<Integer> columnEncodingsList,
@@ -18,6 +18,26 @@ public class MetaIndex {
 		this.indexMapByteSize = indexMapByteSize;
 		this.columnEncodingsList = columnEncodingsList;
 		this.columnEncodedByteSizesList = columnEncodedByteSizesList;
+	}
+
+	public int getIndexID() {
+		return indexID;
+	}
+
+	public int getNumColumns() {
+		return numColumns;
+	}
+
+	public int getIndexMapByteSize() {
+		return indexMapByteSize;
+	}
+
+	public List<Integer> getColumnEncodingsList() {
+		return columnEncodingsList;
+	}
+
+	public List<Integer> getColumnEncodedByteSizesList() {
+		return columnEncodedByteSizesList;
 	}
 
 	public int getMaxColumnID() {

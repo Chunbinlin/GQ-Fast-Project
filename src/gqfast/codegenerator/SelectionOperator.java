@@ -4,13 +4,21 @@ import java.util.List;
 
 public class SelectionOperator extends Operator {
 
-	List<Integer> selectionsList;
-	int alias;
+	private List<Integer> selectionsList;
+	private int aliasID;
 	
-	public SelectionOperator(List<Integer> selectionsList, int alias) {
+	public SelectionOperator(List<Integer> selectionsList, int aliasID) {
 		super(Operator.SELECTION_OPERATOR);
 		this.selectionsList = selectionsList;
-		this.alias = alias;
+		this.aliasID = aliasID;
+	}
+
+	public List<Integer> getSelectionsList() {
+		return selectionsList;
+	}
+
+	public int getAliasID() {
+		return aliasID;
 	}
 
 }

@@ -13,12 +13,17 @@ public abstract class Operator {
 	public static final int SELECTION_OPERATOR = 5;
 	public static final int THREADING_OPERATOR = 6;
 	
-	final int type;
+	private int type;
 	
 	
 	public Operator(int type) {
 		this.type = type;
 		
+	}
+
+
+	public int getType() {
+		return type;
 	}
 
 }

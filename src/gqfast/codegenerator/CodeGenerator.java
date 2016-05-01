@@ -18,14 +18,14 @@ public class CodeGenerator {
 	
 		String initCppCode = "";
 		// Initial Code
-		initCppCode += "#ifndef " + query.queryName + "_\n"; 
-		initCppCode += "#define " + query.queryName + "_\n";
+		initCppCode += "#ifndef " + query.getQueryName() + "_\n"; 
+		initCppCode += "#define " + query.getQueryName() + "_\n";
 		initCppCode += "\n#include \"fastr_index.hpp\"\n";
 		initCppCode += "#include \"global_vars.hpp\"\n\n";
 	
-		initCppCode += "#define NUM_THREADS " + query.numThreads + "\n";
-		initCppCode += "#define NUM_BUFFERS " + query.numBuffers + "\n";
-		initCppCode += "#define BUFFER_POOL_SIZE " + query.bufferPoolSize + "\n";
+		initCppCode += "#define NUM_THREADS " + query.getNumThreads() + "\n";
+		initCppCode += "#define NUM_BUFFERS " + query.getNumBuffers() + "\n";
+		initCppCode += "#define BUFFER_POOL_SIZE " + query.getBufferPoolSize() + "\n";
 		initCppCode += "\nusing namespace std;\n";
 				
 		return initCppCode;
@@ -35,13 +35,13 @@ public class CodeGenerator {
 	private static String openingLine(MetaQuery query, AggregationOperator aggregation) {
 
 		String openingCppCode = "\nextern \"C\" ";
-		if (aggregation.dataType == AggregationOperator.AGGREGATION_INT) {
+		if (aggregation.getDataType() == AggregationOperator.AGGREGATION_INT) {
 			openingCppCode += "int* ";
 		}
-		else if (aggregation.dataType == AggregationOperator.AGGREGATION_DOUBLE) {
+		else if (aggregation.getDataType() == AggregationOperator.AGGREGATION_DOUBLE) {
 			openingCppCode += "double* ";
 		}
-		openingCppCode += query.queryName + "(int** null_checks) {\n";
+		openingCppCode += query.getQueryName() + "(int** null_checks) {\n";
 		
 		return openingCppCode;
 	}
@@ -49,10 +49,9 @@ public class CodeGenerator {
 	private static String bufferInitCode(Metadata metadata) {
 		
 		String bufferInitString = "\n\tint max_frag;\n";
-		Iterator<MetaIndex> indexIterator = metadata.indexList.iterator();
-		int i = 0;
+		Iterator<MetaIndex> indexIterator = metadata.getIndexList().iterator();
 		while (indexIterator.hasNext()) {
-			int curr = indexIterator.next().indexID;
+			int curr = indexIterator.next().getIndexID();
 			bufferInitString += "\n\tmax_frag = metadata.idx_max_fragment_sizes[" + curr + "];\n";
 			bufferInitString += "\tfor(int i=0; i<metadata.idx_num_encodings[" + curr + "]; i++) {\n";
 			bufferInitString += "\t\tfor (int j=0; j<NUM_THREADS; j++) {\n";
@@ -62,7 +61,6 @@ public class CodeGenerator {
 			bufferInitString += "\t\t\t}\n";
 			bufferInitString += "\t\t}\n";
 			bufferInitString += "\t}\n";
-			i++;
 		}
 		return bufferInitString;
 		
@@ -101,11 +99,11 @@ public class CodeGenerator {
 		
 		String semiDeallocString = "\n";
 		for (Operator currentOp : operators) {
-			if (currentOp.type == Operator.SEMIJOIN_OPERATOR) {
+			if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 				SemiJoinOperator semiOp = (SemiJoinOperator)currentOp;
-				int aliasID = semiOp.drivingAliasID;
-				MetaQuery query = metadata.queryList.get(metadata.currentQueryID);
-				String alias = query.aliases.get(aliasID);
+				int aliasID = semiOp.getDrivingAliasID();
+				MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID());
+				String alias = query.getAliases().get(aliasID);
 				semiDeallocString += "\tdelete[] " + alias + "_bool_array;\n";
 				semiDeallocString += "\n";
 			}
@@ -119,13 +117,13 @@ public class CodeGenerator {
 	
 	private static String initResultArray(AggregationOperator aggregation) {
 		
-		String resultString = "\n\tRC = new int[metadata.idx_domains[" + aggregation.indexID + "][0]]();\n";
+		String resultString = "\n\tRC = new int[metadata.idx_domains[" + aggregation.getIndexID() + "][0]]();\n";
 		
-		if (aggregation.dataType == AggregationOperator.AGGREGATION_INT) {
-			resultString += "\tR = new int[metadata.idx_domains[" + aggregation.indexID + "][0]]();\n";
+		if (aggregation.getDataType() == AggregationOperator.AGGREGATION_INT) {
+			resultString += "\tR = new int[metadata.idx_domains[" + aggregation.getIndexID() + "][0]]();\n";
 		}
-		else if (aggregation.dataType == AggregationOperator.AGGREGATION_DOUBLE) {
-			resultString += "\tR = new double[metadata.idx_domains[" + aggregation.indexID + "][0]]();\n";
+		else if (aggregation.getDataType() == AggregationOperator.AGGREGATION_DOUBLE) {
+			resultString += "\tR = new double[metadata.idx_domains[" + aggregation.getIndexID() + "][0]]();\n";
 		}
 		return resultString;
 	}
@@ -143,14 +141,15 @@ public class CodeGenerator {
 			Metadata metadata, List<String> globalsCppCode) {
 		
 		String resultString = "\n";
-		MetaQuery query = metadata.queryList.get(metadata.currentQueryID);
+		int currentQueryID = metadata.getCurrentQueryID();
+		MetaQuery query = metadata.getQueryList().get(currentQueryID);
 		
 		for (Operator currentOp: operators) {
-			if (currentOp.type == Operator.SEMIJOIN_OPERATOR) {
+			if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 				SemiJoinOperator currentSemiJoinOp = (SemiJoinOperator) currentOp;
-				int indexID = currentSemiJoinOp.drivingAliasIndexID;
-				int aliasID = currentSemiJoinOp.drivingAliasID;
-				String alias = query.aliases.get(aliasID);
+				int indexID = currentSemiJoinOp.getDrivingAliasIndexID();
+				int aliasID = currentSemiJoinOp.getDrivingAliasID();
+				String alias = query.getAliases().get(aliasID);
 				
 				String globalDeclarationString = "\nstatic bool* " + alias + "_bool_array;\n";
 				globalsCppCode.add(globalDeclarationString);
@@ -173,34 +172,34 @@ public class CodeGenerator {
 		for (int i=0; i<operators.size()-1; i++) {
 			Operator currentOperator = operators.get(i);
 			
-			if (currentOperator.type == Operator.JOIN_OPERATOR || currentOperator.type == Operator.SEMIJOIN_OPERATOR) {
+			if (currentOperator.getType() == Operator.JOIN_OPERATOR || currentOperator.getType() == Operator.SEMIJOIN_OPERATOR) {
 				
 				int indexID;
 				String alias;
 				List<Integer> columnIDs;
-				if (currentOperator.type == Operator.JOIN_OPERATOR) {
+				if (currentOperator.getType() == Operator.JOIN_OPERATOR) {
 					JoinOperator tempJoinOp = (JoinOperator) currentOperator;
-					indexID = tempJoinOp.indexID;
-					int aliasID = tempJoinOp.alias;
+					indexID = tempJoinOp.getIndexID();
+					int aliasID = tempJoinOp.getAliasID();
 		
-					alias = query.aliases.get(aliasID);
-					columnIDs = tempJoinOp.columnIDs;
+					alias = query.getAliases().get(aliasID);
+					columnIDs = tempJoinOp.getColumnIDs();
 				}
 				else {
 					SemiJoinOperator semiJoinOp = (SemiJoinOperator) currentOperator;
-					indexID = semiJoinOp.indexID;
-					int aliasID = semiJoinOp.alias;
+					indexID = semiJoinOp.getIndexID();
+					int aliasID = semiJoinOp.getAliasID();
 					
-					alias = query.aliases.get(aliasID);
-					columnIDs = semiJoinOp.columnIDs;
+					alias = query.getAliases().get(aliasID);
+					columnIDs = semiJoinOp.getColumnIDs();
 				}
 				
 				
 				for (int j=0; j<columnIDs.size(); j++) {
 					
 					int columnID = columnIDs.get(j);
-					MetaIndex tempIndex = metadata.indexList.get(indexID);
-					int columnEncoding = tempIndex.columnEncodingsList.get(columnID);
+					MetaIndex tempIndex = metadata.getIndexList().get(indexID);
+					int columnEncoding = tempIndex.getColumnEncodingsList().get(columnID);
 				
 					if (columnEncoding == Metadata.ENCODING_BCA) {
 						String nextGlobal = "\nstatic uint32_t* " + alias + "_col" + j + "_bits_info;\n";
@@ -220,8 +219,7 @@ public class CodeGenerator {
 				}
 				
 			}
-			else if (currentOperator.type == Operator.INTERSECTION_OPERATOR) {
-					IntersectionOperator tempIntOp = (IntersectionOperator)currentOperator;
+			else if (currentOperator.getType() == Operator.INTERSECTION_OPERATOR) {
 					// TODO: Intersection implementation
 			}		
 		}
@@ -233,16 +231,16 @@ public class CodeGenerator {
 	private static void initialDeclarations(List<String> globalsCppCode,
 			AggregationOperator aggregation, MetaQuery query) {
 		
-		if (query.numThreads > 1) {
+		if (query.getNumThreads() > 1) {
 			String arguments = "\nstatic args_threading arguments[NUM_THREADS];\n";
 			globalsCppCode.add(arguments);
 		}
 		
 		String resultsGlobals = "";
-		if (aggregation.dataType == AggregationOperator.AGGREGATION_INT)  {		
+		if (aggregation.getDataType() == AggregationOperator.AGGREGATION_INT)  {		
 			resultsGlobals += "\nstatic int* R;\n";
 		}
-		else if (aggregation.dataType == AggregationOperator.AGGREGATION_DOUBLE) {
+		else if (aggregation.getDataType() == AggregationOperator.AGGREGATION_DOUBLE) {
 			resultsGlobals += "\nstatic double* R;\n";	
 		}
 		resultsGlobals += "static int* RC;\n";
@@ -608,8 +606,8 @@ public class CodeGenerator {
 		String currFunction = new String();
 		
 		
-		int currentBytesSize = currMetaIndex.columnEncodedByteSizesList.get(currentCol);
-		int currentEncoding = currMetaIndex.columnEncodingsList.get(currentCol);
+		int currentBytesSize = currMetaIndex.getColumnEncodedByteSizesList().get(currentCol);
+		int currentEncoding = currMetaIndex.getColumnEncodingsList().get(currentCol);
 		
 		String pointerName = alias + "_col" + currentCol + "_ptr";
 		String pointerString = new String();
@@ -656,7 +654,7 @@ public class CodeGenerator {
 		mainString += tabString + pointerString;
 		
 		
-		String functionName = query.queryName +"_"+ alias + "_col" + currentCol;
+		String functionName = query.getQueryName() +"_"+ alias + "_col" + currentCol;
 
 		switch (currentEncoding) {
 
@@ -777,10 +775,10 @@ public class CodeGenerator {
 		String mainString = new String();
 		
 		// SemiJoin Check
-		if (currentOp.type == Operator.SEMIJOIN_OPERATOR) {
+		if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 			int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
 			SemiJoinOperator tempOp = (SemiJoinOperator)currentOp;
-			int drivingIndexID = tempOp.drivingAliasIndexID;
+			int drivingIndexID = tempOp.getDrivingAliasIndexID();
 			if (threadID) {
 				mainString += "\n" + tabString + "if (!(" + drivingAlias 
 						+ "_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
@@ -854,10 +852,10 @@ public class CodeGenerator {
 		mainString += "\n";
 		
 		// SemiJoin Check
-		if (currentOp.type == Operator.SEMIJOIN_OPERATOR) {
+		if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 			int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
 			SemiJoinOperator tempOp = (SemiJoinOperator)currentOp;
-			int drivingIndexID = tempOp.drivingAliasIndexID;
+			int drivingIndexID = tempOp.getDrivingAliasIndexID();
 			if (threadID) {
 				mainString += "\n" + tabString + "if (!(" + drivingAlias 
 						+ "_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
@@ -878,7 +876,8 @@ public class CodeGenerator {
 		
 		for (int previousColID : previousColumnIDs) {
 
-			int colBytes = metadata.indexList.get(previousIndexID).columnEncodedByteSizesList.get(previousColID);
+			MetaIndex previousIndex = metadata.getIndexList().get(previousIndexID);
+			int colBytes = previousIndex.getColumnEncodedByteSizesList().get(previousColID);
 			mainString += tabString + getPrimitive(colBytes) + " ";
 
 			if (threadID) {
@@ -941,16 +940,16 @@ public class CodeGenerator {
 		
 		SelectionOperator previousSelectionOp = (SelectionOperator) previousOp;
 
-		int previousAliasID = previousSelectionOp.alias;
-		String previousAlias = query.aliases.get(previousAliasID);
+		int previousAliasID = previousSelectionOp.getAliasID();
+		String previousAlias = query.getAliases().get(previousAliasID);
 
 		if (justStartedThreading) {
 			mainString += "\n" + tabString + "for (; " + previousAlias + "_it<" + 
-					previousSelectionOp.selectionsList.size() + "; " + previousAlias + "_it++) {\n";
+					previousSelectionOp.getSelectionsList().size() + "; " + previousAlias + "_it++) {\n";
 		}
 		else {
 			mainString += "\n" + tabString + "for (int "+ previousAlias + "_it = 0; " + previousAlias + "_it<" + 
-				previousSelectionOp.selectionsList.size() + "; " + previousAlias + "_it++) {\n";
+				previousSelectionOp.getSelectionsList().size() + "; " + previousAlias + "_it++) {\n";
 		}
 		closingBraces[0]++;
 		tabString.append("\t");
@@ -1016,37 +1015,37 @@ public class CodeGenerator {
 		boolean entityFlag;
 		boolean threadID = true;
 		List<Integer> columnIDs;
-		if (currentOp.type == Operator.JOIN_OPERATOR) {
+		if (currentOp.getType() == Operator.JOIN_OPERATOR) {
 			JoinOperator currentJoinOp = (JoinOperator) currentOp;
-			indexID = currentJoinOp.indexID;
-			drivingAliasID = currentJoinOp.drivingAliasID;
-			drivingAliasCol = currentJoinOp.drivingAliasColumn;
-			currentAliasID = currentJoinOp.alias;
-			columnIDs = currentJoinOp.columnIDs;
-			entityFlag = currentJoinOp.entityFlag;
+			indexID = currentJoinOp.getIndexID();
+			drivingAliasID = currentJoinOp.getDrivingAliasID();
+			drivingAliasCol = currentJoinOp.getDrivingAliasColumn();
+			currentAliasID = currentJoinOp.getAliasID();
+			columnIDs = currentJoinOp.getColumnIDs();
+			entityFlag = currentJoinOp.isEntityFlag();
 		}
 		// Assumed to be Semi-Join
 		else {
 			SemiJoinOperator currentSemiJoinOp = (SemiJoinOperator) currentOp;
-			indexID = currentSemiJoinOp.indexID;
-			drivingAliasID = currentSemiJoinOp.drivingAliasID;
-			drivingAliasCol = currentSemiJoinOp.drivingAliasColumn;
-			currentAliasID = currentSemiJoinOp.alias;
-			columnIDs = currentSemiJoinOp.columnIDs;
-			entityFlag = currentSemiJoinOp.entityFlag;
+			indexID = currentSemiJoinOp.getIndexID();
+			drivingAliasID = currentSemiJoinOp.getDrivingAliasID();
+			drivingAliasCol = currentSemiJoinOp.getDrivingAliasColumn();
+			currentAliasID = currentSemiJoinOp.getAliasID();
+			columnIDs = currentSemiJoinOp.getColumnIDs();
+			entityFlag = currentSemiJoinOp.isEntityFlag();
 		}
 		
 		
-		String drivingAlias = query.aliases.get(drivingAliasID);
-		String currAlias = query.aliases.get(currentAliasID);
+		String drivingAlias = query.getAliases().get(drivingAliasID);
+		String currAlias = query.getAliases().get(currentAliasID);
 		if (preThreading) {
-			query.preThreading[currentAliasID] = true;
+			query.setPreThreading(currentAliasID, true);
 		}
-		if (query.preThreading[drivingAliasID]) {
+		if (query.getPreThreading(drivingAliasID)) {
 			threadID = false;
 		}
-		MetaIndex currMetaIndex = metadata.indexList.get(indexID);
-		int indexByteSize = currMetaIndex.indexMapByteSize;
+		MetaIndex currMetaIndex = metadata.getIndexList().get(indexID);
+		int indexByteSize = currMetaIndex.getIndexMapByteSize();
 		String mainString = new String();
 		String currentFragmentRow = "row_op" + i;
 		
@@ -1058,14 +1057,14 @@ public class CodeGenerator {
 			boolean loopAgain = true;
 			boolean justStartedThreading = false;
 			while(loopAgain) {
-				if (previousOp.type == Operator.THREADING_OPERATOR) {
+				if (previousOp.getType() == Operator.THREADING_OPERATOR) {
 					// It is assumed that a THREADING_OPERATOR will never be the first operator
 					// It is also assumed that an Entity Table join will never immediately follow a ThreadingOperator
 					// 
 					previousOp = operators.get(i-2);
 					justStartedThreading = true;
 				}
-				else if (previousOp.type == Operator.JOIN_OPERATOR || previousOp.type == Operator.SEMIJOIN_OPERATOR) {
+				else if (previousOp.getType() == Operator.JOIN_OPERATOR || previousOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 					loopAgain = false;
 					boolean previousEntityFlag;
 					int previousAliasID;
@@ -1074,23 +1073,23 @@ public class CodeGenerator {
 					List<Integer> previousColumnIDs;
 					//int previousLoopColumn;
 
-					if (previousOp.type == Operator.JOIN_OPERATOR) {
+					if (previousOp.getType() == Operator.JOIN_OPERATOR) {
 						JoinOperator previousJoinOp = (JoinOperator) previousOp;
-						previousEntityFlag = previousJoinOp.entityFlag;
-						previousAliasID = previousJoinOp.alias;
-						previousAlias = query.aliases.get(previousAliasID);
-						previousIndexID = previousJoinOp.indexID;
-						previousColumnIDs = previousJoinOp.columnIDs;
+						previousEntityFlag = previousJoinOp.isEntityFlag();
+						previousAliasID = previousJoinOp.getAliasID();
+						previousAlias = query.getAliases().get(previousAliasID);
+						previousIndexID = previousJoinOp.getIndexID();
+						previousColumnIDs = previousJoinOp.getColumnIDs();
 						//previousLoopColumn = previousJoinOp.loopColumn;
 
 					}
 					else {
 						SemiJoinOperator previousSemiJoinOp = (SemiJoinOperator) previousOp;
-						previousEntityFlag = previousSemiJoinOp.entityFlag;
-						previousAliasID = previousSemiJoinOp.alias;
-						previousAlias = query.aliases.get(previousAliasID);		
-						previousIndexID = previousSemiJoinOp.indexID;
-						previousColumnIDs = previousSemiJoinOp.columnIDs;
+						previousEntityFlag = previousSemiJoinOp.isEntityFlag();
+						previousAliasID = previousSemiJoinOp.getAliasID();
+						previousAlias = query.getAliases().get(previousAliasID);		
+						previousIndexID = previousSemiJoinOp.getIndexID();
+						previousColumnIDs = previousSemiJoinOp.getColumnIDs();
 						//previousLoopColumn = previousSemiJoinOp.loopColumn;
 					}
 					if (previousEntityFlag) {
@@ -1113,7 +1112,7 @@ public class CodeGenerator {
 
 					}
 				}
-				else if (previousOp.type == Operator.SELECTION_OPERATOR) {
+				else if (previousOp.getType() == Operator.SELECTION_OPERATOR) {
 					loopAgain = false;
 					mainString += evaluatePreviousSelection(previousOp, query, tabString, 
 							closingBraces, drivingAlias, drivingAliasCol, indexByteSize, currentFragmentRow,
@@ -1136,16 +1135,16 @@ public class CodeGenerator {
 		String mainSelectionString = new String();
 		
 		SelectionOperator selectionOp = (SelectionOperator) currentOp;
-		int selectionAliasID = selectionOp.alias;
-		String selectionAlias = query.aliases.get(selectionAliasID);
+		int selectionAliasID = selectionOp.getAliasID();
+		String selectionAlias = query.getAliases().get(selectionAliasID);
 		
-		int numSelections = selectionOp.selectionsList.size();
+		int numSelections = selectionOp.getSelectionsList().size();
 		
 		
 		mainSelectionString += "\n" + tabString + "uint64_t* " + selectionAlias + "_list = new uint64_t[" + numSelections + "];\n";
 		
 		for (int j=0; j<numSelections; j++) {
-			int currSelection = selectionOp.selectionsList.get(j);
+			int currSelection = selectionOp.getSelectionsList().get(j);
 			mainSelectionString += tabString + selectionAlias + "_list["+j+"] = " + currSelection + ";\n";
 		}
 		
@@ -1163,14 +1162,13 @@ public class CodeGenerator {
 		
 		Operator previousOp = operators.get(i-1);
 	
-		boolean useLoop = true;
-		if (previousOp.type == Operator.JOIN_OPERATOR) {
+		if (previousOp.getType() == Operator.JOIN_OPERATOR) {
 			JoinOperator previousJoinOp = (JoinOperator) previousOp;
-			if (!previousJoinOp.entityFlag) {
+			if (!previousJoinOp.isEntityFlag()) {
 				
-				int previousAliasID = previousJoinOp.alias;
-				String previousAlias = query.aliases.get(previousAliasID);
-				boolean previousThreadID = query.preThreading[previousAliasID];
+				int previousAliasID = previousJoinOp.getAliasID();
+				String previousAlias = query.getAliases().get(previousAliasID);
+				boolean previousThreadID = query.getPreThreading(previousAliasID);
 				
 				
 				mainString += "\n" + tabString + "for (uint32_t " + previousAlias + "_it = 0; " + previousAlias + "_it " +
@@ -1178,10 +1176,10 @@ public class CodeGenerator {
 				closingBraces[0]++;
 				tabString.append("\t");
 
-				int previousIndexID = previousJoinOp.indexID;
-				for (int previousColID : previousJoinOp.columnIDs) {
-
-					int colBytes = metadata.indexList.get(previousIndexID).columnEncodedByteSizesList.get(previousColID);
+				int previousIndexID = previousJoinOp.getIndexID();
+				for (int previousColID : previousJoinOp.getColumnIDs()) {
+					MetaIndex previousIndex = metadata.getIndexList().get(previousIndexID);
+					int colBytes = previousIndex.getColumnEncodedByteSizesList().get(previousColID);
 					mainString += tabString + getPrimitive(colBytes) + " ";
 
 					if (previousThreadID) {
@@ -1197,15 +1195,15 @@ public class CodeGenerator {
 				}
 			}
 		}
-		else if (previousOp.type == Operator.SELECTION_OPERATOR){
+		else if (previousOp.getType() == Operator.SELECTION_OPERATOR){
 			
 			
 		}
 				
-		int drivingAliasID = aggregationOp.drivingAlias;
-		String drivingAlias = query.aliases.get(drivingAliasID); 
-		int drivingAliasCol = aggregationOp.drivingAliasColumn;
-		int drivingAliasIndex = aggregationOp.drivingAliasIndexID;
+		int drivingAliasID = aggregationOp.getDrivingAlias();
+		String drivingAlias = query.getAliases().get(drivingAliasID); 
+		int drivingAliasCol = aggregationOp.getDrivingAliasColumn();
+		int drivingAliasIndex = aggregationOp.getDrivingAliasIndexID();
 		String elementString = drivingAlias + "_col" + drivingAliasCol + "_element";
 		
 
@@ -1215,7 +1213,7 @@ public class CodeGenerator {
 			mainString += "\n" + tabString + "pthread_spin_lock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
 		}
 		String delims = "[ ]+";
-		String[] tokens = aggregationOp.aggregationString.split(delims);
+		String[] tokens = aggregationOp.getAggregationString().split(delims);
 		String reconstructedString = new String();
 		for (int j=0; j< tokens.length;j++) {
 			String upTo2Characters = tokens[j].substring(0, Math.min(tokens[j].length(), 2));
@@ -1223,9 +1221,9 @@ public class CodeGenerator {
 				// Reads the number immediately following "op"
 				String num_letter = Character.toString(tokens[j].charAt(2));
 				int aggregationAliasNum = Integer.parseInt(num_letter);
-				int aliasID = aggregationOp.aggregationVariablesAliases.get(aggregationAliasNum);
-				String alias = query.aliases.get(aliasID);
-				int aliasCol = aggregationOp.aggregationVariablesColumns.get(aggregationAliasNum);
+				int aliasID = aggregationOp.getAggregationVariablesAliases().get(aggregationAliasNum);
+				String alias = query.getAliases().get(aliasID);
+				int aliasCol = aggregationOp.getAggregationVariablesColumns().get(aggregationAliasNum);
 				String fullElementName = alias + "_col" + aliasCol + "_element";
 				reconstructedString += fullElementName;
 			}
@@ -1257,8 +1255,8 @@ public class CodeGenerator {
 		String mainString = new String();
 		
 		ThreadingOperator threadingOp = (ThreadingOperator) currentOp;
-		int aliasID = threadingOp.drivingAliasID;
-		String alias = query.aliases.get(aliasID);
+		int aliasID = threadingOp.getDrivingAliasID();
+		String alias = query.getAliases().get(aliasID);
 		
 		mainString += "\n" + tabString + "uint32_t thread_size = " + alias + "_fragment_size/NUM_THREADS;\n"; 
 		mainString += tabString + "uint32_t position = 0;\n";
@@ -1273,7 +1271,7 @@ public class CodeGenerator {
 		mainString += tabString + "arguments[NUM_THREADS-1].end = " + alias + "_fragment_size;\n";
 		mainString += "\n" + tabString + "for (int i=0; i<NUM_THREADS; i++) {\n";
 		tabString.append("\t");
-		mainString += tabString + "pthread_create(&threads[i], NULL, &pthread_" + query.queryName + 
+		mainString += tabString + "pthread_create(&threads[i], NULL, &pthread_" + query.getQueryName() + 
 				"_worker, (void *) &arguments[i]);\n";
 		tabString.setLength(tabString.length() - 1);
 		mainString += tabString + "}\n";
@@ -1285,8 +1283,8 @@ public class CodeGenerator {
 	
 		
 		String threadingFunction = new String();
-		String threadFunctionHeader = "\nvoid* pthread_" + query.queryName + "_worker(void* arguments);\n";
-		threadingFunction += "\nvoid* pthread_" + query.queryName + "_worker(void* arguments) {\n";
+		String threadFunctionHeader = "\nvoid* pthread_" + query.getQueryName() + "_worker(void* arguments);\n";
+		threadingFunction += "\nvoid* pthread_" + query.getQueryName() + "_worker(void* arguments) {\n";
 		threadingFunction += "\n\targs_threading* args = (args_threading *) arguments;\n";
 		threadingFunction += "\n\tuint32_t " + alias + "_it = args->start;\n";
 		threadingFunction += "\tuint32_t " + alias + "_fragment_size = args->end;\n";
@@ -1329,8 +1327,9 @@ public class CodeGenerator {
 		// storing the pool ID for each alias in the query meta-data.
 		int[][] bufferPoolTrackingArray = new int[metadata.getMaxIndexID()+1][];
 		for (int i=0; i<metadata.getMaxIndexID()+1; i++) {
-			if (metadata.indexList.get(i) != null) {
-				bufferPoolTrackingArray[i] = new int[metadata.indexList.get(i).getMaxColumnID()+1];
+			MetaIndex index = metadata.getIndexList().get(i);
+			if (index != null) {
+				bufferPoolTrackingArray[i] = new int[index.getMaxColumnID()+1];
 				Arrays.fill(bufferPoolTrackingArray[i], -1);
 			}
 		}
@@ -1342,7 +1341,7 @@ public class CodeGenerator {
 		
 		for (int i = 0; i<operators.size(); i++) {
 			Operator currentOp = operators.get(i);
-			int opType = currentOp.type;
+			int opType = currentOp.getType();
 			if (opType == Operator.SELECTION_OPERATOR) {
 				if (preThreadingOp) {
 					mainCppCode.add(evaluateSelection(i, currentOp, tabString, query));
@@ -1426,26 +1425,26 @@ public class CodeGenerator {
 
 			
 			
-			if (currentOp.type == Operator.JOIN_OPERATOR || currentOp.type == Operator.SEMIJOIN_OPERATOR) {
+			if (currentOp.getType() == Operator.JOIN_OPERATOR || currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 				
 				int aliasID;
 				int indexID;
 				
-				if (currentOp.type == Operator.JOIN_OPERATOR) {
+				if (currentOp.getType() == Operator.JOIN_OPERATOR) {
 					JoinOperator tempOp = (JoinOperator) currentOp;
-					aliasID = tempOp.alias;
-					indexID = tempOp.indexID;
+					aliasID = tempOp.getAliasID();
+					indexID = tempOp.getIndexID();
 				}
 				else {
 					SemiJoinOperator tempOp = (SemiJoinOperator) currentOp;
-					aliasID = tempOp.alias;
-					indexID = tempOp.indexID;
+					aliasID = tempOp.getAliasID();
+					indexID = tempOp.getIndexID();
 				}
 
 				boolean found = false;
-				for (MetaIndex currIndex : metadata.indexList) {
-					if (currIndex.indexID == indexID) {
-						int numColumns = currIndex.numColumns;
+				for (MetaIndex currIndex : metadata.getIndexList()) {
+					if (currIndex.getIndexID() == indexID) {
+						int numColumns = currIndex.getNumColumns();
 						query.initBufferPoolArray(aliasID, numColumns);
 						found = true;
 						break;
@@ -1468,8 +1467,8 @@ public class CodeGenerator {
 		// The last operator should be the aggregate operator
 		AggregationOperator aggregation = (AggregationOperator) operators.get(operators.size() - 1); 
 		
-		int queryID = metadata.currentQueryID;
-		MetaQuery query = metadata.queryList.get(queryID);
+		int queryID = metadata.getCurrentQueryID();
+		MetaQuery query = metadata.getQueryList().get(queryID);
 		
 		initQueryBufferPool(query, operators, metadata);
 		
@@ -1535,7 +1534,7 @@ public class CodeGenerator {
 		}
 		
 		
-		writeToFile(fullCppCode, query.queryName);
+		writeToFile(fullCppCode, query.getQueryName());
 	}
 	
 

@@ -165,8 +165,8 @@ public class TestCasesSemmedDB {
 		MetaQuery smdbOptimal = new MetaQuery(1, queryName, numThreads,
 				6, 1, aliases);
 		
-		metadata.queryList.add(smdbOptimal);	
-		metadata.currentQueryID = metadata.queryList.size()-1;
+		metadata.getQueryList().add(smdbOptimal);	
+		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);
 	}
 
 
@@ -180,7 +180,7 @@ public class TestCasesSemmedDB {
 		columnEncodedByteSizesList0.add(Metadata.BYTES_4);
 		
 		MetaIndex CS1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
-		metadata.indexList.add(CS1);
+		metadata.getIndexList().add(CS1);
 
 		// PA1
 		indexID = 1;
@@ -191,7 +191,7 @@ public class TestCasesSemmedDB {
 		columnEncodedByteSizesList1.add(Metadata.BYTES_4);
 		
 		MetaIndex PA1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
-		metadata.indexList.add(PA1);
+		metadata.getIndexList().add(PA1);
 
 		// SP1
 		indexID = 2;
@@ -201,7 +201,7 @@ public class TestCasesSemmedDB {
 		List<Integer >columnEncodedByteSizesList2 = new ArrayList<Integer>();
 		columnEncodedByteSizesList2.add(Metadata.BYTES_4);
 		MetaIndex SP1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.indexList.add(SP1);
+		metadata.getIndexList().add(SP1);
 		
 		// SP2
 		indexID = 3;
@@ -213,7 +213,7 @@ public class TestCasesSemmedDB {
 		columnEncodedByteSizesList3.add(Metadata.BYTES_4);
 		
 		MetaIndex SP2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.indexList.add(SP2);
+		metadata.getIndexList().add(SP2);
 		
 		// PA2
 		indexID = 4;
@@ -224,7 +224,7 @@ public class TestCasesSemmedDB {
 		columnEncodedByteSizesList4.add(Metadata.BYTES_4);
 		
 		MetaIndex PA2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
-		metadata.indexList.add(PA2);
+		metadata.getIndexList().add(PA2);
 
 		// CS2
 		indexID = 5;
@@ -235,7 +235,76 @@ public class TestCasesSemmedDB {
 		columnEncodedByteSizesList5.add(Metadata.BYTES_4);
 		
 		MetaIndex CS2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList5, columnEncodedByteSizesList5);
-		metadata.indexList.add(CS2);
+		metadata.getIndexList().add(CS2);
+		
+	}
+	
+	private static void initSemmedDBIndexes(Metadata metadata, int encoding) {
+		// CS1
+		int indexID = 0;
+		int numColumns = 1;
+		List<Integer> columnEncodingsList0 = new ArrayList<Integer>();
+		columnEncodingsList0.add(encoding);
+		List<Integer> columnEncodedByteSizesList0 = new ArrayList<Integer>();
+		columnEncodedByteSizesList0.add(Metadata.BYTES_4);
+		
+		MetaIndex CS1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
+		metadata.getIndexList().add(CS1);
+
+		// PA1
+		indexID = 1;
+		numColumns = 1;
+		List<Integer> columnEncodingsList1 = new ArrayList<Integer>();
+		columnEncodingsList1.add(encoding);
+		List<Integer> columnEncodedByteSizesList1 = new ArrayList<Integer>();
+		columnEncodedByteSizesList1.add(Metadata.BYTES_4);
+		
+		MetaIndex PA1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
+		metadata.getIndexList().add(PA1);
+
+		// SP1
+		indexID = 2;
+		numColumns = 1;
+		List<Integer> columnEncodingsList2 = new ArrayList<Integer>();
+		columnEncodingsList2.add(encoding);	
+		List<Integer >columnEncodedByteSizesList2 = new ArrayList<Integer>();
+		columnEncodedByteSizesList2.add(Metadata.BYTES_4);
+		MetaIndex SP1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
+		metadata.getIndexList().add(SP1);
+		
+		// SP2
+		indexID = 3;
+		numColumns = 1;
+		List<Integer> columnEncodingsList3 = new ArrayList<Integer>();
+		columnEncodingsList3.add(encoding);
+		
+		List<Integer >columnEncodedByteSizesList3 = new ArrayList<Integer>();
+		columnEncodedByteSizesList3.add(Metadata.BYTES_4);
+		
+		MetaIndex SP2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		metadata.getIndexList().add(SP2);
+		
+		// PA2
+		indexID = 4;
+		numColumns = 1;
+		List<Integer> columnEncodingsList4 = new ArrayList<Integer>();
+		columnEncodingsList4.add(encoding);
+		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
+		columnEncodedByteSizesList4.add(Metadata.BYTES_4);
+		
+		MetaIndex PA2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
+		metadata.getIndexList().add(PA2);
+
+		// CS2
+		indexID = 5;
+		numColumns = 1;
+		List<Integer> columnEncodingsList5 = new ArrayList<Integer>();
+		columnEncodingsList5.add(encoding);
+		List<Integer> columnEncodedByteSizesList5 = new ArrayList<Integer>();
+		columnEncodedByteSizesList5.add(Metadata.BYTES_4);
+		
+		MetaIndex CS2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList5, columnEncodedByteSizesList5);
+		metadata.getIndexList().add(CS2);
 		
 	}
 
