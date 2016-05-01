@@ -2,7 +2,7 @@ package codegenerator;
 
 import java.util.List;
 
-class AggregationOperator extends Operator {
+public class AggregationOperator extends Operator {
 	
 	public static final int AGGREGATION_INT = 1;
 	public static final int AGGREGATION_DOUBLE = 2;
@@ -18,11 +18,12 @@ class AggregationOperator extends Operator {
 	int drivingAlias;
 	int drivingAliasColumn;
 	int drivingOperator;
-	
+	int drivingAliasIndexID;
 	
 	public AggregationOperator(int indexID, 
 			int dataType, String aggregationString, 
-			List<Integer> aggregationVariablesOperators, List<Integer> aggregationVariablesColumns, int drivingAlias, int drivingAliasColumn, int drivingOperator) {
+			List<Integer> aggregationVariablesOperators, List<Integer> aggregationVariablesColumns, int drivingAlias, 
+			int drivingAliasColumn, int drivingOperator, int drivingAliasIndexID) {
 		super(Operator.AGGREGATION_OPERATOR);
 		this.indexID = indexID;
 		this.dataType = dataType;
@@ -32,6 +33,7 @@ class AggregationOperator extends Operator {
 		this.drivingAlias = drivingAlias;
 		this.drivingAliasColumn = drivingAliasColumn;
 		this.drivingOperator = drivingOperator;
+		this.drivingAliasIndexID = drivingAliasIndexID;
 	}
 	
 }

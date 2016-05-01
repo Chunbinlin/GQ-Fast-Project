@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
-class CodeGenerator {
+public class CodeGenerator {
 	
 	
 	private static String initialImportsAndConstants(MetaQuery query) {
@@ -56,9 +56,9 @@ class CodeGenerator {
 			bufferInitString += "\n\tmax_frag = metadata.idx_max_fragment_sizes[" + curr + "];\n";
 			bufferInitString += "\tfor(int i=0; i<metadata.idx_num_encodings[" + curr + "]; i++) {\n";
 			bufferInitString += "\t\tfor (int j=0; j<NUM_THREADS; j++) {\n";
-			bufferInitString += "\t\t\tbuffer_arrays[" + i + "][i][j] = new int*[BUFFER_POOL_SIZE];\n";
+			bufferInitString += "\t\t\tbuffer_arrays[" + curr + "][i][j] = new int*[BUFFER_POOL_SIZE];\n";
 			bufferInitString += "\t\t\tfor (int k=0; k<BUFFER_POOL_SIZE; k++) {\n";
-			bufferInitString += "\t\t\t\tbuffer_arrays[" + i + "][i][j][k] = new int[max_frag];\n";
+			bufferInitString += "\t\t\t\tbuffer_arrays[" + curr + "][i][j][k] = new int[max_frag];\n";
 			bufferInitString += "\t\t\t}\n";
 			bufferInitString += "\t\t}\n";
 			bufferInitString += "\t}\n";
@@ -652,6 +652,7 @@ class CodeGenerator {
 					" = &(idx[" + indexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]);\n";
 			functionParameters += "unsigned char* " + pointerName;
 		}
+		
 		mainString += tabString + pointerString;
 		
 		
@@ -693,7 +694,7 @@ class CodeGenerator {
 			currFunctionHeader += "\nextern inline void " + functionName + functionParameters + " __attribute__((always_inline));\n";
 			
 			mainString += tabString + functionName + "(" + pointerName + ", " + elementName + ");\n";
-			
+		
 
 			currFunction += generateDecodeFunctionBodyEntityTable(pointerName, elementName, alias, currentEncoding, currentCol);
 			currFunction += "}\n";
@@ -717,8 +718,13 @@ class CodeGenerator {
 
 			currFunction += "\nvoid " + functionName + functionParameters + " {\n";
 			currFunctionHeader += "\nextern inline void " + functionName + functionParameters + " __attribute__((always_inline));\n";
-
-			mainString += tabString + functionName + "(" + pointerName;
+			
+			if (preThreading) {
+				mainString += tabString + functionName + "(" + pointerName;
+			}
+			else {
+				mainString += tabString + functionName + "(thread_id, " + pointerName;
+			}
 			if (columnIteration == 0 ) {
 				mainString += ", " + currentFragmentBytesName; 
 			}
@@ -835,7 +841,7 @@ class CodeGenerator {
 		String mainString = new String();
 		
 		if (justStartedThreading) {
-			mainString += "\n" + tabString + "; " +
+			mainString += "\n" + tabString + "for (; " +
 					previousAlias + "_it < " + previousAlias + "_fragment_size; " + previousAlias + "_it++) {\n";
 		}
 		else {
@@ -939,7 +945,7 @@ class CodeGenerator {
 		String previousAlias = query.aliases.get(previousAliasID);
 
 		if (justStartedThreading) {
-			mainString += "\n" + tabString + "; " + previousAlias + "_it<" + 
+			mainString += "\n" + tabString + "for (; " + previousAlias + "_it<" + 
 					previousSelectionOp.selectionsList.size() + "; " + previousAlias + "_it++) {\n";
 		}
 		else {
@@ -1230,7 +1236,7 @@ class CodeGenerator {
 		
 		
 		
-		mainString += tabString + "R[" + elementString +"] += " + reconstructedString;
+		mainString += tabString + "R[" + elementString +"] += " + reconstructedString + ";";
 	
 		if (!preThreading) {
 			mainString += "\n" + tabString + "pthread_spin_unlock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
@@ -1397,14 +1403,16 @@ class CodeGenerator {
 		mainCppCode.add(closingBracesString);
 		
 		if (!preThreadingOp) {
-			closingBracesString = new String();
-			for (int i=0; i<threadingClosingBraces[0]; i++) {
+		
+			String closingThreadingString = new String();
+			for (int i=0; i<threadingClosingBraces[0]-1; i++) {
 				threadingTabString.setLength(threadingTabString.length() - 1);
-				closingBracesString += threadingTabString + "}\n";
+				closingThreadingString += threadingTabString + "}\n";
 			}
-			closingBracesString += "\n";
+			closingThreadingString += "\treturn nullptr;\n";
+			closingThreadingString += "}\n";
 			String temp = functionsCppCode.get(threadingFunctionID);
-			temp += closingBracesString;
+			temp += closingThreadingString;
 			functionsCppCode.set(threadingFunctionID, temp);
 		}
 		
@@ -1549,418 +1557,7 @@ class CodeGenerator {
 
 
 
-	
 
-	private static void initPubmedQueries(Metadata metadata) {
-
-		//List<Integer> selectionDataTypes = new ArrayList<Integer>();
-		//selectionDataTypes.add(Metadata.BYTES_4);
-		List<String> aliases = new ArrayList<String>();
-		aliases.add("author1");
-		aliases.add("doc1");
-		aliases.add("term");
-		aliases.add("doc2");
-		aliases.add("author2");
-		aliases.add("year");
-		
-		// public MetaQuery(int queryID, String queryName, int numThreads,
-		// int numBuffers, int bufferPoolSize, int threadingCutOffPoint, List<String> aliases)
-		MetaQuery q5Optimal = new MetaQuery(0, "t_q5_opt_threaded", 4, 5, 1, aliases);
-		
-		
-		metadata.queryList.add(q5Optimal);		
-	}
-
-
-	private static void initPubmedIndexes(Metadata metadata) {
-				
-		// DA1
-		int indexID = 0;
-		int numColumns = 1;
-		List<Integer> columnEncodingsList0 = new ArrayList<Integer>();
-		columnEncodingsList0.add(Metadata.ENCODING_BB);
-		List<Integer> columnEncodedByteSizesList0 = new ArrayList<Integer>();
-		columnEncodedByteSizesList0.add(Metadata.BYTES_4);
-		
-		MetaIndex DA1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
-		metadata.indexList.add(DA1);
-
-		// DY
-		indexID = 1;
-		numColumns = 1;
-		List<Integer> columnEncodingsList1 = new ArrayList<Integer>();
-		columnEncodingsList1.add(Metadata.ENCODING_BCA);
-		List<Integer> columnEncodedByteSizesList1 = new ArrayList<Integer>();
-		columnEncodedByteSizesList1.add(Metadata.BYTES_4);
-		
-		MetaIndex DY = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
-		metadata.indexList.add(DY);
-
-		// DT1
-		indexID = 2;
-		numColumns = 2;
-		List<Integer> columnEncodingsList2 = new ArrayList<Integer>();
-		columnEncodingsList2.add(Metadata.ENCODING_BB);
-		columnEncodingsList2.add(Metadata.ENCODING_HUFFMAN);
-		
-		List<Integer >columnEncodedByteSizesList2 = new ArrayList<Integer>();
-		columnEncodedByteSizesList2.add(Metadata.BYTES_4);
-		columnEncodedByteSizesList2.add(Metadata.BYTES_1);
-		
-		MetaIndex DT1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.indexList.add(DT1);
-		
-		// DT2
-		indexID = 3;
-		numColumns = 2;
-		List<Integer> columnEncodingsList3 = new ArrayList<Integer>();
-		columnEncodingsList3.add(Metadata.ENCODING_BB);
-		columnEncodingsList3.add(Metadata.ENCODING_HUFFMAN);
-		
-		List<Integer >columnEncodedByteSizesList3 = new ArrayList<Integer>();
-		columnEncodedByteSizesList3.add(Metadata.BYTES_4);
-		columnEncodedByteSizesList3.add(Metadata.BYTES_1);
-		
-		MetaIndex DT2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.indexList.add(DT2);
-		
-		// DA2
-		indexID = 4;
-		numColumns = 1;
-		List<Integer> columnEncodingsList4 = new ArrayList<Integer>();
-		columnEncodingsList4.add(Metadata.ENCODING_BCA);
-		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
-		columnEncodedByteSizesList4.add(Metadata.BYTES_4);
-		
-		MetaIndex DA2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
-		metadata.indexList.add(DA2);
-
-	}
-	
-	private static void initQ5OperatorsThreaded(List<Operator> operators) {
-	
-		
-		
-		List<Integer> selections = new ArrayList<Integer>();
-		selections.add(4945389);
-		Operator selection1 = new SelectionOperator(selections, 0);
-		operators.add(selection1);
-		
-		
-		
-		int join1indexID = 0;
-		List<Integer> column1IDs = new ArrayList<Integer>();
-		column1IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join1 = new JoinOperator(join1indexID, false, column1IDs, 1, 0, 0, 0);
-		
-		operators.add(join1);
-		
-		int join2indexID = 2;
-		List<Integer> column2IDs = new ArrayList<Integer>();
-		column2IDs.add(0);
-		column2IDs.add(1);
-		Operator join2 = new JoinOperator(join2indexID, false, column2IDs, 2, 0, 1, 0);
-		
-		operators.add(join2);
-		
-		Operator threadOp = new ThreadingOperator(2);
-		operators.add(threadOp);
-		
-		int join3indexID = 3;
-		List<Integer> column3IDs = new ArrayList<Integer>();
-		column3IDs.add(0);
-		column3IDs.add(1);
-		Operator join3 = new JoinOperator(join3indexID, false, column3IDs, 3, 0, 2, 0);
-		
-		operators.add(join3);
-		
-		int join4indexID = 1;
-		List<Integer> column4IDs = new ArrayList<Integer>();
-		column4IDs.add(0);
-		Operator join4 = new JoinOperator(join4indexID, true, column4IDs, 5, 0, 3, 0);
-		
-		operators.add(join4);
-		
-		int join5indexID = 4;
-		List<Integer> column5IDs = new ArrayList<Integer>();
-		column5IDs.add(0);
-		Operator join5 = new JoinOperator(join5indexID, false, column5IDs, 4, 0, 3, 0);
-		
-		operators.add(join5);
-		
-		int aggregationindexID = 4;
-		
-		String aggString = "(double)( op0 * op1 )/(2017 - op2 )";
-		
-		List<Integer> aggAliasList = new ArrayList<Integer>();
-		aggAliasList.add(2);
-		aggAliasList.add(3);
-		aggAliasList.add(5);
-		
-		List<Integer> aggOpColList = new ArrayList<Integer>();
-		aggOpColList.add(1);
-		aggOpColList.add(1);
-		aggOpColList.add(0);
-		
-		Operator agg = new AggregationOperator(aggregationindexID, 
-				AggregationOperator.AGGREGATION_DOUBLE, aggString, aggAliasList, aggOpColList, 4, 0, 6, 4);
-	
-		operators.add(agg);
-	}
-
-	private static void initQ5Operators(List<Operator> operators) {
-	
-		
-		
-		List<Integer> selections = new ArrayList<Integer>();
-		selections.add(4945389);
-		Operator selection1 = new SelectionOperator(selections, 0);
-		operators.add(selection1);
-		
-		
-		
-		int join1indexID = 0;
-		List<Integer> column1IDs = new ArrayList<Integer>();
-		column1IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join1 = new JoinOperator(join1indexID, false, column1IDs, 1, 0, 0, 0);
-		
-		operators.add(join1);
-		
-		int join2indexID = 2;
-		List<Integer> column2IDs = new ArrayList<Integer>();
-		column2IDs.add(0);
-		column2IDs.add(1);
-		Operator join2 = new JoinOperator(join2indexID, false, column2IDs, 2, 0, 1, 0);
-		
-		operators.add(join2);
-		
-		int join3indexID = 3;
-		List<Integer> column3IDs = new ArrayList<Integer>();
-		column3IDs.add(0);
-		column3IDs.add(1);
-		Operator join3 = new JoinOperator(join3indexID, false, column3IDs, 3, 0, 2, 0);
-		
-		operators.add(join3);
-		
-		int join4indexID = 1;
-		List<Integer> column4IDs = new ArrayList<Integer>();
-		column4IDs.add(0);
-		Operator join4 = new JoinOperator(join4indexID, true, column4IDs, 5, 0, 3, 0);
-		
-		operators.add(join4);
-		
-		int join5indexID = 4;
-		List<Integer> column5IDs = new ArrayList<Integer>();
-		column5IDs.add(0);
-		Operator join5 = new JoinOperator(join5indexID, false, column5IDs, 4, 0, 3, 0);
-		
-		operators.add(join5);
-		
-		int aggregationindexID = 4;
-		
-		String aggString = "(double)( op0 * op1 )/(2017 - op2 )";
-		
-		List<Integer> aggAliasList = new ArrayList<Integer>();
-		aggAliasList.add(2);
-		aggAliasList.add(3);
-		aggAliasList.add(5);
-		
-		List<Integer> aggOpColList = new ArrayList<Integer>();
-		aggOpColList.add(1);
-		aggOpColList.add(1);
-		aggOpColList.add(0);
-		
-		Operator agg = new AggregationOperator(aggregationindexID, 
-				AggregationOperator.AGGREGATION_DOUBLE, aggString, aggAliasList, aggOpColList, 4, 0, 5, 4);
-	
-		operators.add(agg);
-	}
-
-	private static void initSemmedDBOperators(List<Operator> operators) {
-		List<Integer> selections = new ArrayList<Integer>();
-		selections.add(2019);
-		Operator selection1 = new SelectionOperator(selections, 0);
-		operators.add(selection1);
-		
-		int join1indexID = 0;
-		List<Integer> column1IDs = new ArrayList<Integer>();
-		column1IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join1 = new JoinOperator(join1indexID, false, column1IDs, 1, 0, 0, 0);
-		
-		operators.add(join1);
-		
-		int join2indexID = 1;
-		List<Integer> column2IDs = new ArrayList<Integer>();
-		column2IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join2 = new JoinOperator(join2indexID, false, column2IDs, 2, 0, 1, 0);
-		
-		operators.add(join2);
-		
-		int join3indexID = 2;
-		List<Integer> column3IDs = new ArrayList<Integer>();
-		column3IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join3 = new JoinOperator(join3indexID, false, column3IDs, 3, 0, 2, 0);
-		
-		operators.add(join3);
-		
-		int semijoin4indexID = 3;
-		List<Integer> column4IDs = new ArrayList<Integer>();
-		column4IDs.add(0);
-		// SemiJoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs, int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn, int drivingAliasIndexID) {
-		Operator semijoin4 = new SemiJoinOperator(semijoin4indexID, false, column4IDs, 4, 0, 3, 0, 2);
-		
-		operators.add(semijoin4);
-		
-
-		
-		int join5indexID = 4;
-		List<Integer> column5IDs = new ArrayList<Integer>();
-		column5IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join5 = new JoinOperator(join5indexID, false, column5IDs, 5, 0, 4, 0);
-		
-		operators.add(join5);
-		
-		int join6indexID = 5;
-		List<Integer> column6IDs = new ArrayList<Integer>();
-		column6IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join6 = new JoinOperator(join6indexID, false, column6IDs, 6, 0, 5, 0);
-		
-		operators.add(join6);
-		
-		int aggregationindexID = 5;
-		
-		String aggString = "1";
-		
-		List<Integer> aggAliasList = new ArrayList<Integer>();
-		
-		List<Integer> aggOpColList = new ArrayList<Integer>();
-
-		Operator agg = new AggregationOperator(aggregationindexID, 
-				AggregationOperator.AGGREGATION_INT, aggString, aggAliasList, aggOpColList, 6, 0, 6, 5);
-	
-		operators.add(agg);
-		
-	}
-
-
-	private static void initSemmedDBQueries(Metadata metadata) {
-
-		List<String> aliases = new ArrayList<String>();
-		aliases.add("concept1");
-		aliases.add("concept_semtype1");
-		aliases.add("predication1");
-		aliases.add("sentence1");
-		aliases.add("predication2");
-		aliases.add("concept_semtype2");
-		aliases.add("concept2");
-		
-		MetaQuery q5Optimal = new MetaQuery(1, "test_smdb_optimal", 1,
-				6, 1, aliases);
-		
-		metadata.queryList.add(q5Optimal);	
-		
-	}
-
-
-	private static void initSemmedDBIndexes(Metadata metadata) {
-		// CS1
-		int indexID = 0;
-		int numColumns = 1;
-		List<Integer> columnEncodingsList0 = new ArrayList<Integer>();
-		columnEncodingsList0.add(Metadata.ENCODING_BB);
-		List<Integer> columnEncodedByteSizesList0 = new ArrayList<Integer>();
-		columnEncodedByteSizesList0.add(Metadata.BYTES_4);
-		
-		MetaIndex CS1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
-		metadata.indexList.add(CS1);
-
-		// PA1
-		indexID = 1;
-		numColumns = 1;
-		List<Integer> columnEncodingsList1 = new ArrayList<Integer>();
-		columnEncodingsList1.add(Metadata.ENCODING_BB);
-		List<Integer> columnEncodedByteSizesList1 = new ArrayList<Integer>();
-		columnEncodedByteSizesList1.add(Metadata.BYTES_4);
-		
-		MetaIndex PA1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
-		metadata.indexList.add(PA1);
-
-		// SP1
-		indexID = 2;
-		numColumns = 1;
-		List<Integer> columnEncodingsList2 = new ArrayList<Integer>();
-		columnEncodingsList2.add(Metadata.ENCODING_BB);	
-		List<Integer >columnEncodedByteSizesList2 = new ArrayList<Integer>();
-		columnEncodedByteSizesList2.add(Metadata.BYTES_4);
-		MetaIndex SP1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.indexList.add(SP1);
-		
-		// SP2
-		indexID = 3;
-		numColumns = 1;
-		List<Integer> columnEncodingsList3 = new ArrayList<Integer>();
-		columnEncodingsList3.add(Metadata.ENCODING_HUFFMAN);
-		
-		List<Integer >columnEncodedByteSizesList3 = new ArrayList<Integer>();
-		columnEncodedByteSizesList3.add(Metadata.BYTES_4);
-		
-		MetaIndex SP2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.indexList.add(SP2);
-		
-		// PA2
-		indexID = 4;
-		numColumns = 1;
-		List<Integer> columnEncodingsList4 = new ArrayList<Integer>();
-		columnEncodingsList4.add(Metadata.ENCODING_HUFFMAN);
-		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
-		columnEncodedByteSizesList4.add(Metadata.BYTES_4);
-		
-		MetaIndex PA2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
-		metadata.indexList.add(PA2);
-
-		// CS2
-		indexID = 5;
-		numColumns = 1;
-		List<Integer> columnEncodingsList5 = new ArrayList<Integer>();
-		columnEncodingsList5.add(Metadata.ENCODING_BB);
-		List<Integer> columnEncodedByteSizesList5 = new ArrayList<Integer>();
-		columnEncodedByteSizesList5.add(Metadata.BYTES_4);
-		
-		MetaIndex CS2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList5, columnEncodedByteSizesList5);
-		metadata.indexList.add(CS2);
-		
-	}
-
-	public static void main(String[] args) {
-		
-		
-		List<Operator> operators = new ArrayList<Operator>();
-		Metadata metadata = new Metadata();
-		
-		
-		// Pubmed Q5 Optimal 
-		
-		initPubmedIndexes(metadata);
-		initPubmedQueries(metadata);
-		//initQ5Operators(operators);
-		initQ5OperatorsThreaded(operators);
-		
-		// SemmedDB Atropine Optimal
-		//initSemmedDBIndexes(metadata);
-		//initSemmedDBQueries(metadata);
-		//initSemmedDBOperators(operators);
-		
-	
-		generateCode(operators, metadata);
-		
-	}
 
 
 

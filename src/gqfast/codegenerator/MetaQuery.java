@@ -10,26 +10,23 @@ public class MetaQuery {
 	final int numThreads;
 	final int numBuffers;
 	final int bufferPoolSize;
-	final int threadingCutOffPoint;
-	
-	//List<Integer> selectionDataTypes;
+
 	List<String> aliases;
 	int[][] aliasBufferPoolIDs;
+	boolean[] preThreading;
 	
 	public MetaQuery(int queryID, String queryName, int numThreads,
-			int numBuffers, int bufferPoolSize, int threadingCutOffPoint, List<String> aliases) {
+			int numBuffers, int bufferPoolSize, List<String> aliases) {
 	
 		this.queryID = queryID;
 		this.queryName = queryName;
 		this.numThreads = numThreads;
 		this.numBuffers = numBuffers;
 		this.bufferPoolSize = bufferPoolSize;
-		this.threadingCutOffPoint = threadingCutOffPoint;
-		//this.selectionDataTypes = selectionDataTypes;
 		this.aliases = aliases;
 		
 		aliasBufferPoolIDs = new int[aliases.size()][];
-		
+		preThreading = new boolean[aliases.size()];
 	}
 
 	public void initBufferPoolArray(int aliasID, int num_encodings) {

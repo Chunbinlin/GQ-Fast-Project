@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-class Metadata {
+public class Metadata {
 	
 	public static final int ENCODING_UA = 1;
 	public static final int ENCODING_BCA = 2;

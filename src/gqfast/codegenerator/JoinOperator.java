@@ -2,7 +2,7 @@ package codegenerator;
 
 import java.util.List;
 
-class JoinOperator extends Operator {
+public class JoinOperator extends Operator {
 	
 	final int indexID;
 	
