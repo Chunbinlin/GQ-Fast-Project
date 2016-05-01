@@ -21,9 +21,15 @@ public class TestCasesPubmed {
 		// int numBuffers, int bufferPoolSize, List<String> aliases)
 		MetaQuery q5Optimal = new MetaQuery(0, queryName, numThreads, 5, 1, aliases);
 		
+		q5Optimal.setIndexID(0);
+		q5Optimal.setIndexID(1);
+		q5Optimal.setIndexID(2);
+		q5Optimal.setIndexID(3);
+		q5Optimal.setIndexID(4);
 		
 		metadata.getQueryList().add(q5Optimal);
 		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);
+		
 	}
 
 	private static void initPubmedIndexes(Metadata metadata, int encodingType) {
@@ -38,7 +44,7 @@ public class TestCasesPubmed {
 		
 		MetaIndex DA1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
 		metadata.getIndexList().add(DA1);
-
+		
 		// DY
 		indexID = 1;
 		numColumns = 1;

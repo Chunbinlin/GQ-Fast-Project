@@ -165,6 +165,13 @@ public class TestCasesSemmedDB {
 		MetaQuery smdbOptimal = new MetaQuery(1, queryName, numThreads,
 				6, 1, aliases);
 		
+		smdbOptimal.setIndexID(0);
+		smdbOptimal.setIndexID(1);
+		smdbOptimal.setIndexID(2);
+		smdbOptimal.setIndexID(3);
+		smdbOptimal.setIndexID(4);
+		smdbOptimal.setIndexID(5);
+		
 		metadata.getQueryList().add(smdbOptimal);	
 		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);
 	}
@@ -181,7 +188,7 @@ public class TestCasesSemmedDB {
 		
 		MetaIndex CS1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
 		metadata.getIndexList().add(CS1);
-
+		
 		// PA1
 		indexID = 1;
 		numColumns = 1;
@@ -308,25 +315,66 @@ public class TestCasesSemmedDB {
 		
 	}
 
+	private static void runQuery(String queryName, int numThreads, int encoding) {
+		List<Operator> operators = new ArrayList<Operator>();
+		Metadata metadata = new Metadata();
+		
+		initSemmedDBIndexes(metadata, encoding);
+		initSemmedDBQueries(metadata, queryName, numThreads);
+		if (numThreads > 1) {
+			initSemmedDBOperatorsThreaded(operators);
+		}
+		else {
+			initSemmedDBOperators(operators);
+		}
+		CodeGenerator.generateCode(operators, metadata);
+	}
+	
+	private static void runQuery(String queryName, int numThreads, boolean b) {
+		List<Operator> operators = new ArrayList<Operator>();
+		Metadata metadata = new Metadata();
+		initSemmedDBIndexes(metadata);
+		initSemmedDBQueries(metadata, queryName, numThreads);
+		if (numThreads > 1) {
+			initSemmedDBOperatorsThreaded(operators);
+		}
+		else {
+			initSemmedDBOperators(operators);
+		}
+		CodeGenerator.generateCode(operators, metadata);
+	}
+	
 	public static void main(String[] args) {
 		
 		
 		List<Operator> operators = new ArrayList<Operator>();
 		Metadata metadata = new Metadata();
 		
-		// SemmedDB Atropine Optimal
-		initSemmedDBIndexes(metadata);
-		initSemmedDBQueries(metadata, "test_smdb_opt", 1);
-		initSemmedDBOperators(operators);
+		// SemmedDB Atropine Query
 		
-		CodeGenerator.generateCode(operators, metadata);
+		//Optimal
+		runQuery("test_smdb_optimal_1threads", 1, true);
+		runQuery("test_smdb_optimal_4threads", 4, true);
 		
-		operators.clear();
-		initSemmedDBQueries(metadata, "test_smdb_opt_threaded", 4);
-		initSemmedDBOperatorsThreaded(operators);
-		CodeGenerator.generateCode(operators, metadata);
+		//Huffman
+		runQuery("test_smdb_huffman_1threads", 1, Metadata.ENCODING_HUFFMAN);
+		runQuery("test_smdb_huffman_4threads", 4, Metadata.ENCODING_HUFFMAN);
+		
+		//BCA
+		runQuery("test_smdb_bca_1threads", 1, Metadata.ENCODING_BCA);
+		runQuery("test_smdb_bca_4threads", 4, Metadata.ENCODING_BCA);
+		
+		//Array
+		runQuery("test_smdb_array_1threads", 1, Metadata.ENCODING_UA);
+		runQuery("test_smdb_array_4threads", 4, Metadata.ENCODING_UA);
+	
+		//BB
+		runQuery("test_smdb_bb_1threads", 1, Metadata.ENCODING_BB);
+		runQuery("test_smdb_bb_4threads", 4, Metadata.ENCODING_BB);	
+		
 		
 	}
+	
 
 	
 }

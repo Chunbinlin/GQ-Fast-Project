@@ -1,7 +1,9 @@
 package codegenerator;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MetaQuery {
 
@@ -11,6 +13,7 @@ public class MetaQuery {
 	private int numBuffers;
 	private int bufferPoolSize;
 
+	private Set<Integer> indexIDs;
 	private List<String> aliases;
 	private int[][] aliasBufferPoolIDs;
 	private boolean[] preThreading;
@@ -25,8 +28,17 @@ public class MetaQuery {
 		this.bufferPoolSize = bufferPoolSize;
 		this.aliases = aliases;
 		
+		indexIDs = new HashSet<Integer>();
 		aliasBufferPoolIDs = new int[aliases.size()][];
 		preThreading = new boolean[aliases.size()];
+	}
+
+	public Set<Integer> getIndexIDs() {
+		return indexIDs;
+	}
+
+	public void setIndexID(int indexID) {
+		indexIDs.add(indexID);
 	}
 
 	public int getQueryID() {

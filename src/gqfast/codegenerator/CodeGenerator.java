@@ -6,8 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class CodeGenerator {
@@ -46,12 +50,11 @@ public class CodeGenerator {
 		return openingCppCode;
 	}
 
-	private static String bufferInitCode(Metadata metadata) {
+	private static String bufferInitCode(MetaQuery query) {
 		
+		Set<Integer> indexSet = query.getIndexIDs(); 	
 		String bufferInitString = "\n\tint max_frag;\n";
-		Iterator<MetaIndex> indexIterator = metadata.getIndexList().iterator();
-		while (indexIterator.hasNext()) {
-			int curr = indexIterator.next().getIndexID();
+		for (Integer curr : indexSet) {
 			bufferInitString += "\n\tmax_frag = metadata.idx_max_fragment_sizes[" + curr + "];\n";
 			bufferInitString += "\tfor(int i=0; i<metadata.idx_num_encodings[" + curr + "]; i++) {\n";
 			bufferInitString += "\t\tfor (int j=0; j<NUM_THREADS; j++) {\n";
@@ -66,32 +69,32 @@ public class CodeGenerator {
 		
 	}
 	
-	private static String bufferDeallocation(Metadata metadata) {
+	private static String bufferDeallocation(MetaQuery query) {
+		
+		Set<Integer> indexSet = query.getIndexIDs();
 		
 		String bufferDeallocString = "\n";
 		String tabString = "\t";
 		
-	    bufferDeallocString += tabString + "for (int i=0; i<NUM_BUFFERS; i++) {\n";
-	    tabString += "\t";
-	    bufferDeallocString += tabString + "for (int j=0; j<metadata.idx_num_encodings[i]; j++) {\n";
-	    tabString += "\t";
-	    bufferDeallocString += tabString + "for (int k=0; k<NUM_THREADS; k++) {\n";
-	    tabString += "\t";            
-	    bufferDeallocString += tabString + "for (int l=0; l<BUFFER_POOL_SIZE; l++) {\n";
-	    tabString += "\t";
-	    bufferDeallocString += tabString +  "delete[] buffer_arrays[i][j][k][l];\n";
-	    tabString = tabString.substring(0, tabString.length()-1);
-	    bufferDeallocString += tabString + "}\n";
-	    bufferDeallocString += tabString + "delete[] buffer_arrays[i][j][k];\n";
-	    tabString = tabString.substring(0, tabString.length()-1);
-	    bufferDeallocString += tabString + "}\n";
-	    tabString = tabString.substring(0, tabString.length()-1);
-	    bufferDeallocString += tabString + "}\n";
-	    tabString = tabString.substring(0, tabString.length()-1);
-	    bufferDeallocString += tabString + "}\n";
+		for (Integer curr : indexSet) {
+			bufferDeallocString += tabString + "for (int j=0; j<metadata.idx_num_encodings["+ curr +"]; j++) {\n";
+			tabString += "\t";
+			bufferDeallocString += tabString + "for (int k=0; k<NUM_THREADS; k++) {\n";
+			tabString += "\t";            
+			bufferDeallocString += tabString + "for (int l=0; l<BUFFER_POOL_SIZE; l++) {\n";
+			tabString += "\t";
+			bufferDeallocString += tabString +  "delete[] buffer_arrays["+curr+"][j][k][l];\n";
+			tabString = tabString.substring(0, tabString.length()-1);
+			bufferDeallocString += tabString + "}\n";
+			bufferDeallocString += tabString + "delete[] buffer_arrays["+curr+"][j][k];\n";
+			tabString = tabString.substring(0, tabString.length()-1);
+			bufferDeallocString += tabString + "}\n";
+			tabString = tabString.substring(0, tabString.length()-1);
+			bufferDeallocString += tabString + "}\n";
+
+		}
+		
 		return bufferDeallocString;
-		
-		
 	}
 	
 	private static String semiJoinBufferDeallocation(List<Operator> operators,
@@ -1247,7 +1250,24 @@ public class CodeGenerator {
 		return mainString;
 	}
 	
-
+	/*
+	 * initThreading
+	 * 
+	 * Description: This function writes the implementation for 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
 	private static String initThreading(Operator currentOp, Metadata metadata,
 			StringBuilder tabString, MetaQuery query,
 			List<String> functionHeadersCppCode, List<String> functionsCppCode) {
@@ -1490,7 +1510,7 @@ public class CodeGenerator {
 		mainCppCode.add(benchmarkingString);
 		
 		// Array initializations
-		mainCppCode.add(bufferInitCode(metadata));
+		mainCppCode.add(bufferInitCode(query));
 	
 		mainCppCode.add(initResultArray(aggregation));
 		mainCppCode.add(initSemiJoinArray(operators, metadata, globalsCppCode));
@@ -1501,7 +1521,7 @@ public class CodeGenerator {
 		// Operator evaluation
 	
 		evaluateOperators(operators, query, metadata, mainCppCode, functionHeadersCppCode, functionsCppCode);
-		mainCppCode.add(bufferDeallocation(metadata));
+		mainCppCode.add(bufferDeallocation(query));
 		
 		
 		mainCppCode.add(semiJoinBufferDeallocation(operators, metadata));
