@@ -16,7 +16,15 @@ import java.util.Set;
 
 public class CodeGenerator {
 	
-	
+	/*
+	 * Function initialImportsAndConstants
+	 * ------------------------------------
+	 * Input:	
+	 * 			query:	The current query meta-data that code is being generated with
+	 * 			
+	 * Output:	A String of code that is the very beginning of the generated code file: #include, #define, and such
+	 * 
+	 */
 	private static String initialImportsAndConstants(MetaQuery query) {
 		
 	
@@ -35,7 +43,16 @@ public class CodeGenerator {
 		return initCppCode;
 	}
 
-
+	/*
+	 * Function openingLine
+	 * ---------------------
+	 * Input:
+	 * 			query:	The current query meta-data that code is being generated with
+	 * 			aggregation:	The aggregation operator that was assumed to be the last operator in the operator list 
+	 * 	
+	 * Output:	A string that is the function declaration in the generated code for the core processing function
+	 * 
+	 */
 	private static String openingLine(MetaQuery query, AggregationOperator aggregation) {
 
 		String openingCppCode = "\nextern \"C\" ";
@@ -50,6 +67,15 @@ public class CodeGenerator {
 		return openingCppCode;
 	}
 
+	/*
+	 * Function bufferInitCode
+	 * ------------------------
+	 * Input:
+	 * 			query:	The current query meta-data that code is being generated with
+	 * 
+	 * Output:	The part of the generated code that initializes the buffers used in the query processing
+	 * 
+	 */
 	private static String bufferInitCode(MetaQuery query) {
 		
 		Set<Integer> indexSet = query.getIndexIDs(); 	
@@ -69,6 +95,15 @@ public class CodeGenerator {
 		
 	}
 	
+	/*
+	 * Function bufferDeallocation
+	 * ---------------------------
+	 * Input:
+	 * 			query:	The current query meta-data that code is being generated with
+	 * 
+	 * Output:	The part of the generated code that deallocates the buffers used in the query processing
+	 * 
+	 */
 	private static String bufferDeallocation(MetaQuery query) {
 		
 		Set<Integer> indexSet = query.getIndexIDs();
@@ -97,6 +132,17 @@ public class CodeGenerator {
 		return bufferDeallocString;
 	}
 	
+	/*
+	 * Function semiJoinBufferDeallocation
+	 * ------------------------------------
+	 * Input:
+	 * 			operators:	The list of operators to the code generator for the current query
+	 * 			metadata:	Contains information on the indexes and queries available to the code
+	 * 						generator
+	 * Output:	The part of the generated code that deallocates the semijoin buffers used in the query processing
+	 * 
+	 */
+	
 	private static String semiJoinBufferDeallocation(List<Operator> operators,
 			Metadata metadata) {
 		
@@ -117,7 +163,16 @@ public class CodeGenerator {
 	}
 
 
-	
+	/* 
+	 * Function initResultArray
+	 *---------------------------
+	 * Input:		
+	 * 			aggregation:	The aggregation operator that was assumed to be the last operator in the operator list 
+	 * 
+	 * Output:	The part of the code that allocates the result and null-checking arrays for the query
+	 * 			
+	 *
+	 */
 	private static String initResultArray(AggregationOperator aggregation) {
 		
 		String resultString = "\n\tRC = new int[metadata.idx_domains[" + aggregation.getIndexID() + "][0]]();\n";
@@ -132,12 +187,15 @@ public class CodeGenerator {
 	}
 	
 	/*
-	 * Function name: initSemiJoinArray
-	 * Description: This function generates the cpp code for the initialization of the boolean array for semijoin ops
+	 * Function initSemiJoinArray
+	 * ---------------------------
 	 * Input:	
-	 * 			operators: 	A list of operators for the query
-	 * 			metadata:	The code generator's accessible metadata for the gq-fast database
-	 * Output:	A String of generated code per the description's specification
+	 * 			operators:	The list of operators to the code generator for the current query
+	 * 			metadata:	Contains information on the indexes and queries available to the code
+	 * 						generator
+	 * 
+	 * Output:	A String of generated code for the allocation and initialization of the boolean 
+	 * 			array for semijoin operators
 	 * 
 	 */
 	private static String initSemiJoinArray(List<Operator> operators,
@@ -166,7 +224,22 @@ public class CodeGenerator {
 	}
 
 	
-	
+	/*
+	 * Function initDecodeVars
+	 * -----------------------
+	 * Input:	
+	 * 			operators:		The list of operators to the code generator for the current query
+	 * 			mainCppCode:	A list of Strings that forms the main body of cpp code
+	 * 			globalsCppCode:	A list of Strings that forms the global variable declarations 
+	 * 							towards the beginning of the file
+	 *			metadata:		Contains information on the indexes and queries available to the code
+	 * 							generator
+	 * 			query:			The current query meta-data that code is being generated with
+	 * 
+	 * Output:	
+	 * 			No output, but mainCppCode and globalsCppCode are updated with the code for the
+	 * 			variable declarations and assignments for Huffman and BCA related decoding information
+	 */
 	private static void initDecodeVars(List<Operator> operators, List<String> mainCppCode, 
 			List<String> globalsCppCode, Metadata metadata, MetaQuery query) {
 		
@@ -230,7 +303,19 @@ public class CodeGenerator {
 	}
 	
 
-	
+	/*
+	 * Function initialDeclarations
+	 * -----------------------------
+	 * Input:	
+	 * 			globalsCppCode:	A list of Strings that forms the global variable declarations 
+	 * 							towards the beginning of the file
+	 * 			aggregation:	The aggregation operator that was assumed to be the last operator in the operator list 
+	 * 			query:			The current query meta-data that code is being generated with
+	 * 			
+	 * 	Output:
+	 * 			None, but globalsCppCode is updated with the global declarations for the threading related,
+	 * 			result array, and null-check array
+	 */
 	private static void initialDeclarations(List<String> globalsCppCode,
 			AggregationOperator aggregation, MetaQuery query) {
 		
@@ -307,18 +392,21 @@ public class CodeGenerator {
 	
 	/*
 	 * Function generateDecodeFunctionBody
-	 * 
+	 * ------------------------------------
 	 * Input:
-	 * 			indexID: 	the id of the current index
-	 * 			alias:   The alias name of the current operator in the query
-	 * 			currentEncoding: 	the encoding type as represented by an int constant
-	 * 			columnIteration:	the current column iteration
-	 * 			currentCol:			The id of the current column (could be different than 'columnIteration')
-	 * 			sizeName:			A string of the cpp that is the variable name for the current fragment cardinality
+	 * 			preThreading:				'true' if the function is being generated before threading begins 
+	 * 										in the query processing, 'false' if it occurs after  
+	 * 			indexID: 					the id of the current index
+	 * 			alias:   					The alias name of the current operator in the query
+	 * 			currentEncoding: 			the encoding type as represented by an int constant
+	 * 			columnIteration:			the current column iteration
+	 * 			currentCol:					The id of the current column (could be different than 'columnIteration')
+	 * 			sizeName:					A string of the cpp that is the variable name for the current fragment cardinality
 	 * 			currentFragmentBytesName:	A string of cpp that is the variable name for the current fragment bytes
-	 * 			pointerName:		A string of cpp that is the variable name for the current fragment pointer
+	 * 			pointerName:				A string of cpp that is the variable name for the current fragment pointer
 	 * 			bufferPoolTrackingArray:	Keeps track of the buffer pool array to use
-	 * 
+	 * 			currPool:					The current pool that is used to specify which buffer is used
+	 * 			currByteSize:				Specifies how many bytes an uncompressed element uses
 	 * Output:
 	 * 			A string that represents the body of the function in cpp that is the decoding of a fragment
 	 * 
@@ -578,30 +666,34 @@ public class CodeGenerator {
 	
 	
 	/* 	Function joinGenerateDecodeFragmentFunction
-	 * 
-	 * 	Description: This function is called by evaluateJoin and deals with the decoding portion of the join evaluation for a particular column.
+	 * ----------------------------------------------
 	 *	Input: 
-	 * 			currOp:	The current operator's id (i.e. index in the operators list)
-	 * 			columnIteration: The current column iteration	
-	 * 			tabString:	A string that keeps track of the tabbing of the generated code (for readability)
-	 * 			currMetaIndex: metadata for the current index 
-	 * 			query: metadata for the current query
-	 * 			functionHeadersCppCode:	A list of strings that make up the headers of the functions that are generated (except the original function)
-	 * 			functionCppCode: A list of strings, each of which is a function and function body
-	 * 			indexID: The id of the current index 
-	 * 			currentCol:	The current column ID (note that this could potentially be different than 'columnIteration' if certain columns were omitted)
-	 * 			currentFragmentRow:	A String of the cpp that is the variable name for the current row
+	 *			preThreading:				'true' if the function is being generated before threading begins 
+	 * 			alias:						The alias name of the current operand
+	 * 			aliasID:					The id of the alias that indexes into the query metadata alias list
+	 * 			columnIteration: 			The current column iteration	
+	 * 			tabString:					A string that keeps track of the tabbing of the generated code 
+	 * 										(for readability)
+	 * 			currMetaIndex: 				metadata for the current index 
+	 * 			query: 						metadata for the current query
+	 * 			functionHeadersCppCode:		A list of strings that make up the headers of the functions that are 
+	 * 										generated (except the original function)
+	 * 			functionCppCode: 			A list of strings, each of which is a function and function body
+	 * 			indexID: 					The id of the current index 
+	 * 			currentCol:					The current column ID (note that this could potentially be different than 'columnIteration' if certain columns were omitted)
+	 * 			currentFragmentRow:			 String of the cpp that is the variable name for the current row
 	 * 			currentFragmentBytesName:	A String of cpp that is the variable name for the current fragment bytes 
 	 * 			bufferPoolTrackingArray:	To keep track of which array in the pool to use
-	 * 			entityFlag:		true if current index is an entity table, false if it is a relationship table
+	 * 			entityFlag:					'true' if current index is an entity table, 'false' if it is a relationship table
 	 * 
 	 * 
 	 *	Output:
-	 *			A String that continues the cpp code for the original function
+	 *			A String that continues the cpp code for the original function and deals with the decoding portion of 
+	 *			the join evaluation for a particular column.
 	 */
-	private static String joinGenerateDecodeFragmentFunction(boolean preThreading, String alias, int aliasID, int columnIteration, StringBuilder tabString,
-			MetaIndex currMetaIndex, MetaQuery query, List<String> functionHeadersCppCode,
-			List<String> functionsCppCode, int indexID, int currentCol,
+	private static String joinGenerateDecodeFragmentFunction(boolean preThreading, String alias, int aliasID, 
+			int columnIteration, StringBuilder tabString, MetaIndex currMetaIndex, MetaQuery query, 
+			List<String> functionHeadersCppCode, List<String> functionsCppCode, int indexID, int currentCol,
 			String currentFragmentRow, String currentFragmentBytesName, int[][] bufferPoolTrackingArray, boolean entityFlag) {
 		
 		String mainString = "\n";
@@ -750,7 +842,7 @@ public class CodeGenerator {
 
 	/*
 	 * Function getPrimitive
-	 * 
+	 * ----------------------
 	 * Input:
 	 * 			colBytes:	A flag for how many bytes an associated value would use
 	 * Output:
@@ -1367,7 +1459,9 @@ public class CodeGenerator {
 					mainCppCode.add(evaluateSelection(i, currentOp, tabString, query));
 				}
 				else {
-					
+					String temp = functionsCppCode.get(threadingFunctionID);
+					temp += evaluateSelection(i, currentOp, threadingTabString, query);
+					functionsCppCode.set(threadingFunctionID, temp);
 				}
 			}
 			else if (opType == Operator.JOIN_OPERATOR || opType == Operator.SEMIJOIN_OPERATOR) {
