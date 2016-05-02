@@ -87,7 +87,7 @@ void handle_input(string func_name, int r_pos, char result_data_type) {
     
     // cerr << "a1\n";
     int domain_temp = metadata.idx_domains[r_pos][0];
-    string filename = "./" + func_name + ".so";
+    string filename = "./test_cases/" + func_name + ".so";
     // cerr << "metadata idx_max_frag_sizes[0]" << metadata.idx_max_fragment_sizes[0] << "\n";
     int* cold_checks;
     int* null_checks;
@@ -212,76 +212,5 @@ void handle_input(string func_name, int r_pos, char result_data_type) {
 
 
 
-
-void handle_input(string filename, string func_name, int r_pos, int q_id) {
-
-    int domain_temp = metadata.idx_domains[r_pos][0];
-    // use it to do the calculation
-    int* cold_checks;
-    int* null_checks;
-    int count = 0;
-    struct timespec start2;
-    // cerr << "Calling query_type_A...\n";
-    // open the library
-    cerr << "Opening " << filename << "\n";
-    
-    clock_gettime(CLOCK_MONOTONIC, &start2);
-    void* handle = dlopen(filename.c_str(), RTLD_NOW);
-    if (!handle) {
-         cerr << "Cannot open library: " << dlerror() << '\n';
-    }
-    
-    // load the symbol
-    cout << "Loading symbol query_type_A...\n";
-    typedef int* (*query_type_A)(int **, int);
-
-    // reset errors
-    dlerror();
-    query_type_A query = (query_type_A) dlsym(handle, func_name.c_str());
-    const char *dlsym_error = dlerror();
-    if (dlsym_error) {
-         cerr << "Cannot load symbol 'query_type_A': " << dlsym_error <<
-            '\n';
-        dlclose(handle);
-    }
-    
-    int* cold_result = query(&cold_checks, q_id);
-    int* result = query(&null_checks, q_id);
-    
-    for (int i=0; i<domain_temp; i++) {        
-        if (null_checks[i]){
-            count++;
-            if (count == 1) {
-                clock_gettime(CLOCK_MONOTONIC, &finish);
-            }
-        }
-    }
-
-    // close the library
-     cerr << "Closing library...\n";
-    dlclose(handle);
-
-
-    double elapsed = (finish.tv_sec - start.tv_sec);
-    elapsed += (double)(finish.tv_nsec - start.tv_nsec)/1000000000;
-    cout << "CPU time used for index on query: " << 1000*elapsed << " ms\n\n";   
-
-    double elapsed2 = (finish.tv_sec - start2.tv_sec);
-    elapsed2 += (double)(finish.tv_nsec - start2.tv_nsec)/1000000000;
-    cout << "CPU time used for load func and index on query: " << 1000*elapsed2 << " ms\n\n";   
-
-
-    pair<int, int> * tops_result = top_k(result, 20, domain_temp);
-
-    for (int i=0; i<20; i++) {
-        cout << "Position " << tops_result[i].first << ": " << tops_result[i].second << "\n";
-    }
-
-    delete[] result;
-    delete[] null_checks;
-    delete[] cold_result;
-    delete[] cold_checks;
-
-}
 
 #endif

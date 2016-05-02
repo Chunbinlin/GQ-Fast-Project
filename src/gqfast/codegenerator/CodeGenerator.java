@@ -24,8 +24,8 @@ public class CodeGenerator {
 		// Initial Code
 		initCppCode += "#ifndef " + query.getQueryName() + "_\n"; 
 		initCppCode += "#define " + query.getQueryName() + "_\n";
-		initCppCode += "\n#include \"fastr_index.hpp\"\n";
-		initCppCode += "#include \"global_vars.hpp\"\n\n";
+		initCppCode += "\n#include \"../fastr_index.hpp\"\n";
+		initCppCode += "#include \"../global_vars.hpp\"\n\n";
 	
 		initCppCode += "#define NUM_THREADS " + query.getNumThreads() + "\n";
 		initCppCode += "#define NUM_BUFFERS " + query.getNumBuffers() + "\n";
@@ -1565,7 +1565,7 @@ public class CodeGenerator {
 
 	private static void writeToFile(String fullCppCode, String queryName) {
 
-		try(  PrintWriter out = new PrintWriter(new File("./src/gqfast/loader/" + queryName + ".cpp"))){
+		try(  PrintWriter out = new PrintWriter(new File("./src/gqfast/loader/test_cases/" + queryName + ".cpp"))){
 		    out.println(fullCppCode);
 		} catch (FileNotFoundException e) {
 			System.err.println("Error in writeToFile: FileNotFoundException");
