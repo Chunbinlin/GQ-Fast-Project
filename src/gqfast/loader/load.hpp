@@ -35,38 +35,38 @@ void init_buffer(int pos) {
         */
     }
     // Domain buffer for Foreign key column
-    int domain = metadata.idx_domains[pos][0];
+    uint64_t domain = metadata.idx_domains[pos][0];
 
     // Init locks
     spin_locks[pos] = new pthread_spinlock_t[domain];
-    for (int i=0; i<domain; i++) {
+    for (uint64_t i=0; i<domain; i++) {
         pthread_spin_init(&spin_locks[pos][i], PTHREAD_PROCESS_PRIVATE); 
     }
 
 }
 
 
-template <typename T>
+template <typename TValue, typename TIndexMap>
 void pubmed_create_indices(int my_encoding, string dt1, string dt2) {
 
 
     Encodings encoding1("Doc", my_encoding);
     Encodings first_index_encodings[1] = {encoding1};
 
-    idx[0] = buildIndex<T>("./pubmed/da1.csv", first_index_encodings, 1, 0);
+    idx[0] = buildIndex<TValue, TIndexMap>("./pubmed/da1.csv", first_index_encodings, 1, 0);
     init_buffer(0);
 
     Encodings encoding2("Year", my_encoding);
     Encodings second_index_encodings[1] = {encoding2};
 
-    idx[1] = buildIndex<T>("./pubmed/dy.csv", second_index_encodings, 1, 1);
+    idx[1] = buildIndex<TValue, TIndexMap>("./pubmed/dy.csv", second_index_encodings, 1, 1);
     init_buffer(1);
 
     Encodings encoding3("Term", my_encoding);
     Encodings encoding4("Fre",my_encoding);
     Encodings third_index_encodings[2] = {encoding3, encoding4};  
 
-    idx[2] = buildIndex<T>(dt1, third_index_encodings, 2, 2);
+    idx[2] = buildIndex<TValue, TIndexMap>(dt1, third_index_encodings, 2, 2);
     init_buffer(2);
 
     Encodings encoding5("Doc", my_encoding);
@@ -74,39 +74,39 @@ void pubmed_create_indices(int my_encoding, string dt1, string dt2) {
 
     Encodings fourth_index_encodings[2] = {encoding5, encoding6};
     
-    idx[3] = buildIndex<T>(dt2, fourth_index_encodings, 2, 3);
+    idx[3] = buildIndex<TValue, TIndexMap>(dt2, fourth_index_encodings, 2, 3);
     init_buffer(3);
 
     Encodings encoding7("Author", my_encoding);
 
     Encodings fifth_index_encodings[1] = {encoding7};
     
-    idx[4] = buildIndex<T>("./pubmed/da2.csv", fifth_index_encodings, 1, 4);
+    idx[4] = buildIndex<TValue, TIndexMap>("./pubmed/da2.csv", fifth_index_encodings, 1, 4);
     init_buffer(4);
     
 }
 
-template <typename T>
+template <typename TValue, typename TIndexMap>
 void pubmed_create_optimal_indices(string dt1, string dt2) {
 
 
     Encodings encoding1("Doc", ENCODING_BYTE_ALIGNED_BITMAP);
     Encodings first_index_encodings[1] = {encoding1};
 
-    idx[0] = buildIndex<T>("./pubmed/da1.csv", first_index_encodings, 1, 0);
+    idx[0] = buildIndex<TValue, TIndexMap>("./pubmed/da1.csv", first_index_encodings, 1, 0);
     init_buffer(0);
 
     Encodings encoding2("Year", ENCODING_BIT_ALIGNED_COMPRESSED);
     Encodings second_index_encodings[1] = {encoding2};
 
-    idx[1] = buildIndex<T>("./pubmed/dy.csv", second_index_encodings, 1, 1);
+    idx[1] = buildIndex<TValue, TIndexMap>("./pubmed/dy.csv", second_index_encodings, 1, 1);
     init_buffer(1);
 
     Encodings encoding3("Term", ENCODING_BYTE_ALIGNED_BITMAP);
     Encodings encoding4("Fre",ENCODING_HUFFMAN);
     Encodings third_index_encodings[2] = {encoding3, encoding4};  
 
-    idx[2] = buildIndex<T>(dt1, third_index_encodings, 2, 2);
+    idx[2] = buildIndex<TValue, TIndexMap>(dt1, third_index_encodings, 2, 2);
     init_buffer(2);
 
     Encodings encoding5("Doc", ENCODING_BYTE_ALIGNED_BITMAP);
@@ -114,46 +114,46 @@ void pubmed_create_optimal_indices(string dt1, string dt2) {
 
     Encodings fourth_index_encodings[2] = {encoding5, encoding6};
     
-    idx[3] = buildIndex<T>(dt2, fourth_index_encodings, 2, 3);
+    idx[3] = buildIndex<TValue, TIndexMap>(dt2, fourth_index_encodings, 2, 3);
     init_buffer(3);
 
     Encodings encoding7("Author", ENCODING_BIT_ALIGNED_COMPRESSED);
 
     Encodings fifth_index_encodings[1] = {encoding7};
     
-    idx[4] = buildIndex<T>("./pubmed/da2.csv", fifth_index_encodings, 1, 4);
+    idx[4] = buildIndex<TValue, TIndexMap>("./pubmed/da2.csv", fifth_index_encodings, 1, 4);
     init_buffer(4);
 
 }
 
-template <typename T>
+template <typename TValue, typename TIndexMap>
 void semmeddb_create_indices(int encoding_name) {
 
 
     Encodings encoding1("CONCEPT_SEMTYPE_ID", encoding_name);
     Encodings first_index_encodings[1] = {encoding1};
 
-    idx[0] = buildIndex<T>("./semmeddb/cs1.csv", first_index_encodings, 1, 0);
+    idx[0] = buildIndex<TValue, TIndexMap>("./semmeddb/cs1.csv", first_index_encodings, 1, 0);
     init_buffer(0);
 
     Encodings encoding2("PREDICATION_ID", encoding_name);
     Encodings second_index_encodings[1] = {encoding2};
 
-    idx[1] = buildIndex<T>("./semmeddb/pa1.csv", second_index_encodings, 1, 1);
+    idx[1] = buildIndex<TValue, TIndexMap>("./semmeddb/pa1.csv", second_index_encodings, 1, 1);
     init_buffer(1);
 
     Encodings encoding3("SENTENCE_ID", encoding_name);
 
     Encodings third_index_encodings[1] = {encoding3};  
 
-    idx[2] = buildIndex<T>("./semmeddb/sp1.csv", third_index_encodings, 1, 2);
+    idx[2] = buildIndex<TValue, TIndexMap>("./semmeddb/sp1.csv", third_index_encodings, 1, 2);
     init_buffer(2);
 
     Encodings encoding4("PREDICATION_ID", encoding_name);
 
     Encodings fourth_index_encodings[1] = {encoding4};
     
-    idx[3] = buildIndex<T>("./semmeddb/sp2.csv", fourth_index_encodings, 1, 3);
+    idx[3] = buildIndex<TValue, TIndexMap>("./semmeddb/sp2.csv", fourth_index_encodings, 1, 3);
     init_buffer(3);
 
 
@@ -161,81 +161,79 @@ void semmeddb_create_indices(int encoding_name) {
 
     Encodings fifth_index_encodings[1] = {encoding5};
     
-    idx[4] = buildIndex<T>("./semmeddb/pa2.csv", fifth_index_encodings, 1, 4);
+    idx[4] = buildIndex<TValue, TIndexMap>("./semmeddb/pa2.csv", fifth_index_encodings, 1, 4);
     init_buffer(4);
 
     Encodings encoding6("CONCEPT_ID", encoding_name);
 
     Encodings sixth_index_encodings[1] = {encoding6};
     
-    idx[5] = buildIndex<T>("./semmeddb/cs2.csv", sixth_index_encodings, 1, 5);
+    idx[5] = buildIndex<TValue, TIndexMap>("./semmeddb/cs2.csv", sixth_index_encodings, 1, 5);
     init_buffer(5);
 
 }
 
 
-template <typename T>
+template <typename TValue, typename TIndexMap>
 void semmeddb_create_optimal_indices() {
 
 
     Encodings encoding1("CONCEPT_SEMTYPE_ID", ENCODING_BYTE_ALIGNED_BITMAP);
     Encodings first_index_encodings[1] = {encoding1};
 
-    idx[0] = buildIndex<T>("./semmeddb/cs1.csv", first_index_encodings, 1, 0);
+    idx[0] = buildIndex<TValue, TIndexMap>("./semmeddb/cs1.csv", first_index_encodings, 1, 0);
     init_buffer(0);
 
     Encodings encoding2("PREDICATION_ID", ENCODING_BYTE_ALIGNED_BITMAP);
     Encodings second_index_encodings[1] = {encoding2};
 
-    idx[1] = buildIndex<T>("./semmeddb/pa1.csv", second_index_encodings, 1, 1);
+    idx[1] = buildIndex<TValue, TIndexMap>("./semmeddb/pa1.csv", second_index_encodings, 1, 1);
     init_buffer(1);
 
     Encodings encoding3("SENTENCE_ID", ENCODING_BYTE_ALIGNED_BITMAP);
 
     Encodings third_index_encodings[1] = {encoding3};  
 
-    idx[2] = buildIndex<T>("./semmeddb/sp1.csv", third_index_encodings, 1, 2);
+    idx[2] = buildIndex<TValue, TIndexMap>("./semmeddb/sp1.csv", third_index_encodings, 1, 2);
     init_buffer(2);
 
     Encodings encoding4("PREDICATION_ID", ENCODING_HUFFMAN);
 
     Encodings fourth_index_encodings[1] = {encoding4};
     
-    idx[3] = buildIndex<T>("./semmeddb/sp2.csv", fourth_index_encodings, 1, 3);
+    idx[3] = buildIndex<TValue, TIndexMap>("./semmeddb/sp2.csv", fourth_index_encodings, 1, 3);
     init_buffer(3);
 
     Encodings encoding5("CONCEPT_SEMTYPE_ID", ENCODING_HUFFMAN);
 
     Encodings fifth_index_encodings[1] = {encoding5};
     
-    idx[4] = buildIndex<T>("./semmeddb/pa2.csv", fifth_index_encodings, 1, 4);
+    idx[4] = buildIndex<TValue, TIndexMap>("./semmeddb/pa2.csv", fifth_index_encodings, 1, 4);
     init_buffer(4);
 
     Encodings encoding6("CONCEPT_ID", ENCODING_BYTE_ALIGNED_BITMAP);
 
     Encodings sixth_index_encodings[1] = {encoding6};
     
-    idx[5] = buildIndex<T>("./semmeddb/cs2.csv", sixth_index_encodings, 1, 5);
+    idx[5] = buildIndex<TValue, TIndexMap>("./semmeddb/cs2.csv", sixth_index_encodings, 1, 5);
     init_buffer(5);
-    cerr << "idx[5]->indexmap[12070][0] = " << idx[5]->index_map[12070][0] << "\n";
-    cerr << "idx[5]->indexmap[12071][0] = " << idx[5]->index_map[12071][0] << "\n";
 }
 
 
 
 
-template <typename T>
+template <typename TValue, typename TIndexMap>
 int load(int database, int compression) {
 
 
 
     if (database == SEMMEDDB) {
         if (compression == OPTIMAL_COMPRESSION) {
-            semmeddb_create_optimal_indices<T>();
+            semmeddb_create_optimal_indices<TValue, TIndexMap>();
             return 1;
         }
         else if (compression >= 0 && compression <= NUM_ENCODING_TYPES_SUPPORTED) {
-            semmeddb_create_indices<T>(compression);
+            semmeddb_create_indices<TValue, TIndexMap>(compression);
             return 1;
         }
     }
@@ -245,11 +243,11 @@ int load(int database, int compression) {
         }
 
         if (compression == OPTIMAL_COMPRESSION) {
-            pubmed_create_optimal_indices<T>(DT1_MESH, DT2_MESH);
+            pubmed_create_optimal_indices<TValue, TIndexMap>(DT1_MESH, DT2_MESH);
             return 1;
         }
         else if (compression >= 0 && compression <= NUM_ENCODING_TYPES_SUPPORTED) {
-            pubmed_create_indices<T>(compression, DT1_MESH, DT2_MESH);
+            pubmed_create_indices<TValue, TIndexMap>(compression, DT1_MESH, DT2_MESH);
             return 1;
         }
     }
@@ -259,11 +257,11 @@ int load(int database, int compression) {
         }
         
         if (compression == OPTIMAL_COMPRESSION) {
-            pubmed_create_optimal_indices<T>(DT1_TAG, DT2_TAG);
+            pubmed_create_optimal_indices<TValue, TIndexMap>(DT1_TAG, DT2_TAG);
             return 1;
         }
         else if (compression >= 0 && compression <= NUM_ENCODING_TYPES_SUPPORTED) {
-            pubmed_create_indices<T>(compression, DT1_TAG, DT2_TAG);
+            pubmed_create_indices<TValue, TIndexMap>(compression, DT1_TAG, DT2_TAG);
             return 1;
         }
     }

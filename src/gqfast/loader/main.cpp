@@ -14,7 +14,7 @@ chrono::steady_clock::time_point benchmark_t1;
 chrono::steady_clock::time_point benchmark_t2;
 
 // Pre-declared index pointers
-fastr_index* idx[MAX_INDICES];
+fastr_index<uint32_t>* idx[MAX_INDICES];
 
 // Metadata wrapper
 Metadata metadata;
@@ -30,7 +30,7 @@ int**** buffer_arrays[MAX_INDICES];
 
 void init_globals() {
 
-    // Globals are initially null
+    // Globals are initially null/0
     for (int i=0; i<MAX_INDICES; i++) {
         idx[i] = nullptr;
         metadata.idx_max_fragment_sizes[i] = 0;
@@ -50,13 +50,6 @@ void delete_globals() {
             int num_encodings = idx[i]->num_fragment_data;
             // Free the associated buffer
             for (int j=0; j<num_encodings; j++) {
-                
-                /*for (int k=0; k<MAX_THREADS; k++) {
-                    for (int l=0; l<BUFFER_POOL_SIZE; l++) {   
-                        delete[] buffer_arrays[i][j][k][l];
-                    }   
-                    delete[] buffer_arrays[i][j][k];
-                }*/
                 delete[] buffer_arrays[i][j];
             }
            
@@ -138,7 +131,7 @@ int main(int argc, char ** argv) {
 
     switch(action) {
         case 'l': {
-            load_index(idx, filename);
+            load_index<uint32_t>(idx, filename);
             cout << "\n...Indices have been loaded...";
             char testing = 'y';
             while (testing == 'y') {
@@ -159,9 +152,9 @@ int main(int argc, char ** argv) {
             break;
         }
         case 's': {
-            int result = load<int>(database, compression);
+            int result = load<int, uint32_t>(database, compression);
             if (result) {
-                save_index(idx, filename);
+                save_index<uint32_t>(idx, filename);
             }
             else {
                 cerr << "Error: load function did not terminate normally\n\n";
@@ -169,7 +162,7 @@ int main(int argc, char ** argv) {
             break;
         }
         default: {
-            int result = load<int>(database, compression);
+            int result = load<int, uint32_t>(database, compression);
             if (result) {
                 cout << "\n...Indices have been loaded...";
                 char testing = 'y';

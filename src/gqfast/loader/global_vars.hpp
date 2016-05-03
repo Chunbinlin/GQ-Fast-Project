@@ -23,11 +23,11 @@ extern chrono::steady_clock::time_point benchmark_t1;
 extern chrono::steady_clock::time_point benchmark_t2;
 
 // Pre-declared index pointers
-extern fastr_index* idx[MAX_INDICES];
+extern fastr_index<uint32_t>* idx[MAX_INDICES];
 
 // Metadata
 struct Metadata {
-	vector<int> idx_domains[MAX_INDICES];
+	vector<uint64_t> idx_domains[MAX_INDICES];
 	int idx_num_encodings[MAX_INDICES];
 	int idx_max_fragment_sizes[MAX_INDICES];
 

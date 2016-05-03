@@ -12,18 +12,20 @@
 #include <utility>
 #include <memory>
 
+template<typename T>
 class fastr_index {
 
 public:
     
 
 
-    const int domain_size, num_fragment_data;
+    const uint64_t domain_size;
+    const int num_fragment_data;
     const unsigned int * fragment_data_length;
     const int* huffman_tree_array_size;
     int load_flag;
 
-    uint32_t ** index_map;       // Points to values of starts and stops for variables 
+    T** index_map;       // Points to values of starts and stops for variables 
 
     int * fragment_encoding_type;
     unsigned char** fragment_data;
@@ -34,16 +36,16 @@ public:
 
     // Huffman related 
     int**  huffman_tree_array;    
-    bool ** huffman_terminator_array;
+    bool** huffman_terminator_array;
 
     
 
 
     fastr_index(int ds, int nfd, unsigned int* fdl, int* htas, bool flag) : domain_size(ds), num_fragment_data(nfd), 
     fragment_data_length(fdl), huffman_tree_array_size(htas), load_flag(flag) { 
-        index_map = new uint32_t*[domain_size+1];
-        for (int i=0; i<domain_size+1; i++) {
-            index_map[i] = new uint32_t[num_fragment_data]();
+        index_map = new T*[domain_size+1];
+        for (uint64_t i=0; i<domain_size+1; i++) {
+            index_map[i] = new T[num_fragment_data]();
         }
 
         fragment_encoding_type = new int[num_fragment_data]();
@@ -84,7 +86,7 @@ public:
 
         delete[] fragment_data;
 
-        for (int i=0;i<domain_size;i++) {
+        for (uint64_t i=0;i<domain_size;i++) {
             delete[] index_map[i];
         }   
 
@@ -119,7 +121,7 @@ public:
         delete[] fragment_data_length;
     }
 
-    void set_index_map(uint32_t ** new_map) {
+    void set_index_map(T** new_map) {
         index_map = new_map;
     }
 
@@ -127,7 +129,7 @@ public:
         fragment_data = new_data;
     }
 
-    uint32_t* get(uint32_t row) {
+    T* get(int row) {
         return index_map[row];
     }
 
@@ -154,7 +156,7 @@ public:
     void serialize(Archive & ar, const unsigned int version) {
 
         //cerr << "loading index\n";
-        for (int i=0; i< domain_size+1; i++) {
+        for (uint64_t i=0; i<domain_size+1; i++) {
             for (int j=0; j<num_fragment_data; j++) {
                 ar & index_map[i][j];
             }
@@ -166,7 +168,7 @@ public:
        
         //cerr << "loading fragment data\n";
         for (int i=0; i< num_fragment_data; i++) {
-            for (uint32_t j=0; j<fragment_data_length[i]; j++) {
+            for (T j=0; j<fragment_data_length[i]; j++) {
                ar & fragment_data[i][j]; 
             }
         }        
@@ -196,12 +198,13 @@ public:
 
 
 namespace boost { namespace serialization {
-template<class Archive>
+template<class Archive, class TIndexMap>
 inline void save_construct_data(
-    Archive & ar, const fastr_index * t, const unsigned int file_version
+    Archive & ar, const fastr_index<TIndexMap> * t, const unsigned int file_version
 ){
    
-    int domain_size, num_fragment_data;
+    uint64_t domain_size;
+    int num_fragment_data;
     unsigned int * fragment_data_length;
     int* huffman_tree_array_size;
 
@@ -218,12 +221,13 @@ inline void save_construct_data(
    
 }
 
-template<class Archive>
+template<class Archive, class TIndexMap>
 inline void load_construct_data(
-    Archive & ar, fastr_index * t, const unsigned int file_version
+    Archive & ar, fastr_index<TIndexMap> * t, const unsigned int file_version
 ){
     // retrieve data from archive required to construct new instance
-    int domain_size, num_fragment_data;
+    uint64_t domain_size;
+    int num_fragment_data;
     ar >> domain_size;
     ar >> num_fragment_data;
 
@@ -238,7 +242,7 @@ inline void load_construct_data(
     int load_flag;
     ar >> load_flag;
     // invoke inplace constructor to initialize instance of my_class
-    ::new(t)fastr_index(domain_size, num_fragment_data, fragment_data_length, huffman_tree_array_size, load_flag);
+    ::new(t)fastr_index<TIndexMap>(domain_size, num_fragment_data, fragment_data_length, huffman_tree_array_size, load_flag);
 }
 
 }}

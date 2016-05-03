@@ -6,7 +6,9 @@
 
 #include "global_vars.hpp"
 #include <fstream>
-void save_index(fastr_index** s, const char * filename){
+
+template <typename T>
+void save_index(fastr_index<T>** s, const char * filename){
     
     std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
     // make an archive
@@ -45,7 +47,8 @@ void save_index(fastr_index** s, const char * filename){
 
 }
 
-void load_index(fastr_index** s, const char * filename) {
+template <typename T>
+void load_index(fastr_index<T>** s, const char * filename) {
     //cerr << "loading database\n";
     std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
     std::ifstream ifs(filename);
@@ -54,7 +57,8 @@ void load_index(fastr_index** s, const char * filename) {
     ia >> num_loaded_indices;
     for (int i=0; i<num_loaded_indices; i++) {
         cerr << "loading index " << i << "\n";
-   		int domain_size, num_fragment_data;
+   		uint64_t domain_size;
+        int num_fragment_data;
         ia >> domain_size;
         ia >> num_fragment_data;
     //    cerr << "num fragment data = " << num_fragment_data << "\n";
@@ -72,7 +76,7 @@ void load_index(fastr_index** s, const char * filename) {
         int load_flag;
         ia >> load_flag;
      //   cerr << "creating index\n";
-        fastr_index* temp_index = new fastr_index(domain_size, num_fragment_data, fragment_data_length, huffman_tree_array_size, load_flag);
+        fastr_index<T>* temp_index = new fastr_index<T>(domain_size, num_fragment_data, fragment_data_length, huffman_tree_array_size, load_flag);
     //    cerr << "copying index\n";
         ia >> *temp_index;
      //   cerr << "setting index\n";

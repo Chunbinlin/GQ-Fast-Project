@@ -219,9 +219,9 @@ void process_old_value(vector<T> & keys, vector<uint32_t> & key_counts, int num_
 *   Output:     None
 *   Notes:      Uncompressed array (UA) fragments are assigned here
 */
-template <typename T>
-void assign_data_uncompressed(unsigned char * fragment_column, uint32_t ** index_map, int map_size, int curr_col, 
-        vector<T> & keys, vector<uint32_t> & key_counts, vector<T> & column, int data_type) {
+template <typename TValue, typename TIndexMap>
+void assign_data_uncompressed(unsigned char * fragment_column, TIndexMap ** index_map, uint64_t map_size, int curr_col, 
+        vector<TValue> & keys, vector<uint32_t> & key_counts, vector<TValue> & column, int data_type) {
 
     // Assumes keys are sorted in ascending order
     uint32_t fragment_col_ptr = 0;
@@ -230,7 +230,7 @@ void assign_data_uncompressed(unsigned char * fragment_column, uint32_t ** index
 
     if (data_type == INT_4BYTE) { 
         
-        for (int i=0; i<map_size;i++) {
+        for (uint64_t i=0; i<map_size;i++) {
 
             index_map[i][curr_col] = fragment_col_ptr;
 
@@ -239,9 +239,9 @@ void assign_data_uncompressed(unsigned char * fragment_column, uint32_t ** index
                 uint32_t curr_count = key_counts[key_iterator];
                 for (uint32_t j=column_iterator; j<column_iterator+curr_count; j++) {
 
-                    T * frag_value = (T *) &(fragment_column[fragment_col_ptr]);
+                    TValue * frag_value = (TValue *) &(fragment_column[fragment_col_ptr]);
                     *frag_value = column[j];
-                    fragment_col_ptr += sizeof(T);
+                    fragment_col_ptr += sizeof(TValue);
                 }
                 column_iterator += curr_count;
                 key_iterator++;
@@ -251,7 +251,7 @@ void assign_data_uncompressed(unsigned char * fragment_column, uint32_t ** index
     }
     else if (data_type == CHAR_1BYTE) {
 
-        for (int i=0; i<map_size;i++) {
+        for (uint64_t i=0; i<map_size;i++) {
 
             index_map[i][curr_col] = fragment_col_ptr;
             // map position has fragment
@@ -284,9 +284,9 @@ void assign_data_uncompressed(unsigned char * fragment_column, uint32_t ** index
 *   Output:     None
 *   Notes:      Bit-aligned compressed fragments are assigned here
 */
-template <typename T>
-void assign_data_dictionary(unsigned char * fragment_column, uint32_t ** index_map, int map_size, int curr_col, 
-        vector<uint32_t> & byte_count, vector<T> & keys, vector<uint32_t> & key_counts, vector<T> & column, 
+template <typename TValue, typename TIndexMap>
+void assign_data_dictionary(unsigned char * fragment_column, TIndexMap ** index_map, uint64_t map_size, int curr_col, 
+        vector<uint32_t> & byte_count, vector<TValue> & keys, vector<uint32_t> & key_counts, vector<TValue> & column, 
         dictionary * dict) {
 
     uint32_t fragment_col_ptr = 0;      // to maintain the position which we are at in fragment_column
@@ -295,7 +295,7 @@ void assign_data_dictionary(unsigned char * fragment_column, uint32_t ** index_m
 
     int bits_size = dict->bits_info[0];  
 
-    for (int i=0; i<map_size; i++) {
+    for (uint64_t i=0; i<map_size; i++) {
 
         index_map[i][curr_col] = fragment_col_ptr;
 
@@ -344,15 +344,15 @@ void assign_data_dictionary(unsigned char * fragment_column, uint32_t ** index_m
 *   Output:     None
 *   Notes:      Huffman fragments are assigned here
 */
-template <typename T>
-void assign_data_huffman(unsigned char * fragment_column, uint32_t ** index_map, int map_size, int curr_col,
-        vector<T> & keys, vector<uint32_t> & key_counts, vector<uint32_t> & byte_count, 
+template <typename TValue, typename TIndexMap>
+void assign_data_huffman(unsigned char * fragment_column, TIndexMap ** index_map, uint64_t map_size, int curr_col,
+        vector<TValue> & keys, vector<uint32_t> & key_counts, vector<uint32_t> & byte_count, 
         vector<unsigned char*> & huffman_column) {
 
     uint32_t fragment_col_ptr = 0;
     uint32_t key_iterator = 0;
 
-    for (int i=0; i<map_size; i++) {
+    for (uint64_t i=0; i<map_size; i++) {
         index_map[i][curr_col] = fragment_col_ptr;
 
         if (i == keys[key_iterator]) {
@@ -390,15 +390,15 @@ void assign_data_huffman(unsigned char * fragment_column, uint32_t ** index_map,
 *   Output:     None
 *   Notes:      Byte-aligned bitmap (BB) fragments are assigned here
 */
-template <typename T>
-void assign_data_bitmap(unsigned char * fragment_column, uint32_t ** index_map, int map_size, int curr_col, 
-        vector<T> & keys, vector<uint32_t> & key_counts, vector<uint32_t> & byte_count, 
+template <typename TValue, typename TIndexMap>
+void assign_data_bitmap(unsigned char * fragment_column, TIndexMap ** index_map, uint64_t map_size, int curr_col, 
+        vector<TValue> & keys, vector<uint32_t> & key_counts, vector<uint32_t> & byte_count, 
         vector<unsigned char *> & bitmap_column) {
 
     uint32_t fragment_col_ptr = 0;
     uint32_t key_iterator = 0;
 
-    for (int i=0; i<map_size; i++) {
+    for (uint64_t i=0; i<map_size; i++) {
 
         index_map[i][curr_col] = fragment_col_ptr;
 
@@ -434,15 +434,15 @@ void assign_data_bitmap(unsigned char * fragment_column, uint32_t ** index_map, 
 *   Output:     A pointer to the newly built fastr_index
 *   Notes:      None
 */
-template <typename T>
-fastr_index * buildIndex(string filename, Encodings encodings[], int num_encodings, int index_id) {
+template <typename TValue, typename TIndexMap>
+fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int num_encodings, int index_id) {
 
     //vector<int> & domains, int & max_frag_size) {
 
     cerr << "\n...Begin loading file " << filename << "\n";
     auto t_start = std::chrono::high_resolution_clock::now();
 
-    vector<T> * input_file = new vector<T>[num_encodings+1];    // To store table in memory
+    vector<TValue> * input_file = new vector<TValue>[num_encodings+1];    // To store table in memory
     int* max_column_ids = new int[num_encodings+1]();           // To find table's domain sizes for each column
 
     // Reads in file
@@ -453,25 +453,25 @@ fastr_index * buildIndex(string filename, Encodings encodings[], int num_encodin
     init_dictionaries(input_file, dict, encodings, num_encodings, max_column_ids);
 
     // Create Huffman trees, decoding arrays, and encoding dictionaries for Huffman encodings
-    vector<Node<T> *> huffman_tree;
+    vector<Node<TValue> *> huffman_tree;
     huffman_tree.resize(num_encodings);
-    T ** huffman_tree_array = new T*[num_encodings];
+    TValue ** huffman_tree_array = new TValue*[num_encodings];
     int* huffman_tree_sizes = new int[num_encodings]();
     bool ** huffman_terminator_array = new bool*[num_encodings];
 
-    vector<encoding_dict<T> *> encoding_dictionary;
+    vector<encoding_dict<TValue> *> encoding_dictionary;
     encoding_dictionary.resize(num_encodings);
     init_huffman_structures(input_file, encodings, num_encodings, huffman_tree, huffman_tree_array,
         huffman_terminator_array, encoding_dictionary, huffman_tree_sizes);
 
     // domain_size (of first column) will specify the size of the index map
     // +1 because we want to access the index at the last value
-    int domain_size = max_column_ids[0] + 1;
+    uint64_t domain_size = max_column_ids[0] + 1;
 
 
 
 
-    vector<T> keys;                         // Each unique key, in order of appearance 
+    vector<TValue> keys;                         // Each unique key, in order of appearance 
     vector<uint32_t> key_counts;            // For each key in table, # of times the key appears
 
     uint32_t key_counter = 0;               // A temporary holder of the number of times current key has appeared
@@ -483,7 +483,7 @@ fastr_index * buildIndex(string filename, Encodings encodings[], int num_encodin
     vector<vector<unsigned char*> > huffman_column;
     huffman_column.resize(num_encodings);
 
-    vector<vector<T> > fragment_to_encode;                      // for Huffman or Byte-aligned bitmap
+    vector<vector<TValue> > fragment_to_encode;                      // for Huffman or Byte-aligned bitmap
     fragment_to_encode.resize(num_encodings);                   
     
     vector< vector<unsigned char *> > bitmap_column;            // for Byte aligned bitmap
@@ -503,8 +503,8 @@ fastr_index * buildIndex(string filename, Encodings encodings[], int num_encodin
     //
     cerr << "First pass\n\n";
 
-    T currValue;                        // To keep track of the key currently being processed
-    T oldValue = input_file[0][0];      // To keep track of when the current key has changed. Init to 
+    TValue currValue;                        // To keep track of the key currently being processed
+    TValue oldValue = input_file[0][0];      // To keep track of when the current key has changed. Init to 
                                         // first key in table.
     
     int next_val;
@@ -586,11 +586,11 @@ fastr_index * buildIndex(string filename, Encodings encodings[], int num_encodin
     cerr << "Second pass\n\n";
     
     unsigned char ** fragment_data = new unsigned char *[num_encodings];
-    uint32_t ** index_map = new uint32_t *[domain_size+1];    
+    TIndexMap ** index_map = new TIndexMap *[domain_size+1];    
 
-    cerr << "Creating index map of size " << sizeof(uint32_t) * (domain_size+1) * num_encodings << "\n";
-    for (int i=0; i<domain_size+1;i++) {
-        index_map[i] = new uint32_t[num_encodings]();
+    cerr << "Creating index map of size " << sizeof(TIndexMap) * (domain_size+1) * num_encodings << "\n";
+    for (uint64_t i=0; i<domain_size+1;i++) {
+        index_map[i] = new TIndexMap[num_encodings]();
     }
 
     uint32_t * size_of_current_array = new uint32_t[num_encodings]();
@@ -609,7 +609,7 @@ fastr_index * buildIndex(string filename, Encodings encodings[], int num_encodin
                     cerr << "Setting Fre column to 1 byte\n";
                 }
                 else {
-                    size_of_current_array[i] = sizeof(T) * total_row_count; 
+                    size_of_current_array[i] = sizeof(TValue) * total_row_count; 
                     data_type = INT_4BYTE;
                 }
 
@@ -691,7 +691,7 @@ fastr_index * buildIndex(string filename, Encodings encodings[], int num_encodin
         encoding_types[i] = encodings[i].getEncoding();
     }
 
-    fastr_index* new_index = new fastr_index(domain_size, num_encodings, size_of_current_array, encoding_types);
+    fastr_index<TIndexMap>* new_index = new fastr_index<TIndexMap>(domain_size, num_encodings, size_of_current_array, encoding_types);
     new_index->set_index_map(index_map);
     new_index->set_data(fragment_data);
     new_index->set_huffman(huffman_tree_array, huffman_terminator_array, huffman_tree_sizes);
