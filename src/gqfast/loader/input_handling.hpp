@@ -5,11 +5,10 @@
 #include <utility>             // std::pair
 #include "global_vars.hpp"
 
-template <typename T>
 class sort_comparator
 {
 public:
-    inline bool operator() (const pair<T, int> & a, const pair<T, int> & b)
+    inline bool operator() (const pair<int, int> & a, const pair<int, int> & b)
     {
         return a.second > b.second;
     }
@@ -24,31 +23,33 @@ public:
     }
 };
 
-template <typename T>
-pair<T, int> * top_k(T* result, int k, int domain) {
+pair<int, int> * top_k(int* result, int k, int domain) {
   
-    vector<pair<T,int> > pairs;
+    vector<pair<int,int> > pairs;
     pairs.resize(domain);
 
     for (int i=0; i < domain; i++) {
-        if (result[i] > 0) {
-            pairs[i].first = i;
-            pairs[i].second = result[i];
-        }            
+        pairs[i].first = i;
+        pairs[i].second = result[i];            
     }
     
-    sort(pairs.begin(), pairs.end(), sort_comparator<T>());
+    sort(pairs.begin(), pairs.end(), sort_comparator());
 
-    pair<T, int> * result_pairs = new pair<T,int>[k];
+    pair<int, int> * result_pairs = new pair<int,int>[k];
     for (int i=0; i<k; i++) {
         result_pairs[i].first = 0;
         result_pairs[i].second = 0;
     }
 
     for (int i = 0; i < k;  i++) {
-
-        result_pairs[i].first = pairs[i].first;
-        result_pairs[i].second = pairs[i].second;
+        if (pairs[i].second > 0) {
+            result_pairs[i].first = pairs[i].first;
+            result_pairs[i].second = pairs[i].second;
+        }
+        else {
+            result_pairs[i].first = 0;
+            result_pairs[i].second = 0;
+        }
     }
     
     return result_pairs; 
@@ -60,10 +61,8 @@ pair<int, double> * top_k(double* result, int k, int domain) {
     pairs.resize(domain);
 
     for (int i=0; i < domain; i++) {
-        if (result[i] > 0) {
-            pairs[i].first = i;
-            pairs[i].second = result[i];
-        }            
+        pairs[i].first = i;
+        pairs[i].second = result[i];
     }
     
     sort(pairs.begin(), pairs.end(), sort_comparator2());
@@ -75,9 +74,14 @@ pair<int, double> * top_k(double* result, int k, int domain) {
     }
 
     for (int i = 0; i < k;  i++) {
-
-        result_pairs[i].first = pairs[i].first;
-        result_pairs[i].second = pairs[i].second;
+        if (pairs[i].second > 0) {
+            result_pairs[i].first = pairs[i].first;
+            result_pairs[i].second = pairs[i].second;
+        }
+        else {
+            result_pairs[i].first = 0;
+            result_pairs[i].second = 0;
+        }
     }
     
     return result_pairs; 
