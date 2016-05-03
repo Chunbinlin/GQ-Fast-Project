@@ -230,7 +230,7 @@ extern "C" double* test_pubmed_q2_opt(int** null_checks) {
 	year2_col0_bits_info = idx[1]->dict[0]->bits_info;
 
 	uint64_t* doc1_list = new uint64_t[1];
-	doc1_list[0] = 17495979;
+	doc1_list[0] = 16966392;
 
 	for (int doc1_it = 0; doc1_it<1; doc1_it++) {
 
