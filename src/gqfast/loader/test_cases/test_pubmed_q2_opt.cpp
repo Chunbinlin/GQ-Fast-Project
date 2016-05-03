@@ -6,7 +6,7 @@
 
 #define NUM_THREADS 1
 #define NUM_BUFFERS 3
-#define BUFFER_POOL_SIZE 2
+#define BUFFER_POOL_SIZE 1
 
 using namespace std;
 
@@ -255,8 +255,8 @@ extern "C" double* test_pubmed_q2_opt(int** null_checks) {
 
 			for (uint32_t term1_it = 0; term1_it < term1_fragment_size; term1_it++) {
 
-				uint32_t term1_col0_element = buffer_arrays[1][0][0][0][term1_it];
-				unsigned char term1_col1_element = buffer_arrays[1][1][0][0][term1_it];
+				uint32_t term1_col0_element = buffer_arrays[2][0][0][0][term1_it];
+				unsigned char term1_col1_element = buffer_arrays[2][1][0][0][term1_it];
 
 				uint32_t* row_op3 = idx[3]->index_map[term1_col0_element];
 				uint32_t doc2_col0_bytes = idx[3]->index_map[term1_col0_element+1][0] - row_op3[0];
@@ -271,8 +271,8 @@ extern "C" double* test_pubmed_q2_opt(int** null_checks) {
 
 					for (uint32_t doc2_it = 0; doc2_it < doc2_fragment_size; doc2_it++) {
 
-						uint32_t doc2_col0_element = buffer_arrays[2][0][0][0][doc2_it];
-						unsigned char doc2_col1_element = buffer_arrays[2][1][0][0][doc2_it];
+						uint32_t doc2_col0_element = buffer_arrays[3][0][0][0][doc2_it];
+						unsigned char doc2_col1_element = buffer_arrays[3][1][0][0][doc2_it];
 
 						uint32_t* row_op4 = idx[1]->index_map[doc2_col0_element];
 
