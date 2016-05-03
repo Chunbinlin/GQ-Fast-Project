@@ -280,8 +280,11 @@ extern "C" double* test_pubmed_q2_opt(int** null_checks) {
 						uint32_t year2_col0_element;
 						test_pubmed_q2_opt_year2_col0_decode_BCA(year2_col0_ptr, year2_col0_element);
 
+						cerr << "doc2_col0_element = " << doc2_col0_element << "\n";
+						cerr << "R[doc1_col0_element] was " << R[doc2_col0_element] << "\n";
 						RC[doc2_col0_element] = 1;
 						R[doc2_col0_element] += (double)(term1_col1_element*doc2_col1_element)/(ABS(year1_col0_element-year2_col0_element)+1);
+						cerr << "R[doc1_col0_element] now " << R[doc2_col0_element] << "\n";
 					}
 				}
 			}
