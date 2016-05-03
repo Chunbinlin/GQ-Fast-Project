@@ -29,8 +29,8 @@ public class MetaQuery {
 		this.aliases = aliases;
 		
 		indexIDs = new HashSet<Integer>();
-		aliasBufferPoolIDs = new int[aliases.size()][];
-		preThreading = new boolean[aliases.size()];
+		aliasBufferPoolIDs = new int[aliases.size()+1][];
+		preThreading = new boolean[aliases.size()+1];
 	}
 
 	public Set<Integer> getIndexIDs() {
@@ -66,7 +66,7 @@ public class MetaQuery {
 	}
 
 	public void initBufferPoolArray(int aliasID, int num_encodings) {
-		aliasBufferPoolIDs[aliasID] = new int[num_encodings];
+		aliasBufferPoolIDs[aliasID] = new int[num_encodings+1];
 	}
 	
 	public boolean getPreThreading(int i) {

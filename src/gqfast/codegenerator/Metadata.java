@@ -52,4 +52,14 @@ public class Metadata {
 		}
 		return max;
 	}
+	
+	public int getMaxColID() {
+		int max = 0;
+		for (MetaIndex index : indexList) {
+			if (max < index.getMaxColumnID()) {
+				max = index.getMaxColumnID();
+			}
+		}
+		return max;
+	}
 }
