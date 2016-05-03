@@ -46,8 +46,8 @@ public class Metadata {
 	public int getMaxIndexID() {
 		int max = 0;
 		for (MetaIndex index : indexList) {
-			if (max < index.getIndexID()) {
-				max = index.getIndexID();
+			if (max < index.getGQFastIndexID()) {
+				max = index.getGQFastIndexID();
 			}
 		}
 		return max;
