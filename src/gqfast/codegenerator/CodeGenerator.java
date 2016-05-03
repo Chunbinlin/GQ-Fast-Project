@@ -1438,12 +1438,10 @@ public class CodeGenerator {
 		// The Code Generator needs to keep track of which pool is being used for what alias. This is achieved by
 		// storing the pool ID for each alias in the query meta-data.
 		int[][] bufferPoolTrackingArray = new int[metadata.getMaxIndexID()+1][];
-		for (int i=0; i<metadata.getMaxIndexID()+1; i++) {
-			MetaIndex index = metadata.getIndexList().get(i);
-			if (index != null) {
-				bufferPoolTrackingArray[i] = new int[index.getMaxColumnID()+1];
-				Arrays.fill(bufferPoolTrackingArray[i], -1);
-			}
+		
+		for (int i=0; i<metadata.getMaxIndexID()+1; i++) {	
+			bufferPoolTrackingArray[i] = new int[metadata.getMaxColID()+1];
+			Arrays.fill(bufferPoolTrackingArray[i], -1);
 		}
 		
 		boolean preThreadingOp = true;
@@ -1555,25 +1553,25 @@ public class CodeGenerator {
 					indexID = tempOp.getIndexID();
 				}
 
-				boolean found = false;
-				for (MetaIndex currIndex : metadata.getIndexList()) {
-					if (currIndex.getIndexID() == indexID) {
-						int numColumns = currIndex.getNumColumns();
-						query.initBufferPoolArray(aliasID, numColumns);
-						found = true;
-						break;
-					}
-				}
+				//boolean found = false;
+				MetaIndex currIndex = metadata.getIndexList().get(indexID);
+					
+				int numColumns = currIndex.getNumColumns();
+				query.initBufferPoolArray(aliasID, numColumns);
+						//found = true;
+					//	break;
+			//		}
+			//	}
 				
-				if (!found) {
+			/*	if (!found) {
 					System.err.println("Error! IndexID match not found in initQueryBufferPool function");
+					System.err.println("missing id was " + indexID);
 				}
-				
+				*/
 			}
 		}
-
 	}
-
+	
 
 
 	public static void generateCode(List<Operator> operators, Metadata metadata) {
