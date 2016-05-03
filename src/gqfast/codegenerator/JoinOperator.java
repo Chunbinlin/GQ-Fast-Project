@@ -14,7 +14,7 @@ public class JoinOperator extends Operator {
 	
 	private int drivingAliasID;
 	private int drivingAliasColumn;
-	
+
 
 	
 	public JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int aliasID, int loopColumn, int drivingAliasID, int drivingAliasColumn) {
@@ -70,6 +70,7 @@ public class JoinOperator extends Operator {
 	public int getDrivingAliasColumn() {
 		return drivingAliasColumn;
 	}
+	
 
 
 

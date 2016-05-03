@@ -3,6 +3,7 @@ package codegenerator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class MetaQuery {
@@ -17,9 +18,11 @@ public class MetaQuery {
 	private List<String> aliases;
 	private int[][] aliasBufferPoolIDs;
 	private boolean[] preThreading;
+	private Map<Integer, Integer> aliasIndexIDMap;
+	
 	
 	public MetaQuery(int queryID, String queryName, int numThreads,
-			int numBuffers, int bufferPoolSize, List<String> aliases) {
+			int numBuffers, int bufferPoolSize, List<String> aliases, Map<Integer,Integer> aliasIndexIDMap) {
 	
 		this.queryID = queryID;
 		this.queryName = queryName;
@@ -27,7 +30,7 @@ public class MetaQuery {
 		this.numBuffers = numBuffers;
 		this.bufferPoolSize = bufferPoolSize;
 		this.aliases = aliases;
-		
+		this.aliasIndexIDMap = aliasIndexIDMap;
 		indexIDs = new HashSet<Integer>();
 		aliasBufferPoolIDs = new int[aliases.size()+1][];
 		preThreading = new boolean[aliases.size()+1];
@@ -83,6 +86,10 @@ public class MetaQuery {
 	
 	public void setBufferPoolID(int aliasID, int colID, int poolID) {
 		aliasBufferPoolIDs[aliasID][colID] = poolID;
+	}
+
+	public int getAliasIndexID(int index) {
+		return aliasIndexIDMap.get(index);
 	}
 	
 	

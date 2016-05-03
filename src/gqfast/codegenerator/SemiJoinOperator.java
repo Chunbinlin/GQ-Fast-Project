@@ -13,10 +13,10 @@ public class SemiJoinOperator extends Operator {
 	
 	private int drivingAliasID;
 	private int drivingAliasColumn;
-	private int drivingAliasIndexID;
+
 
 	
-	public SemiJoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs, int aliasID, int loopColumn, int drivingAliasID, int drivingAliasColumn, int drivingAliasIndexID) {
+	public SemiJoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs, int aliasID, int loopColumn, int drivingAliasID, int drivingAliasColumn) {
 		super(Operator.SEMIJOIN_OPERATOR);
 		this.indexID = indexID;
 		this.entityFlag = entityFlag;
@@ -25,7 +25,7 @@ public class SemiJoinOperator extends Operator {
 		this.loopColumn = loopColumn;
 		this.drivingAliasID = drivingAliasID;
 		this.drivingAliasColumn = drivingAliasColumn;
-		this.drivingAliasIndexID = drivingAliasIndexID;
+		
 	}
 
 
@@ -64,8 +64,5 @@ public class SemiJoinOperator extends Operator {
 	}
 
 
-	public int getDrivingAliasIndexID() {
-		return drivingAliasIndexID;
-	}
-	
+		
 }

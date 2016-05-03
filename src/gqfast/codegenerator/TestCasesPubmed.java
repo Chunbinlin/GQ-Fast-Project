@@ -1,7 +1,9 @@
 package codegenerator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class TestCasesPubmed {
@@ -17,9 +19,17 @@ public class TestCasesPubmed {
 		aliases.add("author2");
 		aliases.add("year");
 		
+		Map<Integer,Integer> aliasIndexIDMap = new HashMap<Integer,Integer>();
+		aliasIndexIDMap.put(0,-1);
+		aliasIndexIDMap.put(1, 0);
+		aliasIndexIDMap.put(2, 2);
+		aliasIndexIDMap.put(3, 3);
+		aliasIndexIDMap.put(4, 4);
+		aliasIndexIDMap.put(4, 1);
+		
 		// public MetaQuery(int queryID, String queryName, int numThreads,
 		// int numBuffers, int bufferPoolSize, List<String> aliases)
-		MetaQuery q5Optimal = new MetaQuery(0, queryName, numThreads, 5, 1, aliases);
+		MetaQuery q5Optimal = new MetaQuery(0, queryName, numThreads, 5, 1, aliases, aliasIndexIDMap);
 		
 		q5Optimal.setIndexID(0);
 		q5Optimal.setIndexID(1);
@@ -41,9 +51,16 @@ public class TestCasesPubmed {
 		aliases.add("doc2");
 		aliases.add("year2");
 		
+		Map<Integer,Integer> aliasIndexIDMap = new HashMap<Integer,Integer>();
+		aliasIndexIDMap.put(0,-1);
+		aliasIndexIDMap.put(1, 0);
+		aliasIndexIDMap.put(2, 1);
+		aliasIndexIDMap.put(3, 2);
+		aliasIndexIDMap.put(4, 0);
+		
 		// public MetaQuery(int queryID, String queryName, int numThreads,
 		// int numBuffers, int bufferPoolSize, List<String> aliases)
-		MetaQuery q2Optimal = new MetaQuery(0, queryName, numThreads, 3, 2, aliases);
+		MetaQuery q2Optimal = new MetaQuery(0, queryName, numThreads, 3, 1, aliases, aliasIndexIDMap);
 		
 		q2Optimal.setIndexID(1);
 		q2Optimal.setIndexID(2);
@@ -285,7 +302,7 @@ public class TestCasesPubmed {
 		int join1indexID = 0;
 		List<Integer> column1IDs = new ArrayList<Integer>();
 		column1IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
+		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn, int drivingAliasIndexID)
 		Operator join1 = new JoinOperator(join1indexID, false, column1IDs, 1, 0, 0, 0);
 		
 		operators.add(join1);

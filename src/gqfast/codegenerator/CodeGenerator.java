@@ -208,9 +208,10 @@ public class CodeGenerator {
 		for (Operator currentOp: operators) {
 			if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 				SemiJoinOperator currentSemiJoinOp = (SemiJoinOperator) currentOp;
-				int indexID = currentSemiJoinOp.getDrivingAliasIndexID();
-				int gqFastIndexID = metadata.getIndexList().get(indexID).getGQFastIndexID();
 				int aliasID = currentSemiJoinOp.getDrivingAliasID();
+				int indexID = query.getAliasIndexID(aliasID);
+				int gqFastIndexID = metadata.getIndexList().get(indexID).getGQFastIndexID();
+				
 				String alias = query.getAliases().get(aliasID);
 				
 				String globalDeclarationString = "\nstatic bool* " + alias + "_bool_array;\n";
@@ -877,7 +878,7 @@ public class CodeGenerator {
 		if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 			int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
 			SemiJoinOperator tempOp = (SemiJoinOperator)currentOp;
-			int drivingindexID = tempOp.getDrivingAliasIndexID();
+			int drivingindexID = query.getAliasIndexID(drivingAliasID);
 			int drivingGQFastIndexID = metadata.getIndexList().get(drivingindexID).getGQFastIndexID();
 			if (threadID) {
 				mainString += "\n" + tabString + "if (!(" + drivingAlias 
@@ -934,7 +935,7 @@ public class CodeGenerator {
 			int gqFastIndexID, boolean preThreading, int currentAliasID,
 			MetaIndex currMetaIndex, List<String> functionHeadersCppCode,
 			List<String> functionsCppCode, int[][] bufferPoolTrackingArray,
-			boolean entityFlag, String previousAlias, int previousIndexID,
+			boolean entityFlag, String previousAlias, int previousIndexID, int previousGQFastIndexID,
 			List<Integer> previousColumnIDs, Metadata metadata, boolean justStartedThreading, int indexID) {
 		String mainString = new String();
 		
@@ -955,22 +956,23 @@ public class CodeGenerator {
 		if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 			int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
 			SemiJoinOperator tempOp = (SemiJoinOperator)currentOp;
-			int drivingIndexID = tempOp.getDrivingAliasIndexID();
+			int drivingIndexID = query.getAliasIndexID(drivingAliasID);
+			int drivingGQFastIndexID = metadata.getIndexList().get(drivingIndexID).getGQFastIndexID();
 			if (threadID) {
 				mainString += "\n" + tabString + "if (!(" + drivingAlias 
-						+ "_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
+						+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
 					closingBraces[0]++;
 					tabString.append("\t");
 					mainString += tabString + drivingAlias + 
-						"_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
+						"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
 			}
 			else {
 				mainString += "\n" + tabString + "if (!(" + drivingAlias 
-					+ "_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
+					+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
 				closingBraces[0]++;
 				tabString.append("\t");
 				mainString += tabString + drivingAlias + 
-					"_bool_array[buffer_arrays[" + drivingIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
+					"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
 			}
 		}
 		
@@ -982,12 +984,12 @@ public class CodeGenerator {
 
 			if (threadID) {
 				mainString += previousAlias + "_col" + previousColID + "_element = " +
-					"buffer_arrays[" + previousIndexID + "][" + previousColID + "][thread_id]" +
+					"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][thread_id]" +
 					"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
 			}
 			else {
 				mainString += previousAlias + "_col" + previousColID + "_element = " +
-						"buffer_arrays[" + previousIndexID + "][" + previousColID + "][0]" +
+						"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][0]" +
 						"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
 			}
 			
@@ -1122,6 +1124,7 @@ public class CodeGenerator {
 			gqFastIndexID = metadata.getIndexList().get(indexID).getGQFastIndexID();
 			drivingAliasID = currentJoinOp.getDrivingAliasID();
 			drivingAliasCol = currentJoinOp.getDrivingAliasColumn();
+			
 			currentAliasID = currentJoinOp.getAliasID();
 			columnIDs = currentJoinOp.getColumnIDs();
 			entityFlag = currentJoinOp.isEntityFlag();
@@ -1133,12 +1136,16 @@ public class CodeGenerator {
 			gqFastIndexID = metadata.getIndexList().get(indexID).getGQFastIndexID();
 			drivingAliasID = currentSemiJoinOp.getDrivingAliasID();
 			drivingAliasCol = currentSemiJoinOp.getDrivingAliasColumn();
+			
 			currentAliasID = currentSemiJoinOp.getAliasID();
 			columnIDs = currentSemiJoinOp.getColumnIDs();
 			entityFlag = currentSemiJoinOp.isEntityFlag();
 		}
-		
-		
+		int drivingAliasIndexID = query.getAliasIndexID(drivingAliasID);
+		int drivingGQFastID = -1;
+		if (drivingAliasIndexID >= 0) { 
+			drivingGQFastID = metadata.getIndexList().get(drivingAliasIndexID).getGQFastIndexID();
+		}
 		String drivingAlias = query.getAliases().get(drivingAliasID);
 		String currAlias = query.getAliases().get(currentAliasID);
 		if (preThreading) {
@@ -1173,6 +1180,7 @@ public class CodeGenerator {
 					int previousAliasID;
 					String previousAlias;
 					int previousIndexID;
+					
 					List<Integer> previousColumnIDs;
 					//int previousLoopColumn;
 
@@ -1195,6 +1203,7 @@ public class CodeGenerator {
 						previousColumnIDs = previousSemiJoinOp.getColumnIDs();
 						//previousLoopColumn = previousSemiJoinOp.loopColumn;
 					}
+					int previousGQFastIndexID = metadata.getIndexList().get(previousIndexID).getGQFastIndexID();
 					if (previousEntityFlag) {
 						// Previous operator was an entity table
 						// There is no need for an additional loop
@@ -1209,9 +1218,9 @@ public class CodeGenerator {
 					else{
 						// Previous operator was relationship table
 						mainString += evaluatePreviousJoinRelationshipTable(currentOp, query, threadID, tabString, closingBraces, drivingAlias, 
-								drivingAliasCol, currAlias, columnIDs, drivingAliasID, indexByteSize, currentFragmentRow, gqFastIndexID,
+								drivingAliasCol, currAlias, columnIDs, drivingGQFastID, indexByteSize, currentFragmentRow, gqFastIndexID,
 								preThreading, currentAliasID, currMetaIndex, functionHeadersCppCode, functionsCppCode, bufferPoolTrackingArray, entityFlag, 
-								previousAlias, previousIndexID, previousColumnIDs, metadata, justStartedThreading, indexID);
+								previousAlias, previousIndexID, previousGQFastIndexID, previousColumnIDs, metadata, justStartedThreading, indexID);
 
 					}
 				}
@@ -1280,19 +1289,20 @@ public class CodeGenerator {
 				tabString.append("\t");
 
 				int previousIndexID = previousJoinOp.getIndexID();
+				int previousGQFastIndexID = metadata.getIndexList().get(previousIndexID).getGQFastIndexID();
 				for (int previousColID : previousJoinOp.getColumnIDs()) {
 					MetaIndex previousIndex = metadata.getIndexList().get(previousIndexID);
 					int colBytes = previousIndex.getColumnEncodedByteSizesList().get(previousColID);
 					mainString += tabString + getPrimitive(colBytes) + " ";
-
+					
 					if (previousThreadID) {
 						mainString += previousAlias + "_col" + previousColID + "_element = " +
-							"buffer_arrays[" + previousIndexID + "][" + previousColID + "][0]" +
+							"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][0]" +
 							"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
 					}
 					else {
 						mainString += previousAlias + "_col" + previousColID + "_element = " +
-								"buffer_arrays[" + previousIndexID + "][" + previousColID + "][thread_id]" +
+								"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][thread_id]" +
 								"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
 					}
 				}
