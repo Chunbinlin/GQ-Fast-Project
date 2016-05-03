@@ -12,6 +12,7 @@
 
 #define SIZE_UINT32_T 4
 
+#define ABS(x) ((x)<0 ? -(x) : (x))
 
 
 // Clock variables
