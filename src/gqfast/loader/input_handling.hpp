@@ -86,7 +86,7 @@ pair<int, double> * top_k(double* result, int k, int domain) {
 void handle_input(string func_name, int r_pos, char result_data_type) {
     
     // cerr << "a1\n";
-    int domain_temp = metadata.idx_domains[r_pos][1];
+    int domain_temp = metadata.idx_domains[r_pos][0];
     string filename = "./test_cases/" + func_name + ".so";
     // cerr << "metadata idx_max_frag_sizes[0]" << metadata.idx_max_fragment_sizes[0] << "\n";
     int* cold_checks;
