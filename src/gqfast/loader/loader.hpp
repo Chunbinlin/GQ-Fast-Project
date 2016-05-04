@@ -224,7 +224,7 @@ void assign_data_uncompressed(unsigned char * fragment_column, TIndexMap ** inde
         vector<TValue> & keys, vector<uint32_t> & key_counts, vector<TValue> & column, int data_type) {
 
     // Assumes keys are sorted in ascending order
-    uint32_t fragment_col_ptr = 0;
+    TIndexMap fragment_col_ptr = 0;
     uint32_t column_iterator = 0;
     uint32_t key_iterator = 0;
 
@@ -248,6 +248,7 @@ void assign_data_uncompressed(unsigned char * fragment_column, TIndexMap ** inde
             }
 
         }
+        index_map[map_size][curr_col] = fragment_col_ptr;
     }
     else if (data_type == CHAR_1BYTE) {
 
@@ -267,6 +268,7 @@ void assign_data_uncompressed(unsigned char * fragment_column, TIndexMap ** inde
             }
 
         }
+        index_map[map_size][curr_col] = fragment_col_ptr;
     }
 }
 
@@ -289,7 +291,7 @@ void assign_data_dictionary(unsigned char * fragment_column, TIndexMap ** index_
         vector<uint32_t> & byte_count, vector<TValue> & keys, vector<uint32_t> & key_counts, vector<TValue> & column, 
         dictionary * dict) {
 
-    uint32_t fragment_col_ptr = 0;      // to maintain the position which we are at in fragment_column
+    TIndexMap fragment_col_ptr = 0;      // to maintain the position which we are at in fragment_column
     uint32_t column_iterator = 0;       // to iterate accross column
     uint32_t key_iterator = 0;
 
@@ -328,6 +330,7 @@ void assign_data_dictionary(unsigned char * fragment_column, TIndexMap ** index_
             key_iterator++;
         }
     }
+    index_map[map_size][curr_col] = fragment_col_ptr;
 }
 
 /*  Function:   assign_data_huffma()
@@ -349,7 +352,7 @@ void assign_data_huffman(unsigned char * fragment_column, TIndexMap ** index_map
         vector<TValue> & keys, vector<uint32_t> & key_counts, vector<uint32_t> & byte_count, 
         vector<unsigned char*> & huffman_column) {
 
-    uint32_t fragment_col_ptr = 0;
+    TIndexMap fragment_col_ptr = 0;
     uint32_t key_iterator = 0;
 
     for (uint64_t i=0; i<map_size; i++) {
@@ -368,7 +371,7 @@ void assign_data_huffman(unsigned char * fragment_column, TIndexMap ** index_map
         }
 
     }
-
+    index_map[map_size][curr_col] = fragment_col_ptr;
     // Delete previously copied char arrays
     for (int i=0; i<huffman_column.size(); i++) {
         delete[] huffman_column[i];
@@ -395,7 +398,7 @@ void assign_data_bitmap(unsigned char * fragment_column, TIndexMap ** index_map,
         vector<TValue> & keys, vector<uint32_t> & key_counts, vector<uint32_t> & byte_count, 
         vector<unsigned char *> & bitmap_column) {
 
-    uint32_t fragment_col_ptr = 0;
+    TIndexMap fragment_col_ptr = 0;
     uint32_t key_iterator = 0;
 
     for (uint64_t i=0; i<map_size; i++) {
@@ -418,6 +421,7 @@ void assign_data_bitmap(unsigned char * fragment_column, TIndexMap ** index_map,
         }
 
     }
+    index_map[map_size][curr_col] = fragment_col_ptr;
     // Delete copied unsigned char arrays
     for (int i=0; i<bitmap_column.size(); i++) {
         delete[] bitmap_column[i];
@@ -617,7 +621,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
                 cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
                 fragment_data[i] = new unsigned char[size_of_current_array[i]]();
 
-                assign_data_uncompressed(fragment_data[i], index_map, domain_size+1, i, keys, key_counts, 
+                assign_data_uncompressed(fragment_data[i], index_map, domain_size, i, keys, key_counts, 
                     input_file[i+1], data_type);
                 break;
             }
@@ -634,7 +638,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
                 cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
                 fragment_data[i] = new unsigned char[size_of_current_array[i]]();
            
-                assign_data_dictionary(fragment_data[i], index_map, domain_size+1, i, byte_count[i], keys, 
+                assign_data_dictionary(fragment_data[i], index_map, domain_size, i, byte_count[i], keys, 
                     key_counts, input_file[i+1], dict[i]);
                 break;
             }
@@ -650,7 +654,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
                 cerr << "creating fragment data of size = " << size_of_current_array[i] << "\n";
                 fragment_data[i] = new unsigned char[size_of_current_array[i]]();
 
-                assign_data_huffman(fragment_data[i], index_map, domain_size+1, i, keys, key_counts, 
+                assign_data_huffman(fragment_data[i], index_map, domain_size, i, keys, key_counts, 
                     byte_count[i], huffman_column[i]);
                 break;
             }
@@ -670,7 +674,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
                 cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
                 fragment_data[i] = new unsigned char[size_of_current_array[i]]();
             
-                assign_data_bitmap(fragment_data[i], index_map, domain_size+1, i, keys, key_counts, 
+                assign_data_bitmap(fragment_data[i], index_map, domain_size, i, keys, key_counts, 
                     byte_count[i], bitmap_column[i]);
                 break;
             }
