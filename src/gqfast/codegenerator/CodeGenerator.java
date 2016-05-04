@@ -842,8 +842,12 @@ public class CodeGenerator {
 			currFunction += "\nvoid " + functionName + functionParameters + " {\n";
 			currFunctionHeader += "\nextern inline void " + functionName + functionParameters + " __attribute__((always_inline));\n";
 			
-			mainString += tabString + functionName + "(" + pointerName + ", " + elementName + ");\n";
-		
+			if (hasThreading && !preThreading || !hasThreading) {
+				mainString += tabString + functionName + "(" + pointerName + ", " + elementName + ");\n";
+			}
+			else {
+				mainString += tabString + functionName + "(" + pointerName + ");\n";
+			}
 
 			currFunction += generateDecodeFunctionBodyEntityTable(pointerName, elementName, alias, currentEncoding, currentCol);
 			currFunction += "}\n";
