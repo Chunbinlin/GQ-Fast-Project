@@ -144,15 +144,13 @@ public class CodeGenerator {
 	 */
 	
 	private static String semiJoinBufferDeallocation(List<Operator> operators,
-			Metadata metadata) {
+			MetaData metadata) {
 		
 		String semiDeallocString = "\n";
 		for (Operator currentOp : operators) {
 			if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 				SemiJoinOperator semiOp = (SemiJoinOperator)currentOp;
-				int aliasID = semiOp.getDrivingAliasID();
-				MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID());
-				String alias = query.getAliases().get(aliasID);
+				String alias = semiOp.getDrivingAlias().getAlias();
 				semiDeallocString += "\tdelete[] " + alias + "_bool_array;\n";
 				semiDeallocString += "\n";
 			}
@@ -199,20 +197,15 @@ public class CodeGenerator {
 	 * 
 	 */
 	private static String initSemiJoinArray(List<Operator> operators,
-			Metadata metadata, List<String> globalsCppCode) {
+			MetaData metadata, List<String> globalsCppCode) {
 		
 		String resultString = "\n";
-		int currentQueryID = metadata.getCurrentQueryID();
-		MetaQuery query = metadata.getQueryList().get(currentQueryID);
 		
 		for (Operator currentOp: operators) {
 			if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 				SemiJoinOperator currentSemiJoinOp = (SemiJoinOperator) currentOp;
-				int aliasID = currentSemiJoinOp.getDrivingAliasID();
-				int indexID = query.getAliasIndexID(aliasID);
-				int gqFastIndexID = metadata.getIndexList().get(indexID).getGQFastIndexID();
-				
-				String alias = query.getAliases().get(aliasID);
+				String alias = currentSemiJoinOp.getAlias().getAlias();
+				int gqFastIndexID = currentSemiJoinOp.getAlias().getAssociatedIndex().getGQFastIndexID();
 				
 				String globalDeclarationString = "\nstatic bool* " + alias + "_bool_array;\n";
 				globalsCppCode.add(globalDeclarationString);
@@ -243,7 +236,7 @@ public class CodeGenerator {
 	 * 			variable declarations and assignments for Huffman and BCA related decoding information
 	 */
 	private static void initDecodeVars(List<Operator> operators, List<String> mainCppCode, 
-			List<String> globalsCppCode, Metadata metadata, MetaQuery query) {
+			List<String> globalsCppCode, MetaData metadata, MetaQuery query) {
 		
 		
 		// Skips last operator since it is the aggregation
@@ -253,42 +246,40 @@ public class CodeGenerator {
 			if (currentOperator.getType() == Operator.JOIN_OPERATOR || currentOperator.getType() == Operator.SEMIJOIN_OPERATOR) {
 				
 				int gqFastIndexID;
-				int indexID;
+				MetaIndex tempIndex;
 				String alias;
 				List<Integer> columnIDs;
 				if (currentOperator.getType() == Operator.JOIN_OPERATOR) {
 					JoinOperator tempJoinOp = (JoinOperator) currentOperator;
-					indexID = tempJoinOp.getIndexID();
-					gqFastIndexID = metadata.getIndexList().get(indexID).getGQFastIndexID();
-					int aliasID = tempJoinOp.getAliasID();
-		
-					alias = query.getAliases().get(aliasID);
+					Alias tempAlias = tempJoinOp.getAlias();
+					tempIndex = tempAlias.getAssociatedIndex();
+					gqFastIndexID = tempIndex.getGQFastIndexID();
+					alias = tempAlias.getAlias();
 					columnIDs = tempJoinOp.getColumnIDs();
 				}
 				else {
-					SemiJoinOperator semiJoinOp = (SemiJoinOperator) currentOperator;
-					indexID = semiJoinOp.getIndexID();
-					gqFastIndexID = metadata.getIndexList().get(indexID).getGQFastIndexID();
-					int aliasID = semiJoinOp.getAliasID();
-					
-					alias = query.getAliases().get(aliasID);
-					columnIDs = semiJoinOp.getColumnIDs();
+					SemiJoinOperator tempSemiJoinOp = (SemiJoinOperator) currentOperator;
+					Alias tempAlias = tempSemiJoinOp.getAlias();
+					tempIndex = tempAlias.getAssociatedIndex();
+					gqFastIndexID = tempIndex.getGQFastIndexID();
+					alias = tempAlias.getAlias();
+					columnIDs = tempSemiJoinOp.getColumnIDs();
 				}
 				
 				
 				for (int j=0; j<columnIDs.size(); j++) {
 					
 					int columnID = columnIDs.get(j);
-					MetaIndex tempIndex = metadata.getIndexList().get(indexID);
+					
 					int columnEncoding = tempIndex.getColumnEncodingsList().get(columnID);
 				
-					if (columnEncoding == Metadata.ENCODING_BCA) {
+					if (columnEncoding == MetaData.ENCODING_BCA) {
 						String nextGlobal = "\nstatic uint32_t* " + alias + "_col" + j + "_bits_info;\n";
 						globalsCppCode.add(nextGlobal);
 						String nextMain = "\n\t"+alias+ "_col" + j + "_bits_info = idx[" + gqFastIndexID + "]->dict[" + columnID + "]->bits_info;\n";
 						mainCppCode.add(nextMain);
 					}
-					else if (columnEncoding == Metadata.ENCODING_HUFFMAN) {
+					else if (columnEncoding == MetaData.ENCODING_HUFFMAN) {
 						String nextGlobal = "\nstatic int* "+ alias + "_col" + j + "_huffman_tree_array;\n";
 						nextGlobal += "static bool* " + alias + "_col" + j + "_huffman_terminator_array;\n";
 						globalsCppCode.add(nextGlobal);
@@ -348,7 +339,7 @@ public class CodeGenerator {
 		String function = "\n";
 		String tabString = "\t";
 		
-		if (currentEncoding == Metadata.ENCODING_BB) {
+		if (currentEncoding == MetaData.ENCODING_BB) {
 			function += tabString + elementName + " = 0;\n";
 			function += "\n" + tabString + "int shiftbits = 0;\n";
 			function += tabString + "do { \n";
@@ -360,7 +351,7 @@ public class CodeGenerator {
 			tabString = tabString.substring(0, tabString.length()-1);
 			function += tabString + "} while (!(*" + pointerName + "++ & 128));\n";
 		}
-		else if (currentEncoding == Metadata.ENCODING_HUFFMAN) {
+		else if (currentEncoding == MetaData.ENCODING_HUFFMAN) {
 			function += tabString + "int mask = 0x100;\n";
 			function += tabString + "bool* terminator_array = &("+alias+"_col"+currentCol+"_huffman_terminator_array[0]);\n";
 			function += tabString + "int* tree_array = &("+alias+"_col"+currentCol+"_huffman_tree_array[0]);\n";
@@ -385,11 +376,11 @@ public class CodeGenerator {
 			function += tabString + "}\n";
 			function += "\n" + tabString + elementName + " = *tree_array;\n";
 		}
-		else if (currentEncoding == Metadata.ENCODING_BCA) {
+		else if (currentEncoding == MetaData.ENCODING_BCA) {
 			function += tabString + elementName + " = " + alias + "_col" + currentCol + "_bits_info[1];\n";
 			function += tabString + elementName + " &= *" + pointerName + ";\n";
 		}
-		else if (currentEncoding == Metadata.ENCODING_UA) {
+		else if (currentEncoding == MetaData.ENCODING_UA) {
 			function += tabString + elementName + " = *" + pointerName + ";\n"; 
 		}
 		return function;
@@ -433,7 +424,7 @@ public class CodeGenerator {
 		}
 		if (columnIteration == 0) {
 			// Size is initially 0, is passed by reference, and will calculated in the function
-			if (currentEncoding == Metadata.ENCODING_UA) {			
+			if (currentEncoding == MetaData.ENCODING_UA) {			
 				function += tabString + sizeName + " = " + currentFragmentBytesName + "/" + currentByteSize + ";\n"; 
 				function += "\n" + tabString + "for (int32_t i=0; i<" + sizeName + "; i++) {\n";
 				tabString += "\t";
@@ -442,7 +433,7 @@ public class CodeGenerator {
 				function += tabString + "}\n";
 					
 			}
-			else if (currentEncoding == Metadata.ENCODING_BB) {
+			else if (currentEncoding == MetaData.ENCODING_BB) {
 							
 				function += tabString + bufferArraysPart + "[0] = 0;\n";
 				function += "\n" + tabString + "int shiftbits = 0;\n";
@@ -476,7 +467,7 @@ public class CodeGenerator {
 				tabString = tabString.substring(0, tabString.length()-1);
 				function += tabString + "}\n";
 			}
-			else if (currentEncoding == Metadata.ENCODING_HUFFMAN) {
+			else if (currentEncoding == MetaData.ENCODING_HUFFMAN) {
 				
 				function += tabString + "bool* terminate_start = &("+ alias + "_col" + currentCol + "_huffman_terminator_array[0]);\n" ;
 				function += tabString + "int* tree_array_start = &("+ alias + "_col" + currentCol + "_huffman_tree_array[0]);\n";
@@ -543,7 +534,7 @@ public class CodeGenerator {
 				tabString = tabString.substring(0, tabString.length()-1);
 				function += tabString + "}\n";
 			}
-			else if (currentEncoding == Metadata.ENCODING_BCA) {
+			else if (currentEncoding == MetaData.ENCODING_BCA) {
 				
 				String bitsInfoPrefix = alias + "_col" + currentCol + "_bits_info";
 				
@@ -567,7 +558,7 @@ public class CodeGenerator {
 		}
 		else {
 			// Size is pre-calculated and will be used to control the iteration
-			if (currentEncoding == Metadata.ENCODING_UA) {
+			if (currentEncoding == MetaData.ENCODING_UA) {
 				function += tabString + "for (int32_t i=0; i<" + sizeName + "; i++) {\n";
 				tabString += "\t";
 				function += tabString + bufferArraysPart + "[i] = *" + pointerName + "++;\n";
@@ -575,7 +566,7 @@ public class CodeGenerator {
 				function += tabString + "}\n";
 				
 			}
-			else if (currentEncoding == Metadata.ENCODING_BB) {
+			else if (currentEncoding == MetaData.ENCODING_BB) {
 				
 				
 				function += tabString + bufferArraysPart + "[0] = 0;\n";
@@ -608,7 +599,7 @@ public class CodeGenerator {
 				tabString = tabString.substring(0, tabString.length()-1);
 				function += tabString + "}\n";
 			}
-			else if (currentEncoding == Metadata.ENCODING_HUFFMAN) {
+			else if (currentEncoding == MetaData.ENCODING_HUFFMAN) {
 				
 				function += tabString + "bool* terminate_start = &("+alias+ "_col" + currentCol + "_huffman_terminator_array[0]);\n" ;
 				function += tabString + "int* tree_array_start = &("+alias + "_col" + currentCol + "_huffman_tree_array[0]);\n";
@@ -642,7 +633,7 @@ public class CodeGenerator {
 				function += tabString + "}\n";
 				
 			}
-			else if (currentEncoding == Metadata.ENCODING_BCA) {
+			else if (currentEncoding == MetaData.ENCODING_BCA) {
 				String bitsInfoPrefix = alias + "_col" + currentCol + "_bits_info";
 				
 				function += tabString + "int bit_pos = 0;\n";
@@ -696,16 +687,17 @@ public class CodeGenerator {
 	 *			A String that continues the cpp code for the original function and deals with the decoding portion of 
 	 *			the join evaluation for a particular column.
 	 */
-	private static String joinGenerateDecodeFragmentFunction(boolean preThreading, String alias, int aliasID, 
-			int columnIteration, StringBuilder tabString, MetaIndex currMetaIndex, MetaQuery query, 
-			List<String> functionHeadersCppCode, List<String> functionsCppCode, int gqFastIndexID, int currentCol,
-			String currentFragmentRow, String currentFragmentBytesName, int[][] bufferPoolTrackingArray, boolean entityFlag, int indexID) {
+	private static String joinGenerateDecodeFragmentFunction(boolean preThreading, int k, StringBuilder tabString, MetaQuery query, 
+			List<String> functionHeadersCppCode, List<String> functionsCppCode, int currentCol,
+			String currentFragmentBytesName, int[][] bufferPoolTrackingArray, boolean entityFlag, Alias currentAlias) {
 		
 		String mainString = "\n";
 		String currFunctionHeader = new String();
 		String currFunction = new String();
-		
-		
+		String currentFragmentRow = "row_" + currentAlias.getAlias();
+		String alias = currentAlias.getAlias();
+		MetaIndex currMetaIndex = currentAlias.getAssociatedIndex();
+		int gqFastIndexID = currMetaIndex.getGQFastIndexID();
 		int currentBytesSize = currMetaIndex.getColumnEncodedByteSizesList().get(currentCol);
 		int currentEncoding = currMetaIndex.getColumnEncodingsList().get(currentCol);
 		
@@ -716,31 +708,31 @@ public class CodeGenerator {
 			functionParameters += "int thread_id, ";
 		}
 		// UA pointer points to type of size of element
-		if (currentEncoding == Metadata.ENCODING_UA) {
+		if (currentEncoding == MetaData.ENCODING_UA) {
 			switch (currentBytesSize) {
-			case Metadata.BYTES_1: 
+			case MetaData.BYTES_1: 
 				pointerString = "unsigned char* " + pointerName + 
 				" = &(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]);\n";
 				functionParameters += "unsigned char* " + pointerName;
 				break;
-			case Metadata.BYTES_2: 
+			case MetaData.BYTES_2: 
 				pointerString = "int16_t* " + pointerName + 
 				" = reinterpret_cast<int16_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
 				functionParameters += "" + "int16_t* " + pointerName;
 				break;
-			case Metadata.BYTES_4:
+			case MetaData.BYTES_4:
 				pointerString = "int32_t* " + pointerName + 
 				" = reinterpret_cast<int32_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
 				functionParameters += "int32_t* " + pointerName;
 				break;
-			case Metadata.BYTES_8:
+			case MetaData.BYTES_8:
 				pointerString = "int64_t* " + pointerName +
 				" = reinterpret_cast<int64_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
 				functionParameters += "int64_t* " + pointerName;
 				break;
 			}
 		}
-		else if (entityFlag && currentEncoding == Metadata.ENCODING_BCA){
+		else if (entityFlag && currentEncoding == MetaData.ENCODING_BCA){
 			pointerString = "int64_t* " + pointerName +
 					" = reinterpret_cast<int64_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
 			functionParameters += "int64_t* " + pointerName;
@@ -758,19 +750,19 @@ public class CodeGenerator {
 
 		switch (currentEncoding) {
 
-		case Metadata.ENCODING_UA:	{
+		case MetaData.ENCODING_UA:	{
 			functionName += "_decode_UA";
 			break;
 		}
-		case Metadata.ENCODING_BCA: {
+		case MetaData.ENCODING_BCA: {
 			functionName += "_decode_BCA";
 			break;
 		}
-		case Metadata.ENCODING_BB: {
+		case MetaData.ENCODING_BB: {
 			functionName += "_decode_BB";
 			break;
 		}
-		case Metadata.ENCODING_HUFFMAN: {
+		case MetaData.ENCODING_HUFFMAN: {
 			functionName += "_decode_Huffman";
 			break;
 		}
@@ -805,7 +797,7 @@ public class CodeGenerator {
 			// First column's decoding determines the fragment size for all subsequent column decodings
 
 
-			if (columnIteration == 0) {
+			if (k == 0) {
 				mainString += tabString + "int32_t " + sizeName + " = 0;\n";
 				functionParameters += ", int32_t " + currentFragmentBytesName;
 				functionParameters += ", int32_t & " + sizeName + ")";
@@ -823,15 +815,17 @@ public class CodeGenerator {
 			else {
 				mainString += tabString + functionName + "(thread_id, " + pointerName;
 			}
-			if (columnIteration == 0 ) {
+			if (k == 0 ) {
 				mainString += ", " + currentFragmentBytesName; 
 			}
 			mainString += ", " + sizeName + ");\n";
 
+			int indexID = currMetaIndex.getIndexID();
+			int aliasID = currentAlias.getAliasID();
 			int currPool = ++bufferPoolTrackingArray[indexID][currentCol];
 			query.setBufferPoolID(aliasID, currentCol, currPool);
 			
-			currFunction += generateDecodeFunctionBody(preThreading, gqFastIndexID, alias, currentEncoding, columnIteration, 
+			currFunction += generateDecodeFunctionBody(preThreading, gqFastIndexID, alias, currentEncoding, k, 
 					currentCol, sizeName, currentFragmentBytesName, pointerName, bufferPoolTrackingArray, currPool, currentBytesSize);
 			currFunction += "}\n";
 
@@ -856,61 +850,62 @@ public class CodeGenerator {
 	 */
 	private static String getElementPrimitive(int colBytes) {
 		switch (colBytes) {
-		case Metadata.BYTES_1:	return "char";
-		case Metadata.BYTES_2:	return "int16_t";
-		case Metadata.BYTES_4:	return "int32_t";
-		case Metadata.BYTES_8:	return "int64_t";
+		case MetaData.BYTES_1:	return "char";
+		case MetaData.BYTES_2:	return "int16_t";
+		case MetaData.BYTES_4:	return "int32_t";
+		case MetaData.BYTES_8:	return "int64_t";
 		}
 		return null;
 	}
 	
 	private static String getIndexPrimitive(int colBytes) {
 		switch (colBytes) {
-		case Metadata.BYTES_1:	return "unsigned char";
-		case Metadata.BYTES_2:	return "uint16_t";
-		case Metadata.BYTES_4:	return "uint32_t";
-		case Metadata.BYTES_8:	return "uint64_t";
+		case MetaData.BYTES_1:	return "unsigned char";
+		case MetaData.BYTES_2:	return "uint16_t";
+		case MetaData.BYTES_4:	return "uint32_t";
+		case MetaData.BYTES_8:	return "uint64_t";
 		}
 		return null;
 	}
 	
 
-	private static String evaluatePreviousJoinEntityFlag(Operator currentOp,
-			MetaQuery query, boolean threadID, StringBuilder tabString,
-			int[] closingBraces, String drivingAlias, int drivingAliasCol,
-			String currAlias, List<Integer> columnIDs, int drivingAliasID, int indexByteSize, 
-			String currentFragmentRow, int gqFastIndexID, boolean preThreading, int currentAliasID, 
-			MetaIndex currMetaIndex, List<String> functionHeadersCppCode,
-			List<String> functionsCppCode, int[][] bufferPoolTrackingArray, boolean entityFlag, Metadata metadata, int indexID) {
+	private static String evaluatePreviousJoinEntityFlag(Operator currentOp, MetaQuery query, boolean threadID, StringBuilder tabString, 
+			int[] closingBraces, int drivingAliasCol, List<Integer> columnIDs, int indexByteSize, boolean preThreading, List<String> functionHeadersCppCode, 
+			List<String> functionsCppCode, int[][] bufferPoolTrackingArray, boolean entityFlag, Alias currentAlias, Alias drivingAlias) {
 		String mainString = new String();
+		
+		String drivAliasString = drivingAlias.getAlias();
 		
 		// SemiJoin Check
 		if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
+			int drivingAliasID = drivingAlias.getAliasID();
 			int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
-			SemiJoinOperator tempOp = (SemiJoinOperator)currentOp;
-			int drivingindexID = query.getAliasIndexID(drivingAliasID);
-			int drivingGQFastIndexID = metadata.getIndexList().get(drivingindexID).getGQFastIndexID();
+			int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
+			
 			if (threadID) {
-				mainString += "\n" + tabString + "if (!(" + drivingAlias 
-						+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
+				mainString += "\n" + tabString + "if (!(" + drivAliasString 
+						+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
 					closingBraces[0]++;
 					tabString.append("\t");
-					mainString += tabString + drivingAlias + 
-						"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
+					mainString += tabString + drivAliasString + 
+						"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
 			}
 			else {
-				mainString += "\n" + tabString + "if (!(" + drivingAlias 
-					+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
+				mainString += "\n" + tabString + "if (!(" + drivAliasString 
+					+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
 				closingBraces[0]++;
 				tabString.append("\t");
-				mainString += tabString + drivingAlias + 
-					"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
+				mainString += tabString + drivAliasString + 
+					"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
 			}
 		}
 		
-		String elementString = drivingAlias  + "_col" + drivingAliasCol + "_element";
+		String elementString = drivAliasString  + "_col" + drivingAliasCol + "_element";
 		mainString += "\n" + tabString + getIndexPrimitive(indexByteSize) + "* ";
 
+		String currentFragmentRow = "row_" + currentAlias.getAlias();
+		int gqFastIndexID = currentAlias.getAssociatedIndex().getGQFastIndexID();
+		String currAliasString = currentAlias.getAlias();
 		mainString += currentFragmentRow + " = idx[" + gqFastIndexID + "]->" +
 				"index_map["+ elementString +"];\n"; 
 		
@@ -919,7 +914,7 @@ public class CodeGenerator {
 			int currentCol = columnIDs.get(k);
 
 			if (k == 0) {
-				currentFragmentBytesName = currAlias + "_col" + currentCol + "_bytes";
+				currentFragmentBytesName = currAliasString + "_col" + currentCol + "_bytes";
 				mainString += tabString + "int32_t " + currentFragmentBytesName + " = " +
 						"idx[" + gqFastIndexID + "]->index_map["+ elementString +"+1]" +
 						"[" + currentCol + "] - " + currentFragmentRow + "[" + currentCol + "];\n";
@@ -928,34 +923,31 @@ public class CodeGenerator {
 				tabString.append("\t");
 			}
 		
-			mainString += joinGenerateDecodeFragmentFunction(preThreading, currAlias, currentAliasID, k, tabString, currMetaIndex, query, 
-					functionHeadersCppCode, functionsCppCode,gqFastIndexID, currentCol, currentFragmentRow, 
-					currentFragmentBytesName, bufferPoolTrackingArray, entityFlag, indexID);
+			mainString += joinGenerateDecodeFragmentFunction(preThreading, k, tabString, query, functionHeadersCppCode, functionsCppCode, 
+					currentCol, currentFragmentBytesName, bufferPoolTrackingArray, entityFlag, currentAlias);
 			
 		}
 		
 		return mainString;
 	}
 	
-	private static String evaluatePreviousJoinRelationshipTable(
-			Operator currentOp, MetaQuery query, boolean threadID,
-			StringBuilder tabString, int[] closingBraces, String drivingAlias,
-			int drivingAliasCol, String currAlias, List<Integer> columnIDs,
-			int drivingAliasID, int indexByteSize, String currentFragmentRow,
-			int gqFastIndexID, boolean preThreading, int currentAliasID,
-			MetaIndex currMetaIndex, List<String> functionHeadersCppCode,
-			List<String> functionsCppCode, int[][] bufferPoolTrackingArray,
-			boolean entityFlag, String previousAlias, int previousIndexID, int previousGQFastIndexID,
-			List<Integer> previousColumnIDs, Metadata metadata, boolean justStartedThreading, int indexID) {
+
+	
+	private static String evaluatePreviousJoinRelationshipTable(Operator currentOp, MetaQuery query, boolean threadID, StringBuilder tabString, 
+			int[] closingBraces, int drivingAliasCol, List<Integer> columnIDs, int indexByteSize, boolean preThreading, List<String> functionHeadersCppCode, 
+			List<String> functionsCppCode, int[][] bufferPoolTrackingArray, boolean entityFlag, List<Integer> previousColumnIDs,
+			boolean justStartedThreading, Alias currentAlias, Alias drivingAlias, Alias previousAlias) {
 		String mainString = new String();
+		
+		String prevAlias = previousAlias.getAlias();
 		
 		if (justStartedThreading) {
 			mainString += "\n" + tabString + "for (; " +
-					previousAlias + "_it < " + previousAlias + "_fragment_size; " + previousAlias + "_it++) {\n";
+					prevAlias + "_it < " + prevAlias + "_fragment_size; " + prevAlias + "_it++) {\n";
 		}
 		else {
-			mainString += "\n" + tabString + "for (int32_t " + previousAlias + "_it = 0; " +
-				previousAlias + "_it < " + previousAlias + "_fragment_size; " + previousAlias + "_it++) {\n";
+			mainString += "\n" + tabString + "for (int32_t " + prevAlias + "_it = 0; " +
+				prevAlias + "_it < " + prevAlias + "_fragment_size; " + prevAlias + "_it++) {\n";
 		}
 		closingBraces[0]++;
 		tabString.append("\t");
@@ -964,52 +956,56 @@ public class CodeGenerator {
 		
 		// SemiJoin Check
 		if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
+			int drivingAliasID = drivingAlias.getAliasID();
 			int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
-			SemiJoinOperator tempOp = (SemiJoinOperator)currentOp;
-			int drivingIndexID = query.getAliasIndexID(drivingAliasID);
-			int drivingGQFastIndexID = metadata.getIndexList().get(drivingIndexID).getGQFastIndexID();
+			int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
+			String drivAliasString = drivingAlias.getAlias();
 			if (threadID) {
-				mainString += "\n" + tabString + "if (!(" + drivingAlias 
-						+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
+				mainString += "\n" + tabString + "if (!(" + drivAliasString 
+						+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
 					closingBraces[0]++;
 					tabString.append("\t");
-					mainString += tabString + drivingAlias + 
-						"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
+					mainString += tabString + drivAliasString + 
+						"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
 			}
 			else {
-				mainString += "\n" + tabString + "if (!(" + drivingAlias 
-					+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]])) {\n";
+				mainString += "\n" + tabString + "if (!(" + drivAliasString 
+					+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
 				closingBraces[0]++;
 				tabString.append("\t");
-				mainString += tabString + drivingAlias + 
-					"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivingAlias+ "_it]] = true;\n";
+				mainString += tabString + drivAliasString + 
+					"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
 			}
 		}
 		
 		for (int previousColID : previousColumnIDs) {
 
-			MetaIndex previousIndex = metadata.getIndexList().get(previousIndexID);
+			MetaIndex previousIndex = previousAlias.getAssociatedIndex();
+			int previousIndexID = previousIndex.getIndexID();
+			int previousGQFastIndexID = previousIndex.getGQFastIndexID();
 			int colBytes = previousIndex.getColumnEncodedByteSizesList().get(previousColID);
 			mainString += tabString + getElementPrimitive(colBytes) + " ";
 
 			if (threadID) {
-				mainString += previousAlias + "_col" + previousColID + "_element = " +
+				mainString += prevAlias + "_col" + previousColID + "_element = " +
 					"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][thread_id]" +
-					"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
+					"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + prevAlias + "_it];\n";
 			}
 			else {
-				mainString += previousAlias + "_col" + previousColID + "_element = " +
+				mainString += prevAlias + "_col" + previousColID + "_element = " +
 						"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][0]" +
-						"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
+						"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + prevAlias + "_it];\n";
 			}
 			
 		}
 
 		
 		
-		String elementString = drivingAlias + "_col" + drivingAliasCol + "_element";
-
-
+		String elementString = drivingAlias.getAlias() + "_col" + drivingAliasCol + "_element";
+		String currentFragmentRow = "row_" + currentAlias.getAlias();
+		String currAliasString = currentAlias.getAlias();
+		int gqFastIndexID = currentAlias.getAssociatedIndex().getGQFastIndexID();
+		
 		mainString += "\n" + tabString + getIndexPrimitive(indexByteSize) + "* ";
 		mainString += currentFragmentRow + " = idx[" + gqFastIndexID + "]->" +
 				"index_map["+ elementString +"];\n"; 
@@ -1018,7 +1014,7 @@ public class CodeGenerator {
 			int currentCol = columnIDs.get(k);
 
 			if (k == 0 && !entityFlag) {
-				currentFragmentBytesName = currAlias + "_col" + currentCol + "_bytes";
+				currentFragmentBytesName = currAliasString + "_col" + currentCol + "_bytes";
 				mainString += tabString + "int32_t " + currentFragmentBytesName + " = " +
 						"idx[" + gqFastIndexID + "]->index_map["+ elementString +"+1]" +
 						"[" + currentCol + "] - " + currentFragmentRow + "[" + currentCol + "];\n";
@@ -1027,14 +1023,12 @@ public class CodeGenerator {
 				tabString.append("\t");
 			}
 
-			mainString += joinGenerateDecodeFragmentFunction(preThreading, currAlias, currentAliasID, k, tabString, 
-					currMetaIndex, query, functionHeadersCppCode, functionsCppCode,gqFastIndexID, currentCol, currentFragmentRow, 
-					currentFragmentBytesName, bufferPoolTrackingArray, entityFlag, indexID);
+			mainString += joinGenerateDecodeFragmentFunction(preThreading, k, tabString, query, functionHeadersCppCode, functionsCppCode,
+					currentCol, currentFragmentBytesName, bufferPoolTrackingArray, entityFlag, currentAlias);
 
 		}
 		
-		
-		
+
 		return mainString;
 	}
 
@@ -1042,33 +1036,34 @@ public class CodeGenerator {
 
 	
 
-	private static String evaluatePreviousSelection(Operator previousOp, MetaQuery query, StringBuilder tabString, 
-			int[] closingBraces, String drivingAlias, int drivingAliasCol, int indexByteSize, String currentFragmentRow,
-			int gqFastIndexID, List<Integer> columnIDs, boolean entityFlag, String currAlias, int currentAliasID,
-			MetaIndex currMetaIndex, List<String> functionHeadersCppCode, List<String> functionsCppCode, boolean preThreading,
-			int[][] bufferPoolTrackingArray, boolean justStartedThreading, int indexID) {
+	private static String  evaluatePreviousSelection(Operator previousOp, MetaQuery query, StringBuilder tabString, 
+			int[] closingBraces, int drivingAliasCol, int indexByteSize, 
+			List<Integer> columnIDs, boolean entityFlag, List<String> functionHeadersCppCode, List<String> functionsCppCode, boolean preThreading,
+			int[][] bufferPoolTrackingArray, boolean justStartedThreading, Alias drivingAlias, Alias currentAlias) {
 		
 		String mainString = new String();
 		
+		String currentFragmentRow = "row_" + currentAlias.getAlias();
+		String currAliasString = currentAlias.getAlias();
+		int gqFastIndexID = currentAlias.getAssociatedIndex().getGQFastIndexID();
 		SelectionOperator previousSelectionOp = (SelectionOperator) previousOp;
 
-		int previousAliasID = previousSelectionOp.getAliasID();
-		String previousAlias = query.getAliases().get(previousAliasID);
+		String previousAliasString = previousSelectionOp.getAlias().getAlias();
 
 		if (justStartedThreading) {
-			mainString += "\n" + tabString + "for (; " + previousAlias + "_it<" + 
-					previousSelectionOp.getSelectionsList().size() + "; " + previousAlias + "_it++) {\n";
+			mainString += "\n" + tabString + "for (; " + previousAliasString + "_it<" + 
+					previousSelectionOp.getSelectionsList().size() + "; " + previousAliasString + "_it++) {\n";
 		}
 		else {
-			mainString += "\n" + tabString + "for (int "+ previousAlias + "_it = 0; " + previousAlias + "_it<" + 
-				previousSelectionOp.getSelectionsList().size() + "; " + previousAlias + "_it++) {\n";
+			mainString += "\n" + tabString + "for (int "+ previousAliasString + "_it = 0; " + previousAliasString + "_it<" + 
+				previousSelectionOp.getSelectionsList().size() + "; " + previousAliasString + "_it++) {\n";
 		}
 		closingBraces[0]++;
 		tabString.append("\t");
-		mainString += "\n" + tabString + "int64_t " + previousAlias + "_col0_element = " + previousAlias + "_list[" +previousAlias+"_it];\n";
+		mainString += "\n" + tabString + "int64_t " + previousAliasString + "_col0_element = " + previousAliasString + "_list[" +previousAliasString+"_it];\n";
 
 
-		String elementString = drivingAlias + "_col" + drivingAliasCol + "_element";
+		String elementString = drivingAlias.getAlias() + "_col" + drivingAliasCol + "_element";
 
 
 		mainString += "\n" + tabString + getIndexPrimitive(indexByteSize) + "* ";
@@ -1079,7 +1074,7 @@ public class CodeGenerator {
 			int currentCol = columnIDs.get(k);
 
 			if (k == 0 && !entityFlag) {
-				currentFragmentBytesName = currAlias + "_col" + currentCol + "_bytes";
+				currentFragmentBytesName = currAliasString + "_col" + currentCol + "_bytes";
 				mainString += tabString + "int32_t " + currentFragmentBytesName + " = " +
 						"idx[" + gqFastIndexID + "]->index_map["+ elementString +"+1]" +
 						"[" + currentCol + "] - " + currentFragmentRow + "[" + currentCol + "];\n";
@@ -1088,8 +1083,8 @@ public class CodeGenerator {
 				tabString.append("\t");
 			}
 
-			mainString += joinGenerateDecodeFragmentFunction(preThreading, currAlias, currentAliasID, k, tabString, currMetaIndex, query, functionHeadersCppCode, functionsCppCode,gqFastIndexID, currentCol, currentFragmentRow, 
-					currentFragmentBytesName, bufferPoolTrackingArray, entityFlag, indexID);
+			mainString += joinGenerateDecodeFragmentFunction(preThreading, k, tabString, query, functionHeadersCppCode, functionsCppCode,currentCol,
+					currentFragmentBytesName, bufferPoolTrackingArray, entityFlag, currentAlias);
 
 		}
 		
@@ -1117,57 +1112,46 @@ public class CodeGenerator {
 	 * 
 	 */
 		
-	private static String evaluateJoin(boolean preThreading, int i, List<Operator> operators, Operator currentOp, Metadata metadata, 
+	private static String evaluateJoin(boolean preThreading, int i, List<Operator> operators, MetaData metadata, 
 			StringBuilder tabString, int[] closingBraces, int[][] bufferPoolTrackingArray, MetaQuery query, List<String> functionHeadersCppCode, List<String> functionsCppCode) {
 
-		int gqFastIndexID;
-		int drivingAliasID;
+		Operator currentOp = operators.get(i);
+		
+		Alias drivingAlias;
+		Alias currentAlias;
+		
 		int drivingAliasCol;
-		int currentAliasID;
 		boolean entityFlag;
 		boolean threadID = true;
 		List<Integer> columnIDs;
-		int indexID;
+		
 		if (currentOp.getType() == Operator.JOIN_OPERATOR) {
 			JoinOperator currentJoinOp = (JoinOperator) currentOp;
-			indexID = currentJoinOp.getIndexID();
-			gqFastIndexID = metadata.getIndexList().get(indexID).getGQFastIndexID();
-			drivingAliasID = currentJoinOp.getDrivingAliasID();
+			drivingAlias = currentJoinOp.getDrivingAlias();
+			currentAlias = currentJoinOp.getAlias();
 			drivingAliasCol = currentJoinOp.getDrivingAliasColumn();
-			
-			currentAliasID = currentJoinOp.getAliasID();
 			columnIDs = currentJoinOp.getColumnIDs();
 			entityFlag = currentJoinOp.isEntityFlag();
 		}
 		// Assumed to be Semi-Join
 		else {
 			SemiJoinOperator currentSemiJoinOp = (SemiJoinOperator) currentOp;
-			indexID = currentSemiJoinOp.getIndexID();
-			gqFastIndexID = metadata.getIndexList().get(indexID).getGQFastIndexID();
-			drivingAliasID = currentSemiJoinOp.getDrivingAliasID();
+			drivingAlias = currentSemiJoinOp.getDrivingAlias();
+			currentAlias = currentSemiJoinOp.getAlias();	
 			drivingAliasCol = currentSemiJoinOp.getDrivingAliasColumn();
-			
-			currentAliasID = currentSemiJoinOp.getAliasID();
 			columnIDs = currentSemiJoinOp.getColumnIDs();
 			entityFlag = currentSemiJoinOp.isEntityFlag();
 		}
-		int drivingAliasIndexID = query.getAliasIndexID(drivingAliasID);
-		int drivingGQFastID = -1;
-		if (drivingAliasIndexID >= 0) { 
-			drivingGQFastID = metadata.getIndexList().get(drivingAliasIndexID).getGQFastIndexID();
-		}
-		String drivingAlias = query.getAliases().get(drivingAliasID);
-		String currAlias = query.getAliases().get(currentAliasID);
+		
 		if (preThreading) {
-			query.setPreThreading(currentAliasID, true);
+			query.setPreThreading(currentAlias.getAliasID(), true);
 		}
-		if (query.getPreThreading(drivingAliasID)) {
+		if (query.getPreThreading(drivingAlias.getAliasID())) {
 			threadID = false;
 		}
-		MetaIndex currMetaIndex = metadata.getIndexList().get(indexID);
-		int indexByteSize = currMetaIndex.getIndexMapByteSize();
+		int indexByteSize = currentAlias.getAssociatedIndex().getIndexMapByteSize();
 		String mainString = new String();
-		String currentFragmentRow = "row_" + currAlias;
+		
 		
 		if (i == 0) {
 			//TODO: Implementation when First Operator is a Join, meaning there is no selection
@@ -1187,9 +1171,7 @@ public class CodeGenerator {
 				else if (previousOp.getType() == Operator.JOIN_OPERATOR || previousOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 					loopAgain = false;
 					boolean previousEntityFlag;
-					int previousAliasID;
-					String previousAlias;
-					int previousIndexID;
+					Alias previousAlias;
 					
 					List<Integer> previousColumnIDs;
 					//int previousLoopColumn;
@@ -1197,9 +1179,7 @@ public class CodeGenerator {
 					if (previousOp.getType() == Operator.JOIN_OPERATOR) {
 						JoinOperator previousJoinOp = (JoinOperator) previousOp;
 						previousEntityFlag = previousJoinOp.isEntityFlag();
-						previousAliasID = previousJoinOp.getAliasID();
-						previousAlias = query.getAliases().get(previousAliasID);
-						previousIndexID = previousJoinOp.getIndexID();
+						previousAlias = previousJoinOp.getAlias();
 						previousColumnIDs = previousJoinOp.getColumnIDs();
 						//previousLoopColumn = previousJoinOp.loopColumn;
 
@@ -1207,40 +1187,35 @@ public class CodeGenerator {
 					else {
 						SemiJoinOperator previousSemiJoinOp = (SemiJoinOperator) previousOp;
 						previousEntityFlag = previousSemiJoinOp.isEntityFlag();
-						previousAliasID = previousSemiJoinOp.getAliasID();
-						previousAlias = query.getAliases().get(previousAliasID);		
-						previousIndexID = previousSemiJoinOp.getIndexID();
+						previousAlias = previousSemiJoinOp.getAlias();
 						previousColumnIDs = previousSemiJoinOp.getColumnIDs();
 						//previousLoopColumn = previousSemiJoinOp.loopColumn;
 					}
-					int previousGQFastIndexID = metadata.getIndexList().get(previousIndexID).getGQFastIndexID();
+					
 					if (previousEntityFlag) {
 						// Previous operator was an entity table
 						// There is no need for an additional loop
 						
-						mainString += evaluatePreviousJoinEntityFlag(currentOp, query, threadID, tabString, closingBraces, drivingAlias, 
-								drivingAliasCol, currAlias, columnIDs, drivingAliasID, indexByteSize, currentFragmentRow, gqFastIndexID,
-								preThreading, currentAliasID, currMetaIndex, functionHeadersCppCode, functionsCppCode, 
-								bufferPoolTrackingArray, entityFlag, metadata, indexID);
+						mainString += evaluatePreviousJoinEntityFlag(currentOp, query, threadID, tabString, closingBraces,
+								drivingAliasCol, columnIDs, indexByteSize, preThreading, functionHeadersCppCode, 
+								functionsCppCode, bufferPoolTrackingArray, entityFlag, currentAlias, drivingAlias);
 
 
 					}
 					else{
 						// Previous operator was relationship table
-						mainString += evaluatePreviousJoinRelationshipTable(currentOp, query, threadID, tabString, closingBraces, drivingAlias, 
-								drivingAliasCol, currAlias, columnIDs, drivingGQFastID, indexByteSize, currentFragmentRow, gqFastIndexID,
-								preThreading, currentAliasID, currMetaIndex, functionHeadersCppCode, functionsCppCode, bufferPoolTrackingArray, entityFlag, 
-								previousAlias, previousIndexID, previousGQFastIndexID, previousColumnIDs, metadata, justStartedThreading, indexID);
+						mainString += evaluatePreviousJoinRelationshipTable(currentOp, query, threadID, tabString, closingBraces,
+								drivingAliasCol, columnIDs, indexByteSize, preThreading, functionHeadersCppCode, 
+								functionsCppCode, bufferPoolTrackingArray, entityFlag, previousColumnIDs,  
+								justStartedThreading, currentAlias, drivingAlias, previousAlias);
 
 					}
 				}
 				else if (previousOp.getType() == Operator.SELECTION_OPERATOR) {
 					loopAgain = false;
-					mainString += evaluatePreviousSelection(previousOp, query, tabString, 
-							closingBraces, drivingAlias, drivingAliasCol, indexByteSize, currentFragmentRow,
-							gqFastIndexID, columnIDs, entityFlag, currAlias, currentAliasID,
-							currMetaIndex, functionHeadersCppCode, functionsCppCode, preThreading,
-							bufferPoolTrackingArray, justStartedThreading, indexID);
+					mainString += evaluatePreviousSelection(previousOp, query, tabString, closingBraces, drivingAliasCol, 
+							indexByteSize, columnIDs, entityFlag, functionHeadersCppCode, functionsCppCode, preThreading,
+							bufferPoolTrackingArray, justStartedThreading, drivingAlias, currentAlias);
 					
 
 				}
@@ -1257,8 +1232,7 @@ public class CodeGenerator {
 		String mainSelectionString = new String();
 		
 		SelectionOperator selectionOp = (SelectionOperator) currentOp;
-		int selectionAliasID = selectionOp.getAliasID();
-		String selectionAlias = query.getAliases().get(selectionAliasID);
+		String selectionAlias = selectionOp.getAlias().getAlias();
 		
 		int numSelections = selectionOp.getSelectionsList().size();
 		
@@ -1275,8 +1249,10 @@ public class CodeGenerator {
 	}
 
 	private static String evaluateAggregation(boolean preThreading, int i, List<Operator> operators,
-			Operator currentOp, Metadata metadata, StringBuilder tabString,
+			MetaData metadata, StringBuilder tabString,
 			int[] closingBraces, int[][] bufferPoolTrackingArray, MetaQuery query) {
+		
+		Operator currentOp = operators.get(i);
 		
 		String mainString = new String();
 		
@@ -1288,8 +1264,8 @@ public class CodeGenerator {
 			JoinOperator previousJoinOp = (JoinOperator) previousOp;
 			if (!previousJoinOp.isEntityFlag()) {
 				
-				int previousAliasID = previousJoinOp.getAliasID();
-				String previousAlias = query.getAliases().get(previousAliasID);
+				String previousAlias = previousJoinOp.getAlias().getAlias();
+				int previousAliasID = previousJoinOp.getAlias().getAliasID();
 				boolean previousThreadID = query.getPreThreading(previousAliasID);
 				
 				
@@ -1298,8 +1274,8 @@ public class CodeGenerator {
 				closingBraces[0]++;
 				tabString.append("\t");
 
-				int previousIndexID = previousJoinOp.getIndexID();
-				int previousGQFastIndexID = metadata.getIndexList().get(previousIndexID).getGQFastIndexID();
+				int previousIndexID = previousJoinOp.getAlias().getAssociatedIndex().getIndexID();
+				int previousGQFastIndexID = previousJoinOp.getAlias().getAssociatedIndex().getGQFastIndexID();
 				for (int previousColID : previousJoinOp.getColumnIDs()) {
 					MetaIndex previousIndex = metadata.getIndexList().get(previousIndexID);
 					int colBytes = previousIndex.getColumnEncodedByteSizesList().get(previousColID);
@@ -1323,10 +1299,9 @@ public class CodeGenerator {
 			
 		}
 				
-		int drivingAliasID = aggregationOp.getDrivingAlias();
-		String drivingAlias = query.getAliases().get(drivingAliasID); 
+		String drivingAlias = aggregationOp.getDrivingAlias().getAlias(); 
 		int drivingAliasCol = aggregationOp.getDrivingAliasColumn();
-		int drivingAliasIndex = aggregationOp.getDrivingAliasIndexID();
+		int drivingAliasIndex = aggregationOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
 		String elementString = drivingAlias + "_col" + drivingAliasCol + "_element";
 		
 
@@ -1345,7 +1320,7 @@ public class CodeGenerator {
 				String num_letter = Character.toString(tokens[j].charAt(2));
 				int aggregationAliasNum = Integer.parseInt(num_letter);
 				int aliasID = aggregationOp.getAggregationVariablesAliases().get(aggregationAliasNum);
-				String alias = query.getAliases().get(aliasID);
+				String alias = query.getAliases().get(aliasID).getAlias();
 				int aliasCol = aggregationOp.getAggregationVariablesColumns().get(aggregationAliasNum);
 				String fullElementName = alias + "_col" + aliasCol + "_element";
 				reconstructedString += fullElementName;
@@ -1388,15 +1363,15 @@ public class CodeGenerator {
 	 * 
 	 * 
 	 */
-	private static String initThreading(Operator currentOp, Metadata metadata,
+	private static String initThreading(Operator currentOp, MetaData metadata,
 			StringBuilder tabString, MetaQuery query,
 			List<String> functionHeadersCppCode, List<String> functionsCppCode) {
 		
 		String mainString = new String();
 		
 		ThreadingOperator threadingOp = (ThreadingOperator) currentOp;
-		int aliasID = threadingOp.getDrivingAliasID();
-		String alias = query.getAliases().get(aliasID);
+		
+		String alias = threadingOp.getDrivingAlias().getAlias();
 		
 		mainString += "\n" + tabString + "int32_t thread_size = " + alias + "_fragment_size/NUM_THREADS;\n"; 
 		mainString += tabString + "int32_t position = 0;\n";
@@ -1453,7 +1428,7 @@ public class CodeGenerator {
 	* 
 	*/
 	private static void evaluateOperators(List<Operator> operators,
-			MetaQuery query, Metadata metadata, List<String> mainCppCode, List<String> functionHeadersCppCode,
+			MetaQuery query, MetaData metadata, List<String> mainCppCode, List<String> functionHeadersCppCode,
 			List<String> functionsCppCode) {
 		
 		StringBuilder tabString = new StringBuilder("\t");
@@ -1492,13 +1467,13 @@ public class CodeGenerator {
 			}
 			else if (opType == Operator.JOIN_OPERATOR || opType == Operator.SEMIJOIN_OPERATOR) {
 				if (preThreadingOp) {
-					mainCppCode.add(evaluateJoin(preThreadingOp, i, operators, currentOp, 
+					mainCppCode.add(evaluateJoin(preThreadingOp, i, operators, 
 							metadata, tabString, closingBraces, bufferPoolTrackingArray, query, 
 							functionHeadersCppCode, functionsCppCode));
 				}
 				else {
 					String temp = functionsCppCode.get(threadingFunctionID);
-					temp += evaluateJoin(preThreadingOp, i, operators, currentOp,
+					temp += evaluateJoin(preThreadingOp, i, operators,
 							metadata, threadingTabString, threadingClosingBraces, bufferPoolTrackingArray, query,
 							functionHeadersCppCode, functionsCppCode);
 					functionsCppCode.set(threadingFunctionID, temp);
@@ -1509,12 +1484,12 @@ public class CodeGenerator {
 			}
 			else if (opType == Operator.AGGREGATION_OPERATOR) {
 				if (preThreadingOp) {
-					mainCppCode.add(evaluateAggregation(preThreadingOp, i, operators, currentOp, metadata, tabString, 
+					mainCppCode.add(evaluateAggregation(preThreadingOp, i, operators, metadata, tabString, 
 							closingBraces, bufferPoolTrackingArray, query));
 				}
 				else {
 					String temp = functionsCppCode.get(threadingFunctionID);
-					temp += evaluateAggregation(preThreadingOp, i, operators, currentOp, metadata, threadingTabString, 
+					temp += evaluateAggregation(preThreadingOp, i, operators, metadata, threadingTabString, 
 							threadingClosingBraces, bufferPoolTrackingArray, query);
 					functionsCppCode.set(threadingFunctionID, temp);
 				}
@@ -1559,7 +1534,7 @@ public class CodeGenerator {
 
 
 	private static void initQueryBufferPool(MetaQuery query,
-			List<Operator> operators, Metadata metadata) {
+			List<Operator> operators, MetaData metadata) {
 		
 		for (Operator currentOp : operators) {
 
@@ -1572,13 +1547,13 @@ public class CodeGenerator {
 				
 				if (currentOp.getType() == Operator.JOIN_OPERATOR) {
 					JoinOperator tempOp = (JoinOperator) currentOp;
-					aliasID = tempOp.getAliasID();
-					indexID = tempOp.getIndexID();
+					aliasID = tempOp.getAlias().getAliasID();
+					indexID = tempOp.getAlias().getAssociatedIndex().getIndexID();
 				}
 				else {
 					SemiJoinOperator tempOp = (SemiJoinOperator) currentOp;
-					aliasID = tempOp.getAliasID();
-					indexID = tempOp.getIndexID();
+					aliasID = tempOp.getAlias().getAliasID();
+					indexID = tempOp.getAlias().getAssociatedIndex().getIndexID();
 				}
 
 				//boolean found = false;
@@ -1586,23 +1561,14 @@ public class CodeGenerator {
 					
 				int numColumns = currIndex.getNumColumns();
 				query.initBufferPoolArray(aliasID, numColumns);
-						//found = true;
-					//	break;
-			//		}
-			//	}
-				
-			/*	if (!found) {
-					System.err.println("Error! IndexID match not found in initQueryBufferPool function");
-					System.err.println("missing id was " + indexID);
-				}
-				*/
+
 			}
 		}
 	}
 	
 
 
-	public static void generateCode(List<Operator> operators, Metadata metadata) {
+	public static void generateCode(List<Operator> operators, MetaData metadata) {
 		
 		// The last operator should be the aggregate operator
 		AggregationOperator aggregation = (AggregationOperator) operators.get(operators.size() - 1); 

@@ -13,35 +13,32 @@ public class MetaQuery {
 	private int numThreads;
 	private int numBuffers;
 	private int bufferPoolSize;
-
-	private Set<Integer> indexIDs;
-	private List<String> aliases;
+	private List<Alias> aliases;
 	private int[][] aliasBufferPoolIDs;
 	private boolean[] preThreading;
-	private Map<Integer, Integer> aliasIndexIDMap;
-	
 	
 	public MetaQuery(int queryID, String queryName, int numThreads,
-			int numBuffers, int bufferPoolSize, List<String> aliases, Map<Integer,Integer> aliasIndexIDMap) {
+			int numBuffers, int bufferPoolSize, List<Alias> aliases) {
 	
 		this.queryID = queryID;
 		this.queryName = queryName;
 		this.numThreads = numThreads;
 		this.numBuffers = numBuffers;
 		this.bufferPoolSize = bufferPoolSize;
-		this.aliases = aliases;
-		this.aliasIndexIDMap = aliasIndexIDMap;
-		indexIDs = new HashSet<Integer>();
+		this.aliases = aliases;	
 		aliasBufferPoolIDs = new int[aliases.size()+1][];
 		preThreading = new boolean[aliases.size()+1];
 	}
 
 	public Set<Integer> getIndexIDs() {
+		Set<Integer> indexIDs = new HashSet<Integer>();
+		for (Alias nextAlias : aliases) {
+			if (nextAlias.getAssociatedIndex() != null) {
+				int nextIndexID = nextAlias.getAssociatedIndex().getGQFastIndexID();
+				indexIDs.add(nextIndexID);
+			}
+		}
 		return indexIDs;
-	}
-
-	public void setIndexID(int indexID) {
-		indexIDs.add(indexID);
 	}
 
 	public int getQueryID() {
@@ -64,10 +61,10 @@ public class MetaQuery {
 		return bufferPoolSize;
 	}
 
-	public List<String> getAliases() {
+	public List<Alias> getAliases() {
 		return aliases;
 	}
-
+	
 	public void initBufferPoolArray(int aliasID, int num_encodings) {
 		aliasBufferPoolIDs[aliasID] = new int[num_encodings+1];
 	}
@@ -86,12 +83,6 @@ public class MetaQuery {
 	
 	public void setBufferPoolID(int aliasID, int colID, int poolID) {
 		aliasBufferPoolIDs[aliasID][colID] = poolID;
-	}
-
-	public int getAliasIndexID(int index) {
-		return aliasIndexIDMap.get(index);
-	}
-	
-	
+	}	
 	
 }

@@ -151,7 +151,7 @@ public class TestCasesSemmedDB {
 		
 	}
 
-	private static void initSemmedDBQueries(Metadata metadata, String queryName, int numThreads) {
+	private static void initSemmedDBQueries(MetaData metadata, String queryName, int numThreads) {
 
 		List<String> aliases = new ArrayList<String>();
 		aliases.add("concept1");
@@ -177,85 +177,85 @@ public class TestCasesSemmedDB {
 	}
 
 
-	private static void initSemmedDBIndexes(Metadata metadata) {
+	private static void initSemmedDBIndexes(MetaData metadata) {
 		// CS1
 		int indexID = 0;
 		int numColumns = 1;
 		List<Integer> columnEncodingsList0 = new ArrayList<Integer>();
-		columnEncodingsList0.add(Metadata.ENCODING_BB);
+		columnEncodingsList0.add(MetaData.ENCODING_BB);
 		List<Integer> columnEncodedByteSizesList0 = new ArrayList<Integer>();
-		columnEncodedByteSizesList0.add(Metadata.BYTES_4);
+		columnEncodedByteSizesList0.add(MetaData.BYTES_4);
 		
-		MetaIndex CS1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
+		MetaIndex CS1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
 		metadata.getIndexList().add(CS1);
 		
 		// PA1
 		indexID = 1;
 		numColumns = 1;
 		List<Integer> columnEncodingsList1 = new ArrayList<Integer>();
-		columnEncodingsList1.add(Metadata.ENCODING_BB);
+		columnEncodingsList1.add(MetaData.ENCODING_BB);
 		List<Integer> columnEncodedByteSizesList1 = new ArrayList<Integer>();
-		columnEncodedByteSizesList1.add(Metadata.BYTES_4);
+		columnEncodedByteSizesList1.add(MetaData.BYTES_4);
 		
-		MetaIndex PA1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
+		MetaIndex PA1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
 		metadata.getIndexList().add(PA1);
 
 		// SP1
 		indexID = 2;
 		numColumns = 1;
 		List<Integer> columnEncodingsList2 = new ArrayList<Integer>();
-		columnEncodingsList2.add(Metadata.ENCODING_BB);	
+		columnEncodingsList2.add(MetaData.ENCODING_BB);	
 		List<Integer >columnEncodedByteSizesList2 = new ArrayList<Integer>();
-		columnEncodedByteSizesList2.add(Metadata.BYTES_4);
-		MetaIndex SP1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
+		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
+		MetaIndex SP1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
 		metadata.getIndexList().add(SP1);
 		
 		// SP2
 		indexID = 3;
 		numColumns = 1;
 		List<Integer> columnEncodingsList3 = new ArrayList<Integer>();
-		columnEncodingsList3.add(Metadata.ENCODING_HUFFMAN);
+		columnEncodingsList3.add(MetaData.ENCODING_HUFFMAN);
 		
 		List<Integer >columnEncodedByteSizesList3 = new ArrayList<Integer>();
-		columnEncodedByteSizesList3.add(Metadata.BYTES_4);
+		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		
-		MetaIndex SP2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		MetaIndex SP2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
 		metadata.getIndexList().add(SP2);
 		
 		// PA2
 		indexID = 4;
 		numColumns = 1;
 		List<Integer> columnEncodingsList4 = new ArrayList<Integer>();
-		columnEncodingsList4.add(Metadata.ENCODING_HUFFMAN);
+		columnEncodingsList4.add(MetaData.ENCODING_HUFFMAN);
 		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
-		columnEncodedByteSizesList4.add(Metadata.BYTES_4);
+		columnEncodedByteSizesList4.add(MetaData.BYTES_4);
 		
-		MetaIndex PA2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
+		MetaIndex PA2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
 		metadata.getIndexList().add(PA2);
 
 		// CS2
 		indexID = 5;
 		numColumns = 1;
 		List<Integer> columnEncodingsList5 = new ArrayList<Integer>();
-		columnEncodingsList5.add(Metadata.ENCODING_BB);
+		columnEncodingsList5.add(MetaData.ENCODING_BB);
 		List<Integer> columnEncodedByteSizesList5 = new ArrayList<Integer>();
-		columnEncodedByteSizesList5.add(Metadata.BYTES_4);
+		columnEncodedByteSizesList5.add(MetaData.BYTES_4);
 		
-		MetaIndex CS2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList5, columnEncodedByteSizesList5);
+		MetaIndex CS2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList5, columnEncodedByteSizesList5);
 		metadata.getIndexList().add(CS2);
 		
 	}
 	
-	private static void initSemmedDBIndexes(Metadata metadata, int encoding) {
+	private static void initSemmedDBIndexes(MetaData metadata, int encoding) {
 		// CS1
 		int indexID = 0;
 		int numColumns = 1;
 		List<Integer> columnEncodingsList0 = new ArrayList<Integer>();
 		columnEncodingsList0.add(encoding);
 		List<Integer> columnEncodedByteSizesList0 = new ArrayList<Integer>();
-		columnEncodedByteSizesList0.add(Metadata.BYTES_4);
+		columnEncodedByteSizesList0.add(MetaData.BYTES_4);
 		
-		MetaIndex CS1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
+		MetaIndex CS1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
 		metadata.getIndexList().add(CS1);
 
 		// PA1
@@ -264,9 +264,9 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodingsList1 = new ArrayList<Integer>();
 		columnEncodingsList1.add(encoding);
 		List<Integer> columnEncodedByteSizesList1 = new ArrayList<Integer>();
-		columnEncodedByteSizesList1.add(Metadata.BYTES_4);
+		columnEncodedByteSizesList1.add(MetaData.BYTES_4);
 		
-		MetaIndex PA1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
+		MetaIndex PA1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
 		metadata.getIndexList().add(PA1);
 
 		// SP1
@@ -275,8 +275,8 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodingsList2 = new ArrayList<Integer>();
 		columnEncodingsList2.add(encoding);	
 		List<Integer >columnEncodedByteSizesList2 = new ArrayList<Integer>();
-		columnEncodedByteSizesList2.add(Metadata.BYTES_4);
-		MetaIndex SP1 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
+		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
+		MetaIndex SP1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
 		metadata.getIndexList().add(SP1);
 		
 		// SP2
@@ -286,9 +286,9 @@ public class TestCasesSemmedDB {
 		columnEncodingsList3.add(encoding);
 		
 		List<Integer >columnEncodedByteSizesList3 = new ArrayList<Integer>();
-		columnEncodedByteSizesList3.add(Metadata.BYTES_4);
+		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		
-		MetaIndex SP2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		MetaIndex SP2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
 		metadata.getIndexList().add(SP2);
 		
 		// PA2
@@ -297,9 +297,9 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodingsList4 = new ArrayList<Integer>();
 		columnEncodingsList4.add(encoding);
 		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
-		columnEncodedByteSizesList4.add(Metadata.BYTES_4);
+		columnEncodedByteSizesList4.add(MetaData.BYTES_4);
 		
-		MetaIndex PA2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
+		MetaIndex PA2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
 		metadata.getIndexList().add(PA2);
 
 		// CS2
@@ -308,16 +308,16 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodingsList5 = new ArrayList<Integer>();
 		columnEncodingsList5.add(encoding);
 		List<Integer> columnEncodedByteSizesList5 = new ArrayList<Integer>();
-		columnEncodedByteSizesList5.add(Metadata.BYTES_4);
+		columnEncodedByteSizesList5.add(MetaData.BYTES_4);
 		
-		MetaIndex CS2 = new MetaIndex(indexID, numColumns, Metadata.BYTES_4, columnEncodingsList5, columnEncodedByteSizesList5);
+		MetaIndex CS2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList5, columnEncodedByteSizesList5);
 		metadata.getIndexList().add(CS2);
 		
 	}
 
 	private static void runQuery(String queryName, int numThreads, int encoding) {
 		List<Operator> operators = new ArrayList<Operator>();
-		Metadata metadata = new Metadata();
+		MetaData metadata = new MetaData();
 		
 		initSemmedDBIndexes(metadata, encoding);
 		initSemmedDBQueries(metadata, queryName, numThreads);
@@ -332,7 +332,7 @@ public class TestCasesSemmedDB {
 	
 	private static void runQuery(String queryName, int numThreads, boolean b) {
 		List<Operator> operators = new ArrayList<Operator>();
-		Metadata metadata = new Metadata();
+		MetaData metadata = new MetaData();
 		initSemmedDBIndexes(metadata);
 		initSemmedDBQueries(metadata, queryName, numThreads);
 		if (numThreads > 1) {
@@ -348,7 +348,7 @@ public class TestCasesSemmedDB {
 		
 		
 		List<Operator> operators = new ArrayList<Operator>();
-		Metadata metadata = new Metadata();
+		MetaData metadata = new MetaData();
 		
 		// SemmedDB Atropine Query
 		
@@ -357,20 +357,20 @@ public class TestCasesSemmedDB {
 		runQuery("test_smdb_optimal_4threads", 4, true);
 		
 		//Huffman
-		runQuery("test_smdb_huffman_1threads", 1, Metadata.ENCODING_HUFFMAN);
-		runQuery("test_smdb_huffman_4threads", 4, Metadata.ENCODING_HUFFMAN);
+		runQuery("test_smdb_huffman_1threads", 1, MetaData.ENCODING_HUFFMAN);
+		runQuery("test_smdb_huffman_4threads", 4, MetaData.ENCODING_HUFFMAN);
 		
 		//BCA
-		runQuery("test_smdb_bca_1threads", 1, Metadata.ENCODING_BCA);
-		runQuery("test_smdb_bca_4threads", 4, Metadata.ENCODING_BCA);
+		runQuery("test_smdb_bca_1threads", 1, MetaData.ENCODING_BCA);
+		runQuery("test_smdb_bca_4threads", 4, MetaData.ENCODING_BCA);
 		
 		//Array
-		runQuery("test_smdb_array_1threads", 1, Metadata.ENCODING_UA);
-		runQuery("test_smdb_array_4threads", 4, Metadata.ENCODING_UA);
+		runQuery("test_smdb_array_1threads", 1, MetaData.ENCODING_UA);
+		runQuery("test_smdb_array_4threads", 4, MetaData.ENCODING_UA);
 	
 		//BB
-		runQuery("test_smdb_bb_1threads", 1, Metadata.ENCODING_BB);
-		runQuery("test_smdb_bb_4threads", 4, Metadata.ENCODING_BB);	
+		runQuery("test_smdb_bb_1threads", 1, MetaData.ENCODING_BB);
+		runQuery("test_smdb_bb_4threads", 4, MetaData.ENCODING_BB);	
 		
 		
 	}

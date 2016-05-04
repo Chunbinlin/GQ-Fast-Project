@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Metadata {
+public class MetaData {
 	
 	public static final int ENCODING_UA = 1;
 	public static final int ENCODING_BCA = 2;
@@ -21,7 +21,7 @@ public class Metadata {
 	
 	private int currentQueryID;
 	
-	public Metadata() {
+	public MetaData() {
 		indexList = new ArrayList<MetaIndex>();
 		queryList = new LinkedList<MetaQuery>();
 		currentQueryID = 0;

@@ -4,35 +4,27 @@ import java.util.List;
 
 public class SemiJoinOperator extends Operator {
 	
-	private int indexID;
 	private boolean entityFlag;
 	private List<Integer> columnIDs; 
 
-	private int aliasID;
+	private Alias alias;
 	private int loopColumn;
 	
-	private int drivingAliasID;
+	private Alias drivingAlias;
 	private int drivingAliasColumn;
 
 
 	
-	public SemiJoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs, int aliasID, int loopColumn, int drivingAliasID, int drivingAliasColumn) {
+	public SemiJoinOperator(boolean entityFlag, List<Integer> columnIDs, Alias alias, int loopColumn, Alias drivingAlias, int drivingAliasColumn) {
 		super(Operator.SEMIJOIN_OPERATOR);
-		this.indexID = indexID;
 		this.entityFlag = entityFlag;
 		this.columnIDs = columnIDs;
-		this.aliasID = aliasID;
+		this.alias = alias;
 		this.loopColumn = loopColumn;
-		this.drivingAliasID = drivingAliasID;
+		this.drivingAlias = drivingAlias;
 		this.drivingAliasColumn = drivingAliasColumn;
-		
+	
 	}
-
-
-	public int getIndexID() {
-		return indexID;
-	}
-
 
 	public boolean isEntityFlag() {
 		return entityFlag;
@@ -44,8 +36,8 @@ public class SemiJoinOperator extends Operator {
 	}
 
 
-	public int getAliasID() {
-		return aliasID;
+	public Alias getAlias() {
+		return alias;
 	}
 
 
@@ -54,8 +46,8 @@ public class SemiJoinOperator extends Operator {
 	}
 
 
-	public int getDrivingAliasID() {
-		return drivingAliasID;
+	public Alias getDrivingAlias() {
+		return drivingAlias;
 	}
 
 

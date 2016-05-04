@@ -4,15 +4,17 @@ import java.util.List;
 
 public class MetaIndex {
 
+	private int indexID;
 	private int gqFastIndexID;
 	private int numColumns;
 	private int indexMapByteSize;
 	private List<Integer> columnEncodingsList;
 	private List<Integer> columnEncodedByteSizesList;
 	
-	public MetaIndex(int gqFastIndexID, int numColumns, int indexMapByteSize,
+	public MetaIndex(int indexID, int gqFastIndexID, int numColumns, int indexMapByteSize,
 			List<Integer> columnEncodingsList,
 			List<Integer> columnEncodedByteSizesList) {
+		this.indexID = indexID;
 		this.gqFastIndexID = gqFastIndexID;
 		this.numColumns = numColumns;
 		this.indexMapByteSize = indexMapByteSize;
@@ -20,6 +22,10 @@ public class MetaIndex {
 		this.columnEncodedByteSizesList = columnEncodedByteSizesList;
 	}
 
+	public int getIndexID() {
+		return indexID;
+	}
+	
 	public int getGQFastIndexID() {
 		return gqFastIndexID;
 	}

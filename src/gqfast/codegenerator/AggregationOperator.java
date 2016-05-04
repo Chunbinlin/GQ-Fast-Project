@@ -7,9 +7,8 @@ public class AggregationOperator extends Operator {
 	public static final int AGGREGATION_INT = 1;
 	public static final int AGGREGATION_DOUBLE = 2;
 	
-	
-	private int dataType;
 	private int indexID;
+	private int dataType;
 
 	private String aggregationString;
 
@@ -17,15 +16,15 @@ public class AggregationOperator extends Operator {
 	private List<Integer> aggregationVariablesAliases;
 	private List<Integer> aggregationVariablesColumns;
 	
-	private int drivingAlias;
+	private Alias drivingAlias;
 	private int drivingAliasColumn;
 	private int drivingOperator;
-	private int drivingAliasIndexID;
+	
 	
 	public AggregationOperator(int indexID, 
 			int dataType, String aggregationString, 
-			List<Integer> aggregationVariablesOperators, List<Integer> aggregationVariablesColumns, int drivingAlias, 
-			int drivingAliasColumn, int drivingOperator, int drivingAliasIndexID) {
+			List<Integer> aggregationVariablesOperators, List<Integer> aggregationVariablesColumns, Alias drivingAlias, 
+			int drivingAliasColumn, int drivingOperator) {
 		super(Operator.AGGREGATION_OPERATOR);
 		this.indexID = indexID;
 		this.dataType = dataType;
@@ -35,7 +34,7 @@ public class AggregationOperator extends Operator {
 		this.drivingAlias = drivingAlias;
 		this.drivingAliasColumn = drivingAliasColumn;
 		this.drivingOperator = drivingOperator;
-		this.drivingAliasIndexID = drivingAliasIndexID;
+		
 	}
 	
 	
@@ -59,7 +58,7 @@ public class AggregationOperator extends Operator {
 		return aggregationVariablesColumns;
 	}
 
-	public int getDrivingAlias() {
+	public Alias getDrivingAlias() {
 		return drivingAlias;
 	}
 
@@ -69,10 +68,5 @@ public class AggregationOperator extends Operator {
 
 	public int getDrivingOperator() {
 		return drivingOperator;
-	}
-
-	public int getDrivingAliasIndexID() {
-		return drivingAliasIndexID;
-	}
-	
+	}	
 }
