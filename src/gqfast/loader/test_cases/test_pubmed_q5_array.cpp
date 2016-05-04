@@ -13,71 +13,71 @@ using namespace std;
 static double* R;
 static int* RC;
 
-extern inline void test_pubmed_q5_array_doc1_col0_decode_UA(uint32_t* doc1_col0_ptr, uint32_t doc1_col0_bytes, uint32_t & doc1_fragment_size) __attribute__((always_inline));
+extern inline void test_pubmed_q5_array_doc1_col0_decode_UA(int32_t* doc1_col0_ptr, int32_t doc1_col0_bytes, int32_t & doc1_fragment_size) __attribute__((always_inline));
 
-extern inline void test_pubmed_q5_array_term_col0_decode_UA(uint32_t* term_col0_ptr, uint32_t term_col0_bytes, uint32_t & term_fragment_size) __attribute__((always_inline));
+extern inline void test_pubmed_q5_array_term_col0_decode_UA(int32_t* term_col0_ptr, int32_t term_col0_bytes, int32_t & term_fragment_size) __attribute__((always_inline));
 
-extern inline void test_pubmed_q5_array_term_col1_decode_UA(unsigned char* term_col1_ptr, uint32_t term_fragment_size) __attribute__((always_inline));
+extern inline void test_pubmed_q5_array_term_col1_decode_UA(unsigned char* term_col1_ptr, int32_t term_fragment_size) __attribute__((always_inline));
 
-extern inline void test_pubmed_q5_array_doc2_col0_decode_UA(uint32_t* doc2_col0_ptr, uint32_t doc2_col0_bytes, uint32_t & doc2_fragment_size) __attribute__((always_inline));
+extern inline void test_pubmed_q5_array_doc2_col0_decode_UA(int32_t* doc2_col0_ptr, int32_t doc2_col0_bytes, int32_t & doc2_fragment_size) __attribute__((always_inline));
 
-extern inline void test_pubmed_q5_array_doc2_col1_decode_UA(unsigned char* doc2_col1_ptr, uint32_t doc2_fragment_size) __attribute__((always_inline));
+extern inline void test_pubmed_q5_array_doc2_col1_decode_UA(unsigned char* doc2_col1_ptr, int32_t doc2_fragment_size) __attribute__((always_inline));
 
-extern inline void test_pubmed_q5_array_year_col0_decode_UA(uint32_t* year_col0_ptr, uint32_t & year_col0_element) __attribute__((always_inline));
+extern inline void test_pubmed_q5_array_year_col0_decode_UA(int32_t* year_col0_ptr, int32_t & year_col0_element) __attribute__((always_inline));
 
-extern inline void test_pubmed_q5_array_author2_col0_decode_UA(uint32_t* author2_col0_ptr, uint32_t author2_col0_bytes, uint32_t & author2_fragment_size) __attribute__((always_inline));
+extern inline void test_pubmed_q5_array_author2_col0_decode_UA(int32_t* author2_col0_ptr, int32_t author2_col0_bytes, int32_t & author2_fragment_size) __attribute__((always_inline));
 
-void test_pubmed_q5_array_doc1_col0_decode_UA(uint32_t* doc1_col0_ptr, uint32_t doc1_col0_bytes, uint32_t & doc1_fragment_size) {
+void test_pubmed_q5_array_doc1_col0_decode_UA(int32_t* doc1_col0_ptr, int32_t doc1_col0_bytes, int32_t & doc1_fragment_size) {
 
 	doc1_fragment_size = doc1_col0_bytes/4;
 
-	for (uint32_t i=0; i<doc1_fragment_size; i++) {
+	for (int32_t i=0; i<doc1_fragment_size; i++) {
 		buffer_arrays[0][0][0][0][i] = *doc1_col0_ptr++;
 	}
 }
 
-void test_pubmed_q5_array_term_col0_decode_UA(uint32_t* term_col0_ptr, uint32_t term_col0_bytes, uint32_t & term_fragment_size) {
+void test_pubmed_q5_array_term_col0_decode_UA(int32_t* term_col0_ptr, int32_t term_col0_bytes, int32_t & term_fragment_size) {
 
 	term_fragment_size = term_col0_bytes/4;
 
-	for (uint32_t i=0; i<term_fragment_size; i++) {
+	for (int32_t i=0; i<term_fragment_size; i++) {
 		buffer_arrays[2][0][0][0][i] = *term_col0_ptr++;
 	}
 }
 
-void test_pubmed_q5_array_term_col1_decode_UA(unsigned char* term_col1_ptr, uint32_t term_fragment_size) {
+void test_pubmed_q5_array_term_col1_decode_UA(unsigned char* term_col1_ptr, int32_t term_fragment_size) {
 
-	for (uint32_t i=0; i<term_fragment_size; i++) {
+	for (int32_t i=0; i<term_fragment_size; i++) {
 		buffer_arrays[2][1][0][0][i] = *term_col1_ptr++;
 	}
 }
 
-void test_pubmed_q5_array_doc2_col0_decode_UA(uint32_t* doc2_col0_ptr, uint32_t doc2_col0_bytes, uint32_t & doc2_fragment_size) {
+void test_pubmed_q5_array_doc2_col0_decode_UA(int32_t* doc2_col0_ptr, int32_t doc2_col0_bytes, int32_t & doc2_fragment_size) {
 
 	doc2_fragment_size = doc2_col0_bytes/4;
 
-	for (uint32_t i=0; i<doc2_fragment_size; i++) {
+	for (int32_t i=0; i<doc2_fragment_size; i++) {
 		buffer_arrays[3][0][0][0][i] = *doc2_col0_ptr++;
 	}
 }
 
-void test_pubmed_q5_array_doc2_col1_decode_UA(unsigned char* doc2_col1_ptr, uint32_t doc2_fragment_size) {
+void test_pubmed_q5_array_doc2_col1_decode_UA(unsigned char* doc2_col1_ptr, int32_t doc2_fragment_size) {
 
-	for (uint32_t i=0; i<doc2_fragment_size; i++) {
+	for (int32_t i=0; i<doc2_fragment_size; i++) {
 		buffer_arrays[3][1][0][0][i] = *doc2_col1_ptr++;
 	}
 }
 
-void test_pubmed_q5_array_year_col0_decode_UA(uint32_t* year_col0_ptr, uint32_t & year_col0_element) {
+void test_pubmed_q5_array_year_col0_decode_UA(int32_t* year_col0_ptr, int32_t & year_col0_element) {
 
 	year_col0_element = *year_col0_ptr;
 }
 
-void test_pubmed_q5_array_author2_col0_decode_UA(uint32_t* author2_col0_ptr, uint32_t author2_col0_bytes, uint32_t & author2_fragment_size) {
+void test_pubmed_q5_array_author2_col0_decode_UA(int32_t* author2_col0_ptr, int32_t author2_col0_bytes, int32_t & author2_fragment_size) {
 
 	author2_fragment_size = author2_col0_bytes/4;
 
-	for (uint32_t i=0; i<author2_fragment_size; i++) {
+	for (int32_t i=0; i<author2_fragment_size; i++) {
 		buffer_arrays[4][0][0][0][i] = *author2_col0_ptr++;
 	}
 }
@@ -142,73 +142,73 @@ extern "C" double* test_pubmed_q5_array(int** null_checks) {
 	R = new double[metadata.idx_domains[4][0]]();
 
 
-	uint64_t* author1_list = new uint64_t[1];
+	int64_t* author1_list = new int64_t[1];
 	author1_list[0] = 4945389;
 
 	for (int author1_it = 0; author1_it<1; author1_it++) {
 
-		uint64_t author1_col0_element = author1_list[author1_it];
+		int64_t author1_col0_element = author1_list[author1_it];
 
-		uint32_t* row_op1 = idx[0]->index_map[author1_col0_element];
-		uint32_t doc1_col0_bytes = idx[0]->index_map[author1_col0_element+1][0] - row_op1[0];
+		uint32_t* row_doc1 = idx[0]->index_map[author1_col0_element];
+		int32_t doc1_col0_bytes = idx[0]->index_map[author1_col0_element+1][0] - row_doc1[0];
 		if(doc1_col0_bytes) {
 
-			uint32_t* doc1_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[0]->fragment_data[0][row_op1[0]]));
-			uint32_t doc1_fragment_size = 0;
+			int32_t* doc1_col0_ptr = reinterpret_cast<int32_t *>(&(idx[0]->fragment_data[0][row_doc1[0]]));
+			int32_t doc1_fragment_size = 0;
 			test_pubmed_q5_array_doc1_col0_decode_UA(doc1_col0_ptr, doc1_col0_bytes, doc1_fragment_size);
 
-			for (uint32_t doc1_it = 0; doc1_it < doc1_fragment_size; doc1_it++) {
+			for (int32_t doc1_it = 0; doc1_it < doc1_fragment_size; doc1_it++) {
 
-				uint32_t doc1_col0_element = buffer_arrays[0][0][0][0][doc1_it];
+				int32_t doc1_col0_element = buffer_arrays[0][0][0][0][doc1_it];
 
-				uint32_t* row_op2 = idx[2]->index_map[doc1_col0_element];
-				uint32_t term_col0_bytes = idx[2]->index_map[doc1_col0_element+1][0] - row_op2[0];
+				uint32_t* row_term = idx[2]->index_map[doc1_col0_element];
+				int32_t term_col0_bytes = idx[2]->index_map[doc1_col0_element+1][0] - row_term[0];
 				if(term_col0_bytes) {
 
-					uint32_t* term_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[2]->fragment_data[0][row_op2[0]]));
-					uint32_t term_fragment_size = 0;
+					int32_t* term_col0_ptr = reinterpret_cast<int32_t *>(&(idx[2]->fragment_data[0][row_term[0]]));
+					int32_t term_fragment_size = 0;
 					test_pubmed_q5_array_term_col0_decode_UA(term_col0_ptr, term_col0_bytes, term_fragment_size);
 
-					unsigned char* term_col1_ptr = &(idx[2]->fragment_data[1][row_op2[1]]);
+					unsigned char* term_col1_ptr = &(idx[2]->fragment_data[1][row_term[1]]);
 					test_pubmed_q5_array_term_col1_decode_UA(term_col1_ptr, term_fragment_size);
 
-					for (uint32_t term_it = 0; term_it < term_fragment_size; term_it++) {
+					for (int32_t term_it = 0; term_it < term_fragment_size; term_it++) {
 
-						uint32_t term_col0_element = buffer_arrays[2][0][0][0][term_it];
-						unsigned char term_col1_element = buffer_arrays[2][1][0][0][term_it];
+						int32_t term_col0_element = buffer_arrays[2][0][0][0][term_it];
+						char term_col1_element = buffer_arrays[2][1][0][0][term_it];
 
-						uint32_t* row_op3 = idx[3]->index_map[term_col0_element];
-						uint32_t doc2_col0_bytes = idx[3]->index_map[term_col0_element+1][0] - row_op3[0];
+						uint32_t* row_doc2 = idx[3]->index_map[term_col0_element];
+						int32_t doc2_col0_bytes = idx[3]->index_map[term_col0_element+1][0] - row_doc2[0];
 						if(doc2_col0_bytes) {
 
-							uint32_t* doc2_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[3]->fragment_data[0][row_op3[0]]));
-							uint32_t doc2_fragment_size = 0;
+							int32_t* doc2_col0_ptr = reinterpret_cast<int32_t *>(&(idx[3]->fragment_data[0][row_doc2[0]]));
+							int32_t doc2_fragment_size = 0;
 							test_pubmed_q5_array_doc2_col0_decode_UA(doc2_col0_ptr, doc2_col0_bytes, doc2_fragment_size);
 
-							unsigned char* doc2_col1_ptr = &(idx[3]->fragment_data[1][row_op3[1]]);
+							unsigned char* doc2_col1_ptr = &(idx[3]->fragment_data[1][row_doc2[1]]);
 							test_pubmed_q5_array_doc2_col1_decode_UA(doc2_col1_ptr, doc2_fragment_size);
 
-							for (uint32_t doc2_it = 0; doc2_it < doc2_fragment_size; doc2_it++) {
+							for (int32_t doc2_it = 0; doc2_it < doc2_fragment_size; doc2_it++) {
 
-								uint32_t doc2_col0_element = buffer_arrays[3][0][0][0][doc2_it];
-								unsigned char doc2_col1_element = buffer_arrays[3][1][0][0][doc2_it];
+								int32_t doc2_col0_element = buffer_arrays[3][0][0][0][doc2_it];
+								char doc2_col1_element = buffer_arrays[3][1][0][0][doc2_it];
 
-								uint32_t* row_op4 = idx[1]->index_map[doc2_col0_element];
+								uint32_t* row_year = idx[1]->index_map[doc2_col0_element];
 
-								uint32_t* year_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[1]->fragment_data[0][row_op4[0]]));
-								uint32_t year_col0_element;
+								int32_t* year_col0_ptr = reinterpret_cast<int32_t *>(&(idx[1]->fragment_data[0][row_year[0]]));
+								int32_t year_col0_element;
 								test_pubmed_q5_array_year_col0_decode_UA(year_col0_ptr, year_col0_element);
 
-								uint32_t* row_op5 = idx[4]->index_map[doc2_col0_element];
-								uint32_t author2_col0_bytes = idx[4]->index_map[doc2_col0_element+1][0] - row_op5[0];
+								uint32_t* row_author2 = idx[4]->index_map[doc2_col0_element];
+								int32_t author2_col0_bytes = idx[4]->index_map[doc2_col0_element+1][0] - row_author2[0];
 								if(author2_col0_bytes) {
 
-									uint32_t* author2_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[4]->fragment_data[0][row_op5[0]]));
-									uint32_t author2_fragment_size = 0;
+									int32_t* author2_col0_ptr = reinterpret_cast<int32_t *>(&(idx[4]->fragment_data[0][row_author2[0]]));
+									int32_t author2_fragment_size = 0;
 									test_pubmed_q5_array_author2_col0_decode_UA(author2_col0_ptr, author2_col0_bytes, author2_fragment_size);
 
-									for (uint32_t author2_it = 0; author2_it < author2_fragment_size; author2_it++) {
-										uint32_t author2_col0_element = buffer_arrays[4][0][0][0][author2_it];
+									for (int32_t author2_it = 0; author2_it < author2_fragment_size; author2_it++) {
+										int32_t author2_col0_element = buffer_arrays[4][0][0][0][author2_it];
 
 										RC[author2_col0_element] = 1;
 										R[author2_col0_element] += (double)(term_col1_element*doc2_col1_element)/(2017-year_col0_element);

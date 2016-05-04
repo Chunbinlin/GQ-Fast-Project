@@ -23,32 +23,32 @@ static bool* doc2_col1_huffman_terminator_array;
 
 static uint32_t* year2_col0_bits_info;
 
-extern inline void test_pubmed_q2_opt_year1_col0_decode_BCA(uint64_t* year1_col0_ptr, uint32_t & year1_col0_element) __attribute__((always_inline));
+extern inline void test_pubmed_q2_opt_year1_col0_decode_BCA(int64_t* year1_col0_ptr, int32_t & year1_col0_element) __attribute__((always_inline));
 
-extern inline void test_pubmed_q2_opt_term1_col0_decode_BB(unsigned char* term1_col0_ptr, uint32_t term1_col0_bytes, uint32_t & term1_fragment_size) __attribute__((always_inline));
+extern inline void test_pubmed_q2_opt_term1_col0_decode_BB(unsigned char* term1_col0_ptr, int32_t term1_col0_bytes, int32_t & term1_fragment_size) __attribute__((always_inline));
 
-extern inline void test_pubmed_q2_opt_term1_col1_decode_Huffman(unsigned char* term1_col1_ptr, uint32_t term1_fragment_size) __attribute__((always_inline));
+extern inline void test_pubmed_q2_opt_term1_col1_decode_Huffman(unsigned char* term1_col1_ptr, int32_t term1_fragment_size) __attribute__((always_inline));
 
-extern inline void test_pubmed_q2_opt_doc2_col0_decode_BB(unsigned char* doc2_col0_ptr, uint32_t doc2_col0_bytes, uint32_t & doc2_fragment_size) __attribute__((always_inline));
+extern inline void test_pubmed_q2_opt_doc2_col0_decode_BB(unsigned char* doc2_col0_ptr, int32_t doc2_col0_bytes, int32_t & doc2_fragment_size) __attribute__((always_inline));
 
-extern inline void test_pubmed_q2_opt_doc2_col1_decode_Huffman(unsigned char* doc2_col1_ptr, uint32_t doc2_fragment_size) __attribute__((always_inline));
+extern inline void test_pubmed_q2_opt_doc2_col1_decode_Huffman(unsigned char* doc2_col1_ptr, int32_t doc2_fragment_size) __attribute__((always_inline));
 
-extern inline void test_pubmed_q2_opt_year2_col0_decode_BCA(uint64_t* year2_col0_ptr, uint32_t & year2_col0_element) __attribute__((always_inline));
+extern inline void test_pubmed_q2_opt_year2_col0_decode_BCA(int64_t* year2_col0_ptr, int32_t & year2_col0_element) __attribute__((always_inline));
 
-void test_pubmed_q2_opt_year1_col0_decode_BCA(uint64_t* year1_col0_ptr, uint32_t & year1_col0_element) {
+void test_pubmed_q2_opt_year1_col0_decode_BCA(int64_t* year1_col0_ptr, int32_t & year1_col0_element) {
 
 	year1_col0_element = year1_col0_bits_info[1];
 	year1_col0_element &= *year1_col0_ptr;
 }
 
-void test_pubmed_q2_opt_term1_col0_decode_BB(unsigned char* term1_col0_ptr, uint32_t term1_col0_bytes, uint32_t & term1_fragment_size) {
+void test_pubmed_q2_opt_term1_col0_decode_BB(unsigned char* term1_col0_ptr, int32_t term1_col0_bytes, int32_t & term1_fragment_size) {
 
 	buffer_arrays[2][0][0][0][0] = 0;
 
 	int shiftbits = 0;
 	do { 
 		term1_col0_bytes--;
-		uint32_t next_seven_bits = *term1_col0_ptr & 127;
+		int32_t next_seven_bits = *term1_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
 		buffer_arrays[2][0][0][0][0] |= next_seven_bits;
 		shiftbits += 7;
@@ -57,12 +57,12 @@ void test_pubmed_q2_opt_term1_col0_decode_BB(unsigned char* term1_col0_ptr, uint
 
 	while (term1_col0_bytes > 0) {
 		shiftbits = 0;
-		uint32_t result = 0;
+		int32_t result = 0;
 
 		do {
 
 			term1_col0_bytes--;
-			uint32_t next_seven_bits = *term1_col0_ptr & 127;
+			int32_t next_seven_bits = *term1_col0_ptr & 127;
 			next_seven_bits = next_seven_bits << shiftbits;
 			result |= next_seven_bits;
 			shiftbits += 7;
@@ -73,14 +73,14 @@ void test_pubmed_q2_opt_term1_col0_decode_BB(unsigned char* term1_col0_ptr, uint
 	}
 }
 
-void test_pubmed_q2_opt_term1_col1_decode_Huffman(unsigned char* term1_col1_ptr, uint32_t term1_fragment_size) {
+void test_pubmed_q2_opt_term1_col1_decode_Huffman(unsigned char* term1_col1_ptr, int32_t term1_fragment_size) {
 
 	bool* terminate_start = &(term1_col1_huffman_terminator_array[0]);
 	int* tree_array_start = &(term1_col1_huffman_tree_array[0]);
 
 	int mask = 0x100;
 
-	for (uint32_t i=0; i<term1_fragment_size; i++) {
+	for (int32_t i=0; i<term1_fragment_size; i++) {
 
 		bool* terminator_array = terminate_start;
 		int* tree_array = tree_array_start;
@@ -107,14 +107,14 @@ void test_pubmed_q2_opt_term1_col1_decode_Huffman(unsigned char* term1_col1_ptr,
 	}
 }
 
-void test_pubmed_q2_opt_doc2_col0_decode_BB(unsigned char* doc2_col0_ptr, uint32_t doc2_col0_bytes, uint32_t & doc2_fragment_size) {
+void test_pubmed_q2_opt_doc2_col0_decode_BB(unsigned char* doc2_col0_ptr, int32_t doc2_col0_bytes, int32_t & doc2_fragment_size) {
 
 	buffer_arrays[3][0][0][0][0] = 0;
 
 	int shiftbits = 0;
 	do { 
 		doc2_col0_bytes--;
-		uint32_t next_seven_bits = *doc2_col0_ptr & 127;
+		int32_t next_seven_bits = *doc2_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
 		buffer_arrays[3][0][0][0][0] |= next_seven_bits;
 		shiftbits += 7;
@@ -123,12 +123,12 @@ void test_pubmed_q2_opt_doc2_col0_decode_BB(unsigned char* doc2_col0_ptr, uint32
 
 	while (doc2_col0_bytes > 0) {
 		shiftbits = 0;
-		uint32_t result = 0;
+		int32_t result = 0;
 
 		do {
 
 			doc2_col0_bytes--;
-			uint32_t next_seven_bits = *doc2_col0_ptr & 127;
+			int32_t next_seven_bits = *doc2_col0_ptr & 127;
 			next_seven_bits = next_seven_bits << shiftbits;
 			result |= next_seven_bits;
 			shiftbits += 7;
@@ -139,14 +139,14 @@ void test_pubmed_q2_opt_doc2_col0_decode_BB(unsigned char* doc2_col0_ptr, uint32
 	}
 }
 
-void test_pubmed_q2_opt_doc2_col1_decode_Huffman(unsigned char* doc2_col1_ptr, uint32_t doc2_fragment_size) {
+void test_pubmed_q2_opt_doc2_col1_decode_Huffman(unsigned char* doc2_col1_ptr, int32_t doc2_fragment_size) {
 
 	bool* terminate_start = &(doc2_col1_huffman_terminator_array[0]);
 	int* tree_array_start = &(doc2_col1_huffman_tree_array[0]);
 
 	int mask = 0x100;
 
-	for (uint32_t i=0; i<doc2_fragment_size; i++) {
+	for (int32_t i=0; i<doc2_fragment_size; i++) {
 
 		bool* terminator_array = terminate_start;
 		int* tree_array = tree_array_start;
@@ -173,7 +173,7 @@ void test_pubmed_q2_opt_doc2_col1_decode_Huffman(unsigned char* doc2_col1_ptr, u
 	}
 }
 
-void test_pubmed_q2_opt_year2_col0_decode_BCA(uint64_t* year2_col0_ptr, uint32_t & year2_col0_element) {
+void test_pubmed_q2_opt_year2_col0_decode_BCA(int64_t* year2_col0_ptr, int32_t & year2_col0_element) {
 
 	year2_col0_element = year2_col0_bits_info[1];
 	year2_col0_element &= *year2_col0_ptr;
@@ -229,62 +229,59 @@ extern "C" double* test_pubmed_q2_opt(int** null_checks) {
 
 	year2_col0_bits_info = idx[1]->dict[0]->bits_info;
 
-	uint64_t* doc1_list = new uint64_t[1];
-	doc1_list[0] = 17495979;
+	int64_t* doc1_list = new int64_t[1];
+	doc1_list[0] = 16966392;
 
 	for (int doc1_it = 0; doc1_it<1; doc1_it++) {
 
-		uint64_t doc1_col0_element = doc1_list[doc1_it];
+		int64_t doc1_col0_element = doc1_list[doc1_it];
 
-		uint32_t* row_op1 = idx[1]->index_map[doc1_col0_element];
+		uint32_t* row_year1 = idx[1]->index_map[doc1_col0_element];
 
-		uint64_t* year1_col0_ptr = reinterpret_cast<uint64_t *>(&(idx[1]->fragment_data[0][row_op1[0]]));
-		uint32_t year1_col0_element;
+		int64_t* year1_col0_ptr = reinterpret_cast<int64_t *>(&(idx[1]->fragment_data[0][row_year1[0]]));
+		int32_t year1_col0_element;
 		test_pubmed_q2_opt_year1_col0_decode_BCA(year1_col0_ptr, year1_col0_element);
 
-		uint32_t* row_op2 = idx[2]->index_map[doc1_col0_element];
-		uint32_t term1_col0_bytes = idx[2]->index_map[doc1_col0_element+1][0] - row_op2[0];
+		uint32_t* row_term1 = idx[2]->index_map[doc1_col0_element];
+		int32_t term1_col0_bytes = idx[2]->index_map[doc1_col0_element+1][0] - row_term1[0];
 		if(term1_col0_bytes) {
 
-			unsigned char* term1_col0_ptr = &(idx[2]->fragment_data[0][row_op2[0]]);
-			uint32_t term1_fragment_size = 0;
+			unsigned char* term1_col0_ptr = &(idx[2]->fragment_data[0][row_term1[0]]);
+			int32_t term1_fragment_size = 0;
 			test_pubmed_q2_opt_term1_col0_decode_BB(term1_col0_ptr, term1_col0_bytes, term1_fragment_size);
 
-			unsigned char* term1_col1_ptr = &(idx[2]->fragment_data[1][row_op2[1]]);
+			unsigned char* term1_col1_ptr = &(idx[2]->fragment_data[1][row_term1[1]]);
 			test_pubmed_q2_opt_term1_col1_decode_Huffman(term1_col1_ptr, term1_fragment_size);
 
-			for (uint32_t term1_it = 0; term1_it < term1_fragment_size; term1_it++) {
+			for (int32_t term1_it = 0; term1_it < term1_fragment_size; term1_it++) {
 
-				uint32_t term1_col0_element = buffer_arrays[2][0][0][0][term1_it];
-				unsigned char term1_col1_element = buffer_arrays[2][1][0][0][term1_it];
+				int32_t term1_col0_element = buffer_arrays[2][0][0][0][term1_it];
+				char term1_col1_element = buffer_arrays[2][1][0][0][term1_it];
 
-				uint32_t* row_op3 = idx[3]->index_map[term1_col0_element];
-				uint32_t doc2_col0_bytes = idx[3]->index_map[term1_col0_element+1][0] - row_op3[0];
+				uint32_t* row_doc2 = idx[3]->index_map[term1_col0_element];
+				int32_t doc2_col0_bytes = idx[3]->index_map[term1_col0_element+1][0] - row_doc2[0];
 				if(doc2_col0_bytes) {
 
-					unsigned char* doc2_col0_ptr = &(idx[3]->fragment_data[0][row_op3[0]]);
-					uint32_t doc2_fragment_size = 0;
+					unsigned char* doc2_col0_ptr = &(idx[3]->fragment_data[0][row_doc2[0]]);
+					int32_t doc2_fragment_size = 0;
 					test_pubmed_q2_opt_doc2_col0_decode_BB(doc2_col0_ptr, doc2_col0_bytes, doc2_fragment_size);
 
-					unsigned char* doc2_col1_ptr = &(idx[3]->fragment_data[1][row_op3[1]]);
+					unsigned char* doc2_col1_ptr = &(idx[3]->fragment_data[1][row_doc2[1]]);
 					test_pubmed_q2_opt_doc2_col1_decode_Huffman(doc2_col1_ptr, doc2_fragment_size);
 
-					for (uint32_t doc2_it = 0; doc2_it < doc2_fragment_size; doc2_it++) {
+					for (int32_t doc2_it = 0; doc2_it < doc2_fragment_size; doc2_it++) {
 
-						uint32_t doc2_col0_element = buffer_arrays[3][0][0][0][doc2_it];
-						unsigned char doc2_col1_element = buffer_arrays[3][1][0][0][doc2_it];
+						int32_t doc2_col0_element = buffer_arrays[3][0][0][0][doc2_it];
+						char doc2_col1_element = buffer_arrays[3][1][0][0][doc2_it];
 
-						uint32_t* row_op4 = idx[1]->index_map[doc2_col0_element];
+						uint32_t* row_year2 = idx[1]->index_map[doc2_col0_element];
 
-						uint64_t* year2_col0_ptr = reinterpret_cast<uint64_t *>(&(idx[1]->fragment_data[0][row_op4[0]]));
-						uint32_t year2_col0_element;
+						int64_t* year2_col0_ptr = reinterpret_cast<int64_t *>(&(idx[1]->fragment_data[0][row_year2[0]]));
+						int32_t year2_col0_element;
 						test_pubmed_q2_opt_year2_col0_decode_BCA(year2_col0_ptr, year2_col0_element);
 
-						cerr << "doc2_col0_element = " << doc2_col0_element << "\n";
-						cerr << "R[doc1_col0_element] was " << R[doc2_col0_element] << "\n";
 						RC[doc2_col0_element] = 1;
 						R[doc2_col0_element] += (double)(term1_col1_element*doc2_col1_element)/(ABS(year1_col0_element-year2_col0_element)+1);
-						cerr << "R[doc1_col0_element] now " << R[doc2_col0_element] << "\n";
 					}
 				}
 			}
