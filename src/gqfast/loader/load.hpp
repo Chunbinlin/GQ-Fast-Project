@@ -26,13 +26,6 @@ void init_buffer(int pos) {
     buffer_arrays[pos] = new int***[num_encodings];
     for (int i=0; i<num_encodings; i++) {
         buffer_arrays[pos][i] = new int**[MAX_THREADS];
-        /*for (int j=0; j<MAX_THREADS; j++) {
-            buffer_arrays[pos][i][j] = new int*[BUFFER_POOL_SIZE];
-            for (int k=0; k<BUFFER_POOL_SIZE; k++) {
-                buffer_arrays[pos][i][j][k] = new int[max_frag]();
-            }
-        }
-        */
     }
     // Domain buffer for Foreign key column
     uint64_t domain = metadata.idx_domains[pos][0];
