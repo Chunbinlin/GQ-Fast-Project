@@ -55,4 +55,14 @@ public class MetaIndex {
 		}
 		return max;
 	}
+	
+	public int getIndexOfColID(int colID) {
+		for (int i=0; i<columnEncodingsList.size(); i++) {
+			if (colID == columnEncodingsList.get(i)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
 }
