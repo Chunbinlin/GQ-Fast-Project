@@ -12,6 +12,8 @@ using namespace std;
 
 static args_threading arguments[NUM_THREADS];
 
+static int32_t doc1_col0_element;
+
 static double* R;
 static int* RC;
 
@@ -553,7 +555,7 @@ extern "C" double* test_pubmed_q5_huffman_threaded(int** null_checks) {
 
 			for (int32_t doc1_it = 0; doc1_it < doc1_fragment_size; doc1_it++) {
 
-				int32_t doc1_col0_element = buffer_arrays[0][0][0][0][doc1_it];
+				doc1_col0_element = buffer_arrays[0][0][0][0][doc1_it];
 
 				uint32_t* row_term = idx[2]->index_map[doc1_col0_element];
 				int32_t term_col0_bytes = idx[2]->index_map[doc1_col0_element+1][0] - row_term[0];
