@@ -16,6 +16,27 @@ import java.util.Set;
 
 public class CodeGenerator {
 	
+	static boolean hasThreading;
+	static int threadOpIndex;
+	
+	
+
+	private static void checkThreading(MetaQuery query, List<Operator> operators) {
+		if (query.getNumThreads() > 1) {
+			hasThreading = true;
+			for (int i=0; i<operators.size(); i++) {
+				Operator currOp = operators.get(i);
+				if (currOp.getType() == Operator.THREADING_OPERATOR) {
+					threadOpIndex = i;
+					break;
+				}
+			}
+		}	
+		else {
+			hasThreading = false;
+		}
+	}
+	
 	/*
 	 * Function initialImportsAndConstants
 	 * ------------------------------------
@@ -313,14 +334,48 @@ public class CodeGenerator {
 	 * 			result array, and null-check array
 	 */
 	private static void initialDeclarations(List<String> globalsCppCode,
-			AggregationOperator aggregation, MetaQuery query) {
-		
-		if (query.getNumThreads() > 1) {
-			String arguments = "\nstatic args_threading arguments[NUM_THREADS];\n";
-			globalsCppCode.add(arguments);
-		}
+			AggregationOperator aggregation, MetaQuery query, List<Operator> operators) {
 		
 		String resultsGlobals = "";
+		
+		if (hasThreading) {
+			String arguments = "\nstatic args_threading arguments[NUM_THREADS];\n";
+			globalsCppCode.add(arguments);
+			resultsGlobals += "\n";
+			ThreadingOperator threadOp = (ThreadingOperator) operators.get(threadOpIndex);
+			Alias drivingAlias = threadOp.getDrivingAlias();
+			for (int i=0; i<threadOpIndex; i++) {
+				Operator currOp = operators.get(i);
+				int type = currOp.getType();
+				if (type == Operator.JOIN_OPERATOR || type == Operator.SEMIJOIN_OPERATOR) {
+				
+					Alias currAlias;
+					List<Integer> columnIDs;
+					if (type == Operator.JOIN_OPERATOR) {
+						JoinOperator tempJoinOp = (JoinOperator) currOp;
+						currAlias = tempJoinOp.getAlias();
+						columnIDs = tempJoinOp.getColumnIDs();
+					}
+					else {
+						SemiJoinOperator tempSemiOp = (SemiJoinOperator) currOp;
+						currAlias = tempSemiOp.getAlias();
+						columnIDs = tempSemiOp.getColumnIDs();
+					}
+
+					if (currAlias != drivingAlias) {
+						MetaIndex currIndex = currAlias.getAssociatedIndex();
+						String currAliasString = currAlias.getAlias();
+						for (int currColumn : columnIDs) {
+							int currBytesSize = currIndex.getColumnEncodedByteSizesList().get(currColumn); 
+							String elementName = currAliasString + "_col" + currColumn + "_element";
+							resultsGlobals += "static " + getElementPrimitive(currBytesSize) + " " + elementName + ";\n";
+						}
+					}
+				}
+			}
+		}
+		
+		
 		if (aggregation.getDataType() == AggregationOperator.AGGREGATION_INT)  {		
 			resultsGlobals += "\nstatic int* R;\n";
 		}
@@ -777,8 +832,12 @@ public class CodeGenerator {
 		if (entityFlag) {
 			String elementName = alias + "_col" + currentCol + "_element";
 			
-			mainString += tabString + getElementPrimitive(currentBytesSize) + " " + elementName + ";\n";
-			functionParameters += ", " + getElementPrimitive(currentBytesSize) + " & " + elementName + ")";
+			if (hasThreading && !preThreading || !hasThreading) {
+				mainString +=  tabString + getElementPrimitive(currentBytesSize) +" " + elementName + ";\n";
+				functionParameters += ", " + getElementPrimitive(currentBytesSize) + " & " + elementName;
+			}
+			
+			functionParameters += ")";
 			
 			currFunction += "\nvoid " + functionName + functionParameters + " {\n";
 			currFunctionHeader += "\nextern inline void " + functionName + functionParameters + " __attribute__((always_inline));\n";
@@ -984,7 +1043,10 @@ public class CodeGenerator {
 			int previousIndexID = previousIndex.getIndexID();
 			int previousGQFastIndexID = previousIndex.getGQFastIndexID();
 			int colBytes = previousIndex.getColumnEncodedByteSizesList().get(previousColID);
-			mainString += tabString + getElementPrimitive(colBytes) + " ";
+			mainString += tabString; 
+			if (!preThreading && hasThreading || !hasThreading) {
+				mainString += getElementPrimitive(colBytes) + " ";
+			}
 
 			if (threadID) {
 				mainString += prevAlias + "_col" + previousColID + "_element = " +
@@ -1447,6 +1509,8 @@ public class CodeGenerator {
 			Arrays.fill(bufferPoolTrackingArray[i], -1);
 		}
 		
+		
+		
 		boolean preThreadingOp = true;
 		int threadingFunctionID = -1;
 		StringBuilder threadingTabString = new StringBuilder("\t");
@@ -1568,14 +1632,32 @@ public class CodeGenerator {
 	
 
 
+
+
+
+	private static void writeToFile(String fullCppCode, String queryName) {
+
+		try(  PrintWriter out = new PrintWriter(new File("./src/gqfast/loader/test_cases/" + queryName + ".cpp"))){
+		    out.println(fullCppCode);
+		} catch (FileNotFoundException e) {
+			System.err.println("Error in writeToFile: FileNotFoundException");
+			e.printStackTrace();
+		}
+	
+	}
+
 	public static void generateCode(List<Operator> operators, MetaData metadata) {
+		
+	
 		
 		// The last operator should be the aggregate operator
 		AggregationOperator aggregation = (AggregationOperator) operators.get(operators.size() - 1); 
 		
 		int queryID = metadata.getCurrentQueryID();
 		MetaQuery query = metadata.getQueryList().get(queryID);
-		
+	
+		checkThreading(query, operators);
+
 		initQueryBufferPool(query, operators, metadata);
 		
 		// Initialize Code Segments Strings
@@ -1587,7 +1669,7 @@ public class CodeGenerator {
 
 		/*** Implementation ***/
 
-		initialDeclarations(globalsCppCode, aggregation, query);
+		initialDeclarations(globalsCppCode, aggregation, query, operators);
 		// Opening Line
 		mainCppCode.add(openingLine(query, aggregation));
 	
@@ -1646,19 +1728,6 @@ public class CodeGenerator {
 
 
 
-
-
-
-	private static void writeToFile(String fullCppCode, String queryName) {
-
-		try(  PrintWriter out = new PrintWriter(new File("./src/gqfast/loader/test_cases/" + queryName + ".cpp"))){
-		    out.println(fullCppCode);
-		} catch (FileNotFoundException e) {
-			System.err.println("Error in writeToFile: FileNotFoundException");
-			e.printStackTrace();
-		}
-	
-	}
 
 
 
