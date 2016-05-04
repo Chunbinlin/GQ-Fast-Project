@@ -435,7 +435,7 @@ public class TestCasesPubmed {
 		
 		
 		List<Integer> selections = new ArrayList<Integer>();
-		selections.add(17495979);
+		selections.add(16966392);
 		Operator selection1 = new SelectionOperator(selections, 0);
 		operators.add(selection1);
 		
@@ -582,6 +582,8 @@ public class TestCasesPubmed {
 		//Q2 Optimal
 		runQ2("test_pubmed_q2_opt", 1, true);
 		
+		// Q2 UA
+		runQ2("test_pubmed_q2_array", 1, Metadata.ENCODING_UA);
 		
 	}
 
