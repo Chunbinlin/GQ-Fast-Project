@@ -86,7 +86,7 @@ public:
 
         delete[] fragment_data;
 
-        for (uint64_t i=0;i<domain_size;i++) {
+        for (uint64_t i=0;i<domain_size+1;i++) {
             delete[] index_map[i];
         }   
 
