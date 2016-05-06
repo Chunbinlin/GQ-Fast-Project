@@ -18,10 +18,8 @@ import codegenerator.ThreadingOperator;
 
 public class SemmedDB {
 
-	private static void initSemmedDBOperators(List<Operator> operators, MetaData metadata) {
-	
-		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID()); 
-				
+	private static void initSemmedDBOperators(List<Operator> operators, MetaQuery query) {
+			
 		List<Integer> selections = new ArrayList<Integer>();
 		selections.add(2019);
 		Operator selection1 = new SelectionOperator(selections, query.getAliases().get(0));
@@ -94,8 +92,7 @@ public class SemmedDB {
 		
 	}
 
-	private static void initSemmedDBOperatorsThreaded(List<Operator> operators, MetaData metadata) {
-		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID()); 
+	private static void initSemmedDBOperatorsThreaded(List<Operator> operators, MetaQuery query) {
 		
 		List<Integer> selections = new ArrayList<Integer>();
 		selections.add(2019);
@@ -183,6 +180,13 @@ public class SemmedDB {
 		Alias alias5 = new Alias(1, "concept_semtype2", metadata.getIndexList().get(4));
 		Alias alias6 = new Alias(1, "concept2", metadata.getIndexList().get(5));
 			
+		aliases.add(alias0);
+		aliases.add(alias1);
+		aliases.add(alias2);
+		aliases.add(alias3);
+		aliases.add(alias4);
+		aliases.add(alias5);
+		aliases.add(alias6);
 		
 		MetaQuery smdbOptimal = new MetaQuery(1, queryName, numThreads, 1, aliases);
 		
@@ -340,11 +344,12 @@ public class SemmedDB {
 		
 		initSemmedDBIndexes(metadata, encoding);
 		initSemmedDBQueries(metadata, queryName, numThreads);
+		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID());
 		if (numThreads > 1) {
-			initSemmedDBOperatorsThreaded(operators, metadata);
+			initSemmedDBOperatorsThreaded(operators, query);
 		}
 		else {
-			initSemmedDBOperators(operators, metadata);
+			initSemmedDBOperators(operators, query);
 		}
 		CodeGenerator.generateCode(operators, metadata);
 	}
@@ -354,11 +359,12 @@ public class SemmedDB {
 		MetaData metadata = new MetaData();
 		initSemmedDBIndexes(metadata);
 		initSemmedDBQueries(metadata, queryName, numThreads);
+		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID());
 		if (numThreads > 1) {
-			initSemmedDBOperatorsThreaded(operators, metadata);
+			initSemmedDBOperatorsThreaded(operators, query);
 		}
 		else {
-			initSemmedDBOperators(operators, metadata);
+			initSemmedDBOperators(operators, query);
 		}
 		CodeGenerator.generateCode(operators, metadata);
 	}
