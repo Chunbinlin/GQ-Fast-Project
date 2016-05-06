@@ -1,151 +1,171 @@
-package codegenerator;
+package codegenerator.testcases;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import codegenerator.AggregationOperator;
+import codegenerator.Alias;
+import codegenerator.CodeGenerator;
+import codegenerator.JoinOperator;
+import codegenerator.MetaData;
+import codegenerator.MetaIndex;
+import codegenerator.MetaQuery;
+import codegenerator.Operator;
+import codegenerator.SelectionOperator;
+import codegenerator.SemiJoinOperator;
+import codegenerator.ThreadingOperator;
 
-public class TestCasesSemmedDB {
 
-	private static void initSemmedDBOperators(List<Operator> operators) {
+public class SemmedDB {
+
+	private static void initSemmedDBOperators(List<Operator> operators, MetaData metadata) {
+	
+		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID()); 
+				
 		List<Integer> selections = new ArrayList<Integer>();
 		selections.add(2019);
-		Operator selection1 = new SelectionOperator(selections, 0);
+		Operator selection1 = new SelectionOperator(selections, query.getAliases().get(0));
 		operators.add(selection1);
 		
-		int join1indexID = 0;
+	
 		List<Integer> column1IDs = new ArrayList<Integer>();
 		column1IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join1 = new JoinOperator(join1indexID, false, column1IDs, 1, 0, 0, 0);
+		
+		//public JoinOperator(boolean entityFlag, List<Integer> columnIDs,  Alias alias,  Alias drivingAlias, int drivingAliasColumn) {
+		Operator join1 = new JoinOperator(false, column1IDs, query.getAliases().get(1), query.getAliases().get(0), 0);
 		
 		operators.add(join1);
 		
-		int join2indexID = 1;
+	
 		List<Integer> column2IDs = new ArrayList<Integer>();
 		column2IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join2 = new JoinOperator(join2indexID, false, column2IDs, 2, 0, 1, 0);
+		
+		Operator join2 = new JoinOperator(false, column2IDs, query.getAliases().get(2), query.getAliases().get(1), 0);
 		
 		operators.add(join2);
 		
-		int join3indexID = 2;
+		
 		List<Integer> column3IDs = new ArrayList<Integer>();
 		column3IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join3 = new JoinOperator(join3indexID, false, column3IDs, 3, 0, 2, 0);
+		
+		Operator join3 = new JoinOperator(false, column3IDs, query.getAliases().get(3), query.getAliases().get(2), 0);
 		
 		operators.add(join3);
 		
-		int semijoin4indexID = 3;
 		List<Integer> column4IDs = new ArrayList<Integer>();
 		column4IDs.add(0);
-		// SemiJoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs, int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn, int drivingAliasIndexID) {
-		Operator semijoin4 = new SemiJoinOperator(semijoin4indexID, false, column4IDs, 4, 0, 3, 0, 2);
+		
+		Operator semijoin4 = new SemiJoinOperator(false, column4IDs, query.getAliases().get(4), query.getAliases().get(3), 0);
 		
 		operators.add(semijoin4);
 		
-
-		
-		int join5indexID = 4;
 		List<Integer> column5IDs = new ArrayList<Integer>();
 		column5IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join5 = new JoinOperator(join5indexID, false, column5IDs, 5, 0, 4, 0);
+		
+		Operator join5 = new JoinOperator(false, column5IDs, query.getAliases().get(5), query.getAliases().get(4), 0);
 		
 		operators.add(join5);
 		
-		int join6indexID = 5;
 		List<Integer> column6IDs = new ArrayList<Integer>();
 		column6IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join6 = new JoinOperator(join6indexID, false, column6IDs, 6, 0, 5, 0);
+		
+		Operator join6 = new JoinOperator(false, column6IDs, query.getAliases().get(6), query.getAliases().get(5), 0);
 		
 		operators.add(join6);
 		
-		int aggregationindexID = 5;
+		int gqFastIndexID = 5;
 		
 		String aggString = "1";
 		
-		List<Integer> aggAliasList = new ArrayList<Integer>();
+		List<Alias> aggAliasList = new ArrayList<Alias>();
 		
 		List<Integer> aggOpColList = new ArrayList<Integer>();
 
-		Operator agg = new AggregationOperator(aggregationindexID, 
-				AggregationOperator.AGGREGATION_INT, aggString, aggAliasList, aggOpColList, 6, 0, 6, 5);
+		/*public AggregationOperator(int gqFastIndexID, 
+				int dataType, String aggregationString, 
+				List<Alias> aggregationVariablesAliases, List<Integer> aggregationVariablesColumns, Alias drivingAlias, 
+				int drivingAliasColumn) {*/
+		
+		
+		Operator agg = new AggregationOperator(gqFastIndexID, 
+				AggregationOperator.AGGREGATION_INT, aggString, aggAliasList, aggOpColList, query.getAliases().get(6), 0);
 	
 		operators.add(agg);
 		
 	}
 
-	private static void initSemmedDBOperatorsThreaded(List<Operator> operators) {
+	private static void initSemmedDBOperatorsThreaded(List<Operator> operators, MetaData metadata) {
+		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID()); 
+		
 		List<Integer> selections = new ArrayList<Integer>();
 		selections.add(2019);
-		Operator selection1 = new SelectionOperator(selections, 0);
+		Operator selection1 = new SelectionOperator(selections, query.getAliases().get(0));
 		operators.add(selection1);
 		
-		int join1indexID = 0;
+	
 		List<Integer> column1IDs = new ArrayList<Integer>();
 		column1IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join1 = new JoinOperator(join1indexID, false, column1IDs, 1, 0, 0, 0);
+		
+		//public JoinOperator(boolean entityFlag, List<Integer> columnIDs,  Alias alias,  Alias drivingAlias, int drivingAliasColumn) {
+		Operator join1 = new JoinOperator(false, column1IDs, query.getAliases().get(1), query.getAliases().get(0), 0);
 		
 		operators.add(join1);
 		
-		Operator threadOp = new ThreadingOperator(1);
-		operators.add(threadOp);
+		Operator threadingOp = new ThreadingOperator(query.getAliases().get(1));
+		operators.add(threadingOp);
 		
-		int join2indexID = 1;
 		List<Integer> column2IDs = new ArrayList<Integer>();
 		column2IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join2 = new JoinOperator(join2indexID, false, column2IDs, 2, 0, 1, 0);
+		
+		Operator join2 = new JoinOperator(false, column2IDs, query.getAliases().get(2), query.getAliases().get(1), 0);
 		
 		operators.add(join2);
 		
-		int join3indexID = 2;
+		
 		List<Integer> column3IDs = new ArrayList<Integer>();
 		column3IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join3 = new JoinOperator(join3indexID, false, column3IDs, 3, 0, 2, 0);
+		
+		Operator join3 = new JoinOperator(false, column3IDs, query.getAliases().get(3), query.getAliases().get(2), 0);
 		
 		operators.add(join3);
 		
-		int semijoin4indexID = 3;
 		List<Integer> column4IDs = new ArrayList<Integer>();
 		column4IDs.add(0);
-		// SemiJoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs, int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn, int drivingAliasIndexID) {
-		Operator semijoin4 = new SemiJoinOperator(semijoin4indexID, false, column4IDs, 4, 0, 3, 0, 2);
+		
+		Operator semijoin4 = new SemiJoinOperator(false, column4IDs, query.getAliases().get(4), query.getAliases().get(3), 0);
 		
 		operators.add(semijoin4);
 		
-
-		
-		int join5indexID = 4;
 		List<Integer> column5IDs = new ArrayList<Integer>();
 		column5IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join5 = new JoinOperator(join5indexID, false, column5IDs, 5, 0, 4, 0);
+		
+		Operator join5 = new JoinOperator(false, column5IDs, query.getAliases().get(5), query.getAliases().get(4), 0);
 		
 		operators.add(join5);
 		
-		int join6indexID = 5;
 		List<Integer> column6IDs = new ArrayList<Integer>();
 		column6IDs.add(0);
-		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join6 = new JoinOperator(join6indexID, false, column6IDs, 6, 0, 5, 0);
+		
+		Operator join6 = new JoinOperator(false, column6IDs, query.getAliases().get(6), query.getAliases().get(5), 0);
 		
 		operators.add(join6);
 		
-		int aggregationindexID = 5;
+		int gqFastIndexID = 5;
 		
 		String aggString = "1";
 		
-		List<Integer> aggAliasList = new ArrayList<Integer>();
+		List<Alias> aggAliasList = new ArrayList<Alias>();
 		
 		List<Integer> aggOpColList = new ArrayList<Integer>();
 
-		Operator agg = new AggregationOperator(aggregationindexID, 
-				AggregationOperator.AGGREGATION_INT, aggString, aggAliasList, aggOpColList, 6, 0, 7, 5);
+		/*public AggregationOperator(int gqFastIndexID, 
+				int dataType, String aggregationString, 
+				List<Alias> aggregationVariablesAliases, List<Integer> aggregationVariablesColumns, Alias drivingAlias, 
+				int drivingAliasColumn) {*/
+		
+		
+		Operator agg = new AggregationOperator(gqFastIndexID, 
+				AggregationOperator.AGGREGATION_INT, aggString, aggAliasList, aggOpColList, query.getAliases().get(6), 0);
 	
 		operators.add(agg);
 		
@@ -153,24 +173,18 @@ public class TestCasesSemmedDB {
 
 	private static void initSemmedDBQueries(MetaData metadata, String queryName, int numThreads) {
 
-		List<String> aliases = new ArrayList<String>();
-		aliases.add("concept1");
-		aliases.add("concept_semtype1");
-		aliases.add("predication1");
-		aliases.add("sentence1");
-		aliases.add("predication2");
-		aliases.add("concept_semtype2");
-		aliases.add("concept2");
+		List<Alias> aliases = new ArrayList<Alias>();
 		
-		MetaQuery smdbOptimal = new MetaQuery(1, queryName, numThreads,
-				6, 1, aliases);
+		Alias alias0 = new Alias(0, "concept1");
+		Alias alias1 = new Alias(1, "concept_semtype1", metadata.getIndexList().get(0));
+		Alias alias2 = new Alias(1, "predication1", metadata.getIndexList().get(1));
+		Alias alias3 = new Alias(1, "sentence1", metadata.getIndexList().get(2));
+		Alias alias4 = new Alias(1, "predication2", metadata.getIndexList().get(3));
+		Alias alias5 = new Alias(1, "concept_semtype2", metadata.getIndexList().get(4));
+		Alias alias6 = new Alias(1, "concept2", metadata.getIndexList().get(5));
+			
 		
-		smdbOptimal.setIndexID(0);
-		smdbOptimal.setIndexID(1);
-		smdbOptimal.setIndexID(2);
-		smdbOptimal.setIndexID(3);
-		smdbOptimal.setIndexID(4);
-		smdbOptimal.setIndexID(5);
+		MetaQuery smdbOptimal = new MetaQuery(1, queryName, numThreads, 1, aliases);
 		
 		metadata.getQueryList().add(smdbOptimal);	
 		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);
@@ -186,7 +200,7 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodedByteSizesList0 = new ArrayList<Integer>();
 		columnEncodedByteSizesList0.add(MetaData.BYTES_4);
 		
-		MetaIndex CS1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
+		MetaIndex CS1 = new MetaIndex(indexID, 0, numColumns, MetaData.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
 		metadata.getIndexList().add(CS1);
 		
 		// PA1
@@ -197,7 +211,7 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodedByteSizesList1 = new ArrayList<Integer>();
 		columnEncodedByteSizesList1.add(MetaData.BYTES_4);
 		
-		MetaIndex PA1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
+		MetaIndex PA1 = new MetaIndex(indexID, 1,  numColumns, MetaData.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
 		metadata.getIndexList().add(PA1);
 
 		// SP1
@@ -207,7 +221,7 @@ public class TestCasesSemmedDB {
 		columnEncodingsList2.add(MetaData.ENCODING_BB);	
 		List<Integer >columnEncodedByteSizesList2 = new ArrayList<Integer>();
 		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
-		MetaIndex SP1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
+		MetaIndex SP1 = new MetaIndex(indexID, 2, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
 		metadata.getIndexList().add(SP1);
 		
 		// SP2
@@ -219,7 +233,7 @@ public class TestCasesSemmedDB {
 		List<Integer >columnEncodedByteSizesList3 = new ArrayList<Integer>();
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		
-		MetaIndex SP2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		MetaIndex SP2 = new MetaIndex(indexID, 3, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
 		metadata.getIndexList().add(SP2);
 		
 		// PA2
@@ -230,7 +244,7 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
 		columnEncodedByteSizesList4.add(MetaData.BYTES_4);
 		
-		MetaIndex PA2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
+		MetaIndex PA2 = new MetaIndex(indexID, 4, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
 		metadata.getIndexList().add(PA2);
 
 		// CS2
@@ -241,7 +255,7 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodedByteSizesList5 = new ArrayList<Integer>();
 		columnEncodedByteSizesList5.add(MetaData.BYTES_4);
 		
-		MetaIndex CS2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList5, columnEncodedByteSizesList5);
+		MetaIndex CS2 = new MetaIndex(indexID, 5, numColumns, MetaData.BYTES_4, columnEncodingsList5, columnEncodedByteSizesList5);
 		metadata.getIndexList().add(CS2);
 		
 	}
@@ -255,7 +269,12 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodedByteSizesList0 = new ArrayList<Integer>();
 		columnEncodedByteSizesList0.add(MetaData.BYTES_4);
 		
-		MetaIndex CS1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
+		
+		/*public MetaIndex(int indexID, int gqFastIndexID, int numColumns, int indexMapByteSize,
+				List<Integer> columnEncodingsList,
+				List<Integer> columnEncodedByteSizesList) {*/
+		
+		MetaIndex CS1 = new MetaIndex(indexID, 0, numColumns, MetaData.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
 		metadata.getIndexList().add(CS1);
 
 		// PA1
@@ -266,7 +285,7 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodedByteSizesList1 = new ArrayList<Integer>();
 		columnEncodedByteSizesList1.add(MetaData.BYTES_4);
 		
-		MetaIndex PA1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
+		MetaIndex PA1 = new MetaIndex(indexID, 1, numColumns, MetaData.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
 		metadata.getIndexList().add(PA1);
 
 		// SP1
@@ -276,7 +295,7 @@ public class TestCasesSemmedDB {
 		columnEncodingsList2.add(encoding);	
 		List<Integer >columnEncodedByteSizesList2 = new ArrayList<Integer>();
 		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
-		MetaIndex SP1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
+		MetaIndex SP1 = new MetaIndex(indexID, 2, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
 		metadata.getIndexList().add(SP1);
 		
 		// SP2
@@ -288,7 +307,7 @@ public class TestCasesSemmedDB {
 		List<Integer >columnEncodedByteSizesList3 = new ArrayList<Integer>();
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		
-		MetaIndex SP2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		MetaIndex SP2 = new MetaIndex(indexID, 3,  numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
 		metadata.getIndexList().add(SP2);
 		
 		// PA2
@@ -299,7 +318,7 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
 		columnEncodedByteSizesList4.add(MetaData.BYTES_4);
 		
-		MetaIndex PA2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
+		MetaIndex PA2 = new MetaIndex(indexID, 4, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
 		metadata.getIndexList().add(PA2);
 
 		// CS2
@@ -310,7 +329,7 @@ public class TestCasesSemmedDB {
 		List<Integer> columnEncodedByteSizesList5 = new ArrayList<Integer>();
 		columnEncodedByteSizesList5.add(MetaData.BYTES_4);
 		
-		MetaIndex CS2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList5, columnEncodedByteSizesList5);
+		MetaIndex CS2 = new MetaIndex(indexID, 5, numColumns, MetaData.BYTES_4, columnEncodingsList5, columnEncodedByteSizesList5);
 		metadata.getIndexList().add(CS2);
 		
 	}
@@ -322,10 +341,10 @@ public class TestCasesSemmedDB {
 		initSemmedDBIndexes(metadata, encoding);
 		initSemmedDBQueries(metadata, queryName, numThreads);
 		if (numThreads > 1) {
-			initSemmedDBOperatorsThreaded(operators);
+			initSemmedDBOperatorsThreaded(operators, metadata);
 		}
 		else {
-			initSemmedDBOperators(operators);
+			initSemmedDBOperators(operators, metadata);
 		}
 		CodeGenerator.generateCode(operators, metadata);
 	}
@@ -336,10 +355,10 @@ public class TestCasesSemmedDB {
 		initSemmedDBIndexes(metadata);
 		initSemmedDBQueries(metadata, queryName, numThreads);
 		if (numThreads > 1) {
-			initSemmedDBOperatorsThreaded(operators);
+			initSemmedDBOperatorsThreaded(operators, metadata);
 		}
 		else {
-			initSemmedDBOperators(operators);
+			initSemmedDBOperators(operators, metadata);
 		}
 		CodeGenerator.generateCode(operators, metadata);
 	}

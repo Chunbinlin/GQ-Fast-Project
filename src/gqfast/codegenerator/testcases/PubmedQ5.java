@@ -40,7 +40,7 @@ public class PubmedQ5 {
 		
 		// public MetaQuery(int queryID, String queryName, int numThreads,
 		// int numBuffers, int bufferPoolSize, List<String> aliases)
-		MetaQuery q5Optimal = new MetaQuery(0, queryName, numThreads, 5, 1, aliases);
+		MetaQuery q5Optimal = new MetaQuery(0, queryName, numThreads, 1, aliases);
 			
 		metadata.getQueryList().add(q5Optimal);
 		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);
@@ -198,45 +198,46 @@ public class PubmedQ5 {
 		column1IDs.add(0);
 		
 		// JoinOperator(boolean entityFlag, List<Integer> columnIDs,  Alias alias, int loopColumn, Alias drivingAlias, int drivingAliasColumn) {
-		Operator join1 = new JoinOperator(false, column1IDs, aliases.get(1), 0, aliases.get(0), 0);	
+		Operator join1 = new JoinOperator(false, column1IDs, aliases.get(1), aliases.get(0), 0);	
 		operators.add(join1);
 		
 		List<Integer> column2IDs = new ArrayList<Integer>();
 		column2IDs.add(0);
 		column2IDs.add(1);
-		Operator join2 = new JoinOperator(false, column2IDs, aliases.get(2), 0, aliases.get(1), 0);
+		Operator join2 = new JoinOperator(false, column2IDs, aliases.get(2), aliases.get(1), 0);
 		
 		operators.add(join2);
 		
 		Operator threadOp = new ThreadingOperator(aliases.get(2));
 		operators.add(threadOp);
 		
+		
 		List<Integer> column3IDs = new ArrayList<Integer>();
 		column3IDs.add(0);
 		column3IDs.add(1);
-		Operator join3 = new JoinOperator(false, column3IDs, aliases.get(3), 0, aliases.get(2), 0);
+		Operator join3 = new JoinOperator(false, column3IDs, aliases.get(3), aliases.get(2), 0);
 		
 		operators.add(join3);
 		
 		List<Integer> column4IDs = new ArrayList<Integer>();
 		column4IDs.add(0);
-		Operator join4 = new JoinOperator(true, column4IDs, aliases.get(5), 0, aliases.get(3), 0);
+		Operator join4 = new JoinOperator(true, column4IDs, aliases.get(5), aliases.get(3), 0);
 		
 		operators.add(join4);
 		
 		List<Integer> column5IDs = new ArrayList<Integer>();
 		column5IDs.add(0);
-		Operator join5 = new JoinOperator(false, column5IDs, aliases.get(4), 0, aliases.get(3), 0);
+		Operator join5 = new JoinOperator(false, column5IDs, aliases.get(4), aliases.get(3), 0);
 		operators.add(join5);
 		
 		int aggregationindexID = 4;
 		
 		String aggString = "(double)( op0 * op1 )/(2017 - op2 )";
 		
-		List<Integer> aggAliasList = new ArrayList<Integer>();
-		aggAliasList.add(2);
-		aggAliasList.add(3);
-		aggAliasList.add(5);
+		List<Alias> aggAliasList = new ArrayList<Alias>();
+		aggAliasList.add(query.getAliases().get(2));
+		aggAliasList.add(query.getAliases().get(3));
+		aggAliasList.add(query.getAliases().get(5));
 		
 		List<Integer> aggOpColList = new ArrayList<Integer>();
 		aggOpColList.add(1);
@@ -244,7 +245,7 @@ public class PubmedQ5 {
 		aggOpColList.add(0);
 
 		Operator agg = new AggregationOperator(aggregationindexID, 
-				AggregationOperator.AGGREGATION_DOUBLE, aggString, aggAliasList, aggOpColList, aliases.get(4), 0, 6);
+				AggregationOperator.AGGREGATION_DOUBLE, aggString, aggAliasList, aggOpColList, aliases.get(4), 0);
 	
 		operators.add(agg);
 	}
@@ -261,42 +262,42 @@ List<Alias> aliases = query.getAliases();
 		column1IDs.add(0);
 		
 		// JoinOperator(boolean entityFlag, List<Integer> columnIDs,  Alias alias, int loopColumn, Alias drivingAlias, int drivingAliasColumn) {
-		Operator join1 = new JoinOperator(false, column1IDs, aliases.get(1), 0, aliases.get(0), 0);	
+		Operator join1 = new JoinOperator(false, column1IDs, aliases.get(1), aliases.get(0), 0);	
 		operators.add(join1);
 		
 		List<Integer> column2IDs = new ArrayList<Integer>();
 		column2IDs.add(0);
 		column2IDs.add(1);
-		Operator join2 = new JoinOperator(false, column2IDs, aliases.get(2), 0, aliases.get(1), 0);
+		Operator join2 = new JoinOperator(false, column2IDs, aliases.get(2), aliases.get(1), 0);
 		
 		operators.add(join2);
 				
 		List<Integer> column3IDs = new ArrayList<Integer>();
 		column3IDs.add(0);
 		column3IDs.add(1);
-		Operator join3 = new JoinOperator(false, column3IDs, aliases.get(3), 0, aliases.get(2), 0);
+		Operator join3 = new JoinOperator(false, column3IDs, aliases.get(3), aliases.get(2), 0);
 		
 		operators.add(join3);
 		
 		List<Integer> column4IDs = new ArrayList<Integer>();
 		column4IDs.add(0);
-		Operator join4 = new JoinOperator(true, column4IDs, aliases.get(5), 0, aliases.get(3), 0);
+		Operator join4 = new JoinOperator(true, column4IDs, aliases.get(5), aliases.get(3), 0);
 		
 		operators.add(join4);
 		
 		List<Integer> column5IDs = new ArrayList<Integer>();
 		column5IDs.add(0);
-		Operator join5 = new JoinOperator(false, column5IDs, aliases.get(4), 0, aliases.get(3), 0);
+		Operator join5 = new JoinOperator(false, column5IDs, aliases.get(4), aliases.get(3), 0);
 		operators.add(join5);
 		
 		int aggregationindexID = 4;
 		
 		String aggString = "(double)( op0 * op1 )/(2017 - op2 )";
 		
-		List<Integer> aggAliasList = new ArrayList<Integer>();
-		aggAliasList.add(2);
-		aggAliasList.add(3);
-		aggAliasList.add(5);
+		List<Alias> aggAliasList = new ArrayList<Alias>();
+		aggAliasList.add(query.getAliases().get(2));
+		aggAliasList.add(query.getAliases().get(3));
+		aggAliasList.add(query.getAliases().get(5));
 		
 		List<Integer> aggOpColList = new ArrayList<Integer>();
 		aggOpColList.add(1);
@@ -304,7 +305,7 @@ List<Alias> aliases = query.getAliases();
 		aggOpColList.add(0);
 
 		Operator agg = new AggregationOperator(aggregationindexID, 
-				AggregationOperator.AGGREGATION_DOUBLE, aggString, aggAliasList, aggOpColList, aliases.get(4), 0, 5);
+				AggregationOperator.AGGREGATION_DOUBLE, aggString, aggAliasList, aggOpColList, aliases.get(4), 0);
 	
 		operators.add(agg);
 	}
