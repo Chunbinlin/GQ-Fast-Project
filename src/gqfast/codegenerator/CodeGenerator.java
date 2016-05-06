@@ -224,8 +224,8 @@ public class CodeGenerator {
 		for (Operator currentOp: operators) {
 			if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
 				SemiJoinOperator currentSemiJoinOp = (SemiJoinOperator) currentOp;
-				String alias = currentSemiJoinOp.getAlias().getAlias();
-				int gqFastIndexID = currentSemiJoinOp.getAlias().getAssociatedIndex().getGQFastIndexID();
+				String alias = currentSemiJoinOp.getDrivingAlias().getAlias();
+				int gqFastIndexID = currentSemiJoinOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
 				
 				String globalDeclarationString = "\nstatic bool* " + alias + "_bool_array;\n";
 				globalsCppCode.add(globalDeclarationString);
