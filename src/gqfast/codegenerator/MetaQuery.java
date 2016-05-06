@@ -11,19 +11,17 @@ public class MetaQuery {
 	private int queryID;
 	private String queryName; 
 	private int numThreads;
-	private int numBuffers;
 	private int bufferPoolSize;
 	private List<Alias> aliases;
 	private int[][] aliasBufferPoolIDs;
 	private boolean[] preThreading;
 	
 	public MetaQuery(int queryID, String queryName, int numThreads,
-			int numBuffers, int bufferPoolSize, List<Alias> aliases) {
+			int bufferPoolSize, List<Alias> aliases) {
 	
 		this.queryID = queryID;
 		this.queryName = queryName;
 		this.numThreads = numThreads;
-		this.numBuffers = numBuffers;
 		this.bufferPoolSize = bufferPoolSize;
 		this.aliases = aliases;	
 		aliasBufferPoolIDs = new int[aliases.size()+1][];
@@ -51,10 +49,6 @@ public class MetaQuery {
 
 	public int getNumThreads() {
 		return numThreads;
-	}
-
-	public int getNumBuffers() {
-		return numBuffers;
 	}
 
 	public int getBufferPoolSize() {

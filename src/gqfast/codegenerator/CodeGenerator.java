@@ -57,7 +57,6 @@ public class CodeGenerator {
 		initCppCode += "#include \"../global_vars.hpp\"\n\n";
 	
 		initCppCode += "#define NUM_THREADS " + query.getNumThreads() + "\n";
-		initCppCode += "#define NUM_BUFFERS " + query.getNumBuffers() + "\n";
 		initCppCode += "#define BUFFER_POOL_SIZE " + query.getBufferPoolSize() + "\n";
 		initCppCode += "\nusing namespace std;\n";
 				
@@ -194,13 +193,13 @@ public class CodeGenerator {
 	 */
 	private static String initResultArray(AggregationOperator aggregation) {
 		
-		String resultString = "\n\tRC = new int[metadata.idx_domains[" + aggregation.getIndexID() + "][0]]();\n";
+		String resultString = "\n\tRC = new int[metadata.idx_domains[" + aggregation.getGQFastIndexID() + "][0]]();\n";
 		
 		if (aggregation.getDataType() == AggregationOperator.AGGREGATION_INT) {
-			resultString += "\tR = new int[metadata.idx_domains[" + aggregation.getIndexID() + "][0]]();\n";
+			resultString += "\tR = new int[metadata.idx_domains[" + aggregation.getGQFastIndexID() + "][0]]();\n";
 		}
 		else if (aggregation.getDataType() == AggregationOperator.AGGREGATION_DOUBLE) {
-			resultString += "\tR = new double[metadata.idx_domains[" + aggregation.getIndexID() + "][0]]();\n";
+			resultString += "\tR = new double[metadata.idx_domains[" + aggregation.getGQFastIndexID() + "][0]]();\n";
 		}
 		return resultString;
 	}
@@ -1385,8 +1384,7 @@ public class CodeGenerator {
 				// Reads the number immediately following "op"
 				String num_letter = Character.toString(tokens[j].charAt(2));
 				int aggregationAliasNum = Integer.parseInt(num_letter);
-				int aliasID = aggregationOp.getAggregationVariablesAliases().get(aggregationAliasNum);
-				String alias = query.getAliases().get(aliasID).getAlias();
+				String alias = aggregationOp.getAggregationVariablesAliases().get(aggregationAliasNum).getAlias();
 				int aliasCol = aggregationOp.getAggregationVariablesColumns().get(aggregationAliasNum);
 				String fullElementName = alias + "_col" + aliasCol + "_element";
 				reconstructedString += fullElementName;
