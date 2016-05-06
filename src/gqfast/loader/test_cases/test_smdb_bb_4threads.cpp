@@ -5,40 +5,40 @@
 #include "../global_vars.hpp"
 
 #define NUM_THREADS 4
-#define NUM_BUFFERS 6
 #define BUFFER_POOL_SIZE 1
 
 using namespace std;
 
 static args_threading arguments[NUM_THREADS];
 
+
 static int* R;
 static int* RC;
 
 static bool* sentence1_bool_array;
 
-extern inline void test_smdb_bb_4threads_concept_semtype1_col0_decode_BB(unsigned char* concept_semtype1_col0_ptr, uint32_t concept_semtype1_col0_bytes, uint32_t & concept_semtype1_fragment_size) __attribute__((always_inline));
+extern inline void test_smdb_bb_4threads_concept_semtype1_col0_decode_BB(unsigned char* concept_semtype1_col0_ptr, int32_t concept_semtype1_col0_bytes, int32_t & concept_semtype1_fragment_size) __attribute__((always_inline));
 
 void* pthread_test_smdb_bb_4threads_worker(void* arguments);
 
-extern inline void test_smdb_bb_4threads_predication1_col0_decode_BB_threaded(int thread_id, unsigned char* predication1_col0_ptr, uint32_t predication1_col0_bytes, uint32_t & predication1_fragment_size) __attribute__((always_inline));
+extern inline void test_smdb_bb_4threads_predication1_col0_decode_BB_threaded(int thread_id, unsigned char* predication1_col0_ptr, int32_t predication1_col0_bytes, int32_t & predication1_fragment_size) __attribute__((always_inline));
 
-extern inline void test_smdb_bb_4threads_sentence1_col0_decode_BB_threaded(int thread_id, unsigned char* sentence1_col0_ptr, uint32_t sentence1_col0_bytes, uint32_t & sentence1_fragment_size) __attribute__((always_inline));
+extern inline void test_smdb_bb_4threads_sentence1_col0_decode_BB_threaded(int thread_id, unsigned char* sentence1_col0_ptr, int32_t sentence1_col0_bytes, int32_t & sentence1_fragment_size) __attribute__((always_inline));
 
-extern inline void test_smdb_bb_4threads_predication2_col0_decode_BB_threaded(int thread_id, unsigned char* predication2_col0_ptr, uint32_t predication2_col0_bytes, uint32_t & predication2_fragment_size) __attribute__((always_inline));
+extern inline void test_smdb_bb_4threads_predication2_col0_decode_BB_threaded(int thread_id, unsigned char* predication2_col0_ptr, int32_t predication2_col0_bytes, int32_t & predication2_fragment_size) __attribute__((always_inline));
 
-extern inline void test_smdb_bb_4threads_concept_semtype2_col0_decode_BB_threaded(int thread_id, unsigned char* concept_semtype2_col0_ptr, uint32_t concept_semtype2_col0_bytes, uint32_t & concept_semtype2_fragment_size) __attribute__((always_inline));
+extern inline void test_smdb_bb_4threads_concept_semtype2_col0_decode_BB_threaded(int thread_id, unsigned char* concept_semtype2_col0_ptr, int32_t concept_semtype2_col0_bytes, int32_t & concept_semtype2_fragment_size) __attribute__((always_inline));
 
-extern inline void test_smdb_bb_4threads_concept2_col0_decode_BB_threaded(int thread_id, unsigned char* concept2_col0_ptr, uint32_t concept2_col0_bytes, uint32_t & concept2_fragment_size) __attribute__((always_inline));
+extern inline void test_smdb_bb_4threads_concept2_col0_decode_BB_threaded(int thread_id, unsigned char* concept2_col0_ptr, int32_t concept2_col0_bytes, int32_t & concept2_fragment_size) __attribute__((always_inline));
 
-void test_smdb_bb_4threads_concept_semtype1_col0_decode_BB(unsigned char* concept_semtype1_col0_ptr, uint32_t concept_semtype1_col0_bytes, uint32_t & concept_semtype1_fragment_size) {
+void test_smdb_bb_4threads_concept_semtype1_col0_decode_BB(unsigned char* concept_semtype1_col0_ptr, int32_t concept_semtype1_col0_bytes, int32_t & concept_semtype1_fragment_size) {
 
 	buffer_arrays[0][0][0][0][0] = 0;
 
 	int shiftbits = 0;
 	do { 
 		concept_semtype1_col0_bytes--;
-		uint32_t next_seven_bits = *concept_semtype1_col0_ptr & 127;
+		int32_t next_seven_bits = *concept_semtype1_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
 		buffer_arrays[0][0][0][0][0] |= next_seven_bits;
 		shiftbits += 7;
@@ -47,12 +47,12 @@ void test_smdb_bb_4threads_concept_semtype1_col0_decode_BB(unsigned char* concep
 
 	while (concept_semtype1_col0_bytes > 0) {
 		shiftbits = 0;
-		uint32_t result = 0;
+		int32_t result = 0;
 
 		do {
 
 			concept_semtype1_col0_bytes--;
-			uint32_t next_seven_bits = *concept_semtype1_col0_ptr & 127;
+			int32_t next_seven_bits = *concept_semtype1_col0_ptr & 127;
 			next_seven_bits = next_seven_bits << shiftbits;
 			result |= next_seven_bits;
 			shiftbits += 7;
@@ -67,75 +67,75 @@ void* pthread_test_smdb_bb_4threads_worker(void* arguments) {
 
 	args_threading* args = (args_threading *) arguments;
 
-	uint32_t concept_semtype1_it = args->start;
-	uint32_t concept_semtype1_fragment_size = args->end;
+	int32_t concept_semtype1_it = args->start;
+	int32_t concept_semtype1_fragment_size = args->end;
 	int thread_id = args->thread_id;
 
 	for (; concept_semtype1_it < concept_semtype1_fragment_size; concept_semtype1_it++) {
 
-		uint32_t concept_semtype1_col0_element = buffer_arrays[0][0][0][0][concept_semtype1_it];
+		int32_t concept_semtype1_col0_element = buffer_arrays[0][0][0][0][concept_semtype1_it];
 
-		uint32_t* row_op3 = idx[1]->index_map[concept_semtype1_col0_element];
-		uint32_t predication1_col0_bytes = idx[1]->index_map[concept_semtype1_col0_element+1][0] - row_op3[0];
+		uint32_t* row_predication1 = idx[1]->index_map[concept_semtype1_col0_element];
+		int32_t predication1_col0_bytes = idx[1]->index_map[concept_semtype1_col0_element+1][0] - row_predication1[0];
 		if(predication1_col0_bytes) {
 
-			unsigned char* predication1_col0_ptr = &(idx[1]->fragment_data[0][row_op3[0]]);
-			uint32_t predication1_fragment_size = 0;
+			unsigned char* predication1_col0_ptr = &(idx[1]->fragment_data[0][row_predication1[0]]);
+			int32_t predication1_fragment_size = 0;
 			test_smdb_bb_4threads_predication1_col0_decode_BB_threaded(thread_id, predication1_col0_ptr, predication1_col0_bytes, predication1_fragment_size);
 
-			for (uint32_t predication1_it = 0; predication1_it < predication1_fragment_size; predication1_it++) {
+			for (int32_t predication1_it = 0; predication1_it < predication1_fragment_size; predication1_it++) {
 
-				uint32_t predication1_col0_element = buffer_arrays[1][0][thread_id][0][predication1_it];
+				int32_t predication1_col0_element = buffer_arrays[1][0][0][0][predication1_it];
 
-				uint32_t* row_op4 = idx[2]->index_map[predication1_col0_element];
-				uint32_t sentence1_col0_bytes = idx[2]->index_map[predication1_col0_element+1][0] - row_op4[0];
+				uint32_t* row_sentence1 = idx[2]->index_map[predication1_col0_element];
+				int32_t sentence1_col0_bytes = idx[2]->index_map[predication1_col0_element+1][0] - row_sentence1[0];
 				if(sentence1_col0_bytes) {
 
-					unsigned char* sentence1_col0_ptr = &(idx[2]->fragment_data[0][row_op4[0]]);
-					uint32_t sentence1_fragment_size = 0;
+					unsigned char* sentence1_col0_ptr = &(idx[2]->fragment_data[0][row_sentence1[0]]);
+					int32_t sentence1_fragment_size = 0;
 					test_smdb_bb_4threads_sentence1_col0_decode_BB_threaded(thread_id, sentence1_col0_ptr, sentence1_col0_bytes, sentence1_fragment_size);
 
-					for (uint32_t sentence1_it = 0; sentence1_it < sentence1_fragment_size; sentence1_it++) {
+					for (int32_t sentence1_it = 0; sentence1_it < sentence1_fragment_size; sentence1_it++) {
 
 
-						if (!(sentence1_bool_array[buffer_arrays[2][0][thread_id][0][sentence1_it]])) {
-							sentence1_bool_array[buffer_arrays[2][0][thread_id][0][sentence1_it]] = true;
-							uint32_t sentence1_col0_element = buffer_arrays[2][0][thread_id][0][sentence1_it];
+						if (!(sentence1_bool_array[buffer_arrays[2][0][0][0][sentence1_it]])) {
+							sentence1_bool_array[buffer_arrays[2][0][0][0][sentence1_it]] = true;
+							int32_t sentence1_col0_element = buffer_arrays[2][0][0][0][sentence1_it];
 
-							uint32_t* row_op5 = idx[3]->index_map[sentence1_col0_element];
-							uint32_t predication2_col0_bytes = idx[3]->index_map[sentence1_col0_element+1][0] - row_op5[0];
+							uint32_t* row_predication2 = idx[3]->index_map[sentence1_col0_element];
+							int32_t predication2_col0_bytes = idx[3]->index_map[sentence1_col0_element+1][0] - row_predication2[0];
 							if(predication2_col0_bytes) {
 
-								unsigned char* predication2_col0_ptr = &(idx[3]->fragment_data[0][row_op5[0]]);
-								uint32_t predication2_fragment_size = 0;
+								unsigned char* predication2_col0_ptr = &(idx[3]->fragment_data[0][row_predication2[0]]);
+								int32_t predication2_fragment_size = 0;
 								test_smdb_bb_4threads_predication2_col0_decode_BB_threaded(thread_id, predication2_col0_ptr, predication2_col0_bytes, predication2_fragment_size);
 
-								for (uint32_t predication2_it = 0; predication2_it < predication2_fragment_size; predication2_it++) {
+								for (int32_t predication2_it = 0; predication2_it < predication2_fragment_size; predication2_it++) {
 
-									uint32_t predication2_col0_element = buffer_arrays[3][0][thread_id][0][predication2_it];
+									int32_t predication2_col0_element = buffer_arrays[3][0][0][0][predication2_it];
 
-									uint32_t* row_op6 = idx[4]->index_map[predication2_col0_element];
-									uint32_t concept_semtype2_col0_bytes = idx[4]->index_map[predication2_col0_element+1][0] - row_op6[0];
+									uint32_t* row_concept_semtype2 = idx[4]->index_map[predication2_col0_element];
+									int32_t concept_semtype2_col0_bytes = idx[4]->index_map[predication2_col0_element+1][0] - row_concept_semtype2[0];
 									if(concept_semtype2_col0_bytes) {
 
-										unsigned char* concept_semtype2_col0_ptr = &(idx[4]->fragment_data[0][row_op6[0]]);
-										uint32_t concept_semtype2_fragment_size = 0;
+										unsigned char* concept_semtype2_col0_ptr = &(idx[4]->fragment_data[0][row_concept_semtype2[0]]);
+										int32_t concept_semtype2_fragment_size = 0;
 										test_smdb_bb_4threads_concept_semtype2_col0_decode_BB_threaded(thread_id, concept_semtype2_col0_ptr, concept_semtype2_col0_bytes, concept_semtype2_fragment_size);
 
-										for (uint32_t concept_semtype2_it = 0; concept_semtype2_it < concept_semtype2_fragment_size; concept_semtype2_it++) {
+										for (int32_t concept_semtype2_it = 0; concept_semtype2_it < concept_semtype2_fragment_size; concept_semtype2_it++) {
 
-											uint32_t concept_semtype2_col0_element = buffer_arrays[4][0][thread_id][0][concept_semtype2_it];
+											int32_t concept_semtype2_col0_element = buffer_arrays[4][0][0][0][concept_semtype2_it];
 
-											uint32_t* row_op7 = idx[5]->index_map[concept_semtype2_col0_element];
-											uint32_t concept2_col0_bytes = idx[5]->index_map[concept_semtype2_col0_element+1][0] - row_op7[0];
+											uint32_t* row_concept2 = idx[5]->index_map[concept_semtype2_col0_element];
+											int32_t concept2_col0_bytes = idx[5]->index_map[concept_semtype2_col0_element+1][0] - row_concept2[0];
 											if(concept2_col0_bytes) {
 
-												unsigned char* concept2_col0_ptr = &(idx[5]->fragment_data[0][row_op7[0]]);
-												uint32_t concept2_fragment_size = 0;
+												unsigned char* concept2_col0_ptr = &(idx[5]->fragment_data[0][row_concept2[0]]);
+												int32_t concept2_fragment_size = 0;
 												test_smdb_bb_4threads_concept2_col0_decode_BB_threaded(thread_id, concept2_col0_ptr, concept2_col0_bytes, concept2_fragment_size);
 
-												for (uint32_t concept2_it = 0; concept2_it < concept2_fragment_size; concept2_it++) {
-													uint32_t concept2_col0_element = buffer_arrays[5][0][thread_id][0][concept2_it];
+												for (int32_t concept2_it = 0; concept2_it < concept2_fragment_size; concept2_it++) {
+													int32_t concept2_col0_element = buffer_arrays[5][0][0][0][concept2_it];
 
 													RC[concept2_col0_element] = 1;
 
@@ -158,14 +158,14 @@ void* pthread_test_smdb_bb_4threads_worker(void* arguments) {
 	return nullptr;
 }
 
-void test_smdb_bb_4threads_predication1_col0_decode_BB_threaded(int thread_id, unsigned char* predication1_col0_ptr, uint32_t predication1_col0_bytes, uint32_t & predication1_fragment_size) {
+void test_smdb_bb_4threads_predication1_col0_decode_BB_threaded(int thread_id, unsigned char* predication1_col0_ptr, int32_t predication1_col0_bytes, int32_t & predication1_fragment_size) {
 
 	buffer_arrays[1][0][thread_id][0][0] = 0;
 
 	int shiftbits = 0;
 	do { 
 		predication1_col0_bytes--;
-		uint32_t next_seven_bits = *predication1_col0_ptr & 127;
+		int32_t next_seven_bits = *predication1_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
 		buffer_arrays[1][0][thread_id][0][0] |= next_seven_bits;
 		shiftbits += 7;
@@ -174,12 +174,12 @@ void test_smdb_bb_4threads_predication1_col0_decode_BB_threaded(int thread_id, u
 
 	while (predication1_col0_bytes > 0) {
 		shiftbits = 0;
-		uint32_t result = 0;
+		int32_t result = 0;
 
 		do {
 
 			predication1_col0_bytes--;
-			uint32_t next_seven_bits = *predication1_col0_ptr & 127;
+			int32_t next_seven_bits = *predication1_col0_ptr & 127;
 			next_seven_bits = next_seven_bits << shiftbits;
 			result |= next_seven_bits;
 			shiftbits += 7;
@@ -190,14 +190,14 @@ void test_smdb_bb_4threads_predication1_col0_decode_BB_threaded(int thread_id, u
 	}
 }
 
-void test_smdb_bb_4threads_sentence1_col0_decode_BB_threaded(int thread_id, unsigned char* sentence1_col0_ptr, uint32_t sentence1_col0_bytes, uint32_t & sentence1_fragment_size) {
+void test_smdb_bb_4threads_sentence1_col0_decode_BB_threaded(int thread_id, unsigned char* sentence1_col0_ptr, int32_t sentence1_col0_bytes, int32_t & sentence1_fragment_size) {
 
 	buffer_arrays[2][0][thread_id][0][0] = 0;
 
 	int shiftbits = 0;
 	do { 
 		sentence1_col0_bytes--;
-		uint32_t next_seven_bits = *sentence1_col0_ptr & 127;
+		int32_t next_seven_bits = *sentence1_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
 		buffer_arrays[2][0][thread_id][0][0] |= next_seven_bits;
 		shiftbits += 7;
@@ -206,12 +206,12 @@ void test_smdb_bb_4threads_sentence1_col0_decode_BB_threaded(int thread_id, unsi
 
 	while (sentence1_col0_bytes > 0) {
 		shiftbits = 0;
-		uint32_t result = 0;
+		int32_t result = 0;
 
 		do {
 
 			sentence1_col0_bytes--;
-			uint32_t next_seven_bits = *sentence1_col0_ptr & 127;
+			int32_t next_seven_bits = *sentence1_col0_ptr & 127;
 			next_seven_bits = next_seven_bits << shiftbits;
 			result |= next_seven_bits;
 			shiftbits += 7;
@@ -222,14 +222,14 @@ void test_smdb_bb_4threads_sentence1_col0_decode_BB_threaded(int thread_id, unsi
 	}
 }
 
-void test_smdb_bb_4threads_predication2_col0_decode_BB_threaded(int thread_id, unsigned char* predication2_col0_ptr, uint32_t predication2_col0_bytes, uint32_t & predication2_fragment_size) {
+void test_smdb_bb_4threads_predication2_col0_decode_BB_threaded(int thread_id, unsigned char* predication2_col0_ptr, int32_t predication2_col0_bytes, int32_t & predication2_fragment_size) {
 
 	buffer_arrays[3][0][thread_id][0][0] = 0;
 
 	int shiftbits = 0;
 	do { 
 		predication2_col0_bytes--;
-		uint32_t next_seven_bits = *predication2_col0_ptr & 127;
+		int32_t next_seven_bits = *predication2_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
 		buffer_arrays[3][0][thread_id][0][0] |= next_seven_bits;
 		shiftbits += 7;
@@ -238,12 +238,12 @@ void test_smdb_bb_4threads_predication2_col0_decode_BB_threaded(int thread_id, u
 
 	while (predication2_col0_bytes > 0) {
 		shiftbits = 0;
-		uint32_t result = 0;
+		int32_t result = 0;
 
 		do {
 
 			predication2_col0_bytes--;
-			uint32_t next_seven_bits = *predication2_col0_ptr & 127;
+			int32_t next_seven_bits = *predication2_col0_ptr & 127;
 			next_seven_bits = next_seven_bits << shiftbits;
 			result |= next_seven_bits;
 			shiftbits += 7;
@@ -254,14 +254,14 @@ void test_smdb_bb_4threads_predication2_col0_decode_BB_threaded(int thread_id, u
 	}
 }
 
-void test_smdb_bb_4threads_concept_semtype2_col0_decode_BB_threaded(int thread_id, unsigned char* concept_semtype2_col0_ptr, uint32_t concept_semtype2_col0_bytes, uint32_t & concept_semtype2_fragment_size) {
+void test_smdb_bb_4threads_concept_semtype2_col0_decode_BB_threaded(int thread_id, unsigned char* concept_semtype2_col0_ptr, int32_t concept_semtype2_col0_bytes, int32_t & concept_semtype2_fragment_size) {
 
 	buffer_arrays[4][0][thread_id][0][0] = 0;
 
 	int shiftbits = 0;
 	do { 
 		concept_semtype2_col0_bytes--;
-		uint32_t next_seven_bits = *concept_semtype2_col0_ptr & 127;
+		int32_t next_seven_bits = *concept_semtype2_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
 		buffer_arrays[4][0][thread_id][0][0] |= next_seven_bits;
 		shiftbits += 7;
@@ -270,12 +270,12 @@ void test_smdb_bb_4threads_concept_semtype2_col0_decode_BB_threaded(int thread_i
 
 	while (concept_semtype2_col0_bytes > 0) {
 		shiftbits = 0;
-		uint32_t result = 0;
+		int32_t result = 0;
 
 		do {
 
 			concept_semtype2_col0_bytes--;
-			uint32_t next_seven_bits = *concept_semtype2_col0_ptr & 127;
+			int32_t next_seven_bits = *concept_semtype2_col0_ptr & 127;
 			next_seven_bits = next_seven_bits << shiftbits;
 			result |= next_seven_bits;
 			shiftbits += 7;
@@ -286,14 +286,14 @@ void test_smdb_bb_4threads_concept_semtype2_col0_decode_BB_threaded(int thread_i
 	}
 }
 
-void test_smdb_bb_4threads_concept2_col0_decode_BB_threaded(int thread_id, unsigned char* concept2_col0_ptr, uint32_t concept2_col0_bytes, uint32_t & concept2_fragment_size) {
+void test_smdb_bb_4threads_concept2_col0_decode_BB_threaded(int thread_id, unsigned char* concept2_col0_ptr, int32_t concept2_col0_bytes, int32_t & concept2_fragment_size) {
 
 	buffer_arrays[5][0][thread_id][0][0] = 0;
 
 	int shiftbits = 0;
 	do { 
 		concept2_col0_bytes--;
-		uint32_t next_seven_bits = *concept2_col0_ptr & 127;
+		int32_t next_seven_bits = *concept2_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
 		buffer_arrays[5][0][thread_id][0][0] |= next_seven_bits;
 		shiftbits += 7;
@@ -302,12 +302,12 @@ void test_smdb_bb_4threads_concept2_col0_decode_BB_threaded(int thread_id, unsig
 
 	while (concept2_col0_bytes > 0) {
 		shiftbits = 0;
-		uint32_t result = 0;
+		int32_t result = 0;
 
 		do {
 
 			concept2_col0_bytes--;
-			uint32_t next_seven_bits = *concept2_col0_ptr & 127;
+			int32_t next_seven_bits = *concept2_col0_ptr & 127;
 			next_seven_bits = next_seven_bits << shiftbits;
 			result |= next_seven_bits;
 			shiftbits += 7;
@@ -389,23 +389,23 @@ extern "C" int* test_smdb_bb_4threads(int** null_checks) {
 
 	sentence1_bool_array = new bool[metadata.idx_domains[2][0]]();
 
-	uint64_t* concept1_list = new uint64_t[1];
+	int64_t* concept1_list = new int64_t[1];
 	concept1_list[0] = 2019;
 
 	for (int concept1_it = 0; concept1_it<1; concept1_it++) {
 
-		uint64_t concept1_col0_element = concept1_list[concept1_it];
+		int64_t concept1_col0_element = concept1_list[concept1_it];
 
-		uint32_t* row_op1 = idx[0]->index_map[concept1_col0_element];
-		uint32_t concept_semtype1_col0_bytes = idx[0]->index_map[concept1_col0_element+1][0] - row_op1[0];
+		uint32_t* row_concept_semtype1 = idx[0]->index_map[concept1_col0_element];
+		int32_t concept_semtype1_col0_bytes = idx[0]->index_map[concept1_col0_element+1][0] - row_concept_semtype1[0];
 		if(concept_semtype1_col0_bytes) {
 
-			unsigned char* concept_semtype1_col0_ptr = &(idx[0]->fragment_data[0][row_op1[0]]);
-			uint32_t concept_semtype1_fragment_size = 0;
+			unsigned char* concept_semtype1_col0_ptr = &(idx[0]->fragment_data[0][row_concept_semtype1[0]]);
+			int32_t concept_semtype1_fragment_size = 0;
 			test_smdb_bb_4threads_concept_semtype1_col0_decode_BB(concept_semtype1_col0_ptr, concept_semtype1_col0_bytes, concept_semtype1_fragment_size);
 
-			uint32_t thread_size = concept_semtype1_fragment_size/NUM_THREADS;
-			uint32_t position = 0;
+			int32_t thread_size = concept_semtype1_fragment_size/NUM_THREADS;
+			int32_t position = 0;
 
 			for (int i=0; i<NUM_THREADS; i++) {
 				arguments[i].start = position;

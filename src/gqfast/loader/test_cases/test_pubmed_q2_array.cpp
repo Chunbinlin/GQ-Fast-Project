@@ -5,7 +5,6 @@
 #include "../global_vars.hpp"
 
 #define NUM_THREADS 1
-#define NUM_BUFFERS 3
 #define BUFFER_POOL_SIZE 1
 
 using namespace std;
