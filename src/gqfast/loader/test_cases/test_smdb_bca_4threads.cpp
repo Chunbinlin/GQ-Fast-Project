@@ -81,7 +81,7 @@ void* pthread_test_smdb_bca_4threads_worker(void* arguments) {
 
 			for (int32_t predication1_it = 0; predication1_it < predication1_fragment_size; predication1_it++) {
 
-				int32_t predication1_col0_element = buffer_arrays[1][0][0][0][predication1_it];
+				int32_t predication1_col0_element = buffer_arrays[1][0][thread_id][0][predication1_it];
 
 				uint32_t* row_sentence1 = idx[2]->index_map[predication1_col0_element];
 				int32_t sentence1_col0_bytes = idx[2]->index_map[predication1_col0_element+1][0] - row_sentence1[0];
@@ -94,9 +94,9 @@ void* pthread_test_smdb_bca_4threads_worker(void* arguments) {
 					for (int32_t sentence1_it = 0; sentence1_it < sentence1_fragment_size; sentence1_it++) {
 
 
-						if (!(sentence1_bool_array[buffer_arrays[2][0][0][0][sentence1_it]])) {
-							sentence1_bool_array[buffer_arrays[2][0][0][0][sentence1_it]] = true;
-							int32_t sentence1_col0_element = buffer_arrays[2][0][0][0][sentence1_it];
+						if (!(sentence1_bool_array[buffer_arrays[2][0][thread_id][0][sentence1_it]])) {
+							sentence1_bool_array[buffer_arrays[2][0][thread_id][0][sentence1_it]] = true;
+							int32_t sentence1_col0_element = buffer_arrays[2][0][thread_id][0][sentence1_it];
 
 							uint32_t* row_predication2 = idx[3]->index_map[sentence1_col0_element];
 							int32_t predication2_col0_bytes = idx[3]->index_map[sentence1_col0_element+1][0] - row_predication2[0];
@@ -108,7 +108,7 @@ void* pthread_test_smdb_bca_4threads_worker(void* arguments) {
 
 								for (int32_t predication2_it = 0; predication2_it < predication2_fragment_size; predication2_it++) {
 
-									int32_t predication2_col0_element = buffer_arrays[3][0][0][0][predication2_it];
+									int32_t predication2_col0_element = buffer_arrays[3][0][thread_id][0][predication2_it];
 
 									uint32_t* row_concept_semtype2 = idx[4]->index_map[predication2_col0_element];
 									int32_t concept_semtype2_col0_bytes = idx[4]->index_map[predication2_col0_element+1][0] - row_concept_semtype2[0];
@@ -120,7 +120,7 @@ void* pthread_test_smdb_bca_4threads_worker(void* arguments) {
 
 										for (int32_t concept_semtype2_it = 0; concept_semtype2_it < concept_semtype2_fragment_size; concept_semtype2_it++) {
 
-											int32_t concept_semtype2_col0_element = buffer_arrays[4][0][0][0][concept_semtype2_it];
+											int32_t concept_semtype2_col0_element = buffer_arrays[4][0][thread_id][0][concept_semtype2_it];
 
 											uint32_t* row_concept2 = idx[5]->index_map[concept_semtype2_col0_element];
 											int32_t concept2_col0_bytes = idx[5]->index_map[concept_semtype2_col0_element+1][0] - row_concept2[0];
@@ -131,7 +131,7 @@ void* pthread_test_smdb_bca_4threads_worker(void* arguments) {
 												test_smdb_bca_4threads_concept2_col0_decode_BCA_threaded(thread_id, concept2_col0_ptr, concept2_col0_bytes, concept2_fragment_size);
 
 												for (int32_t concept2_it = 0; concept2_it < concept2_fragment_size; concept2_it++) {
-													int32_t concept2_col0_element = buffer_arrays[5][0][0][0][concept2_it];
+													int32_t concept2_col0_element = buffer_arrays[5][0][thread_id][0][concept2_it];
 
 													RC[concept2_col0_element] = 1;
 
