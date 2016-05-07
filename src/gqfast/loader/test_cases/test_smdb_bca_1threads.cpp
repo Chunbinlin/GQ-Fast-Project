@@ -43,7 +43,7 @@ void test_smdb_bca_1threads_concept_semtype1_col0_decode_BCA(unsigned char* conc
 	concept_semtype1_fragment_size = concept_semtype1_col0_bytes* 8 / concept_semtype1_col0_bits_info[0];
 	int bit_pos = 0;
 	for (int32_t i=0; i<concept_semtype1_fragment_size; i++) {
-		int32_t encoded_value = concept_semtype1_col0_bits_info[1] << bit_pos;
+		uint32_t encoded_value = concept_semtype1_col0_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(concept_semtype1_col0_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
@@ -59,7 +59,7 @@ void test_smdb_bca_1threads_predication1_col0_decode_BCA(unsigned char* predicat
 	predication1_fragment_size = predication1_col0_bytes* 8 / predication1_col0_bits_info[0];
 	int bit_pos = 0;
 	for (int32_t i=0; i<predication1_fragment_size; i++) {
-		int32_t encoded_value = predication1_col0_bits_info[1] << bit_pos;
+		uint32_t encoded_value = predication1_col0_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(predication1_col0_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
@@ -75,7 +75,7 @@ void test_smdb_bca_1threads_sentence1_col0_decode_BCA(unsigned char* sentence1_c
 	sentence1_fragment_size = sentence1_col0_bytes* 8 / sentence1_col0_bits_info[0];
 	int bit_pos = 0;
 	for (int32_t i=0; i<sentence1_fragment_size; i++) {
-		int32_t encoded_value = sentence1_col0_bits_info[1] << bit_pos;
+		uint32_t encoded_value = sentence1_col0_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(sentence1_col0_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
@@ -91,7 +91,7 @@ void test_smdb_bca_1threads_predication2_col0_decode_BCA(unsigned char* predicat
 	predication2_fragment_size = predication2_col0_bytes* 8 / predication2_col0_bits_info[0];
 	int bit_pos = 0;
 	for (int32_t i=0; i<predication2_fragment_size; i++) {
-		int32_t encoded_value = predication2_col0_bits_info[1] << bit_pos;
+		uint32_t encoded_value = predication2_col0_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(predication2_col0_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
@@ -107,7 +107,7 @@ void test_smdb_bca_1threads_concept_semtype2_col0_decode_BCA(unsigned char* conc
 	concept_semtype2_fragment_size = concept_semtype2_col0_bytes* 8 / concept_semtype2_col0_bits_info[0];
 	int bit_pos = 0;
 	for (int32_t i=0; i<concept_semtype2_fragment_size; i++) {
-		int32_t encoded_value = concept_semtype2_col0_bits_info[1] << bit_pos;
+		uint32_t encoded_value = concept_semtype2_col0_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(concept_semtype2_col0_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
@@ -123,7 +123,7 @@ void test_smdb_bca_1threads_concept2_col0_decode_BCA(unsigned char* concept2_col
 	concept2_fragment_size = concept2_col0_bytes* 8 / concept2_col0_bits_info[0];
 	int bit_pos = 0;
 	for (int32_t i=0; i<concept2_fragment_size; i++) {
-		int32_t encoded_value = concept2_col0_bits_info[1] << bit_pos;
+		uint32_t encoded_value = concept2_col0_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(concept2_col0_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
