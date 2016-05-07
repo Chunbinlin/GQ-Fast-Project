@@ -174,11 +174,11 @@ public class SemmedDB {
 		
 		Alias alias0 = new Alias(0, "concept1");
 		Alias alias1 = new Alias(1, "concept_semtype1", metadata.getIndexList().get(0));
-		Alias alias2 = new Alias(1, "predication1", metadata.getIndexList().get(1));
-		Alias alias3 = new Alias(1, "sentence1", metadata.getIndexList().get(2));
-		Alias alias4 = new Alias(1, "predication2", metadata.getIndexList().get(3));
-		Alias alias5 = new Alias(1, "concept_semtype2", metadata.getIndexList().get(4));
-		Alias alias6 = new Alias(1, "concept2", metadata.getIndexList().get(5));
+		Alias alias2 = new Alias(2, "predication1", metadata.getIndexList().get(1));
+		Alias alias3 = new Alias(3, "sentence1", metadata.getIndexList().get(2));
+		Alias alias4 = new Alias(4, "predication2", metadata.getIndexList().get(3));
+		Alias alias5 = new Alias(5, "concept_semtype2", metadata.getIndexList().get(4));
+		Alias alias6 = new Alias(6, "concept2", metadata.getIndexList().get(5));
 			
 		aliases.add(alias0);
 		aliases.add(alias1);
