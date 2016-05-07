@@ -596,7 +596,7 @@ public class CodeGenerator {
 				function += tabString + "int bit_pos = 0;\n";
 				function += tabString + "for (int32_t i=0; i<" + sizeName + "; i++) {\n";
 				tabString += "\t";
-				function += tabString + "int32_t encoded_value = " + bitsInfoPrefix + "[1] << bit_pos;\n";
+				function += tabString + "uint32_t encoded_value = " + bitsInfoPrefix + "[1] << bit_pos;\n";
 				function += tabString + "int64_t * next_8_ptr = reinterpret_cast<int64_t *>(" + pointerName + ");\n";
 				function += tabString + "encoded_value &= *next_8_ptr;\n";
 				function += tabString + "encoded_value >>= bit_pos;\n";
@@ -693,7 +693,7 @@ public class CodeGenerator {
 				function += tabString + "int bit_pos = 0;\n";
 				function += tabString + "for (int32_t i=0; i<" + sizeName + "; i++) {\n";
 				tabString += "\t";
-				function += tabString + "int32_t encoded_value = " + bitsInfoPrefix + "[1] << bit_pos;\n";
+				function += tabString + "uint32_t encoded_value = " + bitsInfoPrefix + "[1] << bit_pos;\n";
 				function += tabString + "int64_t * next_8_ptr = reinterpret_cast<int64_t *>(" + pointerName + ");\n";
 				function += tabString + "encoded_value &= *next_8_ptr;\n";
 				function += tabString + "encoded_value >>= bit_pos;\n";
@@ -719,23 +719,20 @@ public class CodeGenerator {
 	 * ----------------------------------------------
 	 *	Input: 
 	 *			preThreading:				'true' if the function is being generated before threading begins 
-	 * 			alias:						The alias name of the current operand
-	 * 			aliasID:					The id of the alias that indexes into the query metadata alias list
-	 * 			columnIteration: 			The current column iteration	
+	 * 			k: 							The curent column iteration	
 	 * 			tabString:					A string that keeps track of the tabbing of the generated code 
 	 * 										(for readability)
-	 * 			currMetaIndex: 				metadata for the current index 
 	 * 			query: 						metadata for the current query
 	 * 			functionHeadersCppCode:		A list of strings that make up the headers of the functions that are 
 	 * 										generated (except the original function)
 	 * 			functionCppCode: 			A list of strings, each of which is a function and function body
-	 * 			indexID: 					The id of the current index 
-	 * 			currentCol:					The current column ID (note that this could potentially be different than 'columnIteration' if certain columns were omitted)
+	 * 			currentCol:					The current column ID (note that this could potentially be different than 
+	 * 										'columnIteration' if certain columns were omitted)
 	 * 			currentFragmentRow:			 String of the cpp that is the variable name for the current row
 	 * 			currentFragmentBytesName:	A String of cpp that is the variable name for the current fragment bytes 
 	 * 			bufferPoolTrackingArray:	To keep track of which array in the pool to use
 	 * 			entityFlag:					'true' if current index is an entity table, 'false' if it is a relationship table
-	 * 
+	 *			currentAlias:				The Alias object that represents the alias on which the function is being generated 
 	 * 
 	 *	Output:
 	 *			A String that continues the cpp code for the original function and deals with the decoding portion of 
@@ -902,12 +899,13 @@ public class CodeGenerator {
 	
 
 	/*
-	 * Function getPrimitive
+	 * Function getElementPrimitive
 	 * ----------------------
 	 * Input:
-	 * 			colBytes:	A flag for how many bytes an associated value would use
+	 * 			colBytes:	 The size in bytes an associated value would use
 	 * Output:
-	 * 			A string that gives the primitive type for the corresponding flag. Returns null if no known flag is found.
+	 * 			A string that gives a primitive type for the corresponding size (signed to allow for negative values). 
+	 * 			Returns null if no primitive is known.
 	 * 
 	 */
 	private static String getElementPrimitive(int colBytes) {
@@ -920,6 +918,16 @@ public class CodeGenerator {
 		return null;
 	}
 	
+	/*
+	 * Function getIndexPrimitive
+	 * ----------------------
+	 * Input:
+	 * 			colBytes:	 The size in bytes an associated value would use
+	 * Output:
+	 * 			A string that gives a primitive type for the corresponding size (unsigned). 
+	 * 			Returns null if no primitive is known.
+	 * 
+	 */
 	private static String getIndexPrimitive(int colBytes) {
 		switch (colBytes) {
 		case MetaData.BYTES_1:	return "unsigned char";
@@ -930,8 +938,20 @@ public class CodeGenerator {
 		return null;
 	}
 	
-
-	private static String evaluatePreviousJoinEntityFlag(Operator currentOp, MetaQuery query, boolean threadID, StringBuilder tabString, 
+	/*
+	 * Function evaluatePreviousJoinEntityTable
+	 * ----------------------------------------
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	private static String evaluatePreviousJoinEntityTable(Operator currentOp, MetaQuery query, boolean threadID, StringBuilder tabString, 
 			int[] closingBraces, int drivingAliasCol, List<Integer> columnIDs, int indexByteSize, boolean preThreading, List<String> functionHeadersCppCode, 
 			List<String> functionsCppCode, int[][] bufferPoolTrackingArray, boolean entityFlag, Alias currentAlias, Alias drivingAlias) {
 		String mainString = new String();
@@ -994,7 +1014,19 @@ public class CodeGenerator {
 	}
 	
 
-	
+	/*
+	 * Function evaluePreviousJoinRelationshipTable
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
 	private static String evaluatePreviousJoinRelationshipTable(Operator currentOp, MetaQuery query, boolean threadID, StringBuilder tabString, 
 			int[] closingBraces, int drivingAliasCol, List<Integer> columnIDs, int indexByteSize, boolean preThreading, List<String> functionHeadersCppCode, 
 			List<String> functionsCppCode, int[][] bufferPoolTrackingArray, boolean entityFlag, List<Integer> previousColumnIDs,
@@ -1100,7 +1132,21 @@ public class CodeGenerator {
 
 
 	
-
+	/*
+	 * Function evaluatePreviousSelection
+	 * ----------------------------------
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
 	private static String  evaluatePreviousSelection(Operator previousOp, MetaQuery query, StringBuilder tabString, 
 			int[] closingBraces, int drivingAliasCol, int indexByteSize, 
 			List<Integer> columnIDs, boolean entityFlag, List<String> functionHeadersCppCode, List<String> functionsCppCode, boolean preThreading,
@@ -1162,18 +1208,18 @@ public class CodeGenerator {
 	 * Function evaluateJoin
 	 * 
 	 * Input: 
-	 * 			i:		The current operator iteration
-	 * 			operators:	The list of operators to the code generator
-	 * 			currentOp:	The current operator that is known to be a JoinOperator
-	 * 			metadata:	The metadata for the code generator
-	 * 			tabString:	A string that keeps track of the tabbing of the generated code (for readability)
-	 * 			closingBraces:	Keeps track of the number of closing braces to place at the end of the code
-	 * 			bufferPoolTrackingArray:	This is tracking for the buffer_arrays buffer pool size, it keeps track of which array within the pool to use
-	 * 			query:		Metadata on the query
+	 *			preThreading:		'true' if the evaluated join occurs before threading begins 	
+	 * 			i:					The current operator iteration
+	 * 			operators:			The list of operators to the code generator
+	 * 			metadata:			The meta data for the code generator
+	 * 			tabString:			A string that keeps track of the tabbing of the generated code (for readability)
+	 * 			closingBraces:		Keeps track of the number of closing braces to place at the end of the code
+	 * 			bufferPoolTrackingArray:	This tracks which buffer pool to use for what alias in the loader's buffer arrays
+	 * 			query:				Meta data on the query
 	 * 			functionHeadersCppCode:	A list of strings that make up the headers of the functions that are generated (except the original function)
 	 * 			functionCppCode: A list of strings, each of which is a function and function body
 	 * Output: 
-	 * 			Emits a string that is the next piece of the code for the original function. Also, associated String Lists functionHeadersCppCode and functionCppCode are updated.
+	 * 			Emits a string that is the next piece of the code for the main function. Also, associated String Lists functionHeadersCppCode and functionCppCode are updated.
 	 * 
 	 */
 		
@@ -1261,7 +1307,7 @@ public class CodeGenerator {
 						// Previous operator was an entity table
 						// There is no need for an additional loop
 						
-						mainString += evaluatePreviousJoinEntityFlag(currentOp, query, threadID, tabString, closingBraces,
+						mainString += evaluatePreviousJoinEntityTable(currentOp, query, threadID, tabString, closingBraces,
 								drivingAliasCol, columnIDs, indexByteSize, preThreading, functionHeadersCppCode, 
 								functionsCppCode, bufferPoolTrackingArray, entityFlag, currentAlias, drivingAlias);
 
