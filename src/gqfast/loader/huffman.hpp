@@ -12,24 +12,24 @@ using namespace std;
 template <typename word_t>
 class Node
 {
-    public:
-        Node* left;
-        Node* right;
-        word_t value;
-        long counter;
-        int level;
-        bool is_terminal;
+public:
+    Node* left;
+    Node* right;
+    word_t value;
+    long counter;
+    int level;
+    bool is_terminal;
 
-        Node(Node* _left, Node* _right, long _counter, bool _is_terminal, long _value, int _level) :
-            left(_left), right(_right), value(_value), counter(_counter), is_terminal(_is_terminal), level(_level) {}
-    
+    Node(Node* _left, Node* _right, long _counter, bool _is_terminal, long _value, int _level) :
+        left(_left), right(_right), value(_value), counter(_counter), is_terminal(_is_terminal), level(_level) {}
+
     ~Node()
     {
         if (left != NULL)
         {
             delete left;
         }
-        
+
         if (right != NULL)
         {
             delete right;
@@ -88,7 +88,7 @@ void generate_array_tree_representation(vector<word_t> & input, long length, wor
     // algorithm taken from Kuo-Liang Chung: Efficient Huffman decoding
     huffman_array = new word_t[array_size];
     terminator_array = new bool[array_size];
- 
+
     huff_array_size = array_size;
 
     cerr << "...Huffman tree decoding array is size " << huff_array_size * sizeof(word_t) << " bytes\n";
@@ -100,7 +100,7 @@ void generate_array_tree_representation(vector<word_t> & input, long length, wor
     tree->level = 0;
     stack<Node<word_t>*> dfs_stack;
     dfs_stack.push(tree);
-    
+
     while (!dfs_stack.empty())
     {
         Node<word_t>* node = dfs_stack.top();
@@ -154,7 +154,8 @@ void generate_array_tree_representation(vector<word_t> & input, long length, wor
 }
 
 template <typename word_t>
-struct inverse_map_builder_state {
+struct inverse_map_builder_state
+{
     Node<word_t>* node;
     unsigned char* bits;
     uint32_t count_bits;
@@ -214,7 +215,7 @@ void build_inverse_mapping(Node<word_t>* tree, encoding_dict<word_t>& encoding_d
 
         delete[] state.bits;
     }
-    
+
 }
 
 template <typename word_t>
@@ -226,14 +227,14 @@ unsigned char* encode(vector<word_t> & input, uint32_t length, encoding_dict<wor
     {
         output_size_bits += encoding_dict[input[l]].count_bits;
     }
-    
+
     bytes = output_size_bits/8 + 1;
 
     unsigned char * output = new unsigned char[bytes]();
-    
+
     uint32_t byte_pos = 0;
     int bit_pos = 0;
-    
+
     for (uint32_t l = 0; l < length; ++l)
     {
         auto word = encoding_dict[input[l]];
@@ -251,7 +252,7 @@ unsigned char* encode(vector<word_t> & input, uint32_t length, encoding_dict<wor
             }
         }
     }
-   
+
     return output;
 }
 
@@ -271,10 +272,10 @@ void decode(char* input, long length, word_t*& output, word_t* huffman_array, bo
 
             if (bit_pos == 8)
             {
-                 bit_pos = 0;
-                 byte_pos++;
+                bit_pos = 0;
+                byte_pos++;
             }
-        
+
             huffman_pos += huffman_array[huffman_pos];
 
             if (direction)

@@ -26,31 +26,37 @@ extern chrono::steady_clock::time_point benchmark_t2;
 extern fastr_index<uint32_t>* idx[MAX_INDICES];
 
 // Metadata
-struct Metadata {
-	vector<uint64_t> idx_domains[MAX_INDICES];
-	int idx_num_encodings[MAX_INDICES];
-	int idx_max_fragment_sizes[MAX_INDICES];
+struct Metadata
+{
+    vector<uint64_t> idx_domains[MAX_INDICES];
+    int idx_num_encodings[MAX_INDICES];
+    int idx_max_fragment_sizes[MAX_INDICES];
 
-	Metadata() {}
+    Metadata() {}
 
 
-	template<class Archive>
-    void serialize(Archive & ar, const unsigned int version) {
-       
-        for (int i=0; i<MAX_INDICES; i++) {
-        	ar & idx_domains[i];
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+
+        for (int i=0; i<MAX_INDICES; i++)
+        {
+            ar & idx_domains[i];
         }
-        for (int i=0; i<MAX_INDICES; i++) {
-        	ar & idx_num_encodings[i];
+        for (int i=0; i<MAX_INDICES; i++)
+        {
+            ar & idx_num_encodings[i];
         }
-        for (int i=0; i<MAX_INDICES; i++) {
-        	ar & idx_max_fragment_sizes[i];
+        for (int i=0; i<MAX_INDICES; i++)
+        {
+            ar & idx_max_fragment_sizes[i];
         }
 
     }
 };
 
-struct args_threading{
+struct args_threading
+{
     uint32_t start;
     uint32_t end;
     int thread_id;
