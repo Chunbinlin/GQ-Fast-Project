@@ -370,11 +370,7 @@ public class SemmedDB {
 	}
 	
 	public static void main(String[] args) {
-		
-		
-		List<Operator> operators = new ArrayList<Operator>();
-		MetaData metadata = new MetaData();
-		
+				
 		// SemmedDB Atropine Query
 		
 		//Optimal
