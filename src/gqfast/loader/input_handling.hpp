@@ -5,28 +5,21 @@
 #include <utility>             // std::pair
 #include "global_vars.hpp"
 
+template <typename T>
 class sort_comparator
 {
 public:
-    inline bool operator() (const pair<int, int> & a, const pair<int, int> & b)
+    inline bool operator() (const pair<int, T> & a, const pair<int, T> & b)
     {
         return a.second > b.second;
     }
 };
 
-class sort_comparator2
-{
-public:
-    inline bool operator() (const pair<int, double> & a, const pair<int, double> & b)
-    {
-        return a.second > b.second;
-    }
-};
-
-pair<int, int> * top_k(int* result, int k, int domain)
+template <typename T>
+pair<int, T> * top_k(T* result, int k, int domain)
 {
 
-    vector<pair<int,int> > pairs;
+    vector<pair<int, T> > pairs;
     pairs.resize(domain);
 
     for (int i=0; i < domain; i++)
@@ -35,9 +28,9 @@ pair<int, int> * top_k(int* result, int k, int domain)
         pairs[i].second = result[i];
     }
 
-    sort(pairs.begin(), pairs.end(), sort_comparator());
+    sort(pairs.begin(), pairs.end(), sort_comparator<T>());
 
-    pair<int, int> * result_pairs = new pair<int,int>[k];
+    pair<int, T> * result_pairs = new pair<int,T>[k];
     for (int i=0; i<k; i++)
     {
         result_pairs[i].first = 0;
@@ -61,63 +54,37 @@ pair<int, int> * top_k(int* result, int k, int domain)
     return result_pairs;
 }
 
-pair<int, double> * top_k(double* result, int k, int domain)
+
+
+template <typename T>
+void write_result_to_file(T* result, int domain)
 {
 
-    vector<pair<int,double> > pairs;
-    pairs.resize(domain);
 
-    for (int i=0; i < domain; i++)
-    {
-        pairs[i].first = i;
-        pairs[i].second = result[i];
-    }
 
-    sort(pairs.begin(), pairs.end(), sort_comparator2());
 
-    pair<int, double> * result_pairs = new pair<int,double>[k];
-    for (int i=0; i<k; i++)
-    {
-        result_pairs[i].first = 0;
-        result_pairs[i].second = 0;
-    }
-
-    for (int i = 0; i < k;  i++)
-    {
-        if (pairs[i].second > 0)
-        {
-            result_pairs[i].first = pairs[i].first;
-            result_pairs[i].second = pairs[i].second;
-        }
-        else
-        {
-            result_pairs[i].first = 0;
-            result_pairs[i].second = 0;
-        }
-    }
-
-    return result_pairs;
 }
+
+
 
 template <typename T>
 void handle_input(string func_name, int r_pos)
 {
 
-    // cerr << "a1\n";
     int domain_temp = metadata.idx_domains[r_pos][0];
     string filename = "./test_cases/" + func_name + ".so";
-    // cerr << "metadata idx_max_frag_sizes[0]" << metadata.idx_max_fragment_sizes[0] << "\n";
+
     int* cold_checks;
     int* null_checks;
     int count = 0;
-    // cerr << "a2\n";
+
     // load the symbol
     cout << "Opening " << filename << "\n";
 
     void* handle = dlopen(filename.c_str(), RTLD_NOW);
     if (!handle)
     {
-        // cerr << "Cannot open library: " << dlerror() << '\n';
+        cerr << "Cannot open library: " << dlerror() << '\n';
         return;
     }
 
@@ -130,7 +97,7 @@ void handle_input(string func_name, int r_pos)
     const char *dlsym_error = dlerror();
     if (dlsym_error)
     {
-        // cerr << "Cannot load symbol 'query_type': " << dlsym_error <<
+        cerr << "Cannot load symbol 'query_type': " << dlsym_error <<
         '\n';
         dlclose(handle);
         return;
@@ -166,12 +133,10 @@ void handle_input(string func_name, int r_pos)
         cout << "Position " << tops_result[i].first << ": " << tops_result[i].second << "\n";
     }
 
+    write_result_to_file(result, domain_temp);
+
     delete[] result;
-
     delete[] cold_result;
-
-
-
 
     delete[] cold_checks;
     delete[] null_checks;

@@ -162,7 +162,15 @@ int main(int argc, char ** argv)
             char result_data_type;
             cout << "Please specify one of these result data types: (d)ouble, (i)nt \n";
             cin >> result_data_type;
-            handle_input(library_file, result_domain, result_data_type);
+            if (result_data_type == 'd')
+            {
+                handle_input<double>(library_file, result_domain);
+            }
+            else if (result_data_type == 'i')
+            {
+                handle_input<int>(library_file, result_domain);
+            }
+
             cout << "\nLoad another file(y/n)?\n";
             cin >> testing;
         }
@@ -200,7 +208,15 @@ int main(int argc, char ** argv)
                 char result_data_type;
                 cout << "Please specify one of these result data types: (d)ouble, (i)nt \n";
                 cin >> result_data_type;
-                handle_input(library_file, result_domain, result_data_type);
+                cin >> result_data_type;
+                if (result_data_type == 'd')
+                {
+                    handle_input<double>(library_file, result_domain);
+                }
+                else if (result_data_type == 'i')
+                {
+                    handle_input<int>(library_file, result_domain);
+                }
                 cout << "\nLoad another file(y/n)?\n";
                 cin >> testing;
             }
