@@ -1,7 +1,5 @@
 package codegenerator;
 
-import java.util.List;
-
 public class Alias {
 
 	private int aliasID;

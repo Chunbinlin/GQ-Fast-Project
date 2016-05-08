@@ -1,9 +1,5 @@
 package codegenerator;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 public abstract class Operator {
 	
 	public static final int JOIN_OPERATOR = 1;
