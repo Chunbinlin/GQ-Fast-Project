@@ -1,6 +1,8 @@
 #ifndef input_handling_
 #define input_handling_
 
+#include <iostream>
+#include <fstream>
 #include <dlfcn.h>             // dll functions
 #include <utility>             // std::pair
 #include "global_vars.hpp"
@@ -57,11 +59,33 @@ pair<int, T> * top_k(T* result, int k, int domain)
 
 
 template <typename T>
-void write_result_to_file(T* result, int domain)
+void write_result_to_file(T* result, int* null_checks, int domain)
 {
+    vector<pair<int,T> > result_pairs;
+    // Select result elements
+    for (int i=0; i<domain; i++)
+    {
+        if (null_checks[i])
+        {
+            pair<int, T> temp;
+            temp.first = i;
+            temp.second = result[i];
+            result_pairs.push_back(temp);
+        }
+    }
 
+    // Sort the elements
+    sort(result_pairs.begin(), result_pairs.end(), sort_comparator<T>());
 
-
+    // Write to file
+    ofstream myfile;
+    myfile.open ("results.csv");
+    myfile << result_pairs.size() << "\n";
+    for (int i=0; i<result_pairs.size(); i++)
+    {
+        myfile << result_pairs[i].first << "," << result_pairs[i].second << "\n";
+    }
+    myfile.close();
 
 }
 
@@ -98,7 +122,7 @@ void handle_input(string func_name, int r_pos)
     if (dlsym_error)
     {
         cerr << "Cannot load symbol 'query_type': " << dlsym_error <<
-        '\n';
+             '\n';
         dlclose(handle);
         return;
     }
@@ -128,18 +152,23 @@ void handle_input(string func_name, int r_pos)
 
     pair<int, T> * tops_result = top_k(result, 20, domain_temp);
 
+    cout.precision(17);
     for (int i=0; i<20; i++)
     {
         cout << "Position " << tops_result[i].first << ": " << tops_result[i].second << "\n";
     }
 
-    write_result_to_file(result, domain_temp);
+    delete[] tops_result;
+
+    write_result_to_file(result, null_checks, domain_temp);
 
     delete[] result;
     delete[] cold_result;
 
     delete[] cold_checks;
     delete[] null_checks;
+
+
 }
 
 
