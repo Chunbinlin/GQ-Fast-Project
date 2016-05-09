@@ -345,6 +345,10 @@ List<Alias> aliases = query.getAliases();
 	
 	public static void main(String[] args) {
 		
+		List<Integer> selections = new ArrayList<Integer>();
+		
+		selections.add(1000);
+		
 		// Pubmed 
 		//Q5 Optimal 
 		runQ5("test_pubmed_q5_opt", 1, true);

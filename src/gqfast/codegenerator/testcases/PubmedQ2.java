@@ -128,12 +128,11 @@ public class PubmedQ2 {
 		metadata.getIndexList().add(DT2);
 
 	}
-	private static void initQ2Operators(List<Operator> operators, MetaQuery query) {
+	private static void initQ2Operators(List<Operator> operators, MetaQuery query, List<Integer> selections) {
 	
 		List<Alias> aliases = query.getAliases();
 		
-		List<Integer> selections = new ArrayList<Integer>();
-		selections.add(16966392);
+		
 		Operator selection1 = new SelectionOperator(selections, aliases.get(0));
 		operators.add(selection1);
 		
@@ -192,12 +191,10 @@ public class PubmedQ2 {
 		operators.add(agg);
 	}
 	
-	private static void initQ2OperatorsThreaded(List<Operator> operators, MetaQuery query) {
+	private static void initQ2OperatorsThreaded(List<Operator> operators, MetaQuery query, List<Integer> selections) {
 		
 		List<Alias> aliases = query.getAliases();
 		
-		List<Integer> selections = new ArrayList<Integer>();
-		selections.add(16966392);
 		Operator selection1 = new SelectionOperator(selections, aliases.get(0));
 		operators.add(selection1);
 		
@@ -259,47 +256,50 @@ public class PubmedQ2 {
 		operators.add(agg);
 	}
 	
-	private static void runQ2(String queryName, int numThreads, int encoding) {
+	private static void runQ2(String queryName, int numThreads, List<Integer> selections, int encoding) {
 		List<Operator> operators = new ArrayList<Operator>();
 		MetaData metadata = new MetaData();
 		
 		initQ2Indexes(metadata, encoding);
 		initQ2Queries(metadata, queryName, numThreads);
 		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID());
+		
+		
 		if (numThreads > 1) {
-			initQ2OperatorsThreaded(operators, query);
+			initQ2OperatorsThreaded(operators, query, selections);
 		}
 		else {
-			initQ2Operators(operators, query);
+			initQ2Operators(operators, query, selections);
 		}
 		CodeGenerator.generateCode(operators, metadata);
 	}
 	
 
-	private static void runQ2(String queryName, int numThreads, boolean b) {
+	private static void runQ2(String queryName, int numThreads, List<Integer> selections, boolean b) {
 		List<Operator> operators = new ArrayList<Operator>();
 		MetaData metadata = new MetaData();
 		initQ2Indexes(metadata);
 		initQ2Queries(metadata, queryName, numThreads);
 		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID());
 		if (numThreads > 1) {
-			initQ2OperatorsThreaded(operators, query);
+			initQ2OperatorsThreaded(operators, query, selections);
 		}
 		else {
-			initQ2Operators(operators, query);
+			initQ2Operators(operators, query, selections);
 		}
 		CodeGenerator.generateCode(operators, metadata);
 	}
 	
 	public static void main(String[] args) {
-		
+		List<Integer> selections = new ArrayList<Integer>();
+		selections.add(1000);
 		//Q2 Optimal
-		runQ2("test_pubmed_q2_opt", 1, true);
-		runQ2("test_pubmed_q2_opt_threaded", 4, true);
+		runQ2("test_pubmed_q2_opt", 1, selections, true);
+		runQ2("test_pubmed_q2_opt_threaded", 4, selections, true);
 		
 		// Q2 UA
-		runQ2("test_pubmed_q2_array", 1, MetaData.ENCODING_UA);
-		runQ2("test_pubmed_q2_array_threaded", 4, MetaData.ENCODING_UA);
+		runQ2("test_pubmed_q2_array", 1, selections, MetaData.ENCODING_UA);
+		runQ2("test_pubmed_q2_array_threaded", 4, selections, MetaData.ENCODING_UA);
 	}
 
 }
