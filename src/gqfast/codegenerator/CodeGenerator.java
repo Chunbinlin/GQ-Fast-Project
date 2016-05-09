@@ -905,7 +905,7 @@ public class CodeGenerator {
 	 */
 	private static String getElementPrimitive(int colBytes) {
 		switch (colBytes) {
-		case MetaData.BYTES_1:	return "char";
+		case MetaData.BYTES_1:	return "unsigned char";
 		case MetaData.BYTES_2:	return "int16_t";
 		case MetaData.BYTES_4:	return "int32_t";
 		case MetaData.BYTES_8:	return "int64_t";
