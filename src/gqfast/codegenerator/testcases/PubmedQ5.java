@@ -183,12 +183,9 @@ public class PubmedQ5 {
 
 
 	
-	private static void initQ5OperatorsThreaded(List<Operator> operators, MetaQuery query) {
+	private static void initQ5OperatorsThreaded(List<Operator> operators, MetaQuery query, List<Integer> selections) {
 	
 		List<Alias> aliases = query.getAliases();
-		
-		List<Integer> selections = new ArrayList<Integer>();
-		selections.add(4945389);
 		Operator selection1 = new SelectionOperator(selections, aliases.get(0));
 		operators.add(selection1);
 		
@@ -248,11 +245,9 @@ public class PubmedQ5 {
 		operators.add(agg);
 	}
 
-	private static void initQ5Operators(List<Operator> operators, MetaQuery query) {
-List<Alias> aliases = query.getAliases();
+	private static void initQ5Operators(List<Operator> operators, MetaQuery query, List<Integer> selections) {
+		List<Alias> aliases = query.getAliases();
 		
-		List<Integer> selections = new ArrayList<Integer>();
-		selections.add(4945389);
 		Operator selection1 = new SelectionOperator(selections, aliases.get(0));
 		operators.add(selection1);
 		
@@ -311,33 +306,33 @@ List<Alias> aliases = query.getAliases();
 
 	
 
-	private static void runQ5(String queryName, int numThreads, int encoding) {
+	private static void runQ5(String queryName, int numThreads, List<Integer> selections, int encoding) {
 		List<Operator> operators = new ArrayList<Operator>();
 		MetaData metadata = new MetaData();
 		initQ5Indexes(metadata, encoding);
 		initQ5Queries(metadata, queryName, numThreads);
 		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID());
 		if (numThreads > 1) {
-			initQ5OperatorsThreaded(operators, query);
+			initQ5OperatorsThreaded(operators, query, selections);
 		}
 		else {
-			initQ5Operators(operators, query);
+			initQ5Operators(operators, query, selections);
 		}
 		CodeGenerator.generateCode(operators, metadata);
 	}
 	
 
-	private static void runQ5(String queryName, int numThreads, boolean b) {
+	private static void runQ5(String queryName, int numThreads, List<Integer> selections, boolean b) {
 		List<Operator> operators = new ArrayList<Operator>();
 		MetaData metadata = new MetaData();
 		initQ5Indexes(metadata);
 		initQ5Queries(metadata, queryName, numThreads);
 		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID());
 		if (numThreads > 1) {
-			initQ5OperatorsThreaded(operators, query);
+			initQ5OperatorsThreaded(operators, query, selections);
 		}
 		else {
-			initQ5Operators(operators, query);
+			initQ5Operators(operators, query, selections);
 		}
 		CodeGenerator.generateCode(operators, metadata);
 	}
@@ -351,20 +346,20 @@ List<Alias> aliases = query.getAliases();
 		
 		// Pubmed 
 		//Q5 Optimal 
-		runQ5("test_pubmed_q5_opt", 1, true);
-		runQ5("test_pubmed_q5_opt_threaded", 4, true);
+		runQ5("test_pubmed_q5_opt", 1, selections, true);
+		runQ5("test_pubmed_q5_opt_threaded", 4, selections,  true);
 		
 		//Q5 Huffman
-		runQ5("test_pubmed_q5_huffman", 1, MetaData.ENCODING_HUFFMAN);
-		runQ5("test_pubmed_q5_huffman_threaded", 4, MetaData.ENCODING_HUFFMAN);
+		runQ5("test_pubmed_q5_huffman", 1, selections, MetaData.ENCODING_HUFFMAN);
+		runQ5("test_pubmed_q5_huffman_threaded", 4, selections, MetaData.ENCODING_HUFFMAN);
 		
 		//Q5 BCA
-		runQ5("test_pubmed_q5_bca", 1, MetaData.ENCODING_BCA);
-		runQ5("test_pubmed_q5_bca_threaded", 4, MetaData.ENCODING_BCA);
+		runQ5("test_pubmed_q5_bca", 1, selections, MetaData.ENCODING_BCA);
+		runQ5("test_pubmed_q5_bca_threaded", 4, selections, MetaData.ENCODING_BCA);
 		
 		//Q5 UA
-		runQ5("test_pubmed_q5_array", 1, MetaData.ENCODING_UA);
-		runQ5("test_pubmed_q5_array_threaded", 4, MetaData.ENCODING_UA);
+		runQ5("test_pubmed_q5_array", 1, selections, MetaData.ENCODING_UA);
+		runQ5("test_pubmed_q5_array_threaded", 4, selections, MetaData.ENCODING_UA);
 
 	}
 
