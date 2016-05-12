@@ -15,7 +15,7 @@ import codegenerator.SelectionOperator;
 import codegenerator.ThreadingOperator;
 
 
-public class PubmedQ5 {
+public class PubmedQueryAS {
 
 
 	private static void initQ5Queries(MetaData metadata, String queryName, int numThreads) {

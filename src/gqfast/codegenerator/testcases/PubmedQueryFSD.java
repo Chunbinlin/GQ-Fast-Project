@@ -14,7 +14,7 @@ import codegenerator.Operator;
 import codegenerator.SelectionOperator;
 import codegenerator.ThreadingOperator;
 
-public class PubmedQ2 {
+public class PubmedQueryFSD {
 
 	private static void initQ2Queries(MetaData metadata, String queryName, int numThreads) {
 
@@ -166,7 +166,7 @@ public class PubmedQ2 {
 				
 		int aggregationindexID = 3;
 		
-		String aggString = "(double)( op0 * op1 )/(ABS( op2 - op3 )+1)";
+		String aggString = "(double)( op0 * op1 )/(ABS((int) op2 - (int) op3 )+1)";
 		
 		List<Alias> aggAliasList = new ArrayList<Alias>();
 		aggAliasList.add(query.getAliases().get(2));
@@ -231,7 +231,7 @@ public class PubmedQ2 {
 				
 		int aggregationindexID = 3;
 		
-		String aggString = "(double)( op0 * op1 )/(ABS( op2 - op3 )+1)";
+		String aggString = "(double)( op0 * op1 )/(ABS((int) op2 - (int) op3 )+1)";
 		
 		List<Alias> aggAliasList = new ArrayList<Alias>();
 		aggAliasList.add(query.getAliases().get(2));
@@ -300,6 +300,18 @@ public class PubmedQ2 {
 		// Q2 UA
 		runQ2("test_pubmed_q2_array", 1, selections, MetaData.ENCODING_UA);
 		runQ2("test_pubmed_q2_array_threaded", 4, selections, MetaData.ENCODING_UA);
+		
+		
+		// Q2 BCA
+		runQ2("test_pubmed_q2_bca", 1, selections, MetaData.ENCODING_BCA);
+		runQ2("test_pubmed_q2_bca_threaded", 4, selections, MetaData.ENCODING_BCA);
+				
+		// Q2 Huffman
+		runQ2("test_pubmed_q2_huffman", 1, selections, MetaData.ENCODING_HUFFMAN);
+		runQ2("test_pubmed_q2_huffman_threaded", 4, selections, MetaData.ENCODING_HUFFMAN);
+		
+		
+		
 	}
 
 }
