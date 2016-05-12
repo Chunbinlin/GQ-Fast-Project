@@ -899,16 +899,16 @@ public class CodeGenerator {
 	 * Input:
 	 * 			colBytes:	 The size in bytes an associated value would use
 	 * Output:
-	 * 			A string that gives a primitive type for the corresponding size (signed to allow for negative values). 
+	 * 			A string that gives a primitive type for the corresponding size
 	 * 			Returns null if no primitive is known.
 	 * 
 	 */
 	private static String getElementPrimitive(int colBytes) {
 		switch (colBytes) {
 		case MetaData.BYTES_1:	return "unsigned char";
-		case MetaData.BYTES_2:	return "int16_t";
-		case MetaData.BYTES_4:	return "int32_t";
-		case MetaData.BYTES_8:	return "int64_t";
+		case MetaData.BYTES_2:	return "uint16_t";
+		case MetaData.BYTES_4:	return "uint32_t";
+		case MetaData.BYTES_8:	return "uint64_t";
 		}
 		return null;
 	}
@@ -1343,7 +1343,7 @@ public class CodeGenerator {
 		int numSelections = selectionOp.getSelectionsList().size();
 		
 		
-		mainSelectionString += "\n" + tabString + "int64_t* " + selectionAlias + "_list = new int64_t[" + numSelections + "];\n";
+		mainSelectionString += "\n" + tabString + "int64_t " + selectionAlias + "_list[" + numSelections + "];\n";
 		
 		for (int j=0; j<numSelections; j++) {
 			int currSelection = selectionOp.getSelectionsList().get(j);
@@ -1413,33 +1413,39 @@ public class CodeGenerator {
 
 		mainString += "\n" + tabString + "RC[" + elementString + "] = 1;\n";
 		
-		if (!preThreading) {
+		if (!preThreading && aggregationOp.getAggregationString() != null) {
 			mainString += "\n" + tabString + "pthread_spin_lock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
 		}
-		String delims = "[ ]+";
-		String[] tokens = aggregationOp.getAggregationString().split(delims);
-		String reconstructedString = new String();
-		for (int j=0; j< tokens.length;j++) {
-			String upTo2Characters = tokens[j].substring(0, Math.min(tokens[j].length(), 2));
-			if (upTo2Characters.equals("op")) {
-				// Reads the number immediately following "op"
-				String num_letter = Character.toString(tokens[j].charAt(2));
-				int aggregationAliasNum = Integer.parseInt(num_letter);
-				String alias = aggregationOp.getAggregationVariablesAliases().get(aggregationAliasNum).getAlias();
-				int aliasCol = aggregationOp.getAggregationVariablesColumns().get(aggregationAliasNum);
-				String fullElementName = alias + "_col" + aliasCol + "_element";
-				reconstructedString += fullElementName;
+
+		if (aggregationOp.getAggregationString() != null) {
+			String delims = "[ ]+";
+			String[] tokens = aggregationOp.getAggregationString().split(delims);
+			String reconstructedString = new String();
+			for (int j=0; j< tokens.length;j++) {
+				String upTo2Characters = tokens[j].substring(0, Math.min(tokens[j].length(), 2));
+				if (upTo2Characters.equals("op")) {
+					// Reads the number immediately following "op"
+					String num_letter = Character.toString(tokens[j].charAt(2));
+					int aggregationAliasNum = Integer.parseInt(num_letter);
+					String alias = aggregationOp.getAggregationVariablesAliases().get(aggregationAliasNum).getAlias();
+					int aliasCol = aggregationOp.getAggregationVariablesColumns().get(aggregationAliasNum);
+					String fullElementName = alias + "_col" + aliasCol + "_element";
+					reconstructedString += fullElementName;
+				}
+				else {
+					reconstructedString += tokens[j];
+				}
 			}
-			else {
-				reconstructedString += tokens[j];
-			}
+
+			mainString += tabString + "R[" + elementString +"] += " + reconstructedString + ";";
+
+		}
+		else {
+			mainString += tabString + "R[" + elementString +"] = 1;";
 		}
 		
 		
-		
-		mainString += tabString + "R[" + elementString +"] += " + reconstructedString + ";";
-	
-		if (!preThreading) {
+		if (!preThreading && aggregationOp.getAggregationString() != null) {
 			mainString += "\n" + tabString + "pthread_spin_unlock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
 		}
 
