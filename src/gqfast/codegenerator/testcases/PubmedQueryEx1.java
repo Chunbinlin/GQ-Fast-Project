@@ -13,7 +13,7 @@ import codegenerator.MetaQuery;
 import codegenerator.Operator;
 import codegenerator.SelectionOperator;
 
-public class PubmedQueryExamples {
+public class PubmedQueryEx1 {
 
 	
 	private static void initE1Operators(List<Operator> operators,
