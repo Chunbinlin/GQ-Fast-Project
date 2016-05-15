@@ -57,7 +57,7 @@ public class RelationalAlgebra2RQNA {
 			return 0;
 		int errorNo = 0;
 		switch (n.get_Optype()) {
-		case Join:
+		case JOIN_OPERATOR:
 			if (n.get_Property().size() > 1)
 				errorNo = 5;
 			else {
@@ -71,7 +71,7 @@ public class RelationalAlgebra2RQNA {
 				// errorNo = 4;
 			}
 			break;
-		case Semi_Join:
+		case SEMIJOIN_OPERATOR:
 			if (n.get_Property().size() > 1)
 				errorNo = 2;
 			else {
@@ -85,11 +85,11 @@ public class RelationalAlgebra2RQNA {
 				// errorNo = 4;
 			}
 			break;
-		case Intersect:
+		case INTERSECTION_OPERATOR:
 			if (n.get_Property().size() > 1)
 				errorNo = 3;
 			break;
-		case Aggregate:
+		case AGGREGATION_OPERATOR:
 			if (n.get_AggrTerm().size() > 1)
 				errorNo = 1;
 			break;
@@ -122,7 +122,7 @@ public class RelationalAlgebra2RQNA {
 			return 0;
 		int improveNo = 0;
 		switch (n.get_Optype()) {
-		case Selection:
+		case SELECTION_OPERATOR:
 			Set<String> tables = new HashSet<String>();
 			for (Property i : n.get_Property()) {
 				String t = i.getTerm1().get_variable();
@@ -134,12 +134,12 @@ public class RelationalAlgebra2RQNA {
 			else {
 				int flag = 0;
 				String t = n.get_Property().get(0).getTerm1().get_variable();
-				if (n.left.get_Optype() == Optypes.Rename
+				if (n.left.get_Optype() == Optypes.RENAME_OPERATOR
 						&& n.left.get_Property().get(0).getTerm1()
 								.get_variable() == t) {
 					flag = 1;
 				} else if (n.right != null) {
-					if (n.right.get_Optype() == Optypes.Rename
+					if (n.right.get_Optype() == Optypes.RENAME_OPERATOR
 							&& n.right.get_Property().get(0).getTerm1()
 									.get_variable() == t)
 						flag = 1;
@@ -148,24 +148,24 @@ public class RelationalAlgebra2RQNA {
 					improveNo = 2;
 			}
 			break;
-		case Semi_Join:
+		case SEMIJOIN_OPERATOR:
 			if (n.left != null) {
-				if (n.left.get_Optype() == Optypes.Join){
+				if (n.left.get_Optype() == Optypes.JOIN_OPERATOR){
 					improveNo = 1;
 					if (n.right != null){
 						String semiTr = n.get_Property().get(0).getTerm2().get_variable();
-						if (n.right.get_Optype() == Optypes.Rename || n.right.get_Optype() == Optypes.Selection){
+						if (n.right.get_Optype() == Optypes.RENAME_OPERATOR || n.right.get_Optype() == Optypes.SELECTION_OPERATOR){
 							if (n.right.get_Property().get(0).getTerm1().get_variable() == semiTr)
 								improveNo = 0;
 						}else if (n.right.get_TermList().get(0).get_variable() == semiTr)
 							improveNo = 0;
 					}
 				}
-				if (n.right.get_Optype() == Optypes.Join){
+				if (n.right.get_Optype() == Optypes.JOIN_OPERATOR){
 					improveNo = 1;
 					if (n.left != null){
 						String semiTl = n.get_Property().get(0).getTerm1().get_variable();
-						if (n.left.get_Optype() == Optypes.Rename || n.left.get_Optype() == Optypes.Selection){
+						if (n.left.get_Optype() == Optypes.RENAME_OPERATOR || n.left.get_Optype() == Optypes.SELECTION_OPERATOR){
 							if (n.left.get_Property().get(0).getTerm1().get_variable() == semiTl)
 								improveNo = 0;
 						}else if (n.left.get_TermList().get(0).get_variable() == semiTl)
@@ -175,7 +175,7 @@ public class RelationalAlgebra2RQNA {
 					
 			}
 			if (n.right != null) {
-				if (n.right.get_Optype() == Optypes.Intersect)
+				if (n.right.get_Optype() == Optypes.INTERSECTION_OPERATOR)
 					improveNo = 4;
 			}
 			break;
@@ -227,7 +227,7 @@ public class RelationalAlgebra2RQNA {
 				if (i == this.node.get_Property().size())
 					break;
 			}
-			TreeNode newNode = new TreeNode(Optypes.Selection, lp);
+			TreeNode newNode = new TreeNode(Optypes.SELECTION_OPERATOR, lp);
 			newNode.left = this.node.left;
 			this.node.left = newNode;
 			table_Sel.clear();
@@ -245,14 +245,14 @@ public class RelationalAlgebra2RQNA {
 		if (n.left == null && n.right == null)
 			return -1;
 		if (n.left != null) {
-			if (n.left.get_Optype() == Optypes.Rename
+			if (n.left.get_Optype() == Optypes.RENAME_OPERATOR
 					&& n.left.get_Property().get(0).getTerm1().get_variable() == table) {
 				this.push_parent = n;
 				return 0;
 			}
 		}
 		if (n.right != null) {
-			if (n.right.get_Optype() == Optypes.Rename
+			if (n.right.get_Optype() == Optypes.RENAME_OPERATOR
 					&& n.right.get_Property().get(0).getTerm1().get_variable() == table) {
 				this.push_parent = n;
 				return 1;
@@ -310,7 +310,7 @@ public class RelationalAlgebra2RQNA {
 		}
 		List<Property> lp = new ArrayList<Property>();
 		lp.addAll(this.node.get_Property());
-		TreeNode insertNode = new TreeNode(Optypes.Selection, lp);
+		TreeNode insertNode = new TreeNode(Optypes.SELECTION_OPERATOR, lp);
 		if (left_right == 0) {
 			insertNode.left = this.push_parent.left;
 			this.push_parent.left = insertNode;
@@ -329,9 +329,9 @@ public class RelationalAlgebra2RQNA {
 			return -1;
 		if (n.left != null) {
 			Optypes opleft = n.left.get_Optype();
-			if (((opleft == Optypes.Rename || opleft == Optypes.Selection) && n.left
+			if (((opleft == Optypes.RENAME_OPERATOR || opleft == Optypes.SELECTION_OPERATOR) && n.left
 					.get_Property().get(0).getTerm1().get_variable() == table)
-					|| (opleft == Optypes.Projection && n.left.get_TermList()
+					|| (opleft == Optypes.PROJECTION_OPERATOR && n.left.get_TermList()
 							.get(0).get_variable() == table)) {
 				this.push_parent = n;
 				return 0;
@@ -339,9 +339,9 @@ public class RelationalAlgebra2RQNA {
 		}
 		if (n.right != null) {
 			Optypes opright = n.right.get_Optype();
-			if (((opright == Optypes.Rename || opright == Optypes.Selection) && n.right
+			if (((opright == Optypes.RENAME_OPERATOR || opright == Optypes.SELECTION_OPERATOR) && n.right
 					.get_Property().get(0).getTerm1().get_variable() == table)
-					|| (opright == Optypes.Projection && n.right.get_TermList()
+					|| (opright == Optypes.PROJECTION_OPERATOR && n.right.get_TermList()
 							.get(0).get_variable() == table)) {
 				this.push_parent = n;
 				return 1;
@@ -363,10 +363,10 @@ public class RelationalAlgebra2RQNA {
 		System.out.println("pushing semijoin...");
 		String table = "";
 		int lr = -1;
-		if (this.node.left.get_Optype() == Optypes.Intersect) {
+		if (this.node.left.get_Optype() == Optypes.INTERSECTION_OPERATOR) {
 			lr = 1;
 			table = this.node.get_Property().get(0).getTerm2().get_variable();
-		} else if (this.node.right.get_Optype() == Optypes.Intersect) {
+		} else if (this.node.right.get_Optype() == Optypes.INTERSECTION_OPERATOR) {
 			lr = 0;
 			table = this.node.get_Property().get(0).getTerm1().get_variable();
 		}
@@ -381,7 +381,7 @@ public class RelationalAlgebra2RQNA {
 		}
 		List<Property> lp = new ArrayList<Property>();
 		lp.addAll(this.node.get_Property());
-		TreeNode insertNode = new TreeNode(Optypes.Semi_Join, lp);
+		TreeNode insertNode = new TreeNode(Optypes.SEMIJOIN_OPERATOR, lp);
 		if (left_right == 0) {
 			if (lr == 0) {
 				insertNode.left = this.push_parent.left;
@@ -411,7 +411,7 @@ public class RelationalAlgebra2RQNA {
 		if (n == null)
 			return;
 		switch (n.get_Optype()) {
-		case Aggregate:
+		case AGGREGATION_OPERATOR:
 			Set<String> table_Pro = new HashSet<String>();
 			String aggrt = n.get_AggrTerm().get(0).get_variable();
 			String aggrc = n.get_AggrTerm().get(0).get_column();
@@ -439,7 +439,7 @@ public class RelationalAlgebra2RQNA {
 				n.left = newNode;
 			}
 			break;
-		case Join:
+		case JOIN_OPERATOR:
 			Term j1 = new Term(n.get_Property().get(0).getTerm1()
 					.get_variable(), n.get_Property().get(0).getTerm1()
 					.get_column());
@@ -457,7 +457,7 @@ public class RelationalAlgebra2RQNA {
 			rightN.left = n.right;
 			n.right = rightN;
 			break;
-		case Semi_Join:
+		case SEMIJOIN_OPERATOR:
 			Term j3 = new Term(n.get_Property().get(0).getTerm2()
 					.get_variable(), n.get_Property().get(0).getTerm2()
 					.get_column());
@@ -497,7 +497,7 @@ public class RelationalAlgebra2RQNA {
 			Map<String, List<String>> map) {
 		if (n == null)
 			return;
-		if (n.get_Optype() == Optypes.Projection) {
+		if (n.get_Optype() == Optypes.PROJECTION_OPERATOR) {
 			List<String> l1 = new ArrayList<String>();
 			String t = n.get_TermList().get(0).get_variable();
 			if (map.containsKey(t)) {
@@ -525,7 +525,7 @@ public class RelationalAlgebra2RQNA {
 		if (map.size() == 0)
 			return;
 		if (n.left != null) {
-			if (n.left.get_Optype() == Optypes.Rename) {
+			if (n.left.get_Optype() == Optypes.RENAME_OPERATOR) {
 				String key = n.left.get_Property().get(0).getTerm1()
 						.get_variable();
 				if (map.containsKey(key)) {
@@ -539,8 +539,8 @@ public class RelationalAlgebra2RQNA {
 					n.left = newNode;
 					map.remove(key);
 				}
-			} else if (n.left.get_Optype() == Optypes.Selection
-					&& n.left.left.get_Optype() == Optypes.Rename) {
+			} else if (n.left.get_Optype() == Optypes.SELECTION_OPERATOR
+					&& n.left.left.get_Optype() == Optypes.RENAME_OPERATOR) {
 				String key = n.left.left.get_Property().get(0).getTerm1()
 						.get_variable();
 				if (map.containsKey(key)) {
@@ -557,7 +557,7 @@ public class RelationalAlgebra2RQNA {
 			}
 		}
 		if (n.right != null) {
-			if (n.right.get_Optype() == Optypes.Rename) {
+			if (n.right.get_Optype() == Optypes.RENAME_OPERATOR) {
 				String key = n.right.get_Property().get(0).getTerm1()
 						.get_variable();
 				if (map.containsKey(key)) {
@@ -571,8 +571,8 @@ public class RelationalAlgebra2RQNA {
 					n.right = newNode;
 					map.remove(key);
 				}
-			} else if (n.right.get_Optype() == Optypes.Selection
-					&& n.right.left.get_Optype() == Optypes.Rename) {
+			} else if (n.right.get_Optype() == Optypes.SELECTION_OPERATOR
+					&& n.right.left.get_Optype() == Optypes.RENAME_OPERATOR) {
 				String key = n.right.left.get_Property().get(0).getTerm1()
 						.get_variable();
 				if (map.containsKey(key)) {
@@ -595,10 +595,10 @@ public class RelationalAlgebra2RQNA {
 	private void proj_intersect(TreeNode n) {
 		if (n == null)
 			return;
-		if (n.get_Optype() == Optypes.Intersect) {
+		if (n.get_Optype() == Optypes.INTERSECTION_OPERATOR) {
 			if (n.left != null && n.right != null) {
-				if (n.left.get_Optype() == Optypes.Projection
-						&& n.right.get_Optype() != Optypes.Projection) {
+				if (n.left.get_Optype() == Optypes.PROJECTION_OPERATOR
+						&& n.right.get_Optype() != Optypes.PROJECTION_OPERATOR) {
 					List<Term> l = new ArrayList<Term>();
 					for (Term t : n.left.get_TermList()) {
 						l.add(new Term(t.get_variable(), t.get_column()));
@@ -606,8 +606,8 @@ public class RelationalAlgebra2RQNA {
 					TreeNode newNode = new TreeNode(l);
 					newNode.left = n.right;
 					n.right = newNode;
-				} else if (n.right.get_Optype() == Optypes.Projection
-						&& n.left.get_Optype() != Optypes.Projection) {
+				} else if (n.right.get_Optype() == Optypes.PROJECTION_OPERATOR
+						&& n.left.get_Optype() != Optypes.PROJECTION_OPERATOR) {
 					List<Term> l = new ArrayList<Term>();
 					for (Term t : n.right.get_TermList()) {
 						l.add(new Term(t.get_variable(), t.get_column()));

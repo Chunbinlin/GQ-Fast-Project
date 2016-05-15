@@ -1,4 +1,4 @@
-package codegenerator;
+package gqfast.global;
 
 import java.util.List;
 

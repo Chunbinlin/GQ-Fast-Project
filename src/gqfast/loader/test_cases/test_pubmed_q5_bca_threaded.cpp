@@ -11,7 +11,7 @@ using namespace std;
 
 static args_threading arguments[NUM_THREADS];
 
-static int32_t doc1_col0_element;
+static uint32_t doc1_col0_element;
 
 static double* R;
 static int* RC;
@@ -42,7 +42,7 @@ extern inline void test_pubmed_q5_bca_threaded_doc2_col0_decode_BCA_threaded(int
 
 extern inline void test_pubmed_q5_bca_threaded_doc2_col1_decode_BCA_threaded(int thread_id, unsigned char* doc2_col1_ptr, int32_t doc2_fragment_size) __attribute__((always_inline));
 
-extern inline void test_pubmed_q5_bca_threaded_year_col0_decode_BCA(int64_t* year_col0_ptr, int32_t & year_col0_element) __attribute__((always_inline));
+extern inline void test_pubmed_q5_bca_threaded_year_col0_decode_BCA(int64_t* year_col0_ptr, uint32_t & year_col0_element) __attribute__((always_inline));
 
 extern inline void test_pubmed_q5_bca_threaded_author2_col0_decode_BCA_threaded(int thread_id, unsigned char* author2_col0_ptr, int32_t author2_col0_bytes, int32_t & author2_fragment_size) __attribute__((always_inline));
 
@@ -51,7 +51,7 @@ void test_pubmed_q5_bca_threaded_doc1_col0_decode_BCA(unsigned char* doc1_col0_p
 	doc1_fragment_size = doc1_col0_bytes* 8 / doc1_col0_bits_info[0];
 	int bit_pos = 0;
 	for (int32_t i=0; i<doc1_fragment_size; i++) {
-		int32_t encoded_value = doc1_col0_bits_info[1] << bit_pos;
+		uint32_t encoded_value = doc1_col0_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(doc1_col0_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
@@ -67,7 +67,7 @@ void test_pubmed_q5_bca_threaded_term_col0_decode_BCA(unsigned char* term_col0_p
 	term_fragment_size = term_col0_bytes* 8 / term_col0_bits_info[0];
 	int bit_pos = 0;
 	for (int32_t i=0; i<term_fragment_size; i++) {
-		int32_t encoded_value = term_col0_bits_info[1] << bit_pos;
+		uint32_t encoded_value = term_col0_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(term_col0_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
@@ -82,7 +82,7 @@ void test_pubmed_q5_bca_threaded_term_col1_decode_BCA(unsigned char* term_col1_p
 
 	int bit_pos = 0;
 	for (int32_t i=0; i<term_fragment_size; i++) {
-		int32_t encoded_value = term_col1_bits_info[1] << bit_pos;
+		uint32_t encoded_value = term_col1_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(term_col1_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
@@ -103,8 +103,8 @@ void* pthread_test_pubmed_q5_bca_threaded_worker(void* arguments) {
 
 	for (; term_it < term_fragment_size; term_it++) {
 
-		int32_t term_col0_element = buffer_arrays[2][0][0][0][term_it];
-		char term_col1_element = buffer_arrays[2][1][0][0][term_it];
+		uint32_t term_col0_element = buffer_arrays[2][0][0][0][term_it];
+		unsigned char term_col1_element = buffer_arrays[2][1][0][0][term_it];
 
 		uint32_t* row_doc2 = idx[3]->index_map[term_col0_element];
 		int32_t doc2_col0_bytes = idx[3]->index_map[term_col0_element+1][0] - row_doc2[0];
@@ -119,13 +119,13 @@ void* pthread_test_pubmed_q5_bca_threaded_worker(void* arguments) {
 
 			for (int32_t doc2_it = 0; doc2_it < doc2_fragment_size; doc2_it++) {
 
-				int32_t doc2_col0_element = buffer_arrays[3][0][thread_id][0][doc2_it];
-				char doc2_col1_element = buffer_arrays[3][1][thread_id][0][doc2_it];
+				uint32_t doc2_col0_element = buffer_arrays[3][0][thread_id][0][doc2_it];
+				unsigned char doc2_col1_element = buffer_arrays[3][1][thread_id][0][doc2_it];
 
 				uint32_t* row_year = idx[1]->index_map[doc2_col0_element];
 
 				int64_t* year_col0_ptr = reinterpret_cast<int64_t *>(&(idx[1]->fragment_data[0][row_year[0]]));
-				int32_t year_col0_element;
+				uint32_t year_col0_element;
 				test_pubmed_q5_bca_threaded_year_col0_decode_BCA(year_col0_ptr, year_col0_element);
 
 				uint32_t* row_author2 = idx[4]->index_map[doc2_col0_element];
@@ -137,7 +137,7 @@ void* pthread_test_pubmed_q5_bca_threaded_worker(void* arguments) {
 					test_pubmed_q5_bca_threaded_author2_col0_decode_BCA_threaded(thread_id, author2_col0_ptr, author2_col0_bytes, author2_fragment_size);
 
 					for (int32_t author2_it = 0; author2_it < author2_fragment_size; author2_it++) {
-						int32_t author2_col0_element = buffer_arrays[4][0][thread_id][0][author2_it];
+						uint32_t author2_col0_element = buffer_arrays[4][0][thread_id][0][author2_it];
 
 						RC[author2_col0_element] = 1;
 
@@ -158,7 +158,7 @@ void test_pubmed_q5_bca_threaded_doc2_col0_decode_BCA_threaded(int thread_id, un
 	doc2_fragment_size = doc2_col0_bytes* 8 / doc2_col0_bits_info[0];
 	int bit_pos = 0;
 	for (int32_t i=0; i<doc2_fragment_size; i++) {
-		int32_t encoded_value = doc2_col0_bits_info[1] << bit_pos;
+		uint32_t encoded_value = doc2_col0_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(doc2_col0_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
@@ -173,7 +173,7 @@ void test_pubmed_q5_bca_threaded_doc2_col1_decode_BCA_threaded(int thread_id, un
 
 	int bit_pos = 0;
 	for (int32_t i=0; i<doc2_fragment_size; i++) {
-		int32_t encoded_value = doc2_col1_bits_info[1] << bit_pos;
+		uint32_t encoded_value = doc2_col1_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(doc2_col1_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
@@ -184,7 +184,7 @@ void test_pubmed_q5_bca_threaded_doc2_col1_decode_BCA_threaded(int thread_id, un
 	}
 }
 
-void test_pubmed_q5_bca_threaded_year_col0_decode_BCA(int64_t* year_col0_ptr, int32_t & year_col0_element) {
+void test_pubmed_q5_bca_threaded_year_col0_decode_BCA(int64_t* year_col0_ptr, uint32_t & year_col0_element) {
 
 	year_col0_element = year_col0_bits_info[1];
 	year_col0_element &= *year_col0_ptr;
@@ -195,7 +195,7 @@ void test_pubmed_q5_bca_threaded_author2_col0_decode_BCA_threaded(int thread_id,
 	author2_fragment_size = author2_col0_bytes* 8 / author2_col0_bits_info[0];
 	int bit_pos = 0;
 	for (int32_t i=0; i<author2_fragment_size; i++) {
-		int32_t encoded_value = author2_col0_bits_info[1] << bit_pos;
+		uint32_t encoded_value = author2_col0_bits_info[1] << bit_pos;
 		int64_t * next_8_ptr = reinterpret_cast<int64_t *>(author2_col0_ptr);
 		encoded_value &= *next_8_ptr;
 		encoded_value >>= bit_pos;
@@ -280,8 +280,8 @@ extern "C" double* test_pubmed_q5_bca_threaded(int** null_checks) {
 
 	author2_col0_bits_info = idx[4]->dict[0]->bits_info;
 
-	int64_t* author1_list = new int64_t[1];
-	author1_list[0] = 4945389;
+	int64_t author1_list[1];
+	author1_list[0] = 1000;
 
 	for (int author1_it = 0; author1_it<1; author1_it++) {
 

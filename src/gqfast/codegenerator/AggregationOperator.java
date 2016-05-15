@@ -1,4 +1,7 @@
-package codegenerator;
+package gqfast.codeGenerator;
+
+import gqfast.global.Alias;
+import gqfast.global.Global.Optypes;
 
 import java.util.List;
 
@@ -24,7 +27,7 @@ public class AggregationOperator extends Operator {
 	public AggregationOperator(int gqFastIndexID, int dataType, String aggregationString, 
 			List<Alias> aggregationVariablesAliases, List<Integer> aggregationVariablesColumns, Alias drivingAlias, 
 			int drivingAliasColumn) {
-		super(Operator.AGGREGATION_OPERATOR);
+		super(Optypes.AGGREGATION_OPERATOR);
 		this.gqFastIndexID = gqFastIndexID;
 		this.dataType = dataType;
 		this.aggregationString = aggregationString;

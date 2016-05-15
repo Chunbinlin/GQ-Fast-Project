@@ -1,18 +1,18 @@
-package codegenerator.testcases;
+package gqfast.codeGenerator.testcases;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import codegenerator.AggregationOperator;
-import codegenerator.Alias;
-import codegenerator.CodeGenerator;
-import codegenerator.JoinOperator;
-import codegenerator.MetaData;
-import codegenerator.MetaIndex;
-import codegenerator.MetaQuery;
-import codegenerator.Operator;
-import codegenerator.SelectionOperator;
-import codegenerator.ThreadingOperator;
+import gqfast.codeGenerator.AggregationOperator;
+import gqfast.codeGenerator.CodeGenerator;
+import gqfast.codeGenerator.JoinOperator;
+import gqfast.codeGenerator.Operator;
+import gqfast.codeGenerator.SelectionOperator;
+import gqfast.codeGenerator.ThreadingOperator;
+import gqfast.global.Alias;
+import gqfast.global.MetaData;
+import gqfast.global.MetaIndex;
+import gqfast.global.MetaQuery;
 
 
 public class PubmedQueryAS {
@@ -361,6 +361,7 @@ public class PubmedQueryAS {
 		runQ5("test_pubmed_q5_array", 1, selections, MetaData.ENCODING_UA);
 		runQ5("test_pubmed_q5_array_threaded", 4, selections, MetaData.ENCODING_UA);
 
+		System.out.println("Done");
 	}
 
 

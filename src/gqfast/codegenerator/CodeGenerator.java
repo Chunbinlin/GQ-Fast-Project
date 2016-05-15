@@ -1,4 +1,10 @@
-package codegenerator;
+package gqfast.codeGenerator;
+
+import gqfast.global.Alias;
+import gqfast.global.MetaData;
+import gqfast.global.MetaIndex;
+import gqfast.global.MetaQuery;
+import gqfast.global.Global.Optypes;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +27,7 @@ public class CodeGenerator {
 			hasThreading = true;
 			for (int i=0; i<operators.size(); i++) {
 				Operator currOp = operators.get(i);
-				if (currOp.getType() == Operator.THREADING_OPERATOR) {
+				if (currOp.getType() == Optypes.THREADING_OPERATOR) {
 					threadOpIndex = i;
 					break;
 				}
@@ -163,7 +169,7 @@ public class CodeGenerator {
 		
 		String semiDeallocString = "\n";
 		for (Operator currentOp : operators) {
-			if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
+			if (currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 				SemiJoinOperator semiOp = (SemiJoinOperator)currentOp;
 				String alias = semiOp.getDrivingAlias().getAlias();
 				semiDeallocString += "\tdelete[] " + alias + "_bool_array;\n";
@@ -217,7 +223,7 @@ public class CodeGenerator {
 		String resultString = "\n";
 		
 		for (Operator currentOp: operators) {
-			if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
+			if (currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 				SemiJoinOperator currentSemiJoinOp = (SemiJoinOperator) currentOp;
 				String alias = currentSemiJoinOp.getDrivingAlias().getAlias();
 				int gqFastIndexID = currentSemiJoinOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
@@ -258,13 +264,13 @@ public class CodeGenerator {
 		for (int i=0; i<operators.size()-1; i++) {
 			Operator currentOperator = operators.get(i);
 			
-			if (currentOperator.getType() == Operator.JOIN_OPERATOR || currentOperator.getType() == Operator.SEMIJOIN_OPERATOR) {
+			if (currentOperator.getType() == Optypes.JOIN_OPERATOR || currentOperator.getType() == Optypes.SEMIJOIN_OPERATOR) {
 				
 				int gqFastIndexID;
 				MetaIndex tempIndex;
 				String alias;
 				List<Integer> columnIDs;
-				if (currentOperator.getType() == Operator.JOIN_OPERATOR) {
+				if (currentOperator.getType() == Optypes.JOIN_OPERATOR) {
 					JoinOperator tempJoinOp = (JoinOperator) currentOperator;
 					Alias tempAlias = tempJoinOp.getAlias();
 					tempIndex = tempAlias.getAssociatedIndex();
@@ -306,7 +312,7 @@ public class CodeGenerator {
 				}
 				
 			}
-			else if (currentOperator.getType() == Operator.INTERSECTION_OPERATOR) {
+			else if (currentOperator.getType() == Optypes.INTERSECTION_OPERATOR) {
 					// TODO: Intersection implementation
 			}		
 		}
@@ -340,12 +346,12 @@ public class CodeGenerator {
 			Alias drivingAlias = threadOp.getDrivingAlias();
 			for (int i=0; i<threadOpIndex; i++) {
 				Operator currOp = operators.get(i);
-				int type = currOp.getType();
-				if (type == Operator.JOIN_OPERATOR || type == Operator.SEMIJOIN_OPERATOR) {
+				Optypes type = currOp.getType();
+				if (type == Optypes.JOIN_OPERATOR || type == Optypes.SEMIJOIN_OPERATOR) {
 				
 					Alias currAlias;
 					List<Integer> columnIDs;
-					if (type == Operator.JOIN_OPERATOR) {
+					if (type == Optypes.JOIN_OPERATOR) {
 						JoinOperator tempJoinOp = (JoinOperator) currOp;
 						currAlias = tempJoinOp.getAlias();
 						columnIDs = tempJoinOp.getColumnIDs();
@@ -954,7 +960,7 @@ public class CodeGenerator {
 		String drivAliasString = drivingAlias.getAlias();
 		
 		// SemiJoin Check
-		if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
+		if (currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 			int drivingAliasID = drivingAlias.getAliasID();
 			int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
 			int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
@@ -1044,7 +1050,7 @@ public class CodeGenerator {
 		mainString += "\n";
 		
 		// SemiJoin Check
-		if (currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
+		if (currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 			int drivingAliasID = drivingAlias.getAliasID();
 			int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
 			int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
@@ -1231,7 +1237,7 @@ public class CodeGenerator {
 		boolean threadID = true;
 		List<Integer> columnIDs;
 		
-		if (currentOp.getType() == Operator.JOIN_OPERATOR) {
+		if (currentOp.getType() == Optypes.JOIN_OPERATOR) {
 			JoinOperator currentJoinOp = (JoinOperator) currentOp;
 			drivingAlias = currentJoinOp.getDrivingAlias();
 			currentAlias = currentJoinOp.getAlias();
@@ -1267,14 +1273,14 @@ public class CodeGenerator {
 			boolean loopAgain = true;
 			boolean justStartedThreading = false;
 			while(loopAgain) {
-				if (previousOp.getType() == Operator.THREADING_OPERATOR) {
+				if (previousOp.getType() == Optypes.THREADING_OPERATOR) {
 					// It is assumed that a THREADING_OPERATOR will never be the first operator
 					// It is also assumed that an Entity Table join will never immediately follow a ThreadingOperator
 					// 
 					previousOp = operators.get(i-2);
 					justStartedThreading = true;
 				}
-				else if (previousOp.getType() == Operator.JOIN_OPERATOR || previousOp.getType() == Operator.SEMIJOIN_OPERATOR) {
+				else if (previousOp.getType() == Optypes.JOIN_OPERATOR || previousOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 					loopAgain = false;
 					boolean previousEntityFlag;
 					Alias previousAlias;
@@ -1282,7 +1288,7 @@ public class CodeGenerator {
 					List<Integer> previousColumnIDs;
 					//int previousLoopColumn;
 
-					if (previousOp.getType() == Operator.JOIN_OPERATOR) {
+					if (previousOp.getType() == Optypes.JOIN_OPERATOR) {
 						JoinOperator previousJoinOp = (JoinOperator) previousOp;
 						previousEntityFlag = previousJoinOp.isEntityFlag();
 						previousAlias = previousJoinOp.getAlias();
@@ -1317,7 +1323,7 @@ public class CodeGenerator {
 
 					}
 				}
-				else if (previousOp.getType() == Operator.SELECTION_OPERATOR) {
+				else if (previousOp.getType() == Optypes.SELECTION_OPERATOR) {
 					loopAgain = false;
 					mainString += evaluatePreviousSelection(previousOp, query, tabString, closingBraces, drivingAliasCol, 
 							indexByteSize, columnIDs, entityFlag, functionHeadersCppCode, functionsCppCode, preThreading,
@@ -1366,7 +1372,7 @@ public class CodeGenerator {
 		
 		Operator previousOp = operators.get(i-1);
 	
-		if (previousOp.getType() == Operator.JOIN_OPERATOR) {
+		if (previousOp.getType() == Optypes.JOIN_OPERATOR) {
 			JoinOperator previousJoinOp = (JoinOperator) previousOp;
 			if (!previousJoinOp.isEntityFlag()) {
 				
@@ -1400,7 +1406,7 @@ public class CodeGenerator {
 				}
 			}
 		}
-		else if (previousOp.getType() == Operator.SELECTION_OPERATOR){
+		else if (previousOp.getType() == Optypes.SELECTION_OPERATOR){
 			
 			
 		}
@@ -1567,8 +1573,8 @@ public class CodeGenerator {
 		
 		for (int i = 0; i<operators.size(); i++) {
 			Operator currentOp = operators.get(i);
-			int opType = currentOp.getType();
-			if (opType == Operator.SELECTION_OPERATOR) {
+			Optypes opType = currentOp.getType();
+			if (opType == Optypes.SELECTION_OPERATOR) {
 				if (preThreadingOp) {
 					mainCppCode.add(evaluateSelection(i, currentOp, tabString, query));
 				}
@@ -1578,7 +1584,7 @@ public class CodeGenerator {
 					functionsCppCode.set(threadingFunctionID, temp);
 				}
 			}
-			else if (opType == Operator.JOIN_OPERATOR || opType == Operator.SEMIJOIN_OPERATOR) {
+			else if (opType == Optypes.JOIN_OPERATOR || opType == Optypes.SEMIJOIN_OPERATOR) {
 				if (preThreadingOp) {
 					mainCppCode.add(evaluateJoin(preThreadingOp, i, operators, 
 							metadata, tabString, closingBraces, bufferPoolTrackingArray, query, 
@@ -1592,10 +1598,10 @@ public class CodeGenerator {
 					functionsCppCode.set(threadingFunctionID, temp);
 				}
 			}
-			else if (opType == Operator.INTERSECTION_OPERATOR) {
+			else if (opType == Optypes.INTERSECTION_OPERATOR) {
 				
 			}
-			else if (opType == Operator.AGGREGATION_OPERATOR) {
+			else if (opType == Optypes.AGGREGATION_OPERATOR) {
 				if (preThreadingOp) {
 					mainCppCode.add(evaluateAggregation(preThreadingOp, i, operators, metadata, tabString, 
 							closingBraces, bufferPoolTrackingArray, query));
@@ -1607,7 +1613,7 @@ public class CodeGenerator {
 					functionsCppCode.set(threadingFunctionID, temp);
 				}
 			}
-			else if (opType == Operator.THREADING_OPERATOR) {
+			else if (opType == Optypes.THREADING_OPERATOR) {
 				mainCppCode.add(initThreading(currentOp, metadata, tabString, query, 
 						functionHeadersCppCode, functionsCppCode));
 				preThreadingOp = false;
@@ -1653,12 +1659,12 @@ public class CodeGenerator {
 
 			
 			
-			if (currentOp.getType() == Operator.JOIN_OPERATOR || currentOp.getType() == Operator.SEMIJOIN_OPERATOR) {
+			if (currentOp.getType() == Optypes.JOIN_OPERATOR || currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 				
 				int aliasID;
 				int indexID;
 				
-				if (currentOp.getType() == Operator.JOIN_OPERATOR) {
+				if (currentOp.getType() == Optypes.JOIN_OPERATOR) {
 					JoinOperator tempOp = (JoinOperator) currentOp;
 					aliasID = tempOp.getAlias().getAliasID();
 					indexID = tempOp.getAlias().getAssociatedIndex().getIndexID();

@@ -1,4 +1,5 @@
-package codegenerator;
+package gqfast.global;
+
 
 public class Alias {
 

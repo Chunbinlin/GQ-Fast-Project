@@ -1,4 +1,7 @@
-package codegenerator;
+package gqfast.codeGenerator;
+
+import gqfast.global.Alias;
+import gqfast.global.Global.Optypes;
 
 import java.util.List;
 
@@ -15,7 +18,7 @@ public class SemiJoinOperator extends Operator {
 
 	
 	public SemiJoinOperator(boolean entityFlag, List<Integer> columnIDs, Alias alias, Alias drivingAlias, int drivingAliasColumn) {
-		super(Operator.SEMIJOIN_OPERATOR);
+		super(Optypes.SEMIJOIN_OPERATOR);
 		this.entityFlag = entityFlag;
 		this.columnIDs = columnIDs;
 		this.alias = alias;

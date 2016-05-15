@@ -1,4 +1,6 @@
-package codegenerator;
+package gqfast.codeGenerator;
+
+import gqfast.global.Global.Optypes;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ class IntersectionOperator extends Operator {
 	
 	public IntersectionOperator(boolean bitwiseFlag, List<Integer> indexIDs, 
 		List<Integer> columnIDs) {
-		super(Operator.INTERSECTION_OPERATOR);
+		super(Optypes.INTERSECTION_OPERATOR);
 		this.bitwiseFlag = bitwiseFlag;
 		this.indexIDs = indexIDs;
 		this.columnIDs = columnIDs;

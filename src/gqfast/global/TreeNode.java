@@ -25,7 +25,7 @@ public class TreeNode {
 	}
 
 	public TreeNode(List<Term> t){//Projection
-		this.op = Optypes.Projection;
+		this.op = Optypes.PROJECTION_OPERATOR;
 		this.terms = t;
 		this.left = null;
 		this.right = null;
@@ -36,7 +36,7 @@ public class TreeNode {
 	}
 
 	public TreeNode(List<Term> t, List<Term> list_t, List<String> s){//Aggregate
-		this.op = Optypes.Aggregate;
+		this.op = Optypes.AGGREGATION_OPERATOR;
 		this.aggr_term = t;
 		this.terms = list_t;
 		this.aggr = s;
@@ -48,14 +48,14 @@ public class TreeNode {
 
 	public void print(){
 		System.out.print("("+this.op+" ");
-		if (this.op == Optypes.Aggregate){
+		if (this.op == Optypes.AGGREGATION_OPERATOR){
 			this.aggr_term.get(0).print();
 			System.out.print("; ");
 			for (int i = 0; i < this.aggr.size()-1; i++){
 				System.out.print(this.aggr.get(i)+",");
 			}
 			System.out.print(this.aggr.get(this.aggr.size()-1));
-		}else if (this.op == Optypes.Projection){
+		}else if (this.op == Optypes.PROJECTION_OPERATOR){
 			for (int i = 0; i < this.terms.size()-1; i++){
 				this.terms.get(i).print();
 				System.out.print(",");

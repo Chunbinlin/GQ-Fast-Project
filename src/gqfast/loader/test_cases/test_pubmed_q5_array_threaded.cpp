@@ -11,7 +11,7 @@ using namespace std;
 
 static args_threading arguments[NUM_THREADS];
 
-static int32_t doc1_col0_element;
+static uint32_t doc1_col0_element;
 
 static double* R;
 static int* RC;
@@ -28,7 +28,7 @@ extern inline void test_pubmed_q5_array_threaded_doc2_col0_decode_UA_threaded(in
 
 extern inline void test_pubmed_q5_array_threaded_doc2_col1_decode_UA_threaded(int thread_id, unsigned char* doc2_col1_ptr, int32_t doc2_fragment_size) __attribute__((always_inline));
 
-extern inline void test_pubmed_q5_array_threaded_year_col0_decode_UA(int32_t* year_col0_ptr, int32_t & year_col0_element) __attribute__((always_inline));
+extern inline void test_pubmed_q5_array_threaded_year_col0_decode_UA(int32_t* year_col0_ptr, uint32_t & year_col0_element) __attribute__((always_inline));
 
 extern inline void test_pubmed_q5_array_threaded_author2_col0_decode_UA_threaded(int thread_id, int32_t* author2_col0_ptr, int32_t author2_col0_bytes, int32_t & author2_fragment_size) __attribute__((always_inline));
 
@@ -67,8 +67,8 @@ void* pthread_test_pubmed_q5_array_threaded_worker(void* arguments) {
 
 	for (; term_it < term_fragment_size; term_it++) {
 
-		int32_t term_col0_element = buffer_arrays[2][0][0][0][term_it];
-		char term_col1_element = buffer_arrays[2][1][0][0][term_it];
+		uint32_t term_col0_element = buffer_arrays[2][0][0][0][term_it];
+		unsigned char term_col1_element = buffer_arrays[2][1][0][0][term_it];
 
 		uint32_t* row_doc2 = idx[3]->index_map[term_col0_element];
 		int32_t doc2_col0_bytes = idx[3]->index_map[term_col0_element+1][0] - row_doc2[0];
@@ -83,13 +83,13 @@ void* pthread_test_pubmed_q5_array_threaded_worker(void* arguments) {
 
 			for (int32_t doc2_it = 0; doc2_it < doc2_fragment_size; doc2_it++) {
 
-				int32_t doc2_col0_element = buffer_arrays[3][0][thread_id][0][doc2_it];
-				char doc2_col1_element = buffer_arrays[3][1][thread_id][0][doc2_it];
+				uint32_t doc2_col0_element = buffer_arrays[3][0][thread_id][0][doc2_it];
+				unsigned char doc2_col1_element = buffer_arrays[3][1][thread_id][0][doc2_it];
 
 				uint32_t* row_year = idx[1]->index_map[doc2_col0_element];
 
 				int32_t* year_col0_ptr = reinterpret_cast<int32_t *>(&(idx[1]->fragment_data[0][row_year[0]]));
-				int32_t year_col0_element;
+				uint32_t year_col0_element;
 				test_pubmed_q5_array_threaded_year_col0_decode_UA(year_col0_ptr, year_col0_element);
 
 				uint32_t* row_author2 = idx[4]->index_map[doc2_col0_element];
@@ -101,7 +101,7 @@ void* pthread_test_pubmed_q5_array_threaded_worker(void* arguments) {
 					test_pubmed_q5_array_threaded_author2_col0_decode_UA_threaded(thread_id, author2_col0_ptr, author2_col0_bytes, author2_fragment_size);
 
 					for (int32_t author2_it = 0; author2_it < author2_fragment_size; author2_it++) {
-						int32_t author2_col0_element = buffer_arrays[4][0][thread_id][0][author2_it];
+						uint32_t author2_col0_element = buffer_arrays[4][0][thread_id][0][author2_it];
 
 						RC[author2_col0_element] = 1;
 
@@ -133,7 +133,7 @@ void test_pubmed_q5_array_threaded_doc2_col1_decode_UA_threaded(int thread_id, u
 	}
 }
 
-void test_pubmed_q5_array_threaded_year_col0_decode_UA(int32_t* year_col0_ptr, int32_t & year_col0_element) {
+void test_pubmed_q5_array_threaded_year_col0_decode_UA(int32_t* year_col0_ptr, uint32_t & year_col0_element) {
 
 	year_col0_element = *year_col0_ptr;
 }
@@ -207,8 +207,8 @@ extern "C" double* test_pubmed_q5_array_threaded(int** null_checks) {
 	R = new double[metadata.idx_domains[4][0]]();
 
 
-	int64_t* author1_list = new int64_t[1];
-	author1_list[0] = 4945389;
+	int64_t author1_list[1];
+	author1_list[0] = 1000;
 
 	for (int author1_it = 0; author1_it<1; author1_it++) {
 
