@@ -53,7 +53,7 @@ void read_in_file(vector<T> * input_file, string filename, int max_column_ids[])
         }
     }
     myfile.close();
-    cerr << "..." << input_file[0].size() << " lines read in.\n";
+    // cerr << "..." << input_file[0].size() << " lines read in.\n";
 
 }
 
@@ -82,8 +82,8 @@ void init_dictionaries(vector<T> * input_file, dictionary** dict, Encodings enco
             // Create the dictionary
             dict[i] = new dictionary(max_column_ids[i+1]);
 
-            cerr << "Dictionary created on encoding " << i << ":\n";
-            cerr << dict[i]->bits_info[0] << " bits needed to encode a value\n";
+            // cerr << "Dictionary created on encoding " << i << ":\n";
+            // cerr << dict[i]->bits_info[0] << " bits needed to encode a value\n";
 
         }
         else
@@ -123,7 +123,7 @@ void init_huffman_structures(vector<T> * input_file, Encodings encodings[], int 
         if (encodings[i].getEncoding() == ENCODING_HUFFMAN)
         {
 
-            cerr << "Huffman: encoded column " << i << " is of size " << input_file[i+1].size() << "\n";
+            // cerr << "Huffman: encoded column " << i << " is of size " << input_file[i+1].size() << "\n";
 
             Node<T> * tree;
             generate_array_tree_representation(input_file[i+1], input_file[i+1].size(), huffman_tree_array[i],
@@ -134,7 +134,7 @@ void init_huffman_structures(vector<T> * input_file, Encodings encodings[], int 
             encoding_dictionary[i] = dict_temp;
 
             huffman_tree[i] = tree;
-            cerr << "...Huffman encoding complete for encoded column " << i << "\n";
+            // cerr << "...Huffman encoding complete for encoded column " << i << "\n";
         }
         else
         {
@@ -483,8 +483,8 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
 
     //vector<int> & domains, int & max_frag_size) {
 
-    cerr << "\n...Begin loading file " << filename << "\n";
-    auto t_start = std::chrono::high_resolution_clock::now();
+    // cerr << "\n...Begin loading file " << filename << "\n";
+
 
     vector<TValue> * input_file = new vector<TValue>[num_encodings+1];    // To store table in memory
     int* max_column_ids = new int[num_encodings+1]();           // To find table's domain sizes for each column
@@ -492,6 +492,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
     // Reads in file
     read_in_file(input_file, filename, max_column_ids);
 
+    auto t_start = std::chrono::high_resolution_clock::now();
     // dict[x] stores bits per encoding and decoding integer for column 'x' if 'x' is to be bit-aligned compressed
     dictionary** dict = new dictionary*[num_encodings];
     init_dictionaries(input_file, dict, encodings, num_encodings, max_column_ids);
@@ -547,7 +548,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
     //
     // FIRST PASS: Begin processing according to encoding type
     //
-    cerr << "First pass\n\n";
+    // cerr << "First pass\n\n";
 
     TValue currValue;                        // To keep track of the key currently being processed
     TValue oldValue = input_file[0][0];      // To keep track of when the current key has changed. Init to
@@ -640,12 +641,12 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
     //
     //  SECOND PASS: Allocate fragment arrays, now that sizes are known, and set-up the index map
     //
-    cerr << "Second pass\n\n";
+    // cerr << "Second pass\n\n";
 
     unsigned char ** fragment_data = new unsigned char *[num_encodings];
     TIndexMap ** index_map = new TIndexMap *[domain_size+1];
 
-    cerr << "Creating index map of size " << sizeof(TIndexMap) * (domain_size+1) * num_encodings << "\n";
+    // cerr << "Creating index map of size " << sizeof(TIndexMap) * (domain_size+1) * num_encodings << "\n";
     for (uint64_t i=0; i<domain_size+1; i++)
     {
         index_map[i] = new TIndexMap[num_encodings]();
@@ -668,7 +669,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
             {
                 size_of_current_array[i] = total_row_count;
                 data_type = CHAR_1BYTE;
-                cerr << "Setting Fre column to 1 byte\n";
+                // cerr << "Setting Fre column to 1 byte\n";
             }
             else
             {
@@ -677,7 +678,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
             }
 
             // Allocate and initialize
-            cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
+            // cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
             fragment_data[i] = new unsigned char[size_of_current_array[i]]();
 
             assign_data_uncompressed(fragment_data[i], index_map, domain_size, i, keys, key_counts,
@@ -696,7 +697,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
             size_of_current_array[i] = sum + TERMINATING_BYTES;
 
             // Allocate and initialize
-            cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
+            // cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
             fragment_data[i] = new unsigned char[size_of_current_array[i]]();
 
             assign_data_dictionary(fragment_data[i], index_map, domain_size, i, byte_count[i], keys,
@@ -714,7 +715,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
             size_of_current_array[i] = sum;
 
             // Allocate and initialize
-            cerr << "creating fragment data of size = " << size_of_current_array[i] << "\n";
+            // cerr << "creating fragment data of size = " << size_of_current_array[i] << "\n";
             fragment_data[i] = new unsigned char[size_of_current_array[i]]();
 
             assign_data_huffman(fragment_data[i], index_map, domain_size, i, keys, key_counts,
@@ -733,11 +734,11 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
                     max_bytes = byte_count[i][j];
                 }
             }
-            cerr << "\nMax size of BB fragment in bytes is " << max_bytes << "\n\n";
+            // cerr << "\nMax size of BB fragment in bytes is " << max_bytes << "\n\n";
             size_of_current_array[i] = sum + 1;
 
             // Allocate and initialize
-            cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
+            // cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
             fragment_data[i] = new unsigned char[size_of_current_array[i]]();
 
             assign_data_bitmap(fragment_data[i], index_map, domain_size, i, keys, key_counts,
@@ -768,13 +769,13 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
     new_index->set_data(fragment_data);
     new_index->set_huffman(huffman_tree_array, huffman_terminator_array, huffman_tree_sizes);
     new_index->set_dictionary(dict);
-    cerr << "\nCompleted " << total_row_count << " row accesses\n";
-    cerr << "Number of fragments = " << keys.size() << "\n";
-    cerr << "Min fragment size = " << min_size << "\n";
-    cerr << "Max fragment size = " << max_size << "\n";
-    cerr << "ID of Max = " << max_id << "\n";
-    cerr << "Mean fragment size = " << avg_size << "\n";
-    cerr << "Standard deviation = " << std_dev << "\n\n";
+    // cerr << "\nCompleted " << total_row_count << " row accesses\n";
+    // cerr << "Number of fragments = " << keys.size() << "\n";
+    // cerr << "Min fragment size = " << min_size << "\n";
+    // cerr << "Max fragment size = " << max_size << "\n";
+    // cerr << "ID of Max = " << max_id << "\n";
+    // cerr << "Mean fragment size = " << avg_size << "\n";
+    // cerr << "Standard deviation = " << std_dev << "\n\n";
 
     //Update metadata for encodings
     metadata.idx_max_fragment_sizes[index_id] = max_size;

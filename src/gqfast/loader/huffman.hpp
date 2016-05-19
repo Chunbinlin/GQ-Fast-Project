@@ -91,8 +91,8 @@ void generate_array_tree_representation(vector<word_t> & input, long length, wor
 
     huff_array_size = array_size;
 
-    cerr << "...Huffman tree decoding array is size " << huff_array_size * sizeof(word_t) << " bytes\n";
-    cerr << "...Huffman (boolean) terminator array is " << huff_array_size * sizeof(bool) << " bytes\n";
+    // cerr << "...Huffman tree decoding array is size " << huff_array_size * sizeof(word_t) << " bytes\n";
+    // cerr << "...Huffman (boolean) terminator array is " << huff_array_size * sizeof(bool) << " bytes\n";
 
     long* nodes_per_level = new long[max_level + 1]();
 
