@@ -181,7 +181,8 @@ int main(int argc, char ** argv)
         int result = load<int, uint32_t>(database, compression);
         if (result)
         {
-            save_index<uint32_t>(idx, filename);
+            cerr << "Indices loaded properly\n";
+            //save_index<uint32_t>(idx, filename);
         }
         else
         {
