@@ -182,7 +182,7 @@ int main(int argc, char ** argv)
         if (result)
         {
             cout << "Indices loaded properly\n";
-            //save_index<uint32_t>(idx, filename);
+            save_index<uint32_t>(idx, filename);
         }
         else
         {
