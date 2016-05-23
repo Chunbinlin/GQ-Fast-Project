@@ -93,12 +93,11 @@ void load_index(fastr_index<T>** s, const char * filename)
 
     ia >> metadata;
 
+    std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
     for (int i=0; i<num_loaded_indices; i++)
     {
         init_buffer(i);
     }
-
-    std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 
     std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
 
