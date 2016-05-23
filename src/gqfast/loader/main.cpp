@@ -148,7 +148,7 @@ int main(int argc, char ** argv)
     case 'l':
     {
         load_index<uint32_t>(idx, filename);
-        cout << "\n...Indices have been loaded...";
+        cout << "\n...Indices have been loaded...\n";
         /*char testing = 'y';
         while (testing == 'y')
         {
