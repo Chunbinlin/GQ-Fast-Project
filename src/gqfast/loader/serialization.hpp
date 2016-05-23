@@ -62,7 +62,7 @@ void load_index(fastr_index<T>** s, const char * filename)
     ia >> num_loaded_indices;
     for (int i=0; i<num_loaded_indices; i++)
     {
-        cerr << "loading index " << i << "\n";
+        //cerr << "loading index " << i << "\n";
         uint64_t domain_size;
         int num_fragment_data;
         ia >> domain_size;
@@ -85,7 +85,7 @@ void load_index(fastr_index<T>** s, const char * filename)
         ia >> load_flag;
         //   cerr << "creating index\n";
         fastr_index<T>* temp_index = new fastr_index<T>(domain_size, num_fragment_data, fragment_data_length, huffman_tree_array_size, load_flag);
-        //    cerr << "copying index\n";
+        //   cerr << "copying index\n";
         ia >> *temp_index;
         //   cerr << "setting index\n";
         idx[i] = temp_index;
