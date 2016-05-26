@@ -1,8 +1,8 @@
 #ifndef serialization_
 #define serialization_
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
 
 #include "global_vars.hpp"
 #include <fstream>
@@ -11,10 +11,10 @@ template <typename T>
 void save_index(fastr_index<T>** s, const char * filename)
 {
 
-    std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
+    chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
     // make an archive
-    std::ofstream ofs(filename);
-    boost::archive::text_oarchive oa(ofs);
+    ofstream ofs(filename, ios_base::binary);
+    boost::archive::binary_oarchive oa(ofs);
 
     oa << num_loaded_indices;
 
@@ -39,12 +39,12 @@ void save_index(fastr_index<T>** s, const char * filename)
 
     oa << metadata;
 
-    std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+    chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
 
-    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+    chrono::duration<double> time_span = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
 
-    std::cout << "Saving indices took " << time_span.count() << " seconds.";
-    std::cout << std::endl;
+    cout << "Saving indices took " << time_span.count() << " seconds.";
+    cout << endl;
 
 
 
@@ -55,9 +55,9 @@ template <typename T>
 void load_index(fastr_index<T>** s, const char * filename)
 {
     //cerr << "loading database\n";
-    std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
-    std::ifstream ifs(filename);
-    boost::archive::text_iarchive ia(ifs);
+    chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
+    ifstream ifs(filename, ios_base::binary);
+    boost::archive::binary_iarchive ia(ifs);
     // read class state from archive
     ia >> num_loaded_indices;
     for (int i=0; i<num_loaded_indices; i++)
@@ -93,16 +93,16 @@ void load_index(fastr_index<T>** s, const char * filename)
 
     ia >> metadata;
 
-    std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+    chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
     for (int i=0; i<num_loaded_indices; i++)
     {
         init_buffer(i);
     }
 
-    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+    chrono::duration<double> time_span = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
 
-    std::cout << "Loading indices took " << time_span.count() << " seconds.";
-    std::cout << std::endl;
+    cout << "Loading indices took " << time_span.count() << " seconds.";
+    cout << endl;
 
 
 }
