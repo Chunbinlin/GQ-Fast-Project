@@ -28,6 +28,11 @@ public class MetaData {
 		currentQueryID = 0;
 	}
 	
+	public void setIndexList(List<MetaIndex> indexList)
+	{
+		this.indexList = indexList;
+	}
+
 	public int getCurrentQueryID() {
 		return currentQueryID;
 	}
