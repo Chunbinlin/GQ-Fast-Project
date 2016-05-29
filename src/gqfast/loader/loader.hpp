@@ -804,10 +804,11 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
         metadata.idx_domains[index_id].push_back(max_column_ids[i]+1);
         int bytes_size = getByteSize(max_column_ids[i]+1);
         metadata.idx_cols_byte_sizes[index_id].push_back(bytes_size);
+        cerr << "encoding " << i << " has byte size in index " << index_id << " of " << bytes_size << "\n";
     }
 
     metadata.idx_map_byte_sizes[index_id] = getByteSize(max_column_ids[0]+1);
-
+    cerr << "index " << index_id << " has map byte size of " << metadata.idx_map_byte_sizes[index_id] << "\n";
 
 
     // Memory clean-up
