@@ -13,8 +13,11 @@
 
 #define TERMINATING_BYTES 7
 
-#define INT_4BYTE 4
 #define CHAR_1BYTE 1
+#define INT_2BYTE 2
+#define INT_4BYTE 4
+#define INT_8BYTE 8
+
 
 /*  Function:   read_in_file()
 *   Input:
@@ -26,7 +29,7 @@
 *
 */
 template <typename T>
-void read_in_file(vector<T> * input_file, string filename, int max_column_ids[])
+void read_in_file(vector<T> * input_file, string filename, uint64_t max_column_ids[])
 {
 
     string line;
@@ -71,7 +74,7 @@ void read_in_file(vector<T> * input_file, string filename, int max_column_ids[])
 */
 template <typename T>
 void init_dictionaries(vector<T> * input_file, dictionary** dict, Encodings encodings[], int num_encodings,
-                       int max_column_ids[])
+                       uint64_t max_column_ids[])
 {
 
     for (int i=0; i<num_encodings; i++)
@@ -469,6 +472,22 @@ void assign_data_bitmap(unsigned char * fragment_column, TIndexMap ** index_map,
 }
 
 
+int getByteSize(uint64_t domain) {
+
+    if (domain/0x100000000) {
+        return INT_8BYTE;
+    }
+    else if (domain/0x10000) {
+        return INT_4BYTE;
+    }
+    else if (domain/0x100) {
+        return INT_2BYTE;
+    }
+    else {
+        return CHAR_1BYTE;
+    }
+}
+
 /*  Function:   buildIndex()
 *   Input:
 *               filename:           Name of file to load table from
@@ -487,7 +506,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
 
 
     vector<TValue> * input_file = new vector<TValue>[num_encodings+1];    // To store table in memory
-    int* max_column_ids = new int[num_encodings+1]();           // To find table's domain sizes for each column
+    uint64_t* max_column_ids = new uint64_t[num_encodings+1]();           // To find table's domain sizes for each column
 
     // Reads in file
     read_in_file(input_file, filename, max_column_ids);
@@ -783,7 +802,13 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
     for (int i=1; i<num_encodings+1; i++)
     {
         metadata.idx_domains[index_id].push_back(max_column_ids[i]+1);
+        int bytes_size = getByteSize(max_column_ids[i]+1);
+        metadata.idx_cols_byte_sizes[index_id].push_back(bytes_size);
     }
+
+    metadata.idx_map_byte_sizes[index_id] = getByteSize(max_column_ids[0]+1);
+
+
 
     // Memory clean-up
     for (int i=0; i<num_encodings; i++)

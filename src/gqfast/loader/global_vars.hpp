@@ -29,6 +29,8 @@ extern fastr_index<uint32_t>* idx[MAX_INDICES];
 struct Metadata
 {
     vector<uint64_t> idx_domains[MAX_INDICES];
+    vector<int> idx_cols_byte_sizes[MAX_INDICES];
+    int idx_map_byte_sizes[MAX_INDICES];
     int idx_num_encodings[MAX_INDICES];
     int idx_max_fragment_sizes[MAX_INDICES];
 
@@ -42,6 +44,14 @@ struct Metadata
         for (int i=0; i<MAX_INDICES; i++)
         {
             ar & idx_domains[i];
+        }
+        for (int i=0; i<MAX_INDICES; i++)
+        {
+            ar & idx_cols_byte_sizes[i];
+        }
+        for (int i=0; i<MAX_INDICES; i++)
+        {
+            ar & idx_map_byte_sizes[i];
         }
         for (int i=0; i<MAX_INDICES; i++)
         {

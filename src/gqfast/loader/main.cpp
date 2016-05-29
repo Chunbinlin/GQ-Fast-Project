@@ -35,8 +35,10 @@ void init_globals()
     for (int i=0; i<MAX_INDICES; i++)
     {
         idx[i] = nullptr;
+        metadata.idx_map_byte_sizes[i] = 0;
         metadata.idx_max_fragment_sizes[i] = 0;
         metadata.idx_num_encodings[i] = 0;
+
         buffer_arrays[i] = nullptr;
     }
 
