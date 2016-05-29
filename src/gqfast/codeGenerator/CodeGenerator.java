@@ -74,13 +74,13 @@ public class CodeGenerator {
 	 * Output:	A string that is the function declaration in the generated code for the core processing function
 	 * 
 	 */
-	private static String openingLine(MetaQuery query, AggregationOperator aggregation) {
+	private static String openingLine(MetaQuery query, int resultDataType) {
 
 		String openingCppCode = "\nextern \"C\" ";
-		if (aggregation.getDataType() == AggregationOperator.AGGREGATION_INT) {
+		if (resultDataType == AggregationOperator.AGGREGATION_INT) {
 			openingCppCode += "int* ";
 		}
-		else if (aggregation.getDataType() == AggregationOperator.AGGREGATION_DOUBLE) {
+		else if (resultDataType == AggregationOperator.AGGREGATION_DOUBLE) {
 			openingCppCode += "double* ";
 		}
 		openingCppCode += query.getQueryName() + "(int** null_checks) {\n";
@@ -192,15 +192,31 @@ public class CodeGenerator {
 	 * 			
 	 *
 	 */
-	private static String initResultArray(AggregationOperator aggregation) {
+	private static String initResultArray(int resultDataType, Operator lastOp) {
 		
-		String resultString = "\n\tRC = new int[metadata.idx_domains[" + aggregation.getGQFastIndexID() + "][0]]();\n";
-		
-		if (aggregation.getDataType() == AggregationOperator.AGGREGATION_INT) {
-			resultString += "\tR = new int[metadata.idx_domains[" + aggregation.getGQFastIndexID() + "][0]]();\n";
+		int gqFastIndexID = -1;
+		Optypes opType = lastOp.getType();
+		switch (opType) {
+		case JOIN_OPERATOR:
+			JoinOperator joinOp = (JoinOperator) lastOp;
+			gqFastIndexID = joinOp.getAlias().getAssociatedIndex().getGQFastIndexID();
+			break;
+		case SEMIJOIN_OPERATOR:
+			SemiJoinOperator semiJoinOp = (SemiJoinOperator) lastOp;
+			gqFastIndexID = semiJoinOp.getAlias().getAssociatedIndex().getGQFastIndexID();
+			break;
+		case AGGREGATION_OPERATOR:
+			AggregationOperator aggregationOp = (AggregationOperator) lastOp;
+			gqFastIndexID = aggregationOp.getGQFastIndexID();
+			break;
 		}
-		else if (aggregation.getDataType() == AggregationOperator.AGGREGATION_DOUBLE) {
-			resultString += "\tR = new double[metadata.idx_domains[" + aggregation.getGQFastIndexID() + "][0]]();\n";
+		String resultString = "\n\tRC = new int[metadata.idx_domains[" + gqFastIndexID + "][0]]();\n";
+		
+		if (resultDataType == AggregationOperator.AGGREGATION_INT) {
+			resultString += "\tR = new int[metadata.idx_domains[" + gqFastIndexID + "][0]]();\n";
+		}
+		else if (resultDataType == AggregationOperator.AGGREGATION_DOUBLE) {
+			resultString += "\tR = new double[metadata.idx_domains[" + gqFastIndexID + "][0]]();\n";
 		}
 		return resultString;
 	}
@@ -334,7 +350,7 @@ public class CodeGenerator {
 	 * 			result array, and null-check array
 	 */
 	private static void initialDeclarations(List<String> globalsCppCode,
-			AggregationOperator aggregation, MetaQuery query, List<Operator> operators) {
+			int resultDataType, MetaQuery query, List<Operator> operators) {
 		
 		String resultsGlobals = "";
 		
@@ -376,10 +392,10 @@ public class CodeGenerator {
 		}
 		
 		
-		if (aggregation.getDataType() == AggregationOperator.AGGREGATION_INT)  {		
+		if (resultDataType == AggregationOperator.AGGREGATION_INT)  {		
 			resultsGlobals += "\nstatic int* R;\n";
 		}
-		else if (aggregation.getDataType() == AggregationOperator.AGGREGATION_DOUBLE) {
+		else if (resultDataType == AggregationOperator.AGGREGATION_DOUBLE) {
 			resultsGlobals += "\nstatic double* R;\n";	
 		}
 		resultsGlobals += "static int* RC;\n";
@@ -1360,17 +1376,27 @@ public class CodeGenerator {
 		return mainSelectionString;
 	}
 
-	private static String evaluateAggregation(boolean preThreading, int i, List<Operator> operators,
-			MetaData metadata, StringBuilder tabString,
-			int[] closingBraces, int[][] bufferPoolTrackingArray, MetaQuery query) {
-		
-		Operator currentOp = operators.get(i);
+
+	private static String evaluateIntersection(Operator currentOp,
+			StringBuilder tabString) {
 		
 		String mainString = new String();
 		
-		AggregationOperator aggregationOp = (AggregationOperator) currentOp;
+		IntersectionOperator interOp = (IntersectionOperator) currentOp;
 		
-		Operator previousOp = operators.get(i-1);
+		return mainString;
+		
+		
+	}
+	
+	private static String evaluateLastOperator(boolean preThreading, List<Operator> operators,
+			MetaData metadata, StringBuilder tabString,
+			int[] closingBraces, int[][] bufferPoolTrackingArray, MetaQuery query) {
+		
+		String mainString = new String();
+		
+		Operator lastOp = operators.get(operators.size()-1);
+		Operator previousOp = operators.get(operators.size()-2);
 	
 		if (previousOp.getType() == Optypes.JOIN_OPERATOR) {
 			JoinOperator previousJoinOp = (JoinOperator) previousOp;
@@ -1406,56 +1432,123 @@ public class CodeGenerator {
 				}
 			}
 		}
-		else if (previousOp.getType() == Optypes.SELECTION_OPERATOR){
+		else if (previousOp.getType() == Optypes.SEMIJOIN_OPERATOR){
 			
 			
-		}
+			SemiJoinOperator previousSemiJoinOp = (SemiJoinOperator) previousOp;
+			if (!previousSemiJoinOp.isEntityFlag()) {
 				
-		String drivingAlias = aggregationOp.getDrivingAlias().getAlias(); 
-		int drivingAliasCol = aggregationOp.getDrivingAliasColumn();
-		int drivingAliasIndex = aggregationOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
-		String elementString = drivingAlias + "_col" + drivingAliasCol + "_element";
-		
+				String previousAlias = previousSemiJoinOp.getAlias().getAlias();
+				int previousAliasID = previousSemiJoinOp.getAlias().getAliasID();
+				boolean previousThreadID = query.getPreThreading(previousAliasID);
+				
+				
+				mainString += "\n" + tabString + "for (int32_t " + previousAlias + "_it = 0; " + previousAlias + "_it " +
+						"< " + previousAlias + "_fragment_size; " + previousAlias + "_it++) {\n";
+				closingBraces[0]++;
+				tabString.append("\t");
 
-		mainString += "\n" + tabString + "RC[" + elementString + "] = 1;\n";
-		
-		if (!preThreading && aggregationOp.getAggregationString() != null) {
-			mainString += "\n" + tabString + "pthread_spin_lock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
-		}
-
-		if (aggregationOp.getAggregationString() != null) {
-			String delims = "[ ]+";
-			String[] tokens = aggregationOp.getAggregationString().split(delims);
-			String reconstructedString = new String();
-			for (int j=0; j< tokens.length;j++) {
-				String upTo2Characters = tokens[j].substring(0, Math.min(tokens[j].length(), 2));
-				if (upTo2Characters.equals("op")) {
-					// Reads the number immediately following "op"
-					String num_letter = Character.toString(tokens[j].charAt(2));
-					int aggregationAliasNum = Integer.parseInt(num_letter);
-					String alias = aggregationOp.getAggregationVariablesAliases().get(aggregationAliasNum).getAlias();
-					int aliasCol = aggregationOp.getAggregationVariablesColumns().get(aggregationAliasNum);
-					String fullElementName = alias + "_col" + aliasCol + "_element";
-					reconstructedString += fullElementName;
-				}
-				else {
-					reconstructedString += tokens[j];
+				int previousIndexID = previousSemiJoinOp.getAlias().getAssociatedIndex().getIndexID();
+				int previousGQFastIndexID = previousSemiJoinOp.getAlias().getAssociatedIndex().getGQFastIndexID();
+				for (int previousColID : previousSemiJoinOp.getColumnIDs()) {
+					MetaIndex previousIndex = metadata.getIndexList().get(previousIndexID);
+					int colBytes = previousIndex.getColumnEncodedByteSizesList().get(previousColID);
+					mainString += tabString + getElementPrimitive(colBytes) + " ";
+					
+					if (previousThreadID) {
+						mainString += previousAlias + "_col" + previousColID + "_element = " +
+							"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][0]" +
+							"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
+					}
+					else {
+						mainString += previousAlias + "_col" + previousColID + "_element = " +
+								"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][thread_id]" +
+								"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
+					}
 				}
 			}
+			
+		}
+		
+		Optypes opType = lastOp.getType();
+		if (opType == Optypes.AGGREGATION_OPERATOR) {
+			AggregationOperator aggregationOp = (AggregationOperator) lastOp;
+			
+			String drivingAlias = aggregationOp.getDrivingAlias().getAlias(); 
+			int drivingAliasCol = aggregationOp.getDrivingAliasColumn();
+			int drivingAliasIndex = aggregationOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
+			String elementString = drivingAlias + "_col" + drivingAliasCol + "_element";
+			
 
-			mainString += tabString + "R[" + elementString +"] += " + reconstructedString + ";";
+			mainString += "\n" + tabString + "RC[" + elementString + "] = 1;\n";
+			
+			if (!preThreading) {
+				mainString += "\n" + tabString + "pthread_spin_lock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
+			}
 
+			if (aggregationOp.getAggregationString() != null) {
+				String delims = "[ ]+";
+				String[] tokens = aggregationOp.getAggregationString().split(delims);
+				String reconstructedString = new String();
+				for (int j=0; j< tokens.length;j++) {
+					String upTo2Characters = tokens[j].substring(0, Math.min(tokens[j].length(), 2));
+					if (upTo2Characters.equals("op")) {
+						// Reads the number immediately following "op"
+						String num_letter = Character.toString(tokens[j].charAt(2));
+						int aggregationAliasNum = Integer.parseInt(num_letter);
+						String alias = aggregationOp.getAggregationVariablesAliases().get(aggregationAliasNum).getAlias();
+						int aliasCol = aggregationOp.getAggregationVariablesColumns().get(aggregationAliasNum);
+						String fullElementName = alias + "_col" + aliasCol + "_element";
+						reconstructedString += fullElementName;
+					}
+					else {
+						reconstructedString += tokens[j];
+					}
+				}
+
+				mainString += tabString + "R[" + elementString +"] += " + reconstructedString + ";";
+
+			}
+			
+			if (!preThreading) {
+				mainString += "\n" + tabString + "pthread_spin_unlock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
+			}
+
+			mainString += "\n";
 		}
 		else {
+			String drivingAlias = "";
+			int drivingAliasCol = -1;
+			int drivingAliasIndex = -1;
+			
+			if (opType == Optypes.JOIN_OPERATOR) {
+				JoinOperator joinOp = (JoinOperator) lastOp;
+				drivingAlias = joinOp.getDrivingAlias().getAlias();
+				drivingAliasCol = joinOp.getDrivingAliasColumn();
+				drivingAliasIndex = joinOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
+			}
+			else if (opType == Optypes.SEMIJOIN_OPERATOR) {
+				SemiJoinOperator semiJoinOp = (SemiJoinOperator) lastOp;
+				drivingAlias = semiJoinOp.getDrivingAlias().getAlias();
+				drivingAliasCol = semiJoinOp.getDrivingAliasColumn();
+				drivingAliasIndex = semiJoinOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
+			}
+			String elementString = drivingAlias + "_col" + drivingAliasCol + "_element";
+			
+			
+			mainString += "\n" + tabString + "RC[" + elementString + "] = 1;\n";
+			
+			if (!preThreading) {
+				mainString += "\n" + tabString + "pthread_spin_lock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
+			}
+			
+						
 			mainString += tabString + "R[" + elementString +"] = 1;";
+			
+			if (!preThreading) {
+				mainString += "\n" + tabString + "pthread_spin_unlock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
+			}
 		}
-		
-		
-		if (!preThreading && aggregationOp.getAggregationString() != null) {
-			mainString += "\n" + tabString + "pthread_spin_unlock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
-		}
-
-		mainString += "\n";
 
 			
 
@@ -1571,7 +1664,7 @@ public class CodeGenerator {
 		StringBuilder threadingTabString = new StringBuilder("\t");
 		int[] threadingClosingBraces = {1};
 		
-		for (int i = 0; i<operators.size(); i++) {
+		for (int i = 0; i<operators.size()-1; i++) {
 			Operator currentOp = operators.get(i);
 			Optypes opType = currentOp.getType();
 			if (opType == Optypes.SELECTION_OPERATOR) {
@@ -1599,20 +1692,9 @@ public class CodeGenerator {
 				}
 			}
 			else if (opType == Optypes.INTERSECTION_OPERATOR) {
-				
+				mainCppCode.add(evaluateIntersection(currentOp, tabString));
 			}
-			else if (opType == Optypes.AGGREGATION_OPERATOR) {
-				if (preThreadingOp) {
-					mainCppCode.add(evaluateAggregation(preThreadingOp, i, operators, metadata, tabString, 
-							closingBraces, bufferPoolTrackingArray, query));
-				}
-				else {
-					String temp = functionsCppCode.get(threadingFunctionID);
-					temp += evaluateAggregation(preThreadingOp, i, operators, metadata, threadingTabString, 
-							threadingClosingBraces, bufferPoolTrackingArray, query);
-					functionsCppCode.set(threadingFunctionID, temp);
-				}
-			}
+
 			else if (opType == Optypes.THREADING_OPERATOR) {
 				mainCppCode.add(initThreading(currentOp, metadata, tabString, query, 
 						functionHeadersCppCode, functionsCppCode));
@@ -1624,6 +1706,20 @@ public class CodeGenerator {
 				System.exit(0);
 			}	
 		}
+		
+		Operator lastOp = operators.get(operators.size()-1);
+		if (preThreadingOp) {
+				mainCppCode.add(evaluateLastOperator(preThreadingOp, operators, metadata, tabString, 
+						closingBraces, bufferPoolTrackingArray, query));
+		}
+		else {
+			String temp = functionsCppCode.get(threadingFunctionID);
+			temp += evaluateLastOperator(preThreadingOp, operators, metadata, threadingTabString, 
+					threadingClosingBraces, bufferPoolTrackingArray, query);
+			functionsCppCode.set(threadingFunctionID, temp);
+		}
+		
+		
 		
 		// Emplace closing braces
 		String closingBracesString = new String();
@@ -1650,6 +1746,7 @@ public class CodeGenerator {
 		}
 		
 	}
+
 
 
 	private static void initQueryBufferPool(MetaQuery query,
@@ -1703,11 +1800,16 @@ public class CodeGenerator {
 
 	public static void generateCode(List<Operator> operators, MetaData metadata) {
 		
-	
-		
-		// The last operator should be the aggregate operator
-		AggregationOperator aggregation = (AggregationOperator) operators.get(operators.size() - 1); 
-		
+		int resultDataType = 0;
+		Operator lastOp = operators.get(operators.size() - 1);
+		// Query has an aggregation
+		if (lastOp.getType() == Optypes.AGGREGATION_OPERATOR) {
+			AggregationOperator aggregation = (AggregationOperator) lastOp;
+			resultDataType = aggregation.getDataType();
+		}
+		else {
+			resultDataType = AggregationOperator.AGGREGATION_INT;
+		}
 		int queryID = metadata.getCurrentQueryID();
 		MetaQuery query = metadata.getQueryList().get(queryID);
 	
@@ -1724,9 +1826,9 @@ public class CodeGenerator {
 
 		/*** Implementation ***/
 
-		initialDeclarations(globalsCppCode, aggregation, query, operators);
+		initialDeclarations(globalsCppCode, resultDataType, query, operators);
 		// Opening Line
-		mainCppCode.add(openingLine(query, aggregation));
+		mainCppCode.add(openingLine(query, resultDataType));
 	
 		String benchmarkingString = "\n\tbenchmark_t1 = chrono::steady_clock::now();\n";
 		
@@ -1735,7 +1837,7 @@ public class CodeGenerator {
 		// Array initializations
 		mainCppCode.add(bufferInitCode(query));
 	
-		mainCppCode.add(initResultArray(aggregation));
+		mainCppCode.add(initResultArray(resultDataType, lastOp));
 		mainCppCode.add(initSemiJoinArray(operators, metadata, globalsCppCode));
 		
 		// Initializations for BCA and Huffman Decodes
