@@ -312,8 +312,10 @@ public class CodeGenerator {
 				
 					if (columnEncoding == MetaData.ENCODING_BCA) {
 						String nextGlobal = "\nstatic uint32_t* " + alias + "_col" + j + "_bits_info;\n";
+						nextGlobal += "static uint64_t " + alias + "_col" + j + "_offset;\n";
 						globalsCppCode.add(nextGlobal);
 						String nextMain = "\n\t"+alias+ "_col" + j + "_bits_info = idx[" + gqFastIndexID + "]->dict[" + columnID + "]->bits_info;\n";
+						nextMain += "\t"+alias+"_col" + j + "_offset = idx[" + gqFastIndexID + "]->dict[" + columnID + "]->offset;\n";
 						mainCppCode.add(nextMain);
 					}
 					else if (columnEncoding == MetaData.ENCODING_HUFFMAN) {
@@ -450,6 +452,7 @@ public class CodeGenerator {
 		else if (currentEncoding == MetaData.ENCODING_BCA) {
 			function += tabString + elementName + " = " + alias + "_col" + currentCol + "_bits_info[1];\n";
 			function += tabString + elementName + " &= *" + pointerName + ";\n";
+			function += tabString + elementName + " += " + alias + "_col" + currentCol + "_offset;\n";
 		}
 		else if (currentEncoding == MetaData.ENCODING_UA) {
 			function += tabString + elementName + " = *" + pointerName + ";\n"; 
@@ -608,7 +611,7 @@ public class CodeGenerator {
 			else if (currentEncoding == MetaData.ENCODING_BCA) {
 				
 				String bitsInfoPrefix = alias + "_col" + currentCol + "_bits_info";
-				
+				String offsetString = alias + "_col" + currentCol + "_offset";
 				function += tabString + sizeName + " = " + currentFragmentBytesName + "* 8 / " + bitsInfoPrefix + "[0];\n";
 				function += tabString + "int bit_pos = 0;\n";
 				function += tabString + "for (int32_t i=0; i<" + sizeName + "; i++) {\n";
@@ -620,7 +623,7 @@ public class CodeGenerator {
 				function += "\n" + tabString + pointerName + " += (bit_pos + " + bitsInfoPrefix + "[0]) / 8;\n";
 				function += tabString + "bit_pos = (bit_pos + " + bitsInfoPrefix + "[0]) % 8;\n";
 				
-				function += tabString + bufferArraysPart + "[i] = encoded_value;\n";
+				function += tabString + bufferArraysPart + "[i] = encoded_value + " + offsetString + ";\n";
 				tabString = tabString.substring(0, tabString.length()-1);
 				function += tabString + "}\n";
 				
@@ -706,7 +709,7 @@ public class CodeGenerator {
 			}
 			else if (currentEncoding == MetaData.ENCODING_BCA) {
 				String bitsInfoPrefix = alias + "_col" + currentCol + "_bits_info";
-				
+				String offsetString = alias + "_col" + currentCol + "_offset";
 				function += tabString + "int bit_pos = 0;\n";
 				function += tabString + "for (int32_t i=0; i<" + sizeName + "; i++) {\n";
 				tabString += "\t";
@@ -717,7 +720,7 @@ public class CodeGenerator {
 				function += "\n" + tabString + pointerName + " += (bit_pos + " + bitsInfoPrefix + "[0]) / 8;\n";
 				function += tabString + "bit_pos = (bit_pos + " + bitsInfoPrefix + "[0]) % 8;\n";
 				
-				function += tabString + bufferArraysPart + "[i] = encoded_value;\n";
+				function += tabString + bufferArraysPart + "[i] = encoded_value + " + offsetString + ";\n";
 				tabString = tabString.substring(0, tabString.length()-1);
 				function += tabString + "}\n";
 				
