@@ -29,17 +29,20 @@
 *
 */
 template <typename T>
-void read_in_file(vector<T> * input_file, string filename, uint64_t max_column_ids[])
+void read_in_file(vector<T> * input_file, string filename, uint64_t max_column_ids[], uint64_t min_column_ids[])
 {
 
     string line;
     ifstream myfile(filename);
+
+    uint64_t lines_read_in = 0;
 
     // skip line 1
     getline(myfile, line);
 
     while (getline(myfile,line))
     {
+        lines_read_in++;
         stringstream lineStream(line);
         string cell;
         int current;
@@ -48,6 +51,12 @@ void read_in_file(vector<T> * input_file, string filename, uint64_t max_column_i
         {
             current =  atoi(cell.c_str());
             input_file[counter].push_back(current);
+            if (lines_read_in == 1) {
+                min_column_ids[counter] = current;
+            }
+            else if (min_column_ids[counter] > current) {
+                min_column_ids[counter] = current;
+            }
             if (max_column_ids[counter] < current)
             {
                 max_column_ids[counter] = current;
@@ -56,7 +65,7 @@ void read_in_file(vector<T> * input_file, string filename, uint64_t max_column_i
         }
     }
     myfile.close();
-    cerr << "..." << input_file[0].size() << " lines read in.\n";
+    cerr << "..." << lines_read_in << " lines read in.\n";
 
 }
 
@@ -74,7 +83,7 @@ void read_in_file(vector<T> * input_file, string filename, uint64_t max_column_i
 */
 template <typename T>
 void init_dictionaries(vector<T> * input_file, dictionary** dict, Encodings encodings[], int num_encodings,
-                       uint64_t max_column_ids[])
+                       uint64_t max_column_ids[], uint64_t min_column_ids[])
 {
 
     for (int i=0; i<num_encodings; i++)
@@ -82,8 +91,14 @@ void init_dictionaries(vector<T> * input_file, dictionary** dict, Encodings enco
         if (encodings[i].getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED)
         {
 
+            uint64_t max = max_column_ids[i+1];
+            uint64_t min = min_column_ids[i+1];
+            uint64_t domain = max - min + 1;
             // Create the dictionary
-            dict[i] = new dictionary(max_column_ids[i+1]);
+            uint64_t offset = min-1;
+
+            // Create the dictionary
+            dict[i] = new dictionary(domain, offset);
 
             cerr << "Dictionary created on encoding " << i << ":\n";
             cerr << dict[i]->bits_info[0] << " bits needed to encode a value\n";
@@ -91,7 +106,7 @@ void init_dictionaries(vector<T> * input_file, dictionary** dict, Encodings enco
         }
         else
         {
-            dict[i] = new dictionary(1);
+            dict[i] = new dictionary(1, 0);
         }
     }
 }
@@ -325,6 +340,7 @@ void assign_data_dictionary(unsigned char * fragment_column, TIndexMap ** index_
     uint32_t key_iterator = 0;
 
     int bits_size = dict->bits_info[0];
+    uint64_t offset = dict->offset;
 
     for (uint64_t i=0; i<map_size; i++)
     {
@@ -340,7 +356,7 @@ void assign_data_dictionary(unsigned char * fragment_column, TIndexMap ** index_
             for (uint32_t j=column_iterator; j<column_iterator+curr_count; j++)
             {
 
-                uint32_t encoded_val = column[j];
+                uint32_t encoded_val = column[j]-offset;
 
                 // Get access to current + next 7 bytes
                 uint64_t * column_address = (uint64_t *) &(fragment_column[fragment_col_ptr+byte_pos]);
@@ -507,14 +523,14 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
 
     vector<TValue> * input_file = new vector<TValue>[num_encodings+1];    // To store table in memory
     uint64_t* max_column_ids = new uint64_t[num_encodings+1]();           // To find table's domain sizes for each column
-
+    uint64_t* min_column_ids = new uint64_t[num_encodings+1]();
     // Reads in file
-    read_in_file(input_file, filename, max_column_ids);
+    read_in_file(input_file, filename, max_column_ids, min_column_ids);
 
     auto t_start = std::chrono::high_resolution_clock::now();
     // dict[x] stores bits per encoding and decoding integer for column 'x' if 'x' is to be bit-aligned compressed
     dictionary** dict = new dictionary*[num_encodings];
-    init_dictionaries(input_file, dict, encodings, num_encodings, max_column_ids);
+    init_dictionaries(input_file, dict, encodings, num_encodings, max_column_ids, min_column_ids);
 
     // Create Huffman trees, decoding arrays, and encoding dictionaries for Huffman encodings
     vector<Node<TValue> *> huffman_tree;
@@ -834,6 +850,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
     }
 
     delete[] max_column_ids;
+    delete[] min_column_ids;
 
     huffman_tree.clear();
     encoding_dictionary.clear();

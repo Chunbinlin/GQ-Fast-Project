@@ -14,19 +14,20 @@ class dictionary
 public:
 
     uint32_t bits_info[2];
-    int max;
-
+    uint64_t domain;
+    uint64_t offset;
 
     dictionary()
     {
-        max = 1;
+        domain = 1;
+        offset = 0;
     }
 
-    dictionary(int m) : max(m)
+    dictionary(int d, int o) : domain(d), offset(o)
     {
 
         // # of bits of integer "max"
-        bits_info[0] = (uint32_t) floor(log2((double)max)) + 1;
+        bits_info[0] = (uint32_t) floor(log2((double)domain)) + 1;
 
         // To extract bits
         bits_info[1] = pow(2,bits_info[0])-1;
@@ -37,7 +38,8 @@ public:
     void serialize(Archive & ar, const unsigned int version)
     {
 
-        ar & max;
+        ar & domain;
+        ar & offset;
         ar & bits_info[0];
         ar & bits_info[1];
     }
