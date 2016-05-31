@@ -80,6 +80,7 @@ int main(int argc, char ** argv)
     int compression = 1;
     int num_files = 0;
     int save_to_file = 0;
+    int itable = 0;
 
     char* filename = "dummy.bin";
 
@@ -89,6 +90,7 @@ int main(int argc, char ** argv)
                  "-s\tSave indices to file: filename\n\n"
                  "-l\tLoad indices from file: filename\n\n"
                  "-d\tChoose test database.\n\n"
+                 "-i\tChoose individual index table\n\n"
                  "[1]\tSemmedDB\n"
                  "[2]\tPubmed (mesh only)\n"
                  "[3]\tPubmed (mesh+supp)\n\n"
@@ -98,7 +100,7 @@ int main(int argc, char ** argv)
                  "[3]\tBB\n"
                  "[4]\tHuffman\n"
                  "[5]\tOptimal compression\n\n";
-    while ((c = getopt(argc, argv, "hs:l:d:c:")) != -1)
+    while ((c = getopt(argc, argv, "hs:l:d:c:i:")) != -1)
     {
         switch (c)
         {
@@ -140,6 +142,13 @@ int main(int argc, char ** argv)
             if (optarg)
             {
                 compression = atoi(optarg);
+            }
+            break;
+        case 'i':
+            if (optarg)
+            {
+                itable = atoi(optarg);
+                action = 'i';
             }
             break;
         }
@@ -190,6 +199,11 @@ int main(int argc, char ** argv)
         {
             cerr << "Error: load function did not terminate normally\n\n";
         }
+        break;
+    }
+    case 'i':
+    {
+        load_individual_table<int, uint32_t>(itable, database, compression);
         break;
     }
     default:

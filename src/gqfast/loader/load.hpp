@@ -220,7 +220,257 @@ void semmeddb_create_optimal_indices()
 }
 
 
+template <typename TValue, typename TIndexMap>
+int load_individual_table(int itable, int database, int encoding_name)
+{
+    if (database == SEMMEDDB)
+    {
+        switch (itable)
+        {
+        case 0:
+        {
+            Encodings encoding1("CONCEPT_SEMTYPE_ID", encoding_name);
+            Encodings first_index_encodings[1] = {encoding1};
+            idx[0] = buildIndex<TValue, TIndexMap>("./semmeddb/cs1.csv", first_index_encodings, 1, 0);
+            init_buffer(0);
+            break;
+        }
+        case 1:
+        {
+            Encodings encoding2("PREDICATION_ID", encoding_name);
+            Encodings second_index_encodings[1] = {encoding2};
 
+            idx[1] = buildIndex<TValue, TIndexMap>("./semmeddb/pa1.csv", second_index_encodings, 1, 1);
+            init_buffer(1);
+            break;
+        }
+        case 2:
+        {
+            Encodings encoding3("SENTENCE_ID", encoding_name);
+
+            Encodings third_index_encodings[1] = {encoding3};
+
+            idx[2] = buildIndex<TValue, TIndexMap>("./semmeddb/sp1.csv", third_index_encodings, 1, 2);
+            init_buffer(2);
+            break;
+        }
+        case 3:
+        {
+            Encodings encoding4("PREDICATION_ID", encoding_name);
+
+            Encodings fourth_index_encodings[1] = {encoding4};
+
+            idx[3] = buildIndex<TValue, TIndexMap>("./semmeddb/sp2.csv", fourth_index_encodings, 1, 3);
+            init_buffer(3);
+            break;
+        }
+        case 4:
+        {
+
+            Encodings encoding5("CONCEPT_SEMTYPE_ID", encoding_name);
+
+            Encodings fifth_index_encodings[1] = {encoding5};
+
+            idx[4] = buildIndex<TValue, TIndexMap>("./semmeddb/pa2.csv", fifth_index_encodings, 1, 4);
+            init_buffer(4);
+            break;
+        }
+        case 5:
+        {
+            Encodings encoding6("CONCEPT_ID", encoding_name);
+
+            Encodings sixth_index_encodings[1] = {encoding6};
+
+            idx[5] = buildIndex<TValue, TIndexMap>("./semmeddb/cs2.csv", sixth_index_encodings, 1, 5);
+            init_buffer(5);
+            break;
+        }
+        }
+    }
+    else if (database == PUBMED_MESH_ONLY)
+    {
+
+        switch(itable)
+        {
+        case 0:
+        {
+
+            Encodings encoding1("Doc", encoding_name);
+            Encodings first_index_encodings[1] = {encoding1};
+
+            idx[0] = buildIndex<TValue, TIndexMap>("./pubmed/da1.csv", first_index_encodings, 1, 0);
+            init_buffer(0);
+            break;
+        }
+        case 1:
+        {
+            Encodings encoding2("Year", encoding_name);
+            Encodings second_index_encodings[1] = {encoding2};
+
+            idx[1] = buildIndex<TValue, TIndexMap>("./pubmed/dy.csv", second_index_encodings, 1, 1);
+            init_buffer(1);
+
+            break;
+        }
+        case 2:
+        {
+            if (encoding_name == ENCODING_BYTE_ALIGNED_BITMAP)
+            {
+                Encodings encoding3("Term", encoding_name);
+                Encodings encoding4("Fre",ENCODING_UNCOMPRESSED);
+                Encodings third_index_encodings[2] = {encoding3, encoding4};
+
+                idx[2] = buildIndex<TValue, TIndexMap>(DT1_MESH, third_index_encodings, 2, 2);
+                init_buffer(2);
+            }
+            else
+            {
+                Encodings encoding3("Term", encoding_name);
+                Encodings encoding4("Fre",encoding_name);
+                Encodings third_index_encodings[2] = {encoding3, encoding4};
+
+                idx[2] = buildIndex<TValue, TIndexMap>(DT1_MESH, third_index_encodings, 2, 2);
+                init_buffer(2);
+
+            }
+            break;
+        }
+        case 3:
+        {
+            if (encoding_name == ENCODING_BYTE_ALIGNED_BITMAP)
+            {
+
+
+                Encodings encoding5("Doc", encoding_name);
+                Encodings encoding6("Fre", ENCODING_UNCOMPRESSED);
+
+                Encodings fourth_index_encodings[2] = {encoding5, encoding6};
+
+                idx[3] = buildIndex<TValue, TIndexMap>(DT2_MESH, fourth_index_encodings, 2, 3);
+                init_buffer(3);
+
+            }
+            else
+            {
+
+                Encodings encoding5("Doc", encoding_name);
+                Encodings encoding6("Fre", encoding_name);
+
+                Encodings fourth_index_encodings[2] = {encoding5, encoding6};
+
+                idx[3] = buildIndex<TValue, TIndexMap>(DT2_MESH, fourth_index_encodings, 2, 3);
+                init_buffer(3);
+
+            }
+            break;
+        }
+        case 4:
+        {
+
+            Encodings encoding7("Author", encoding_name);
+
+            Encodings fifth_index_encodings[1] = {encoding7};
+
+            idx[4] = buildIndex<TValue, TIndexMap>("./pubmed/da2.csv", fifth_index_encodings, 1, 4);
+            init_buffer(4);
+
+            break;
+        }
+        }
+    }
+    else if (database == PUBMED_MESH_PLUS_SUPP)
+    {
+        switch(itable)
+        {
+        case 0:
+        {
+            Encodings encoding1("Doc", encoding_name);
+            Encodings first_index_encodings[1] = {encoding1};
+
+            idx[0] = buildIndex<TValue, TIndexMap>("./pubmed/da1.csv", first_index_encodings, 1, 0);
+            init_buffer(0);
+            break;
+        }
+        case 1:
+        {
+            Encodings encoding2("Year", encoding_name);
+            Encodings second_index_encodings[1] = {encoding2};
+
+            idx[1] = buildIndex<TValue, TIndexMap>("./pubmed/dy.csv", second_index_encodings, 1, 1);
+            init_buffer(1);
+
+            break;
+        }
+        case 2:
+        {
+            if (encoding_name == ENCODING_BYTE_ALIGNED_BITMAP)
+            {
+                Encodings encoding3("Term", encoding_name);
+                Encodings encoding4("Fre",ENCODING_UNCOMPRESSED);
+                Encodings third_index_encodings[2] = {encoding3, encoding4};
+
+                idx[2] = buildIndex<TValue, TIndexMap>(DT1_TAG, third_index_encodings, 2, 2);
+                init_buffer(2);
+            }
+            else
+            {
+                Encodings encoding3("Term", encoding_name);
+                Encodings encoding4("Fre",encoding_name);
+                Encodings third_index_encodings[2] = {encoding3, encoding4};
+
+                idx[2] = buildIndex<TValue, TIndexMap>(DT1_TAG, third_index_encodings, 2, 2);
+                init_buffer(2);
+
+            }
+            break;
+        }
+        case 3:
+        {
+            if (encoding_name == ENCODING_BYTE_ALIGNED_BITMAP)
+            {
+
+
+                Encodings encoding5("Doc", encoding_name);
+                Encodings encoding6("Fre", ENCODING_UNCOMPRESSED);
+
+                Encodings fourth_index_encodings[2] = {encoding5, encoding6};
+
+                idx[3] = buildIndex<TValue, TIndexMap>(DT2_TAG, fourth_index_encodings, 2, 3);
+                init_buffer(3);
+
+            }
+            else
+            {
+
+                Encodings encoding5("Doc", encoding_name);
+                Encodings encoding6("Fre", encoding_name);
+
+                Encodings fourth_index_encodings[2] = {encoding5, encoding6};
+
+                idx[3] = buildIndex<TValue, TIndexMap>(DT2_TAG, fourth_index_encodings, 2, 3);
+                init_buffer(3);
+
+            }
+            break;
+        }
+        case 4:
+        {
+
+
+            Encodings encoding7("Author", encoding_name);
+
+            Encodings fifth_index_encodings[1] = {encoding7};
+
+            idx[4] = buildIndex<TValue, TIndexMap>("./pubmed/da2.csv", fifth_index_encodings, 1, 4);
+            init_buffer(4);
+
+            break;
+        }
+        }
+
+    }
+
+}
 
 template <typename TValue, typename TIndexMap>
 int load(int database, int compression)
