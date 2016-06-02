@@ -19,7 +19,7 @@ public class CodeGenerator {
 	
 	static boolean hasThreading;
 	static int threadOpIndex;
-	
+	static boolean hasIntersection;
 	
 
 	private static void checkThreading(MetaQuery query, List<Operator> operators) {
@@ -125,7 +125,7 @@ public class CodeGenerator {
 	 * Output:	The part of the generated code that deallocates the buffers used in the query processing
 	 * 
 	 */
-	private static String bufferDeallocation(MetaQuery query) {
+	private static String bufferDeallocations(MetaQuery query) {
 		
 		Set<Integer> indexSet = query.getIndexIDs();
 		
@@ -148,6 +148,10 @@ public class CodeGenerator {
 			tabString = tabString.substring(0, tabString.length()-1);
 			bufferDeallocString += tabString + "}\n";
 
+		}
+		
+		if (hasIntersection) {
+			bufferDeallocString += tabString + "delete[] " + query.getQueryName() + "_intersection_buffer;\n";
 		}
 		
 		return bufferDeallocString;
@@ -331,7 +335,16 @@ public class CodeGenerator {
 				
 			}
 			else if (currentOperator.getType() == Optypes.INTERSECTION_OPERATOR) {
-					// TODO: Intersection implementation
+				hasIntersection = true;
+				IntersectionOperator interOp = (IntersectionOperator) currentOperator;
+				String nextGlobal = "\nstatic uint64_t* " + query.getQueryName() + "_intersection_buffer;\n";  
+				globalsCppCode.add(nextGlobal);
+				Alias firstAlias = interOp.getAliases().get(0);
+				// Min fragment size of first detected index (any min will do, so we just use the first)
+				int gqFastIndexIDTemp = firstAlias.getAssociatedIndex().getGQFastIndexID();
+				String nextMain = "\n\t" + query.getQueryName() + "_intersection_buffer = new uint64_t[metadata.idx_max_fragment_sizes[" + gqFastIndexIDTemp + "]];\n"; 
+			
+				
 			}		
 		}
 		
@@ -393,6 +406,7 @@ public class CodeGenerator {
 			}
 		}
 		
+
 		
 		if (resultDataType == AggregationOperator.AGGREGATION_INT)  {		
 			resultsGlobals += "\nstatic int* R;\n";
@@ -417,7 +431,7 @@ public class CodeGenerator {
 			function += "\n" + tabString + "int shiftbits = 0;\n";
 			function += tabString + "do { \n";
 			tabString += "\t";
-			function += tabString + "int32_t next_seven_bits = *" + pointerName + " & 127;\n";
+			function += tabString + "uint32_t next_seven_bits = *" + pointerName + " & 127;\n";
 			function += tabString + "next_seven_bits = next_seven_bits << shiftbits;\n";
 			function += tabString + elementName +" |= next_seven_bits;\n";
 			function += tabString + "shiftbits += 7;\n";
@@ -500,7 +514,7 @@ public class CodeGenerator {
 			// Size is initially 0, is passed by reference, and will calculated in the function
 			if (currentEncoding == MetaData.ENCODING_UA) {			
 				function += tabString + sizeName + " = " + currentFragmentBytesName + "/" + currentByteSize + ";\n"; 
-				function += "\n" + tabString + "for (int32_t i=0; i<" + sizeName + "; i++) {\n";
+				function += "\n" + tabString + "for (uint32_t i=0; i<" + sizeName + "; i++) {\n";
 				tabString += "\t";
 				function += tabString + bufferArraysPart + "[i] = *" + pointerName + "++;\n";
 				tabString = tabString.substring(0, tabString.length()-1);
@@ -515,7 +529,7 @@ public class CodeGenerator {
 				tabString += "\t";
 				
 				function += tabString + currentFragmentBytesName + "--;\n";
-				function += tabString + "int32_t next_seven_bits = *" + pointerName + " & 127;\n";
+				function += tabString + "uint32_t next_seven_bits = *" + pointerName + " & 127;\n";
 				function += tabString + "next_seven_bits = next_seven_bits << shiftbits;\n";
 				function += tabString + bufferArraysPart + "[0] |= next_seven_bits;\n";
 				function += tabString + "shiftbits += 7;\n";
@@ -526,11 +540,11 @@ public class CodeGenerator {
 				function += "\n" + tabString + "while (" + currentFragmentBytesName + " > 0) {\n";
 				tabString += "\t";
 				function += tabString + "shiftbits = 0;\n";
-				function += tabString + "int32_t result = 0;\n";
+				function += tabString + "uint32_t result = 0;\n";
 				function += "\n" + tabString + "do {\n";
 				tabString += "\t";
 				function += "\n" + tabString + currentFragmentBytesName + "--;\n";
-				function += tabString + "int32_t next_seven_bits = *" + pointerName + " & 127;\n";
+				function += tabString + "uint32_t next_seven_bits = *" + pointerName + " & 127;\n";
 				function += tabString + "next_seven_bits = next_seven_bits << shiftbits;\n";
 				function += tabString + "result |= next_seven_bits;\n";
 				function += tabString + "shiftbits += 7;\n";
@@ -614,10 +628,10 @@ public class CodeGenerator {
 				String offsetString = alias + "_col" + currentCol + "_offset";
 				function += tabString + sizeName + " = " + currentFragmentBytesName + "* 8 / " + bitsInfoPrefix + "[0];\n";
 				function += tabString + "int bit_pos = 0;\n";
-				function += tabString + "for (int32_t i=0; i<" + sizeName + "; i++) {\n";
+				function += tabString + "for (uint32_t i=0; i<" + sizeName + "; i++) {\n";
 				tabString += "\t";
 				function += tabString + "uint32_t encoded_value = " + bitsInfoPrefix + "[1] << bit_pos;\n";
-				function += tabString + "int64_t * next_8_ptr = reinterpret_cast<int64_t *>(" + pointerName + ");\n";
+				function += tabString + "uint64_t * next_8_ptr = reinterpret_cast<uint64_t *>(" + pointerName + ");\n";
 				function += tabString + "encoded_value &= *next_8_ptr;\n";
 				function += tabString + "encoded_value >>= bit_pos;\n";
 				function += "\n" + tabString + pointerName + " += (bit_pos + " + bitsInfoPrefix + "[0]) / 8;\n";
@@ -633,7 +647,7 @@ public class CodeGenerator {
 		else {
 			// Size is pre-calculated and will be used to control the iteration
 			if (currentEncoding == MetaData.ENCODING_UA) {
-				function += tabString + "for (int32_t i=0; i<" + sizeName + "; i++) {\n";
+				function += tabString + "for (uint32_t i=0; i<" + sizeName + "; i++) {\n";
 				tabString += "\t";
 				function += tabString + bufferArraysPart + "[i] = *" + pointerName + "++;\n";
 				tabString = tabString.substring(0, tabString.length()-1);
@@ -647,7 +661,7 @@ public class CodeGenerator {
 				function += "\n" + tabString + "int shiftbits = 0;\n";
 				function += tabString + "do { \n";
 				tabString += "\t";
-				function += tabString + "int32_t next_seven_bits = *" + pointerName + " & 127;\n";
+				function += tabString + "uint32_t next_seven_bits = *" + pointerName + " & 127;\n";
 				function += tabString + "next_seven_bits = next_seven_bits << shiftbits;\n";
 				function += tabString + bufferArraysPart + "[0] |= next_seven_bits;\n";
 				function += tabString + "shiftbits += 7;\n";
@@ -658,10 +672,10 @@ public class CodeGenerator {
 				function += "\n" + tabString + "while (" + sizeName + " > 0) {\n";
 				tabString += "\t";
 				function += tabString + "shiftbits = 0;\n";
-				function += tabString + "int32_t result = 0;\n";
+				function += tabString + "uint32_t result = 0;\n";
 				function += "\n" + tabString + "do {\n";
 				tabString += "\t";
-				function += tabString + "int32_t next_seven_bits = *" + pointerName + " & 127;\n";
+				function += tabString + "uint32_t next_seven_bits = *" + pointerName + " & 127;\n";
 				function += tabString + "next_seven_bits = next_seven_bits << shiftbits;\n";
 				function += tabString + "result |= next_seven_bits;\n";
 				function += tabString + "shiftbits += 7;\n";
@@ -679,7 +693,7 @@ public class CodeGenerator {
 				function += tabString + "int* tree_array_start = &("+alias + "_col" + currentCol + "_huffman_tree_array[0]);\n";
 				
 				function += "\n" + tabString + "int mask = 0x100;\n";
-				function += "\n" + tabString + "for (int32_t i=0; i<"+sizeName+"; i++) {\n";
+				function += "\n" + tabString + "for (uint32_t i=0; i<"+sizeName+"; i++) {\n";
 				tabString += "\t";
 				function += "\n" + tabString + "bool* terminator_array = terminate_start;\n";
 				function += tabString + "int* tree_array = tree_array_start;\n";
@@ -711,10 +725,10 @@ public class CodeGenerator {
 				String bitsInfoPrefix = alias + "_col" + currentCol + "_bits_info";
 				String offsetString = alias + "_col" + currentCol + "_offset";
 				function += tabString + "int bit_pos = 0;\n";
-				function += tabString + "for (int32_t i=0; i<" + sizeName + "; i++) {\n";
+				function += tabString + "for (uint32_t i=0; i<" + sizeName + "; i++) {\n";
 				tabString += "\t";
 				function += tabString + "uint32_t encoded_value = " + bitsInfoPrefix + "[1] << bit_pos;\n";
-				function += tabString + "int64_t * next_8_ptr = reinterpret_cast<int64_t *>(" + pointerName + ");\n";
+				function += tabString + "uint64_t * next_8_ptr = reinterpret_cast<uint64_t *>(" + pointerName + ");\n";
 				function += tabString + "encoded_value &= *next_8_ptr;\n";
 				function += tabString + "encoded_value >>= bit_pos;\n";
 				function += "\n" + tabString + pointerName + " += (bit_pos + " + bitsInfoPrefix + "[0]) / 8;\n";
@@ -787,26 +801,26 @@ public class CodeGenerator {
 				functionParameters += "unsigned char* " + pointerName;
 				break;
 			case MetaData.BYTES_2: 
-				pointerString = "int16_t* " + pointerName + 
-				" = reinterpret_cast<int16_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
-				functionParameters += "" + "int16_t* " + pointerName;
+				pointerString = "uint16_t* " + pointerName + 
+				" = reinterpret_cast<uint16_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
+				functionParameters += "" + "uint16_t* " + pointerName;
 				break;
 			case MetaData.BYTES_4:
-				pointerString = "int32_t* " + pointerName + 
-				" = reinterpret_cast<int32_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
-				functionParameters += "int32_t* " + pointerName;
+				pointerString = "uint32_t* " + pointerName + 
+				" = reinterpret_cast<uint32_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
+				functionParameters += "uint32_t* " + pointerName;
 				break;
 			case MetaData.BYTES_8:
-				pointerString = "int64_t* " + pointerName +
-				" = reinterpret_cast<int64_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
-				functionParameters += "int64_t* " + pointerName;
+				pointerString = "uint64_t* " + pointerName +
+				" = reinterpret_cast<uint64_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
+				functionParameters += "uint64_t* " + pointerName;
 				break;
 			}
 		}
 		else if (entityFlag && currentEncoding == MetaData.ENCODING_BCA){
-			pointerString = "int64_t* " + pointerName +
-					" = reinterpret_cast<int64_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
-			functionParameters += "int64_t* " + pointerName;
+			pointerString = "uint64_t* " + pointerName +
+					" = reinterpret_cast<uint64_t *>(&(idx[" + gqFastIndexID + "]->fragment_data[" + currentCol + "][" + currentFragmentRow + "[" + currentCol + "]]));\n";
+			functionParameters += "uint64_t* " + pointerName;
 		}
 		else {
 			pointerString = "unsigned char* " + pointerName + 
@@ -877,12 +891,12 @@ public class CodeGenerator {
 
 
 			if (k == 0) {
-				mainString += tabString + "int32_t " + sizeName + " = 0;\n";
-				functionParameters += ", int32_t " + currentFragmentBytesName;
-				functionParameters += ", int32_t & " + sizeName + ")";
+				mainString += tabString + "uint32_t " + sizeName + " = 0;\n";
+				functionParameters += ", uint32_t " + currentFragmentBytesName;
+				functionParameters += ", uint32_t & " + sizeName + ")";
 			}
 			else {
-				functionParameters += ", int32_t " + sizeName + ")";
+				functionParameters += ", uint32_t " + sizeName + ")";
 			}
 
 			currFunction += "\nvoid " + functionName + functionParameters + " {\n";
@@ -1017,7 +1031,7 @@ public class CodeGenerator {
 
 			if (k == 0) {
 				currentFragmentBytesName = currAliasString + "_col" + currentCol + "_bytes";
-				mainString += tabString + "int32_t " + currentFragmentBytesName + " = " +
+				mainString += tabString + "uint32_t " + currentFragmentBytesName + " = " +
 						"idx[" + gqFastIndexID + "]->index_map["+ elementString +"+1]" +
 						"[" + currentCol + "] - " + currentFragmentRow + "[" + currentCol + "];\n";
 				mainString += tabString + "if(" + currentFragmentBytesName + ") {\n";
@@ -1060,7 +1074,7 @@ public class CodeGenerator {
 					prevAlias + "_it < " + prevAlias + "_fragment_size; " + prevAlias + "_it++) {\n";
 		}
 		else {
-			mainString += "\n" + tabString + "for (int32_t " + prevAlias + "_it = 0; " +
+			mainString += "\n" + tabString + "for (uint32_t " + prevAlias + "_it = 0; " +
 				prevAlias + "_it < " + prevAlias + "_fragment_size; " + prevAlias + "_it++) {\n";
 		}
 		closingBraces[0]++;
@@ -1132,7 +1146,7 @@ public class CodeGenerator {
 
 			if (k == 0 && !entityFlag) {
 				currentFragmentBytesName = currAliasString + "_col" + currentCol + "_bytes";
-				mainString += tabString + "int32_t " + currentFragmentBytesName + " = " +
+				mainString += tabString + "uint32_t " + currentFragmentBytesName + " = " +
 						"idx[" + gqFastIndexID + "]->index_map["+ elementString +"+1]" +
 						"[" + currentCol + "] - " + currentFragmentRow + "[" + currentCol + "];\n";
 				mainString += tabString + "if(" + currentFragmentBytesName + ") {\n";
@@ -1191,7 +1205,7 @@ public class CodeGenerator {
 		}
 		closingBraces[0]++;
 		tabString.append("\t");
-		mainString += "\n" + tabString + "int64_t " + previousAliasString + "_col0_element = " + previousAliasString + "_list[" +previousAliasString+"_it];\n";
+		mainString += "\n" + tabString + "uint64_t " + previousAliasString + "_col0_element = " + previousAliasString + "_list[" +previousAliasString+"_it];\n";
 
 
 		String elementString = drivingAlias.getAlias() + "_col" + drivingAliasCol + "_element";
@@ -1206,7 +1220,7 @@ public class CodeGenerator {
 
 			if (k == 0 && !entityFlag) {
 				currentFragmentBytesName = currAliasString + "_col" + currentCol + "_bytes";
-				mainString += tabString + "int32_t " + currentFragmentBytesName + " = " +
+				mainString += tabString + "uint32_t " + currentFragmentBytesName + " = " +
 						"idx[" + gqFastIndexID + "]->index_map["+ elementString +"+1]" +
 						"[" + currentCol + "] - " + currentFragmentRow + "[" + currentCol + "];\n";
 				mainString += tabString + "if(" + currentFragmentBytesName + ") {\n";
@@ -1368,7 +1382,7 @@ public class CodeGenerator {
 		int numSelections = selectionOp.getSelectionsList().size();
 		
 		
-		mainSelectionString += "\n" + tabString + "int64_t " + selectionAlias + "_list[" + numSelections + "];\n";
+		mainSelectionString += "\n" + tabString + "uint64_t " + selectionAlias + "_list[" + numSelections + "];\n";
 		
 		for (int j=0; j<numSelections; j++) {
 			int currSelection = selectionOp.getSelectionsList().get(j);
@@ -1381,11 +1395,131 @@ public class CodeGenerator {
 
 
 	private static String evaluateIntersection(Operator currentOp,
-			StringBuilder tabString) {
+			StringBuilder tabString, int[][] bufferPoolTrackingArray, MetaQuery query, List<String> functionHeadersCppCode, List<String> functionsCppCode) {
 		
 		String mainString = new String();
 		
 		IntersectionOperator interOp = (IntersectionOperator) currentOp;
+		
+		// Decode the desired fragments
+		for (int i=0; i<interOp.getAliases().size(); i++) {
+			
+			Alias currAlias = interOp.getAliases().get(i);
+			String currAliasString = currAlias.getAlias();
+			MetaIndex currIndex = currAlias.getAssociatedIndex();
+			int currGQFastIndexID = currIndex.getGQFastIndexID();
+			int currCol = interOp.getColumnIDs().get(i);
+			int currColEncoding = currIndex.getColumnEncodingsList().get(currCol);
+			int currColEncodedByteSize = currIndex.getColumnEncodedByteSizesList().get(currCol);
+			int currSelection = interOp.getSelections().get(i);
+			int indexByteSize = currIndex.getIndexMapByteSize();
+			String currFragmentRow = "row_" + currAliasString + "_intersection" + i; 
+			mainString += "\n" + tabString + getIndexPrimitive(indexByteSize) + "* ";
+			mainString += currFragmentRow + " = idx[" + currGQFastIndexID + "]->" +
+							"index_map["+ currSelection +"];\n"; 
+			
+			
+			String currentFragmentBytesName = currAliasString + "_col" + currCol + "_bytes_intersection" + i;
+			mainString += tabString + "uint32_t " + currentFragmentBytesName + " = " +
+						"idx[" + currGQFastIndexID + "]->index_map["+ currSelection +"+1]" +
+						"[" + currCol + "] - " + currFragmentRow + "[" + currCol + "];\n";
+			
+			String pointerName = currAliasString + "_col" + currCol + "_intersection_ptr_" + i;
+			String pointerString = new String();
+			String functionParameters = "(";
+			
+			// UA pointer points to type of size of element
+			if (currColEncoding == MetaData.ENCODING_UA) {
+				switch (currColEncodedByteSize) {
+				case MetaData.BYTES_1: 
+					pointerString = "unsigned char* " + pointerName + 
+					" = &(idx[" + currGQFastIndexID + "]->fragment_data[" + currCol + "][" + currFragmentRow + "[" + currCol + "]]);\n";
+					functionParameters += "unsigned char* " + pointerName;
+					break;
+				case MetaData.BYTES_2: 
+					pointerString = "uint16_t* " + pointerName + 
+					" = reinterpret_cast<uint16_t *>(&(idx[" + currGQFastIndexID + "]->fragment_data[" + currCol + "][" + currFragmentRow + "[" + currCol + "]]));\n";
+					functionParameters += "" + "uint16_t* " + pointerName;
+					break;
+				case MetaData.BYTES_4:
+					pointerString = "uint32_t* " + pointerName + 
+					" = reinterpret_cast<uint32_t *>(&(idx[" + currGQFastIndexID + "]->fragment_data[" + currCol + "][" + currFragmentRow + "[" + currCol + "]]));\n";
+					functionParameters += "uint32_t* " + pointerName;
+					break;
+				case MetaData.BYTES_8:
+					pointerString = "uint64_t* " + pointerName +
+					" = reinterpret_cast<uint64_t *>(&(idx[" + currGQFastIndexID + "]->fragment_data[" + currCol + "][" + currFragmentRow + "[" + currCol + "]]));\n";
+					functionParameters += "uint64_t* " + pointerName;
+					break;
+				}
+			}
+			else {
+				pointerString = "unsigned char* " + pointerName + 
+						" = &(idx[" + currGQFastIndexID + "]->fragment_data[" + currCol + "][" + currFragmentRow + "[" + currCol + "]]);\n";
+				functionParameters += "unsigned char* " + pointerName;
+			}
+			
+			mainString += tabString + pointerString;
+			
+			
+			String functionName = query.getQueryName() + currAliasString + "_col" + currCol + "_intersection" + i;
+
+			switch (currColEncoding) {
+
+			case MetaData.ENCODING_UA:	{
+				functionName += "_decode_UA";
+				break;
+			}
+			case MetaData.ENCODING_BCA: {
+				functionName += "_decode_BCA";
+				break;
+			}
+			case MetaData.ENCODING_BB: {
+				functionName += "_decode_BB";
+				break;
+			}
+			case MetaData.ENCODING_HUFFMAN: {
+				functionName += "_decode_Huffman";
+				break;
+			}
+
+			}
+			
+			String sizeName = currAliasString + "intersection" + i + "_fragment_size";
+		
+			// First column's decoding determines the fragment size for all subsequent column decodings
+			mainString += tabString + "uint32_t " + sizeName + " = 0;\n";
+			functionParameters += ", uint32_t " + currentFragmentBytesName;
+					functionParameters += ", uint32_t & " + sizeName + ")";
+				
+			String currFunction = "\nvoid " + functionName + functionParameters + " {\n";
+			String currFunctionHeader = "\nextern inline void " + functionName + functionParameters + " __attribute__((always_inline));\n";
+				
+			mainString += tabString + functionName + "(" + pointerName;
+			mainString += ", " + currentFragmentBytesName; 
+			mainString += ", " + sizeName + ");\n";
+
+			int indexID = currIndex.getIndexID();
+			int aliasID = currAlias.getAliasID();
+			int currPool = ++bufferPoolTrackingArray[indexID][currCol];
+			query.setBufferPoolID(aliasID, currCol, currPool);
+			
+			currFunction += generateDecodeFunctionBody(true, currGQFastIndexID, currAlias, currColEncoding, 0, 
+						currCol, sizeName, currentFragmentBytesName, pointerName, bufferPoolTrackingArray, currPool, currBytesSize);
+			currFunction += "}\n";
+
+			
+			functionHeadersCppCode.add(currFunctionHeader);
+			functionsCppCode.add(currFunction);
+			
+			
+
+			
+		}
+		
+		// Sorted merge intersection
+		
+		
 		
 		return mainString;
 		
@@ -1410,7 +1544,7 @@ public class CodeGenerator {
 				boolean previousThreadID = query.getPreThreading(previousAliasID);
 				
 				
-				mainString += "\n" + tabString + "for (int32_t " + previousAlias + "_it = 0; " + previousAlias + "_it " +
+				mainString += "\n" + tabString + "for (uint32_t " + previousAlias + "_it = 0; " + previousAlias + "_it " +
 						"< " + previousAlias + "_fragment_size; " + previousAlias + "_it++) {\n";
 				closingBraces[0]++;
 				tabString.append("\t");
@@ -1446,7 +1580,7 @@ public class CodeGenerator {
 				boolean previousThreadID = query.getPreThreading(previousAliasID);
 				
 				
-				mainString += "\n" + tabString + "for (int32_t " + previousAlias + "_it = 0; " + previousAlias + "_it " +
+				mainString += "\n" + tabString + "for (uint32_t " + previousAlias + "_it = 0; " + previousAlias + "_it " +
 						"< " + previousAlias + "_fragment_size; " + previousAlias + "_it++) {\n";
 				closingBraces[0]++;
 				tabString.append("\t");
@@ -1586,8 +1720,8 @@ public class CodeGenerator {
 		
 		String alias = threadingOp.getDrivingAlias().getAlias();
 		
-		mainString += "\n" + tabString + "int32_t thread_size = " + alias + "_fragment_size/NUM_THREADS;\n"; 
-		mainString += tabString + "int32_t position = 0;\n";
+		mainString += "\n" + tabString + "uint32_t thread_size = " + alias + "_fragment_size/NUM_THREADS;\n"; 
+		mainString += tabString + "uint32_t position = 0;\n";
 		mainString += "\n" + tabString + "for (int i=0; i<NUM_THREADS; i++) {\n";
 		tabString.append("\t");
 		mainString += tabString + "arguments[i].start = position;\n";
@@ -1614,8 +1748,8 @@ public class CodeGenerator {
 		String threadFunctionHeader = "\nvoid* pthread_" + query.getQueryName() + "_worker(void* arguments);\n";
 		threadingFunction += "\nvoid* pthread_" + query.getQueryName() + "_worker(void* arguments) {\n";
 		threadingFunction += "\n\targs_threading* args = (args_threading *) arguments;\n";
-		threadingFunction += "\n\tint32_t " + alias + "_it = args->start;\n";
-		threadingFunction += "\tint32_t " + alias + "_fragment_size = args->end;\n";
+		threadingFunction += "\n\tuint32_t " + alias + "_it = args->start;\n";
+		threadingFunction += "\tuint32_t " + alias + "_fragment_size = args->end;\n";
 		threadingFunction += "\tint thread_id = args->thread_id;\n";
 		
 		functionsCppCode.add(threadingFunction);
@@ -1695,7 +1829,7 @@ public class CodeGenerator {
 				}
 			}
 			else if (opType == Optypes.INTERSECTION_OPERATOR) {
-				mainCppCode.add(evaluateIntersection(currentOp, tabString));
+				mainCppCode.add(evaluateIntersection(currentOp, tabString, bufferPoolTrackingArray, query, functionHeadersCppCode, functionsCppCode));
 			}
 
 			else if (opType == Optypes.THREADING_OPERATOR) {
@@ -1803,6 +1937,7 @@ public class CodeGenerator {
 
 	public static void generateCode(List<Operator> operators, MetaData metadata) {
 		
+		hasIntersection = false;
 		int resultDataType = 0;
 		Operator lastOp = operators.get(operators.size() - 1);
 		// Query has an aggregation
@@ -1849,7 +1984,7 @@ public class CodeGenerator {
 		// Operator evaluation
 	
 		evaluateOperators(operators, query, metadata, mainCppCode, functionHeadersCppCode, functionsCppCode);
-		mainCppCode.add(bufferDeallocation(query));
+		mainCppCode.add(bufferDeallocations(query));
 		
 		
 		mainCppCode.add(semiJoinBufferDeallocation(operators, metadata));
