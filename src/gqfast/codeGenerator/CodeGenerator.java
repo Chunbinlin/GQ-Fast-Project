@@ -343,7 +343,7 @@ public class CodeGenerator {
 				// Min fragment size of first detected index (any min will do, so we just use the first)
 				int gqFastIndexIDTemp = firstAlias.getAssociatedIndex().getGQFastIndexID();
 				String nextMain = "\n\t" + query.getQueryName() + "_intersection_buffer = new uint64_t[metadata.idx_max_fragment_sizes[" + gqFastIndexIDTemp + "]];\n"; 
-			
+				mainCppCode.add(nextMain);
 				
 			}		
 		}
@@ -768,7 +768,7 @@ public class CodeGenerator {
 		
 		String tabString = "\t";
 		for (String currSizeName : sizeNames) {
-			functionBody = "\n" + tabString + "if (" + currSizeName + " == 0) { return; }\n";
+			functionBody += "\n" + tabString + "if (" + currSizeName + " == 0) { return; }\n";
 		}
 		functionBody += "\n" + tabString + "uint32_t intersection_index = 0;\n";
 		functionBody += tabString + "uint32_t* its = new uint32_t[" + numInputs + "]();\n";
@@ -802,7 +802,7 @@ public class CodeGenerator {
 			functionBody += tabString + "if (++its["+ i +"] == " + sizeNames.get(i) + ") {\n";
 			tabString += "\t";
 			functionBody += tabString + "end = true;\n";
-			functionBody += "break;\n";
+			functionBody += tabString + "break;\n";
 			tabString = tabString.substring(0, tabString.length()-1);
 			functionBody += tabString + "}\n";
 		}
@@ -1649,7 +1649,7 @@ public class CodeGenerator {
 			mainString += tabString + pointerString;
 			
 			
-			String functionName = query.getQueryName() + currAliasString + "_col" + currCol + "_intersection" + i;
+			String functionName = query.getQueryName() + "_" +currAliasString + "_col" + currCol + "_intersection" + i;
 
 			switch (currColEncoding) {
 
@@ -1672,7 +1672,7 @@ public class CodeGenerator {
 
 			}
 			
-			String sizeName = currAliasString + "intersection" + i + "_fragment_size";
+			String sizeName = currAliasString + "_intersection" + i + "_fragment_size";
 			sizeNames.add(sizeName);
 			// First column's decoding determines the fragment size for all subsequent column decodings
 			mainString += tabString + "uint32_t " + sizeName + " = 0;\n";

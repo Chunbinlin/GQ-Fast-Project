@@ -5,7 +5,7 @@ import gqfast.global.Alias;
 
 import java.util.List;
 
-class IntersectionOperator extends Operator {
+public class IntersectionOperator extends Operator {
 
 	private boolean bitwiseFlag;
 	private List<Alias> aliases;
