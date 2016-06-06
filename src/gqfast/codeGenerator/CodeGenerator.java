@@ -816,6 +816,7 @@ public class CodeGenerator {
 		functionBody += "\n" + tabString + "uint64_t smallest = buffer_arrays["+inputGQFastIndexIDs[0] 
 				+ "][" + inputColIDs[0] + "][0][" + poolNums[0] + "][its[0]];\n";
 		functionBody += tabString + "int index_of_smallest = 0;\n";
+		functionBody += tabString + "uint32_t fragment_size_of_smallest = " + sizeNames.get(0) + ";\n";
 		for (int i=1; i<numInputs; i++) {
 			functionBody += "\n" + tabString + "if (smallest > buffer_arrays[" + inputGQFastIndexIDs[i] + "][" + inputColIDs[i] + "][0][" + 
 					poolNums[i] + "][its["+i+"]]) {\n";
@@ -823,10 +824,20 @@ public class CodeGenerator {
 			functionBody += tabString + "smallest = buffer_arrays[" + inputGQFastIndexIDs[i] + "][" + inputColIDS[i] +
 					"][0][" + poolNums[i] + "][its["+i+"]];\n";
 			functionBody += tabString + "index_of_smallest = " + i + ";\n";
+			functionBody += tabString + "fragment_size_of_smallest = " + sizeNames.get(i) + ";\n";
 			tabString = tabString.substring(0, tabString.length()-1);
 			functionBody += tabString + "}\n";
 		}
-		functionBody += "\n" + tabString + "if (++its[index_of_smallest] == ;
+		functionBody += "\n" + tabString + "if (++its[index_of_smallest] == fragment_size_of_smallest) {\n";
+		tabString += "\t";
+		functionBody += tabString + "end = true;\n";
+		tabString = tabString.substring(0, tabString.length()-1);
+		functionBody += tabString + "}\n";
+		tabString = tabString.substring(0, tabString.length()-1);
+		functionBody += tabString + "}\n";
+		tabString = tabString.substring(0, tabString.length()-1);
+		functionBody += tabString + "}\n";
+		
  		functionBody += "\n" + tabString + "delete[] its;\n";
 		functionBody += tabString + intersectionSizeName + " = intersection_index;\n";
 		
@@ -1323,6 +1334,86 @@ public class CodeGenerator {
 	}
 
 	
+
+	private static String evaluatePreviousIntersection(boolean justStartedThreading, MetaQuery query, StringBuilder tabString, int[] closingBraces, 
+			Alias currentAlias, Alias drivingAlias, int drivingAliasCol, Operator currentOp, List<Integer> columnIDs, boolean entityFlag, 
+			List<String> functionHeadersCppCode, List<String> functionsCppCode, int[][] bufferPoolTrackingArray) {
+		String mainString = new String();
+
+		String currentFragmentRow = "row_" + currentAlias.getAlias();
+		String currAliasString = currentAlias.getAlias();
+		int gqFastIndexID = currentAlias.getAssociatedIndex().getGQFastIndexID();
+		
+		String intersectionSizeString = query.getQueryName() + "_intersection_size";
+		String intersectionIterator = query.getQueryName() + "_intersection_it";
+		
+		if (justStartedThreading) {
+			mainString += "\n" + tabString + "for (; " + intersectionIterator + "<" +
+					intersectionSizeString + "; " + intersectionIterator + "++) {\n";
+		}
+		else {
+			mainString += "\n" + tabString + "for (int "+ intersectionIterator +"= 0; " + intersectionIterator +"<" + 
+					intersectionSizeString + "; " + intersectionIterator +"++) {\n";
+		}
+		closingBraces[0]++;
+		tabString.append("\t");
+		
+		// SemiJoin Check
+		if (currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
+			int drivingAliasID = drivingAlias.getAliasID();
+			int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
+			int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
+			String drivAliasString = drivingAlias.getAlias();
+			if (justStartedThreading) {
+				mainString += "\n" + tabString + "if (!(" + drivAliasString 
+						+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
+					closingBraces[0]++;
+					tabString.append("\t");
+					mainString += tabString + drivAliasString + 
+						"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
+			}
+			else {
+				mainString += "\n" + tabString + "if (!(" + drivAliasString 
+					+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
+				closingBraces[0]++;
+				tabString.append("\t");
+				mainString += tabString + drivAliasString + 
+					"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
+			}
+		}
+		
+		int indexByteSize = currentAlias.getAssociatedIndex().getIndexMapByteSize();
+		String elementString = query.getQueryName() + "_intersection_buffer[" + query.getQueryName() + "_intersection_it]";
+		
+		mainString += "\n" + tabString + getIndexPrimitive(indexByteSize) + "* ";
+		mainString += currentFragmentRow + " = idx[" + gqFastIndexID + "]->" +
+				"index_map["+ elementString +"];\n"; 
+		
+		String currentFragmentBytesName = "";
+		for (int k=0; k<columnIDs.size(); k++) {
+			int currentCol = columnIDs.get(k);
+
+			if (k == 0 && !entityFlag) {
+				currentFragmentBytesName = currAliasString + "_col" + currentCol + "_bytes";
+				mainString += tabString + "uint32_t " + currentFragmentBytesName + " = " +
+						"idx[" + gqFastIndexID + "]->index_map["+ elementString +"+1]" +
+						"[" + currentCol + "] - " + currentFragmentRow + "[" + currentCol + "];\n";
+				mainString += tabString + "if(" + currentFragmentBytesName + ") {\n";
+				closingBraces[0]++;
+				tabString.append("\t");
+			}
+
+			mainString += joinGenerateDecodeFragmentFunction(!justStartedThreading, k, tabString, query, functionHeadersCppCode, functionsCppCode,
+					currentCol, currentFragmentBytesName, bufferPoolTrackingArray, entityFlag, currentAlias);
+
+		}
+		
+		
+		return mainString;
+	}
+	
+	
+	
 	/*
 	 * Function evaluateJoin
 	 * 
@@ -1449,11 +1540,18 @@ public class CodeGenerator {
 					
 
 				}
-			} 
+				else if (previousOp.getType() == Optypes.INTERSECTION_OPERATOR) {
+					loopAgain = false;
+					mainString += evaluatePreviousIntersection(justStartedThreading, query, tabString, closingBraces, currentAlias, 
+							drivingAlias, drivingAliasCol, currentOp, columnIDs, entityFlag, functionHeadersCppCode, functionsCppCode, bufferPoolTrackingArray);
+				}
+			}
+			
 		}
 		return mainString;
 	}
 		
+
 
 
 	private static String evaluateSelection(int i, Operator currentOp, StringBuilder tabString, MetaQuery query) {
@@ -1838,7 +1936,12 @@ public class CodeGenerator {
 		
 		String alias = threadingOp.getDrivingAlias().getAlias();
 		
-		mainString += "\n" + tabString + "uint32_t thread_size = " + alias + "_fragment_size/NUM_THREADS;\n"; 
+		if (threadingOp.isThreadingAfterIntersection()) {
+			mainString += "\n" + tabString + "uint32_t thread_size = " + query.getQueryName() + "_intersection_size/NUM_THREADS;\n";
+		}
+		else {
+			mainString += "\n" + tabString + "uint32_t thread_size = " + alias + "_fragment_size/NUM_THREADS;\n";
+		}
 		mainString += tabString + "uint32_t position = 0;\n";
 		mainString += "\n" + tabString + "for (int i=0; i<NUM_THREADS; i++) {\n";
 		tabString.append("\t");
@@ -1848,7 +1951,12 @@ public class CodeGenerator {
 		mainString += tabString + "arguments[i].thread_id = i;\n";
 		tabString.setLength(tabString.length() - 1);
 		mainString += tabString + "}\n";
-		mainString += tabString + "arguments[NUM_THREADS-1].end = " + alias + "_fragment_size;\n";
+		if (threadingOp.isThreadingAfterIntersection()) {
+			mainString += tabString + "arguments[NUM_THREADS-1].end = " + query.getQueryName() + "intersection_size;\n";
+		}
+		else {
+			mainString += tabString + "arguments[NUM_THREADS-1].end = " + alias + "_fragment_size;\n";
+		}
 		mainString += "\n" + tabString + "for (int i=0; i<NUM_THREADS; i++) {\n";
 		tabString.append("\t");
 		mainString += tabString + "pthread_create(&threads[i], NULL, &pthread_" + query.getQueryName() + 
@@ -1866,8 +1974,14 @@ public class CodeGenerator {
 		String threadFunctionHeader = "\nvoid* pthread_" + query.getQueryName() + "_worker(void* arguments);\n";
 		threadingFunction += "\nvoid* pthread_" + query.getQueryName() + "_worker(void* arguments) {\n";
 		threadingFunction += "\n\targs_threading* args = (args_threading *) arguments;\n";
-		threadingFunction += "\n\tuint32_t " + alias + "_it = args->start;\n";
-		threadingFunction += "\tuint32_t " + alias + "_fragment_size = args->end;\n";
+		if (threadingOp.isThreadingAfterIntersection()) {
+			threadingFunction += "\n\tuint32_t " + query.getQueryName() + "_intersection_it = args->start;\n";
+			threadingFunction += "\tuint32_t " + query.getQueryName() + "_intersection_size = args->end;\n";
+		}
+		else {
+			threadingFunction += "\n\tuint32_t " + alias + "_it = args->start;\n";
+			threadingFunction += "\tuint32_t " + alias + "_fragment_size = args->end;\n";
+		}
 		threadingFunction += "\tint thread_id = args->thread_id;\n";
 		
 		functionsCppCode.add(threadingFunction);
