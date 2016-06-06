@@ -749,6 +749,91 @@ public class CodeGenerator {
 	}
 	
 	
+	private static String generateIntersectionFunctionBody(
+			IntersectionOperator interOp, MetaQuery query, int[] poolNums,
+			List<String> sizeNames, String intersectionSizeName) {
+		
+		String functionBody = new String();
+		String queryName = query.getQueryName();
+		int numInputs = sizeNames.size();
+		
+		int[] inputGQFastIndexIDs = new int[numInputs];
+		int[] inputColIDs = new int[numInputs];
+		
+		for (int i=0; i<numInputs; i++) {
+			Alias currAlias = interOp.getAliases().get(i);
+			inputGQFastIndexIDs[i] = currAlias.getAssociatedIndex().getGQFastIndexID();
+			inputColIDs[i] = interOp.getColumnIDs().get(i);
+		}
+		
+		String tabString = "\t";
+		for (String currSizeName : sizeNames) {
+			functionBody = "\n" + tabString + "if (" + currSizeName + " == 0) { return; }\n";
+		}
+		functionBody += "\n" + tabString + "uint32_t intersection_index = 0;\n";
+		functionBody += tabString + "uint32_t* its = new uint32_t[" + numInputs + "]();\n";
+		functionBody += tabString + "bool end = false;\n";
+		
+		functionBody += "\n" + tabString + "while(!end) {\n";
+		tabString += "\t";
+		functionBody += "\n" + tabString + "bool match = true;\n";
+		functionBody += tabString + "while (1) {\n";
+		tabString += "\t";
+		for (int i=1; i<numInputs;i++) {
+			functionBody += tabString + "if (buffer_arrays[" + inputGQFastIndexIDs[0] + "][" + inputColIDs[0] + "][0][" + poolNums[0] + "][its[0]] ";
+			functionBody += " != buffer_arrays[" + inputGQFastIndexIDs[i] + "][" + inputColIDs[i] + "][0][" + poolNums[i] + "][its[" + i + "]]) {\n";
+			tabString += "\t";
+			functionBody += tabString + "match = false;\n";
+			functionBody += tabString + "break;\n";
+			tabString = tabString.substring(0, tabString.length()-1);
+			functionBody += tabString + "}\n";
+		}
+		functionBody += "\n" + tabString + "break;\n";
+		tabString = tabString.substring(0, tabString.length()-1);
+		functionBody += tabString + "}\n";
+		
+		functionBody += "\n" + tabString + "if (match) {\n";
+		tabString += "\t";
+		functionBody += tabString + queryName + "_intersection_buffer[intersection_index++] = buffer_arrays[" +
+						inputGQFastIndexIDs[0] + "][" + inputColIDs[0] + "][0][" + poolNums[0] + "][its[0]];\n";
+		functionBody += tabString + "while(1) {\n";
+		tabString += "\t";
+		for (int i=0; i<numInputs; i++) {
+			functionBody += tabString + "if (++its["+ i +"] == " + sizeNames.get(i) + ") {\n";
+			tabString += "\t";
+			functionBody += tabString + "end = true;\n";
+			functionBody += "break;\n";
+			tabString = tabString.substring(0, tabString.length()-1);
+			functionBody += tabString + "}\n";
+		}
+		functionBody += "\n" + tabString + "break;\n";
+		tabString = tabString.substring(0, tabString.length()-1);
+		functionBody += tabString + "}\n";
+		tabString = tabString.substring(0, tabString.length()-1);
+		functionBody += tabString + "}\n";
+		functionBody += tabString + "else {\n";
+		tabString += "\t";
+		functionBody += "\n" + tabString + "uint64_t smallest = buffer_arrays["+inputGQFastIndexIDs[0] 
+				+ "][" + inputColIDs[0] + "][0][" + poolNums[0] + "][its[0]];\n";
+		functionBody += tabString + "int index_of_smallest = 0;\n";
+		for (int i=1; i<numInputs; i++) {
+			functionBody += "\n" + tabString + "if (smallest > buffer_arrays[" + inputGQFastIndexIDs[i] + "][" + inputColIDs[i] + "][0][" + 
+					poolNums[i] + "][its["+i+"]]) {\n";
+			tabString += "\t";
+			functionBody += tabString + "smallest = buffer_arrays[" + inputGQFastIndexIDs[i] + "][" + inputColIDS[i] +
+					"][0][" + poolNums[i] + "][its["+i+"]];\n";
+			functionBody += tabString + "index_of_smallest = " + i + ";\n";
+			tabString = tabString.substring(0, tabString.length()-1);
+			functionBody += tabString + "}\n";
+		}
+		functionBody += "\n" + tabString + "if (++its[index_of_smallest] == ;
+ 		functionBody += "\n" + tabString + "delete[] its;\n";
+		functionBody += tabString + intersectionSizeName + " = intersection_index;\n";
+		
+		return functionBody;
+		
+	}
+	
 	/* 	Function joinGenerateDecodeFragmentFunction
 	 * ----------------------------------------------
 	 *	Input: 
@@ -1400,8 +1485,12 @@ public class CodeGenerator {
 		String mainString = new String();
 		
 		IntersectionOperator interOp = (IntersectionOperator) currentOp;
+		List<String> sizeNames = new ArrayList<String>();
+		int[] poolNums = new int[interOp.getAliases().size()];
+		//
+		// Decode the fragments for the inputs to the intersection
+		//
 		
-		// Decode the desired fragments
 		for (int i=0; i<interOp.getAliases().size(); i++) {
 			
 			Alias currAlias = interOp.getAliases().get(i);
@@ -1486,7 +1575,7 @@ public class CodeGenerator {
 			}
 			
 			String sizeName = currAliasString + "intersection" + i + "_fragment_size";
-		
+			sizeNames.add(sizeName);
 			// First column's decoding determines the fragment size for all subsequent column decodings
 			mainString += tabString + "uint32_t " + sizeName + " = 0;\n";
 			functionParameters += ", uint32_t " + currentFragmentBytesName;
@@ -1502,10 +1591,10 @@ public class CodeGenerator {
 			int indexID = currIndex.getIndexID();
 			int aliasID = currAlias.getAliasID();
 			int currPool = ++bufferPoolTrackingArray[indexID][currCol];
-			query.setBufferPoolID(aliasID, currCol, currPool);
-			
-			currFunction += generateDecodeFunctionBody(true, currGQFastIndexID, currAlias, currColEncoding, 0, 
-						currCol, sizeName, currentFragmentBytesName, pointerName, bufferPoolTrackingArray, currPool, currBytesSize);
+			//query.setBufferPoolID(aliasID, currCol, currPool);
+			poolNums[i] = currPool;
+			currFunction += generateDecodeFunctionBody(true, currGQFastIndexID, currAliasString, currColEncoding, 0, 
+						currCol, sizeName, currentFragmentBytesName, pointerName, bufferPoolTrackingArray, currPool, currColEncodedByteSize);
 			currFunction += "}\n";
 
 			
@@ -1517,15 +1606,44 @@ public class CodeGenerator {
 			
 		}
 		
-		// Sorted merge intersection
+		//
+		// Implement the intersection
+		//
 		
+		int numInputs = interOp.getAliases().size();
+		String queryName = query.getQueryName();
+		String intersectionSizeName = queryName + "_intersection_size";
 		
+		String functionHeader = new String();
+		String function = new String();
 		
+		// Intersection function call 
+		functionHeader += "\nextern inline void " + queryName + "_intersection(";
+		function += "void " + queryName + "_intersection(";
+		
+		mainString += "\n" + tabString + "uint32_t " + intersectionSizeName + " = 0;\n";  
+		mainString += tabString + queryName + "_intersection(";
+		for (String currSizeName : sizeNames) {
+			mainString += currSizeName + ", ";
+			functionHeader += "uint32_t " + currSizeName + ", ";
+			function += "uint32_t " + currSizeName + ", ";
+		}
+		mainString += intersectionSizeName + ");\n";
+		functionHeader += "uint32_t & " + intersectionSizeName + ") __attribute__((always_inline));\n"; 
+		function += "uint32_t & " + intersectionSizeName + ") { \n";
+		
+		function += generateIntersectionFunctionBody(interOp, query, poolNums, sizeNames, intersectionSizeName);
+		function += "}\n";
+		
+		functionHeadersCppCode.add(functionHeader);
+		functionsCppCode.add(function);
 		return mainString;
 		
 		
 	}
 	
+
+
 	private static String evaluateLastOperator(boolean preThreading, List<Operator> operators,
 			MetaData metadata, StringBuilder tabString,
 			int[] closingBraces, int[][] bufferPoolTrackingArray, MetaQuery query) {
