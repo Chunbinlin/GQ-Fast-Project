@@ -821,7 +821,7 @@ public class CodeGenerator {
 			functionBody += "\n" + tabString + "if (smallest > buffer_arrays[" + inputGQFastIndexIDs[i] + "][" + inputColIDs[i] + "][0][" + 
 					poolNums[i] + "][its["+i+"]]) {\n";
 			tabString += "\t";
-			functionBody += tabString + "smallest = buffer_arrays[" + inputGQFastIndexIDs[i] + "][" + inputColIDS[i] +
+			functionBody += tabString + "smallest = buffer_arrays[" + inputGQFastIndexIDs[i] + "][" + inputColIDs[i] +
 					"][0][" + poolNums[i] + "][its["+i+"]];\n";
 			functionBody += tabString + "index_of_smallest = " + i + ";\n";
 			functionBody += tabString + "fragment_size_of_smallest = " + sizeNames.get(i) + ";\n";
