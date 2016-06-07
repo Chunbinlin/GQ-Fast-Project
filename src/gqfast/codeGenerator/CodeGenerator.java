@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -105,9 +106,9 @@ public class CodeGenerator {
 			bufferInitString += "\n\tmax_frag = metadata.idx_max_fragment_sizes[" + curr + "];\n";
 			bufferInitString += "\tfor(int i=0; i<metadata.idx_num_encodings[" + curr + "]; i++) {\n";
 			bufferInitString += "\t\tfor (int j=0; j<NUM_THREADS; j++) {\n";
-			bufferInitString += "\t\t\tbuffer_arrays[" + curr + "][i][j] = new int*[BUFFER_POOL_SIZE];\n";
+			bufferInitString += "\t\t\tbuffer_arrays[" + curr + "][i][j] = new uint64_t*[BUFFER_POOL_SIZE];\n";
 			bufferInitString += "\t\t\tfor (int k=0; k<BUFFER_POOL_SIZE; k++) {\n";
-			bufferInitString += "\t\t\t\tbuffer_arrays[" + curr + "][i][j][k] = new int[max_frag];\n";
+			bufferInitString += "\t\t\t\tbuffer_arrays[" + curr + "][i][j][k] = new uint64_t[max_frag];\n";
 			bufferInitString += "\t\t\t}\n";
 			bufferInitString += "\t\t}\n";
 			bufferInitString += "\t}\n";
@@ -284,15 +285,18 @@ public class CodeGenerator {
 		for (int i=0; i<operators.size()-1; i++) {
 			Operator currentOperator = operators.get(i);
 			
+			HashMap<Alias, HashMap<Integer,Boolean> > hmap = new HashMap<Alias, HashMap<Integer,Boolean>>();
+			
 			if (currentOperator.getType() == Optypes.JOIN_OPERATOR || currentOperator.getType() == Optypes.SEMIJOIN_OPERATOR) {
 				
 				int gqFastIndexID;
 				MetaIndex tempIndex;
 				String alias;
 				List<Integer> columnIDs;
+				Alias tempAlias;
 				if (currentOperator.getType() == Optypes.JOIN_OPERATOR) {
 					JoinOperator tempJoinOp = (JoinOperator) currentOperator;
-					Alias tempAlias = tempJoinOp.getAlias();
+					tempAlias = tempJoinOp.getAlias();
 					tempIndex = tempAlias.getAssociatedIndex();
 					gqFastIndexID = tempIndex.getGQFastIndexID();
 					alias = tempAlias.getAlias();
@@ -300,38 +304,48 @@ public class CodeGenerator {
 				}
 				else {
 					SemiJoinOperator tempSemiJoinOp = (SemiJoinOperator) currentOperator;
-					Alias tempAlias = tempSemiJoinOp.getAlias();
+					tempAlias = tempSemiJoinOp.getAlias();
 					tempIndex = tempAlias.getAssociatedIndex();
 					gqFastIndexID = tempIndex.getGQFastIndexID();
 					alias = tempAlias.getAlias();
 					columnIDs = tempSemiJoinOp.getColumnIDs();
 				}
 				
+				if (!hmap.containsKey(tempAlias)) {
+					HashMap<Integer,Boolean> cmap = new HashMap<Integer,Boolean>();
+					hmap.put(tempAlias, cmap);
+				}
 				
 				for (int j=0; j<columnIDs.size(); j++) {
-					
+						
 					int columnID = columnIDs.get(j);
 					
-					int columnEncoding = tempIndex.getColumnEncodingsList().get(columnID);
-				
-					if (columnEncoding == MetaData.ENCODING_BCA) {
-						String nextGlobal = "\nstatic uint32_t* " + alias + "_col" + j + "_bits_info;\n";
-						nextGlobal += "static uint64_t " + alias + "_col" + j + "_offset;\n";
-						globalsCppCode.add(nextGlobal);
-						String nextMain = "\n\t"+alias+ "_col" + j + "_bits_info = idx[" + gqFastIndexID + "]->dict[" + columnID + "]->bits_info;\n";
-						nextMain += "\t"+alias+"_col" + j + "_offset = idx[" + gqFastIndexID + "]->dict[" + columnID + "]->offset;\n";
-						mainCppCode.add(nextMain);
-					}
-					else if (columnEncoding == MetaData.ENCODING_HUFFMAN) {
-						String nextGlobal = "\nstatic int* "+ alias + "_col" + j + "_huffman_tree_array;\n";
-						nextGlobal += "static bool* " + alias + "_col" + j + "_huffman_terminator_array;\n";
-						globalsCppCode.add(nextGlobal);
-						String nextMain = "\n\t" + alias + "_col" + j + "_huffman_tree_array = idx[" + gqFastIndexID + "]->huffman_tree_array[" + columnID + "];\n";
-						nextMain += "\t"+ alias + "_col" + j + "_huffman_terminator_array = idx[" + gqFastIndexID + "]->huffman_terminator_array[" + columnID + "];\n";
-						mainCppCode.add(nextMain);
-	 				}
+					HashMap<Integer,Boolean> tempMap = hmap.get(tempAlias);
+					if (!tempMap.containsKey(columnID)) {
+						tempMap.put(columnID, true);
+						
+						int columnEncoding = tempIndex.getColumnEncodingsList().get(columnID);
 					
+						if (columnEncoding == MetaData.ENCODING_BCA) {
+							String nextGlobal = "\nstatic uint32_t* " + alias + "_col" + j + "_bits_info;\n";
+							nextGlobal += "static uint64_t " + alias + "_col" + j + "_offset;\n";
+							globalsCppCode.add(nextGlobal);
+							String nextMain = "\n\t"+alias+ "_col" + j + "_bits_info = idx[" + gqFastIndexID + "]->dict[" + columnID + "]->bits_info;\n";
+							nextMain += "\t"+alias+"_col" + j + "_offset = idx[" + gqFastIndexID + "]->dict[" + columnID + "]->offset;\n";
+							mainCppCode.add(nextMain);
+						}
+						else if (columnEncoding == MetaData.ENCODING_HUFFMAN) {
+							String nextGlobal = "\nstatic int* "+ alias + "_col" + j + "_huffman_tree_array;\n";
+							nextGlobal += "static bool* " + alias + "_col" + j + "_huffman_terminator_array;\n";
+							globalsCppCode.add(nextGlobal);
+							String nextMain = "\n\t" + alias + "_col" + j + "_huffman_tree_array = idx[" + gqFastIndexID + "]->huffman_tree_array[" + columnID + "];\n";
+							nextMain += "\t"+ alias + "_col" + j + "_huffman_terminator_array = idx[" + gqFastIndexID + "]->huffman_terminator_array[" + columnID + "];\n";
+							mainCppCode.add(nextMain);
+		 				}
+					}
 				}
+				
+			
 				
 			}
 			else if (currentOperator.getType() == Optypes.INTERSECTION_OPERATOR) {
@@ -344,6 +358,49 @@ public class CodeGenerator {
 				int gqFastIndexIDTemp = firstAlias.getAssociatedIndex().getGQFastIndexID();
 				String nextMain = "\n\t" + query.getQueryName() + "_intersection_buffer = new uint64_t[metadata.idx_max_fragment_sizes[" + gqFastIndexIDTemp + "]];\n"; 
 				mainCppCode.add(nextMain);
+				
+				
+				for (int j=0; j<interOp.getAliases().size(); j++) {
+					
+					Alias tempAlias = interOp.getAliases().get(j);
+					
+					if (!hmap.containsKey(tempAlias)) {
+						HashMap<Integer,Boolean> cmap = new HashMap<Integer,Boolean>();
+						hmap.put(tempAlias, cmap);
+					}
+						
+					int columnID = interOp.getColumnIDs().get(j);
+						
+					HashMap<Integer,Boolean> tempMap = hmap.get(tempAlias);
+					if (!tempMap.containsKey(columnID)) {
+						tempMap.put(columnID, true);
+						
+						MetaIndex tempIndex = tempAlias.getAssociatedIndex();
+						int gqFastIndexID = tempIndex.getGQFastIndexID();
+						String alias = tempAlias.getAlias();
+						
+						int columnEncoding = tempIndex.getColumnEncodingsList().get(columnID);
+						
+						if (columnEncoding == MetaData.ENCODING_BCA) {
+							String nextGlobal2 = "\nstatic uint32_t* " + alias + "_col" + j + "_bits_info;\n";
+							nextGlobal2 += "static uint64_t " + alias + "_col" + j + "_offset;\n";
+							globalsCppCode.add(nextGlobal2);
+							String nextMain2 = "\n\t"+alias+ "_col" + j + "_bits_info = idx[" + gqFastIndexID + "]->dict[" + columnID + "]->bits_info;\n";
+							nextMain2 += "\t"+alias+"_col" + j + "_offset = idx[" + gqFastIndexID + "]->dict[" + columnID + "]->offset;\n";
+							mainCppCode.add(nextMain2);
+						}
+						else if (columnEncoding == MetaData.ENCODING_HUFFMAN) {
+							String nextGlobal2 = "\nstatic int* "+ alias + "_col" + j + "_huffman_tree_array;\n";
+							nextGlobal2 += "static bool* " + alias + "_col" + j + "_huffman_terminator_array;\n";
+							globalsCppCode.add(nextGlobal2);
+							String nextMain2 = "\n\t" + alias + "_col" + j + "_huffman_tree_array = idx[" + gqFastIndexID + "]->huffman_tree_array[" + columnID + "];\n";
+							nextMain2 += "\t"+ alias + "_col" + j + "_huffman_terminator_array = idx[" + gqFastIndexID + "]->huffman_terminator_array[" + columnID + "];\n";
+							mainCppCode.add(nextMain2);
+		 				}
+					}
+					 					
+				}
+				
 				
 			}		
 		}
@@ -1352,7 +1409,7 @@ public class CodeGenerator {
 					intersectionSizeString + "; " + intersectionIterator + "++) {\n";
 		}
 		else {
-			mainString += "\n" + tabString + "for (int "+ intersectionIterator +"= 0; " + intersectionIterator +"<" + 
+			mainString += "\n" + tabString + "for (uint32_t "+ intersectionIterator +"= 0; " + intersectionIterator +"<" + 
 					intersectionSizeString + "; " + intersectionIterator +"++) {\n";
 		}
 		closingBraces[0]++;
@@ -1952,7 +2009,7 @@ public class CodeGenerator {
 		tabString.setLength(tabString.length() - 1);
 		mainString += tabString + "}\n";
 		if (threadingOp.isThreadingAfterIntersection()) {
-			mainString += tabString + "arguments[NUM_THREADS-1].end = " + query.getQueryName() + "intersection_size;\n";
+			mainString += tabString + "arguments[NUM_THREADS-1].end = " + query.getQueryName() + "_intersection_size;\n";
 		}
 		else {
 			mainString += tabString + "arguments[NUM_THREADS-1].end = " + alias + "_fragment_size;\n";
