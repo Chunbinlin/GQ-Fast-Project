@@ -86,15 +86,17 @@ int main(int argc, char ** argv)
 
     char* filename = "dummy.bin";
     char* auto_filename = "dummy.bin";
+    char* outfile_name = "dummy.bin";
 
     num_loaded_indices = 0;
-    char *help = "usage: %s [-h] [-s] [-l] [-d database] [-c compression] [-a file]\n\n"
+    char *help = "usage: %s [-h] [-s] [-l] [-d database] [-c compression] [-a file] [-o filename] \n\n"
                  "-h\tShow list of parameters.\n\n"
                  "-s\tSave indices to file: filename\n\n"
                  "-l\tLoad indices from file: filename\n\n"
                  "-d\tChoose test database.\n\n"
                  "-i\tChoose individual index table\n\n"
-                 "-a\Automated loader: filename\n\n"
+                 "-a\tAutomated loader: filename\n\n"
+                 "-o\tOutfile name\n\n"
                  "[1]\tSemmedDB\n"
                  "[2]\tPubmed (mesh only)\n"
                  "[3]\tPubmed (mesh+supp)\n\n"
@@ -104,7 +106,7 @@ int main(int argc, char ** argv)
                  "[3]\tBB\n"
                  "[4]\tHuffman\n"
                  "[5]\tOptimal compression\n\n";
-    while ((c = getopt(argc, argv, "hs:l:d:c:i:a:")) != -1)
+    while ((c = getopt(argc, argv, "hs:l:d:c:i:a:o:")) != -1)
     {
         switch (c)
         {
@@ -167,6 +169,17 @@ int main(int argc, char ** argv)
                 exit(0);
             }
             break;
+        case 'o':
+            if (optarg)
+            {
+                outfile_name = optarg;
+            }
+            else
+            {
+                cout << "error: filename required!\n";
+                exit(0);
+            }
+            break;
         }
     }
 
@@ -176,7 +189,7 @@ int main(int argc, char ** argv)
         load_index<uint32_t>(idx, filename);
         cout << "\n...Indices have been loaded...\n";
         cout << "\n...Automated results will be sent to 'output.txt'\n";
-        automatic_tests(auto_filename);
+        automatic_tests(auto_filename, outfile_name);
     }
     else
     {

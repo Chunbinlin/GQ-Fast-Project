@@ -5,18 +5,17 @@
 #include <fstream>
 #include "input_handling.hpp"
 
-void automatic_tests(char* input_file)
+void automatic_tests(char* input_file, char* output_file)
 {
 
     string test_file(input_file);
+    string output_file_string (output_file);
 
+    cout << "test file = " << test_file << "\n";
     string line;
     ifstream myfile(test_file);
-    ofstream outfile("output.txt");
+    ofstream outfile(output_file_string);
     uint64_t lines_read_in = 0;
-
-    // skip line 1
-    getline(myfile, line);
 
     while (getline(myfile,line))
     {
@@ -47,9 +46,11 @@ void automatic_tests(char* input_file)
         }
 
         if (output_type == 'i') {
+            cout << "calling int autohandle with func " << func_name << "and rpos " << r_pos << "\n";
             time_span = auto_handle_input<int>(func_name, r_pos);
         }
         else if (output_type == 'd') {
+            cout << "calling double autohandle with func " << func_name << "and rpos " << r_pos << "\n";
             time_span = auto_handle_input<double>(func_name, r_pos);
         }
 
