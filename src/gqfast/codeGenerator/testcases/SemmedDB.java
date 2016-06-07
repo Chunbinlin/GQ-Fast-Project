@@ -232,7 +232,7 @@ public class SemmedDB {
 		indexID = 3;
 		numColumns = 1;
 		List<Integer> columnEncodingsList3 = new ArrayList<Integer>();
-		columnEncodingsList3.add(MetaData.ENCODING_HUFFMAN);
+		columnEncodingsList3.add(MetaData.ENCODING_BB);
 		
 		List<Integer >columnEncodedByteSizesList3 = new ArrayList<Integer>();
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
