@@ -25,7 +25,7 @@ pthread_spinlock_t * spin_locks[MAX_INDICES];
 
 
 // Buffers
-int**** buffer_arrays[MAX_INDICES];
+uint64_t**** buffer_arrays[MAX_INDICES];
 
 
 void init_globals()
@@ -160,7 +160,7 @@ int main(int argc, char ** argv)
     {
         load_index<uint32_t>(idx, filename);
         cout << "\n...Indices have been loaded...\n";
-        /*char testing = 'y';
+        char testing = 'y';
         while (testing == 'y')
         {
             string library_file;
@@ -184,7 +184,7 @@ int main(int argc, char ** argv)
 
             cout << "\nLoad another file(y/n)?\n";
             cin >> testing;
-        }*/
+        }
         break;
     }
     case 's':

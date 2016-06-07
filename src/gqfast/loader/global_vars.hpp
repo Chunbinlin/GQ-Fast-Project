@@ -79,7 +79,7 @@ extern pthread_spinlock_t * spin_locks[MAX_INDICES];
 extern struct Metadata metadata;
 
 // Buffers
-extern int**** buffer_arrays[MAX_INDICES];
+extern uint64_t**** buffer_arrays[MAX_INDICES];
 
 int num_loaded_indices;
 

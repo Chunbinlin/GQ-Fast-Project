@@ -24,10 +24,10 @@ void init_buffer(int pos)
     int max_frag = metadata.idx_max_fragment_sizes[pos];
 
     // Allocate and initialize buffer arrays
-    buffer_arrays[pos] = new int***[num_encodings];
+    buffer_arrays[pos] = new uint64_t***[num_encodings];
     for (int i=0; i<num_encodings; i++)
     {
-        buffer_arrays[pos][i] = new int**[MAX_THREADS];
+        buffer_arrays[pos][i] = new uint64_t**[MAX_THREADS];
     }
     // Domain buffer for Foreign key column
     uint64_t domain = metadata.idx_domains[pos][0];
