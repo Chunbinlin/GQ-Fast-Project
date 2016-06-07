@@ -108,7 +108,7 @@ public class SemmedDB {
 		
 		operators.add(join1);
 		
-		Operator threadingOp = new ThreadingOperator(query.getAliases().get(1));
+		Operator threadingOp = new ThreadingOperator(query.getAliases().get(1), false);
 		operators.add(threadingOp);
 		
 		List<Integer> column2IDs = new ArrayList<Integer>();
