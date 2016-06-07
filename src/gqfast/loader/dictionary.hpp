@@ -21,6 +21,8 @@ public:
     {
         domain = 1;
         offset = 0;
+        bits_info[0] = 0;
+        bits_info[1] = 0;
     }
 
     dictionary(int d, int o) : domain(d), offset(o)
