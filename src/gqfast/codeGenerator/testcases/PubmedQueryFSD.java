@@ -291,26 +291,97 @@ public class PubmedQueryFSD {
 	}
 	
 	public static void main(String[] args) {
-		List<Integer> selections = new ArrayList<Integer>();
-		selections.add(1000);
-		//Q2 Optimal
-		runQ2("test_pubmed_q2_opt", 1, selections, true);
-		runQ2("test_pubmed_q2_opt_threaded", 4, selections, true);
+		List<Integer> selection1 = new ArrayList<Integer>();
+		selection1.add(16966392);
 		
-		// Q2 UA
-		runQ2("test_pubmed_q2_array", 1, selections, MetaData.ENCODING_UA);
-		runQ2("test_pubmed_q2_array_threaded", 4, selections, MetaData.ENCODING_UA);
+		List<Integer> selection2 = new ArrayList<Integer>();
+		selection2.add(17996791);
 		
+		List<Integer> selection3 = new ArrayList<Integer>();
+		selection3.add(17044542);
 		
-		// Q2 BCA
-		runQ2("test_pubmed_q2_bca", 1, selections, MetaData.ENCODING_BCA);
-		runQ2("test_pubmed_q2_bca_threaded", 4, selections, MetaData.ENCODING_BCA);
+		List<Integer> selection4 = new ArrayList<Integer>();
+		selection4.add(18681952);
+		
+		List<Integer> selection5 = new ArrayList<Integer>();
+		selection5.add(19265035);
+		
+		List<Integer> selection6 = new ArrayList<Integer>();
+		selection6.add(10196795);
+		
+		List<Integer> selection7 = new ArrayList<Integer>();
+		selection7.add(17495979);
+		//Q1 Optimal
+		runQ2("q2_opt_0threads_16966392", 1, selection1, true);
+		runQ2("q2_opt_2threads_16966392", 2, selection1, true);
+		runQ2("q2_opt_4threads_16966392", 4, selection1, true);
+		runQ2("q2_opt_1threads_16966392", 10, selection1, true);
+		
+		runQ2("q2_opt_0threads_17996791", 1, selection2, true);
+		runQ2("q2_opt_2threads_17996791", 2, selection2, true);
+		runQ2("q2_opt_4threads_17996791", 4, selection2, true);
+		runQ2("q2_opt_1threads_17966791", 10, selection2, true);
+		
+		runQ2("q2_opt_0threads_17044542", 1, selection3, true);
+		runQ2("q2_opt_2threads_17044542", 2, selection3, true);
+		runQ2("q2_opt_4threads_17044542", 4, selection3, true);
+		runQ2("q2_opt_1threads_17044542", 10, selection3, true);
+		
+		runQ2("q2_opt_0threads_18681952", 1, selection4, true);
+		runQ2("q2_opt_2threads_18681952", 2, selection4, true);
+		runQ2("q2_opt_4threads_18681952", 4, selection4, true);
+		runQ2("q2_opt_1threads_18681952", 10, selection4, true);
+		
+		runQ2("q2_opt_0threads_19265035", 1, selection5, true);
+		runQ2("q2_opt_2threads_19265035", 2, selection5, true);
+		runQ2("q2_opt_4threads_19265035", 4, selection5, true);
+		runQ2("q2_opt_1threads_19265035", 10, selection5, true);
+		
+		runQ2("q2_opt_0threads_10196795", 1, selection6, true);
+		runQ2("q2_opt_2threads_10196795", 2, selection6, true);
+		runQ2("q2_opt_4threads_10196795", 4, selection6, true);
+		runQ2("q2_opt_1threads_10196795", 10, selection6, true);
+		
+		runQ2("q2_opt_0threads_17495979", 1, selection7, true);
+		runQ2("q2_opt_2threads_17495979", 2, selection7, true);
+		runQ2("q2_opt_4threads_17495979", 4, selection7, true);
+		runQ2("q2_opt_1threads_17495979", 10, selection7, true);
 				
-		// Q2 Huffman
-		runQ2("test_pubmed_q2_huffman", 1, selections, MetaData.ENCODING_HUFFMAN);
-		runQ2("test_pubmed_q2_huffman_threaded", 4, selections, MetaData.ENCODING_HUFFMAN);
+		//Q1 Array
+		runQ2("q2_array_0threads_16966392", 1, selection1, MetaData.ENCODING_UA);
+		runQ2("q2_array_2threads_16966392", 2, selection1, MetaData.ENCODING_UA);
+		runQ2("q2_array_4threads_16966392", 4, selection1, MetaData.ENCODING_UA);
+		runQ2("q2_array_1threads_16966392", 10, selection1, MetaData.ENCODING_UA);
 		
+		runQ2("q2_array_0threads_17996791", 1, selection2, MetaData.ENCODING_UA);
+		runQ2("q2_array_2threads_17996791", 2, selection2, MetaData.ENCODING_UA);
+		runQ2("q2_array_4threads_17996791", 4, selection2, MetaData.ENCODING_UA);
+		runQ2("q2_array_1threads_17966791", 10, selection2, MetaData.ENCODING_UA);
 		
+		runQ2("q2_array_0threads_17044542", 1, selection3, MetaData.ENCODING_UA);
+		runQ2("q2_array_2threads_17044542", 2, selection3, MetaData.ENCODING_UA);
+		runQ2("q2_array_4threads_17044542", 4, selection3, MetaData.ENCODING_UA);
+		runQ2("q2_array_1threads_17044542", 10, selection3, MetaData.ENCODING_UA);
+		
+		runQ2("q2_array_0threads_18681952", 1, selection4, MetaData.ENCODING_UA);
+		runQ2("q2_array_2threads_18681952", 2, selection4, MetaData.ENCODING_UA);
+		runQ2("q2_array_4threads_18681952", 4, selection4, MetaData.ENCODING_UA);
+		runQ2("q2_array_1threads_18681952", 10, selection4, MetaData.ENCODING_UA);
+		
+		runQ2("q2_array_0threads_19265035", 1, selection5, MetaData.ENCODING_UA);
+		runQ2("q2_array_2threads_19265035", 2, selection5, MetaData.ENCODING_UA);
+		runQ2("q2_array_4threads_19265035", 4, selection5, MetaData.ENCODING_UA);
+		runQ2("q2_array_1threads_19265035", 10, selection5, MetaData.ENCODING_UA);
+		
+		runQ2("q2_array_0threads_10196795", 1, selection6, MetaData.ENCODING_UA);
+		runQ2("q2_array_2threads_10196795", 2, selection6, MetaData.ENCODING_UA);
+		runQ2("q2_array_4threads_10196795", 4, selection6, MetaData.ENCODING_UA);
+		runQ2("q2_array_1threads_10196795", 10, selection6, MetaData.ENCODING_UA);
+		
+		runQ2("q2_array_0threads_17495979", 1, selection7, MetaData.ENCODING_UA);
+		runQ2("q2_array_2threads_17495979", 2, selection7, MetaData.ENCODING_UA);
+		runQ2("q2_array_4threads_17495979", 4, selection7, MetaData.ENCODING_UA);
+		runQ2("q2_array_1threads_17495979", 10, selection7, MetaData.ENCODING_UA);
 		
 	}
 

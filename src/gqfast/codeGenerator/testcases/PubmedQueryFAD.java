@@ -222,25 +222,208 @@ public class PubmedQueryFAD {
 	}
 	
 	public static void main(String[] args) {
-		List<Integer> selections = new ArrayList<Integer>();
-		selections.add(1);
-		selections.add(2);
-		//Q2 Optimal
-		runQ4("test_pubmed_q4_opt", 1, selections, true);
-		runQ4("test_pubmed_q4_opt_threaded", 4, selections, true);
+
+		List<Integer> selections1 = new ArrayList<Integer>();
+		selections1.add(90725);
+		selections1.add(1570);
 		
-		// Q2 UA
-		runQ4("test_pubmed_q4_array", 1, selections, MetaData.ENCODING_UA);
-		runQ4("test_pubmed_q4_array_threaded", 4, selections, MetaData.ENCODING_UA);
+		List<Integer> selections2 = new ArrayList<Integer>();
+		selections2.add(90725);
+		selections2.add(2584);
+		
+		List<Integer> selections3 = new ArrayList<Integer>();
+		selections3.add(1570);
+		selections3.add(2584);
+		
+		List<Integer> selections4 = new ArrayList<Integer>();
+		selections4.add(4446);
+		selections4.add(535);
+		
+		List<Integer> selections5 = new ArrayList<Integer>();
+		selections5.add(4446);
+		selections5.add(1478);
+		
+		List<Integer> selections6 = new ArrayList<Integer>();
+		selections6.add(535);
+		selections6.add(1478);
+		
+		List<Integer> selections7 = new ArrayList<Integer>();
+		selections7.add(7608);
+		selections7.add(3646);
+		//Q3 Mesh Optimal
+		runQ4("q4_mesh_opt_0threads_90725_1570", 1, selections1, true);
+		runQ4("q4_mesh_opt_2threads_90725_1570", 2, selections1, true);
+		runQ4("q4_mesh_opt_4threads_90725_1570", 4, selections1, true);
+		runQ4("q4_mesh_opt_1threads_90725_1570", 10, selections1, true);
+		
+		runQ4("q4_mesh_opt_0threads_90725_2584", 1, selections2, true);
+		runQ4("q4_mesh_opt_2threads_90725_2584", 2, selections2, true);
+		runQ4("q4_mesh_opt_4threads_90725_2584", 4, selections2, true);
+		runQ4("q4_mesh_opt_1threads_90725_2584", 10, selections2, true);
+		
+		runQ4("q4_mesh_opt_0threads_1570_2584", 1, selections3, true);
+		runQ4("q4_mesh_opt_2threads_1570_2584", 2, selections3, true);
+		runQ4("q4_mesh_opt_4threads_1570_2584", 4, selections3, true);
+		runQ4("q4_mesh_opt_1threads_1570_2584", 10, selections3, true);
+		
+		runQ4("q4_mesh_opt_0threads_4446_535", 1, selections4, true);
+		runQ4("q4_mesh_opt_2threads_4446_535", 2, selections4, true);
+		runQ4("q4_mesh_opt_4threads_4446_535", 4, selections4, true);
+		runQ4("q4_mesh_opt_1threads_4446_535", 10, selections4, true);
+		
+		runQ4("q4_mesh_opt_0threads_4446_1478", 1, selections5, true);
+		runQ4("q4_mesh_opt_2threads_4446_1478", 2, selections5, true);
+		runQ4("q4_mesh_opt_4threads_4446_1478", 4, selections5, true);
+		runQ4("q4_mesh_opt_1threads_4446_1478", 10, selections5, true);
+		
+		runQ4("q4_mesh_opt_0threads_535_1478", 1, selections6, true);
+		runQ4("q4_mesh_opt_2threads_535_1478", 2, selections6, true);
+		runQ4("q4_mesh_opt_4threads_535_1478", 4, selections6, true);
+		runQ4("q4_mesh_opt_1threads_535_1478", 10, selections6, true);
+		
+		runQ4("q4_mesh_opt_0threads_7608_3646", 1, selections7, true);
+		runQ4("q4_mesh_opt_2threads_7608_3646", 2, selections7, true);
+		runQ4("q4_mesh_opt_4threads_7608_3646", 4, selections7, true);
+		runQ4("q4_mesh_opt_1threads_7608_3646", 10, selections7, true);
+		
+		// Q3 Mesh Array
+		runQ4("q4_mesh_array_0threads_90725_1570", 1, selections1, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_2threads_90725_1570", 2, selections1, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_4threads_90725_1570", 4, selections1, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_1threads_90725_1570", 10, selections1, MetaData.ENCODING_UA);
+		
+		runQ4("q4_mesh_array_0threads_90725_2584", 1, selections2, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_2threads_90725_2584", 2, selections2, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_4threads_90725_2584", 4, selections2, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_1threads_90725_2584", 10, selections2, MetaData.ENCODING_UA);
+		
+		runQ4("q4_mesh_array_0threads_1570_2584", 1, selections3, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_2threads_1570_2584", 2, selections3, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_4threads_1570_2584", 4, selections3, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_1threads_1570_2584", 10, selections3, MetaData.ENCODING_UA);
+		
+		runQ4("q4_mesh_array_0threads_4446_535", 1, selections4, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_2threads_4446_535", 2, selections4, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_4threads_4446_535", 4, selections4, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_1threads_4446_535", 10, selections4, MetaData.ENCODING_UA);
+		
+		runQ4("q4_mesh_array_0threads_4446_1478", 1, selections5, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_2threads_4446_1478", 2, selections5, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_4threads_4446_1478", 4, selections5, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_1threads_4446_1478", 10, selections5, MetaData.ENCODING_UA);
+		
+		runQ4("q4_mesh_array_0threads_535_1478", 1, selections6, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_2threads_535_1478", 2, selections6, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_4threads_535_1478", 4, selections6, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_1threads_535_1478", 10, selections6, MetaData.ENCODING_UA);
+		
+		runQ4("q4_mesh_array_0threads_7608_3646", 1, selections7, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_2threads_7608_3646", 2, selections7, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_4threads_7608_3646", 4, selections7, MetaData.ENCODING_UA);
+		runQ4("q4_mesh_array_1threads_7608_3646", 10, selections7, MetaData.ENCODING_UA);
+		
+		// Mesh+Supp.
+		
+		selections1 = new ArrayList<Integer>();
+		selections1.add(879);
+		selections1.add(254);
+		
+		selections2 = new ArrayList<Integer>();
+		selections2.add(879);
+		selections2.add(7041);
+		
+		selections3 = new ArrayList<Integer>();
+		selections3.add(254);
+		selections3.add(7041);
+		
+		selections4 = new ArrayList<Integer>();
+		selections4.add(1412);
+		selections4.add(10350);
+		
+		selections5 = new ArrayList<Integer>();
+		selections5.add(10350);
+		selections5.add(17630);
+		
+		selections6 = new ArrayList<Integer>();
+		selections6.add(231);
+		selections6.add(4366);
+		
+		selections7 = new ArrayList<Integer>();
+		selections7.add(1130);
+		selections7.add(2994);
 		
 		
-		// Q2 BCA
-		runQ4("test_pubmed_q4_bca", 1, selections, MetaData.ENCODING_BCA);
-		runQ4("test_pubmed_q4_bca_threaded", 4, selections, MetaData.ENCODING_BCA);
-				
-		// Q2 Huffman
-		runQ4("test_pubmed_q4_huffman", 1, selections, MetaData.ENCODING_HUFFMAN);
-		runQ4("test_pubmed_q4_huffman_threaded", 4, selections, MetaData.ENCODING_HUFFMAN);
+		//Q3 Mesh+Supp Optimal
+		runQ4("q4_tag_opt_0threads_879_254", 1, selections1, true);
+		runQ4("q4_tag_opt_2threads_879_254", 2, selections1, true);
+		runQ4("q4_tag_opt_4threads_879_254", 4, selections1, true);
+		runQ4("q4_tag_opt_1threads_879_254", 10, selections1, true);
+		
+		runQ4("q4_tag_opt_0threads_879_7041", 1, selections2, true);
+		runQ4("q4_tag_opt_2threads_879_7041", 2, selections2, true);
+		runQ4("q4_tag_opt_4threads_879_7041", 4, selections2, true);
+		runQ4("q4_tag_opt_1threads_879_7041", 10, selections2, true);
+		
+		runQ4("q4_tag_opt_0threads_254_7041", 1, selections3, true);
+		runQ4("q4_tag_opt_2threads_254_7041", 2, selections3, true);
+		runQ4("q4_tag_opt_4threads_254_7041", 4, selections3, true);
+		runQ4("q4_tag_opt_1threads_254_7041", 10, selections3, true);
+		
+		runQ4("q4_tag_opt_0threads_1412_10350", 1, selections4, true);
+		runQ4("q4_tag_opt_2threads_1412_10350", 2, selections4, true);
+		runQ4("q4_tag_opt_4threads_1412_10350", 4, selections4, true);
+		runQ4("q4_tag_opt_1threads_1412_10350", 10, selections4, true);
+		
+		runQ4("q4_tag_opt_0threads_10350_17630", 1, selections5, true);
+		runQ4("q4_tag_opt_2threads_10350_17630", 2, selections5, true);
+		runQ4("q4_tag_opt_4threads_10350_17630", 4, selections5, true);
+		runQ4("q4_tag_opt_1threads_10350_17630", 10, selections5, true);
+		
+		runQ4("q4_tag_opt_0threads_231_4366", 1, selections6, true);
+		runQ4("q4_tag_opt_2threads_231_4366", 2, selections6, true);
+		runQ4("q4_tag_opt_4threads_231_4366", 4, selections6, true);
+		runQ4("q4_tag_opt_1threads_231_4366", 10, selections6, true);
+		
+		runQ4("q4_tag_opt_0threads_1130_2994", 1, selections7, true);
+		runQ4("q4_tag_opt_2threads_1330_2994", 2, selections7, true);
+		runQ4("q4_tag_opt_4threads_1330_2994", 4, selections7, true);
+		runQ4("q4_tag_opt_1threads_1130_2994", 10, selections7, true);
+		
+		// Q3 Mesh+Supp Array
+		runQ4("q4_tag_array_0threads_879_254", 1, selections1, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_2threads_879_254", 2, selections1, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_4threads_879_254", 4, selections1, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_1threads_879_254", 10, selections1, MetaData.ENCODING_UA);
+		
+		runQ4("q4_tag_array_0threads_879_7041", 1, selections2, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_2threads_879_7041", 2, selections2, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_4threads_879_7041", 4, selections2, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_1threads_879_7041", 10, selections2, MetaData.ENCODING_UA);
+		
+		runQ4("q4_tag_array_0threads_254_7041", 1, selections3, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_2threads_254_7041", 2, selections3, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_4threads_254_7041", 4, selections3, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_1threads_254_7041", 10, selections3, MetaData.ENCODING_UA);
+		
+		runQ4("q4_tag_array_0threads_1412_10350", 1, selections4, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_2threads_1412_10350", 2, selections4, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_4threads_1412_10350", 4, selections4, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_1threads_1412_10350", 10, selections4, MetaData.ENCODING_UA);
+		
+		runQ4("q4_tag_array_0threads_10350_17630", 1, selections5, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_2threads_10350_17630", 2, selections5, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_4threads_10350_17630", 4, selections5, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_1threads_10350_17630", 10, selections5, MetaData.ENCODING_UA);
+		
+		runQ4("q4_tag_array_0threads_231_4366", 1, selections6, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_2threads_231_4366", 2, selections6, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_4threads_231_4366", 4, selections6, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_1threads_231_4366", 10, selections6, MetaData.ENCODING_UA);
+		
+		runQ4("q4_tag_array_0threads_1130_2994", 1, selections7, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_2threads_1330_2994", 2, selections7, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_4threads_1330_2994", 4, selections7, MetaData.ENCODING_UA);
+		runQ4("q4_tag_array_1threads_1130_2994", 10, selections7, MetaData.ENCODING_UA);
 		
 		
 		
