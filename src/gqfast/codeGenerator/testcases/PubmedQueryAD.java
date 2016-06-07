@@ -116,7 +116,7 @@ public class PubmedQueryAD {
 		List<Integer> column1IDs = new ArrayList<Integer>();
 		column1IDs.add(0);
 		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join1 = new JoinOperator(true, column1IDs, aliases.get(1), aliases.get(0), 0);
+		Operator join1 = new JoinOperator(false, column1IDs, aliases.get(1), aliases.get(0), 0);
 		
 		operators.add(join1);
 			
@@ -162,7 +162,7 @@ public class PubmedQueryAD {
 		List<Integer> column1IDs = new ArrayList<Integer>();
 		column1IDs.add(0);
 		// JoinOperator(int indexID, boolean entityFlag, List<Integer> columnIDs,  int alias, int loopColumn, int drivingAliasID, int drivingAliasColumn)
-		Operator join1 = new JoinOperator(true, column1IDs, aliases.get(1), aliases.get(0), 0);
+		Operator join1 = new JoinOperator(false, column1IDs, aliases.get(1), aliases.get(0), 0);
 		
 		operators.add(join1);
 			
