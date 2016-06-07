@@ -197,7 +197,7 @@ void semmeddb_create_optimal_indices()
     idx[2] = buildIndex<TValue, TIndexMap>("./semmeddb/sp1.csv", third_index_encodings, 1, 2);
     init_buffer(2);
 
-    Encodings encoding4("PREDICATION_ID", ENCODING_HUFFMAN);
+    Encodings encoding4("PREDICATION_ID", ENCODING_BYTE_ALIGNED_BITMAP);
 
     Encodings fourth_index_encodings[1] = {encoding4};
 
