@@ -2,6 +2,7 @@
 #include <fstream>
 #include "load.hpp"
 #include "input_handling.hpp"
+#include "auto_tests.hpp"
 #include "serialization.hpp"
 // threads
 int num_threads;
@@ -76,6 +77,7 @@ int main(int argc, char ** argv)
 
     char c;
     char action = 0;
+    char automate = 0;
     int database = 1;
     int compression = 1;
     int num_files = 0;
@@ -83,14 +85,16 @@ int main(int argc, char ** argv)
     int itable = 0;
 
     char* filename = "dummy.bin";
+    char* auto_filename = "dummy.bin";
 
     num_loaded_indices = 0;
-    char *help = "usage: %s [-h] [-s] [-l] [-d database] [-c compression] \n\n"
+    char *help = "usage: %s [-h] [-s] [-l] [-d database] [-c compression] [-a file]\n\n"
                  "-h\tShow list of parameters.\n\n"
                  "-s\tSave indices to file: filename\n\n"
                  "-l\tLoad indices from file: filename\n\n"
                  "-d\tChoose test database.\n\n"
                  "-i\tChoose individual index table\n\n"
+                 "-a\Automated loader: filename\n\n"
                  "[1]\tSemmedDB\n"
                  "[2]\tPubmed (mesh only)\n"
                  "[3]\tPubmed (mesh+supp)\n\n"
@@ -100,7 +104,7 @@ int main(int argc, char ** argv)
                  "[3]\tBB\n"
                  "[4]\tHuffman\n"
                  "[5]\tOptimal compression\n\n";
-    while ((c = getopt(argc, argv, "hs:l:d:c:i:")) != -1)
+    while ((c = getopt(argc, argv, "hs:l:d:c:i:a:")) != -1)
     {
         switch (c)
         {
@@ -151,67 +155,38 @@ int main(int argc, char ** argv)
                 action = 'i';
             }
             break;
+        case 'a':
+            automate = 'y';
+            if (optarg)
+            {
+                auto_filename = optarg;
+            }
+            else
+            {
+                cout << "error: filename required!\n";
+                exit(0);
+            }
+            break;
         }
     }
 
-    switch(action)
-    {
-    case 'l':
+
+    if (automate = 'y')
     {
         load_index<uint32_t>(idx, filename);
         cout << "\n...Indices have been loaded...\n";
-        char testing = 'y';
-        while (testing == 'y')
-        {
-            string library_file;
-            cout << "Please enter the name of the library file you are loading (don't include the .so extension; path is assumed to be current dir): \n";
-            cin >> library_file;
-            string result_domain_string;
-            cout << "Please specify the index ID for the result domain: \n";
-            cin >> result_domain_string;
-            int result_domain = atoi(result_domain_string.c_str());
-            char result_data_type;
-            cout << "Please specify one of these result data types: (d)ouble, (i)nt \n";
-            cin >> result_data_type;
-            if (result_data_type == 'd')
-            {
-                handle_input<double>(library_file, result_domain);
-            }
-            else if (result_data_type == 'i')
-            {
-                handle_input<int>(library_file, result_domain);
-            }
+        cout << "\n...Automated results will be sent to 'output.txt'\n";
+        automatic_tests(auto_filename);
+    }
+    else
+    {
 
-            cout << "\nLoad another file(y/n)?\n";
-            cin >> testing;
-        }
-        break;
-    }
-    case 's':
-    {
-        int result = load<int, uint32_t>(database, compression);
-        if (result)
+        switch(action)
         {
-            cout << "Indices loaded properly\n";
-            save_index<uint32_t>(idx, filename);
-        }
-        else
+        case 'l':
         {
-            cerr << "Error: load function did not terminate normally\n\n";
-        }
-        break;
-    }
-    case 'i':
-    {
-        load_individual_table<int, uint32_t>(itable, database, compression);
-        break;
-    }
-    default:
-    {
-        int result = load<int, uint32_t>(database, compression);
-        if (result)
-        {
-            cout << "\n...Indices have been loaded...";
+            load_index<uint32_t>(idx, filename);
+            cout << "\n...Indices have been loaded...\n";
             char testing = 'y';
             while (testing == 'y')
             {
@@ -225,7 +200,6 @@ int main(int argc, char ** argv)
                 char result_data_type;
                 cout << "Please specify one of these result data types: (d)ouble, (i)nt \n";
                 cin >> result_data_type;
-                cin >> result_data_type;
                 if (result_data_type == 'd')
                 {
                     handle_input<double>(library_file, result_domain);
@@ -234,20 +208,73 @@ int main(int argc, char ** argv)
                 {
                     handle_input<int>(library_file, result_domain);
                 }
+
                 cout << "\nLoad another file(y/n)?\n";
                 cin >> testing;
             }
-
+            break;
         }
-        else
+        case 's':
         {
-            cerr << "Error: load function did not terminate normally\n\n";
+            int result = load<int, uint32_t>(database, compression);
+            if (result)
+            {
+                cout << "Indices loaded properly\n";
+                save_index<uint32_t>(idx, filename);
+            }
+            else
+            {
+                cerr << "Error: load function did not terminate normally\n\n";
+            }
+            break;
         }
-        break;
-    }
+        case 'i':
+        {
+            load_individual_table<int, uint32_t>(itable, database, compression);
+            break;
+        }
+        default:
+        {
+            int result = load<int, uint32_t>(database, compression);
+            if (result)
+            {
+                cout << "\n...Indices have been loaded...";
+                char testing = 'y';
+                while (testing == 'y')
+                {
+                    string library_file;
+                    cout << "Please enter the name of the library file you are loading (don't include the .so extension; path is assumed to be current dir): \n";
+                    cin >> library_file;
+                    string result_domain_string;
+                    cout << "Please specify the index ID for the result domain: \n";
+                    cin >> result_domain_string;
+                    int result_domain = atoi(result_domain_string.c_str());
+                    char result_data_type;
+                    cout << "Please specify one of these result data types: (d)ouble, (i)nt \n";
+                    cin >> result_data_type;
+                    cin >> result_data_type;
+                    if (result_data_type == 'd')
+                    {
+                        handle_input<double>(library_file, result_domain);
+                    }
+                    else if (result_data_type == 'i')
+                    {
+                        handle_input<int>(library_file, result_domain);
+                    }
+                    cout << "\nLoad another file(y/n)?\n";
+                    cin >> testing;
+                }
 
-    }
+            }
+            else
+            {
+                cerr << "Error: load function did not terminate normally\n\n";
+            }
+            break;
+        }
 
+        }
+    }
     delete_globals();
     return 0;
 }

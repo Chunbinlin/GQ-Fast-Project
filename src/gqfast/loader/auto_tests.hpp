@@ -1,0 +1,69 @@
+#ifndef auto_tests_
+#define auto_tests_
+
+#include <iostream>
+#include <fstream>
+#include "input_handling.hpp"
+
+void automatic_tests(char* input_file)
+{
+
+    string test_file(input_file);
+
+    string line;
+    ifstream myfile(test_file);
+    ofstream outfile("output.txt");
+    uint64_t lines_read_in = 0;
+
+    // skip line 1
+    getline(myfile, line);
+
+    while (getline(myfile,line))
+    {
+        lines_read_in++;
+        stringstream lineStream(line);
+        string cell;
+        string func_name;
+        int r_pos;
+        char output_type;
+        int counter = 0;
+        chrono::duration<double> time_span;
+
+        while(getline(lineStream,cell,','))
+        {
+            if (counter == 0)
+            {
+                func_name = cell;
+            }
+            else if (counter == 1)
+            {
+                r_pos = atoi(cell.c_str());
+            }
+            else if (counter == 2)
+            {
+                output_type = cell[0];
+            }
+            counter++;
+        }
+
+        if (output_type == 'i') {
+            time_span = auto_handle_input<int>(func_name, r_pos);
+        }
+        else if (output_type == 'd') {
+            time_span = auto_handle_input<double>(func_name, r_pos);
+        }
+
+        outfile << func_name << ", " << time_span.count() << " secs\n";
+
+    }
+    myfile.close();
+    outfile.close();
+    // cerr << "..." << lines_read_in << " lines read in.\n";
+
+}
+
+
+
+
+
+#endif
