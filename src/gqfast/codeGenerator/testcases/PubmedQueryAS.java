@@ -203,7 +203,7 @@ public class PubmedQueryAS {
 		
 		operators.add(join2);
 		
-		Operator threadOp = new ThreadingOperator(aliases.get(2));
+		Operator threadOp = new ThreadingOperator(aliases.get(2), false);
 		operators.add(threadOp);
 		
 		

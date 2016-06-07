@@ -213,7 +213,7 @@ public class PubmedQueryFSD {
 		
 		operators.add(join2);
 		
-		Operator threadOp = new ThreadingOperator(aliases.get(2));
+		Operator threadOp = new ThreadingOperator(aliases.get(2), false);
 		operators.add(threadOp);
 		
 		List<Integer> column3IDs = new ArrayList<Integer>();
