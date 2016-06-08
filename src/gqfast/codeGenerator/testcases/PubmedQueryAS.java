@@ -336,30 +336,130 @@ public class PubmedQueryAS {
 		}
 		CodeGenerator.generateCode(operators, metadata);
 	}
-	
-	
+
+
 	public static void main(String[] args) {
-		
-		List<Integer> selections = new ArrayList<Integer>();
-		
-		selections.add(1000);
-		
+
+		List<Integer> selections1 = new ArrayList<Integer>();
+		selections1.add(2981669);
+
+		List<Integer> selections2 = new ArrayList<Integer>();
+		selections2.add(10246893);
+
+		List<Integer> selections3 = new ArrayList<Integer>();
+		selections3.add(5450530);
+
+		List<Integer> selections4 = new ArrayList<Integer>();
+		selections4.add(1476432);
+
+		List<Integer> selections5 = new ArrayList<Integer>();
+		selections5.add(4945389);
+
 		// Pubmed 
 		//Q5 Optimal 
-		runQ5("test_pubmed_q5_opt", 1, selections, true);
-		runQ5("test_pubmed_q5_opt_threaded", 4, selections,  true);
-		
-		//Q5 Huffman
-		runQ5("test_pubmed_q5_huffman", 1, selections, MetaData.ENCODING_HUFFMAN);
-		runQ5("test_pubmed_q5_huffman_threaded", 4, selections, MetaData.ENCODING_HUFFMAN);
-		
-		//Q5 BCA
-		runQ5("test_pubmed_q5_bca", 1, selections, MetaData.ENCODING_BCA);
-		runQ5("test_pubmed_q5_bca_threaded", 4, selections, MetaData.ENCODING_BCA);
-		
-		//Q5 UA
-		runQ5("test_pubmed_q5_array", 1, selections, MetaData.ENCODING_UA);
-		runQ5("test_pubmed_q5_array_threaded", 4, selections, MetaData.ENCODING_UA);
+		runQ5("q5_opt_0threads_2981669", 1, selections1, true);
+		runQ5("q5_opt_2threads_2981669", 2, selections1,  true);
+		runQ5("q5_opt_4threads_2981669", 4, selections1,  true);
+		runQ5("q5_opt_1threads_2981669", 10, selections1,  true);
+
+		runQ5("q5_opt_0threads_10246893", 1, selections2, true);
+		runQ5("q5_opt_2threads_10246893", 2, selections2,  true);
+		runQ5("q5_opt_4threads_10246893", 4, selections2,  true);
+		runQ5("q5_opt_1threads_10246893", 10, selections2,  true);		
+
+		runQ5("q5_opt_0threads_5450530", 1, selections3, true);
+		runQ5("q5_opt_2threads_5450530", 2, selections3,  true);
+		runQ5("q5_opt_4threads_5450530", 4, selections3,  true);
+		runQ5("q5_opt_1threads_5350530", 10, selections3,  true);
+
+		runQ5("q5_opt_0threads_1476432", 1, selections4, true);
+		runQ5("q5_opt_2threads_1476432", 2, selections4,  true);
+		runQ5("q5_opt_4threads_1476432", 4, selections4,  true);
+		runQ5("q5_opt_1threads_1476432", 10, selections4,  true);
+
+		runQ5("q5_opt_0threads_4945389", 1, selections5, true);
+		runQ5("q5_opt_2threads_4945389", 2, selections5,  true);
+		runQ5("q5_opt_4threads_4945389", 4, selections5,  true);
+		runQ5("q5_opt_1threads_4945389", 10, selections5,  true);
+
+		//Q5 Array 
+		runQ5("q5_array_0threads_2981669", 1, selections1, MetaData.ENCODING_UA);
+		runQ5("q5_array_2threads_2981669", 2, selections1,  MetaData.ENCODING_UA);
+		runQ5("q5_array_4threads_2981669", 4, selections1,  MetaData.ENCODING_UA);
+		runQ5("q5_array_1threads_2981669", 10, selections1,  MetaData.ENCODING_UA);
+
+		runQ5("q5_array_0threads_10246893", 1, selections2, MetaData.ENCODING_UA);
+		runQ5("q5_array_2threads_10246893", 2, selections2,  MetaData.ENCODING_UA);
+		runQ5("q5_array_4threads_10246893", 4, selections2,  MetaData.ENCODING_UA);
+		runQ5("q5_array_1threads_10246893", 10, selections2,  MetaData.ENCODING_UA);		
+
+		runQ5("q5_array_0threads_5450530", 1, selections3, MetaData.ENCODING_UA);
+		runQ5("q5_array_2threads_5450530", 2, selections3,  MetaData.ENCODING_UA);
+		runQ5("q5_array_4threads_5450530", 4, selections3,  MetaData.ENCODING_UA);
+		runQ5("q5_array_1threads_5350530", 10, selections3,  MetaData.ENCODING_UA);
+
+		runQ5("q5_array_0threads_1476432", 1, selections4, MetaData.ENCODING_UA);
+		runQ5("q5_array_2threads_1476432", 2, selections4,  MetaData.ENCODING_UA);
+		runQ5("q5_array_4threads_1476432", 4, selections4,  MetaData.ENCODING_UA);
+		runQ5("q5_array_1threads_1476432", 10, selections4,  MetaData.ENCODING_UA);
+
+		runQ5("q5_array_0threads_4945389", 1, selections5, MetaData.ENCODING_UA);
+		runQ5("q5_array_2threads_4945389", 2, selections5,  MetaData.ENCODING_UA);
+		runQ5("q5_array_4threads_4945389", 4, selections5,  MetaData.ENCODING_UA);
+		runQ5("q5_array_1threads_4945389", 10, selections5,  MetaData.ENCODING_UA);
+
+		//Q5 Optimal 
+		runQ5("q5_bca_0threads_2981669", 1, selections1, MetaData.ENCODING_BCA);
+		runQ5("q5_bca_2threads_2981669", 2, selections1,  MetaData.ENCODING_BCA);
+		runQ5("q5_bca_4threads_2981669", 4, selections1,  MetaData.ENCODING_BCA);
+		runQ5("q5_bca_1threads_2981669", 10, selections1,  MetaData.ENCODING_BCA);
+
+		runQ5("q5_bca_0threads_10246893", 1, selections2, MetaData.ENCODING_BCA);
+		runQ5("q5_bca_2threads_10246893", 2, selections2,  MetaData.ENCODING_BCA);
+		runQ5("q5_bca_4threads_10246893", 4, selections2,  MetaData.ENCODING_BCA);
+		runQ5("q5_bca_1threads_10246893", 10, selections2,  MetaData.ENCODING_BCA);		
+
+		runQ5("q5_bca_0threads_5450530", 1, selections3, MetaData.ENCODING_BCA);
+		runQ5("q5_bca_2threads_5450530", 2, selections3,  MetaData.ENCODING_BCA);
+		runQ5("q5_bca_4threads_5450530", 4, selections3,  MetaData.ENCODING_BCA);
+		runQ5("q5_bca_1threads_5350530", 10, selections3,  MetaData.ENCODING_BCA);
+
+		runQ5("q5_bca_0threads_1476432", 1, selections4, MetaData.ENCODING_BCA);
+		runQ5("q5_bca_2threads_1476432", 2, selections4,  MetaData.ENCODING_BCA);
+		runQ5("q5_bca_4threads_1476432", 4, selections4,  MetaData.ENCODING_BCA);
+		runQ5("q5_bca_1threads_1476432", 10, selections4,  MetaData.ENCODING_BCA);
+
+		runQ5("q5_bca_0threads_4945389", 1, selections5, MetaData.ENCODING_BCA);
+		runQ5("q5_bca_2threads_4945389", 2, selections5,  MetaData.ENCODING_BCA);
+		runQ5("q5_bca_4threads_4945389", 4, selections5,  MetaData.ENCODING_BCA);
+		runQ5("q5_bca_1threads_4945389", 10, selections5,  MetaData.ENCODING_BCA);
+
+		//Q5 Optimal 
+		runQ5("q5_huff_0threads_2981669", 1, selections1, MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_2threads_2981669", 2, selections1,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_4threads_2981669", 4, selections1,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_1threads_2981669", 10, selections1,  MetaData.ENCODING_HUFFMAN);
+
+		runQ5("q5_huff_0threads_10246893", 1, selections2, MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_2threads_10246893", 2, selections2,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_4threads_10246893", 4, selections2,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_1threads_10246893", 10, selections2,  MetaData.ENCODING_HUFFMAN);		
+
+		runQ5("q5_huff_0threads_5450530", 1, selections3, MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_2threads_5450530", 2, selections3,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_4threads_5450530", 4, selections3,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_1threads_5350530", 10, selections3,  MetaData.ENCODING_HUFFMAN);
+
+		runQ5("q5_huff_0threads_1476432", 1, selections4, MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huf_2threads_1476432", 2, selections4,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_4threads_1476432", 4, selections4,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huf_1threads_1476432", 10, selections4,  MetaData.ENCODING_HUFFMAN);
+
+		runQ5("q5_huff_0threads_4945389", 1, selections5, MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_2threads_4945389", 2, selections5,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_4threads_4945389", 4, selections5,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_1threads_4945389", 10, selections5,  MetaData.ENCODING_HUFFMAN);
+
 
 		System.out.println("Done");
 	}
