@@ -236,7 +236,7 @@ public class PubmedQuerySD {
 		selection5.add(19265035);
 		
 		List<Integer> selection6 = new ArrayList<Integer>();
-		selection6.add(10196795);
+		selection6.add(10296795);
 		
 		List<Integer> selection7 = new ArrayList<Integer>();
 		selection7.add(17495979);
@@ -266,10 +266,10 @@ public class PubmedQuerySD {
 		runQ1("q1_opt_4threads_19265035", 4, selection5, true);
 		runQ1("q1_opt_1threads_19265035", 10, selection5, true);
 		
-		runQ1("q1_opt_0threads_10196795", 1, selection6, true);
-		runQ1("q1_opt_2threads_10196795", 2, selection6, true);
-		runQ1("q1_opt_4threads_10196795", 4, selection6, true);
-		runQ1("q1_opt_1threads_10196795", 10, selection6, true);
+		runQ1("q1_opt_0threads_10296795", 1, selection6, true);
+		runQ1("q1_opt_2threads_10296795", 2, selection6, true);
+		runQ1("q1_opt_4threads_10296795", 4, selection6, true);
+		runQ1("q1_opt_1threads_10296795", 10, selection6, true);
 		
 		runQ1("q1_opt_0threads_17495979", 1, selection7, true);
 		runQ1("q1_opt_2threads_17495979", 2, selection7, true);
@@ -302,10 +302,10 @@ public class PubmedQuerySD {
 		runQ1("q1_array_4threads_19265035", 4, selection5, MetaData.ENCODING_UA);
 		runQ1("q1_array_1threads_19265035", 10, selection5, MetaData.ENCODING_UA);
 		
-		runQ1("q1_array_0threads_10196795", 1, selection6, MetaData.ENCODING_UA);
-		runQ1("q1_array_2threads_10196795", 2, selection6, MetaData.ENCODING_UA);
-		runQ1("q1_array_4threads_10196795", 4, selection6, MetaData.ENCODING_UA);
-		runQ1("q1_array_1threads_10196795", 10, selection6, MetaData.ENCODING_UA);
+		runQ1("q1_array_0threads_10296795", 1, selection6, MetaData.ENCODING_UA);
+		runQ1("q1_array_2threads_10296795", 2, selection6, MetaData.ENCODING_UA);
+		runQ1("q1_array_4threads_10296795", 4, selection6, MetaData.ENCODING_UA);
+		runQ1("q1_array_1threads_10296795", 10, selection6, MetaData.ENCODING_UA);
 		
 		runQ1("q1_array_0threads_17495979", 1, selection7, MetaData.ENCODING_UA);
 		runQ1("q1_array_2threads_17495979", 2, selection7, MetaData.ENCODING_UA);
