@@ -63,25 +63,25 @@ void load_index(fastr_index<T>** s, const char * filename)
     for (int i=0; i<num_loaded_indices; i++)
     {
         //cerr << "loading index " << i << "\n";
-        uint64_t domain_size;
-        int num_fragment_data;
+        uint64_t domain_size = 0;
+        int num_fragment_data = 0;
         ia >> domain_size;
         ia >> num_fragment_data;
         //    cerr << "num fragment data = " << num_fragment_data << "\n";
-        unsigned int* fragment_data_length = new unsigned int[num_fragment_data];
+        unsigned int* fragment_data_length = new unsigned int[num_fragment_data]();
         for (int j=0; j<num_fragment_data; j++)
         {
             //    cerr << "loading fragment_data_length " << j << "\n";
             ia >> fragment_data_length[j];
         }
-        int* huffman_tree_array_size = new int[num_fragment_data];
+        int* huffman_tree_array_size = new int[num_fragment_data]();
         for (int j=0; j<num_fragment_data; j++)
         {
             //    cerr << "loading huff tree array size " << j << "\n";
             ia >> huffman_tree_array_size[j];
         }
 
-        int load_flag;
+        int load_flag = 0;
         ia >> load_flag;
         //   cerr << "creating index\n";
         fastr_index<T>* temp_index = new fastr_index<T>(domain_size, num_fragment_data, fragment_data_length, huffman_tree_array_size, load_flag);
