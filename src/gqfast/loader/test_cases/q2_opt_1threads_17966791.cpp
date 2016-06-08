@@ -4,7 +4,7 @@
 #include "../fastr_index.hpp"
 #include "../global_vars.hpp"
 
-#define NUM_THREADS 1
+#define NUM_THREADS 10
 #define BUFFER_POOL_SIZE 1
 
 using namespace std;
@@ -54,7 +54,7 @@ void q2_opt_1threads_17966791_term1_col0_decode_BB(unsigned char* term1_col0_ptr
 	buffer_arrays[2][0][0][0][0] = 0;
 
 	int shiftbits = 0;
-	do {
+	do { 
 		term1_col0_bytes--;
 		uint32_t next_seven_bits = *term1_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
@@ -93,11 +93,11 @@ void q2_opt_1threads_17966791_term1_col1_decode_Huffman(unsigned char* term1_col
 		bool* terminator_array = terminate_start;
 		int* tree_array = tree_array_start;
 
-		while(!*terminator_array) {
+		while(!*terminator_array) { 
 
 			char direction = *term1_col1_ptr & (mask >>= 1);
 
-			if (mask == 1) {
+			if (mask == 1) { 
 				mask = 0x100;
 				term1_col1_ptr++;
 			}
@@ -167,7 +167,7 @@ void q2_opt_1threads_17966791_doc2_col0_decode_BB_threaded(int thread_id, unsign
 	buffer_arrays[3][0][thread_id][0][0] = 0;
 
 	int shiftbits = 0;
-	do {
+	do { 
 		doc2_col0_bytes--;
 		uint32_t next_seven_bits = *doc2_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
@@ -206,11 +206,11 @@ void q2_opt_1threads_17966791_doc2_col1_decode_Huffman_threaded(int thread_id, u
 		bool* terminator_array = terminate_start;
 		int* tree_array = tree_array_start;
 
-		while(!*terminator_array) {
+		while(!*terminator_array) { 
 
 			char direction = *doc2_col1_ptr & (mask >>= 1);
 
-			if (mask == 1) {
+			if (mask == 1) { 
 				mask = 0x100;
 				doc2_col1_ptr++;
 			}

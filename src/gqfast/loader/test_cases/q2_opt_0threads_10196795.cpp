@@ -235,7 +235,7 @@ extern "C" double* q2_opt_0threads_10196795(int** null_checks) {
 	year2_col0_offset = idx[1]->dict[0]->offset;
 
 	uint64_t doc1_list[1];
-	doc1_list[0] = 10196795;
+	doc1_list[0] = 10296795;
 
 	for (int doc1_it = 0; doc1_it<1; doc1_it++) {
 

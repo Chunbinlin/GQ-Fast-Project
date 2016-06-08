@@ -4,7 +4,7 @@
 #include "../fastr_index.hpp"
 #include "../global_vars.hpp"
 
-#define NUM_THREADS 1
+#define NUM_THREADS 10
 #define BUFFER_POOL_SIZE 1
 
 using namespace std;
@@ -26,7 +26,7 @@ void q1_opt_1threads_10196795_term1_col0_decode_BB(unsigned char* term1_col0_ptr
 	buffer_arrays[2][0][0][0][0] = 0;
 
 	int shiftbits = 0;
-	do {
+	do { 
 		term1_col0_bytes--;
 		uint32_t next_seven_bits = *term1_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
@@ -93,7 +93,7 @@ void q1_opt_1threads_10196795_doc2_col0_decode_BB_threaded(int thread_id, unsign
 	buffer_arrays[3][0][thread_id][0][0] = 0;
 
 	int shiftbits = 0;
-	do {
+	do { 
 		doc2_col0_bytes--;
 		uint32_t next_seven_bits = *doc2_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
@@ -151,7 +151,7 @@ extern "C" int* q1_opt_1threads_10196795(int** null_checks) {
 
 
 	uint64_t doc1_list[1];
-	doc1_list[0] = 10196795;
+	doc1_list[0] = 10296795;
 
 	for (int doc1_it = 0; doc1_it<1; doc1_it++) {
 

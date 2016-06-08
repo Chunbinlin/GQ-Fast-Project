@@ -4,7 +4,7 @@
 #include "../fastr_index.hpp"
 #include "../global_vars.hpp"
 
-#define NUM_THREADS 1
+#define NUM_THREADS 10
 #define BUFFER_POOL_SIZE 1
 
 using namespace std;
@@ -160,7 +160,7 @@ extern "C" double* q2_array_1threads_10196795(int** null_checks) {
 
 
 	uint64_t doc1_list[1];
-	doc1_list[0] = 10196795;
+	doc1_list[0] = 10296795;
 
 	for (int doc1_it = 0; doc1_it<1; doc1_it++) {
 

@@ -4,7 +4,7 @@
 #include "../fastr_index.hpp"
 #include "../global_vars.hpp"
 
-#define NUM_THREADS 1
+#define NUM_THREADS 10
 #define BUFFER_POOL_SIZE 2
 
 using namespace std;
