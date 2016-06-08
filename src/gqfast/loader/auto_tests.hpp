@@ -27,6 +27,8 @@ void automatic_tests(char* input_file, char* output_file)
         char output_type;
         int counter = 0;
         chrono::duration<double> time_span;
+        chrono::duration<double> time_span2;
+        chrono::duration<double> time_span3;
 
         while(getline(lineStream,cell,','))
         {
@@ -48,13 +50,17 @@ void automatic_tests(char* input_file, char* output_file)
         if (output_type == 'i') {
             cout << "calling int autohandle with func " << func_name << "and rpos " << r_pos << "\n";
             time_span = auto_handle_input<int>(func_name, r_pos);
+            time_span2 = auto_handle_input<int>(func_name, r_pos);
+            time_span3 = auto_handle_input<int>(func_name, r_pos);
         }
         else if (output_type == 'd') {
             cout << "calling double autohandle with func " << func_name << "and rpos " << r_pos << "\n";
             time_span = auto_handle_input<double>(func_name, r_pos);
+            time_span2 = auto_handle_input<double>(func_name, r_pos);
+            time_span3 = auto_handle_input<double>(func_name, r_pos);
         }
 
-        outfile << func_name << ", " << time_span.count() << " secs\n";
+        outfile << func_name << ", " << time_span.count() << " sec, " << time_span2.count() << " sec, " << time_span3.count() << " sec\n";
 
     }
     myfile.close();
