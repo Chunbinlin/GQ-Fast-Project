@@ -184,7 +184,7 @@ int main(int argc, char ** argv)
     }
 
 
-    if (automate = 'y')
+    if (automate == 'y')
     {
         load<int, uint32_t>(database, compression);
         cout << "\n...Indices have been loaded...\n";
