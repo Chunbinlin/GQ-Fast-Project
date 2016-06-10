@@ -12,10 +12,10 @@ using namespace std;
 static int* R;
 static int* RC;
 
-uint64_t*** index2_col0_buffer;
-uint64_t*** index2_col1_buffer;
-uint64_t*** index3_col0_buffer;
-uint64_t*** index3_col1_buffer;
+static uint64_t*** index2_col0_buffer;
+static uint64_t*** index2_col1_buffer;
+static uint64_t*** index3_col0_buffer;
+static uint64_t*** index3_col1_buffer;
 
 extern inline void q1_opt_0threads_17495979_term1_col0_decode_BB(unsigned char* term1_col0_ptr, uint32_t term1_col0_bytes, uint32_t & term1_fragment_size) __attribute__((always_inline));
 
@@ -109,6 +109,7 @@ extern "C" int* q1_opt_0threads_17495979(int** null_checks) {
 			}
 		}
 	}
+	cerr << "index2col0 buffer[0][0][0] = " << index2_col0_buffer[0][0][0] << "\n";
 	cerr << "check 2\n";
 	uint64_t*** index2_col1_buffer = buffer_arrays[2][1];
 	for (int i=0; i<NUM_THREADS; i++) {
