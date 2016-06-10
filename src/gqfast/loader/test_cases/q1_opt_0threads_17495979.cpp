@@ -23,6 +23,7 @@ extern inline void q1_opt_0threads_17495979_doc2_col0_decode_BB(unsigned char* d
 
 void q1_opt_0threads_17495979_term1_col0_decode_BB(unsigned char* term1_col0_ptr, uint32_t term1_col0_bytes, uint32_t & term1_fragment_size) {
 
+    cerr << "enter q1 opt term1 col0 decode bb\n";
 	index2_col0_buffer[0][0][0] = 0;
 
 	int shiftbits = 0;
@@ -51,6 +52,7 @@ void q1_opt_0threads_17495979_term1_col0_decode_BB(unsigned char* term1_col0_ptr
 		index2_col0_buffer[0][0][term1_fragment_size] = index2_col0_buffer[0][0][term1_fragment_size-1]+1+result;
 		term1_fragment_size++;
 	}
+	cerr << "exit q1 opt term1 col0 decode bb\n";
 }
 
 void q1_opt_0threads_17495979_doc2_col0_decode_BB(unsigned char* doc2_col0_ptr, uint32_t doc2_col0_bytes, uint32_t & doc2_fragment_size) {
