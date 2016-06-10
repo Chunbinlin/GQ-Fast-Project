@@ -37,7 +37,7 @@ void q1_opt_0threads_17495979_term1_col0_decode_BB(unsigned char* term1_col0_ptr
 	term1_fragment_size++;
     cerr << "c2\n";
 	while (term1_col0_bytes > 0) {
-		cerr << "\c3\n";
+		cerr << "c3\n";
 		shiftbits = 0;
 		uint32_t result = 0;
 
