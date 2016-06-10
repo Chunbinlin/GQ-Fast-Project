@@ -1,6 +1,7 @@
 package gqfast.global;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -76,6 +77,26 @@ public class MetaQuery {
 	
 	public void setBufferPoolID(int aliasID, int colID, int poolID) {
 		aliasBufferPoolIDs[aliasID][colID] = poolID;
+	}
+
+	public List<Integer> getNumColumns(Set<Integer> indexSet) {
+		
+		List<Integer> numColumnsList = new ArrayList<Integer>();
+		for (int gqIndex : indexSet) {
+			
+			for (Alias nextAlias : aliases) {
+				
+				if (nextAlias.getAssociatedIndex() != null) {
+					MetaIndex tempIndex = nextAlias.getAssociatedIndex();
+					if (tempIndex.getGQFastIndexID() == gqIndex) {
+						numColumnsList.add(tempIndex.getNumColumns());
+					}
+				}
+			}
+			
+		}
+		
+		return numColumnsList;
 	}	
 	
 }

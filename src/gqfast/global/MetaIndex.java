@@ -44,17 +44,5 @@ public class MetaIndex {
 
 	public List<Integer> getColumnEncodedByteSizesList() {
 		return columnEncodedByteSizesList;
-	}
-
-	public int getMaxColumnID() {
-		int max = 0;
-		for (Integer col : columnEncodingsList) {
-			if (max < col) {
-				max = col;
-			}
-		}
-		return max;
-	}
-
-	
+	}	
 }
