@@ -59,13 +59,15 @@ public class MetaData {
 		return max;
 	}
 	
+	
 	public int getMaxColID() {
 		int max = 0;
 		for (MetaIndex index : indexList) {
-			if (max < index.getMaxColumnID()) {
-				max = index.getMaxColumnID();
+			if (max < index.getNumColumns()-1) {
+				max = index.getNumColumns()-1;
 			}
 		}
 		return max;
 	}
+	
 }

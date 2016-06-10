@@ -98,21 +98,31 @@ public class CodeGenerator {
 	 * Output:	The part of the generated code that initializes the buffers used in the query processing
 	 * 
 	 */
-	private static String bufferInitCode(MetaQuery query) {
+	private static String bufferInitCode(MetaQuery query, List<String> globalsCppCode) {
 		
 		Set<Integer> indexSet = query.getIndexIDs(); 	
+		List<Integer> numColumnsList = query.getNumColumns(indexSet);
+		
+		String globalCodeString = "\n";
+		
 		String bufferInitString = "\n\tint max_frag;\n";
+		int i = 0;
 		for (Integer curr : indexSet) {
+			int numColumns = numColumnsList.get(i);
 			bufferInitString += "\n\tmax_frag = metadata.idx_max_fragment_sizes[" + curr + "];\n";
-			bufferInitString += "\tfor(int i=0; i<metadata.idx_num_encodings[" + curr + "]; i++) {\n";
-			bufferInitString += "\t\tfor (int j=0; j<NUM_THREADS; j++) {\n";
-			bufferInitString += "\t\t\tbuffer_arrays[" + curr + "][i][j] = new uint64_t*[BUFFER_POOL_SIZE];\n";
-			bufferInitString += "\t\t\tfor (int k=0; k<BUFFER_POOL_SIZE; k++) {\n";
-			bufferInitString += "\t\t\t\tbuffer_arrays[" + curr + "][i][j][k] = new uint64_t[max_frag];\n";
-			bufferInitString += "\t\t\t}\n";
-			bufferInitString += "\t\t}\n";
-			bufferInitString += "\t}\n";
+			for (int j=0; j<numColumns; j++) {
+				globalCodeString += "static uint64_t*** index" + curr + "_col" + j + "_buffer;\n";
+				bufferInitString += "\tuint64_t*** index" + curr + "_col" + j + "_buffer = buffer_arrays[" + curr + "][" + j + "];\n";
+				bufferInitString += "\tfor (int i=0; i<NUM_THREADS; i++) {\n";
+				bufferInitString += "\t\tindex"+curr+"_col"+ j + "_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];\n";
+				bufferInitString += "\t\tfor (int j=0; j<BUFFER_POOL_SIZE; j++) {\n";
+				bufferInitString += "\t\t\tindex"+curr+"_col"+j + "_buffer[i][j] = new uint64_t[max_frag];\n";
+				bufferInitString += "\t\t}\n";
+				bufferInitString += "\t}\n";				
+			}
+			i++;
 		}
+		globalsCppCode.add(globalCodeString);
 		return bufferInitString;
 		
 	}
@@ -129,26 +139,28 @@ public class CodeGenerator {
 	private static String bufferDeallocations(MetaQuery query) {
 		
 		Set<Integer> indexSet = query.getIndexIDs();
-		
+		List<Integer> numColumnsList = query.getNumColumns(indexSet);
 		String bufferDeallocString = "\n";
 		String tabString = "\t";
 		
+		int i=0;
 		for (Integer curr : indexSet) {
-			bufferDeallocString += tabString + "for (int j=0; j<metadata.idx_num_encodings["+ curr +"]; j++) {\n";
-			tabString += "\t";
-			bufferDeallocString += tabString + "for (int k=0; k<NUM_THREADS; k++) {\n";
-			tabString += "\t";            
-			bufferDeallocString += tabString + "for (int l=0; l<BUFFER_POOL_SIZE; l++) {\n";
-			tabString += "\t";
-			bufferDeallocString += tabString +  "delete[] buffer_arrays["+curr+"][j][k][l];\n";
-			tabString = tabString.substring(0, tabString.length()-1);
-			bufferDeallocString += tabString + "}\n";
-			bufferDeallocString += tabString + "delete[] buffer_arrays["+curr+"][j][k];\n";
-			tabString = tabString.substring(0, tabString.length()-1);
-			bufferDeallocString += tabString + "}\n";
-			tabString = tabString.substring(0, tabString.length()-1);
-			bufferDeallocString += tabString + "}\n";
-
+			int numColumns = numColumnsList.get(i);
+			/*bufferDeallocString += tabString + "for (int j=0; j<metadata.idx_num_encodings["+ curr +"]; j++) {\n";
+			tabString += "\t";*/
+			for (int j=0; j<numColumns; j++) {
+				bufferDeallocString += tabString + "for (int j=0; j<NUM_THREADS; j++) {\n";
+				tabString += "\t";            
+				bufferDeallocString += tabString + "for (int k=0; k<BUFFER_POOL_SIZE; k++) {\n";
+				tabString += "\t";
+				bufferDeallocString += tabString +  "delete[] index"+curr+"_col"+j+"_buffer[j][k];\n";
+				tabString = tabString.substring(0, tabString.length()-1);
+				bufferDeallocString += tabString + "}\n";
+				bufferDeallocString += tabString + "delete[] index"+curr+"_col"+j+"_buffer[j];\n";
+				tabString = tabString.substring(0, tabString.length()-1);
+				bufferDeallocString += tabString + "}\n";
+			}
+			i++;
 		}
 		
 		if (hasIntersection) {
@@ -562,10 +574,10 @@ public class CodeGenerator {
 		
 		String bufferArraysPart = new String();
 		if (preThreading) {
-			bufferArraysPart = "buffer_arrays[" + gqFastIndexID + "][" + currentCol + "][0][" + currPool + "]";
+			bufferArraysPart = "index" + gqFastIndexID + "_col" + currentCol + "_buffer[0][" + currPool + "]";
 		}
 		else {
-			bufferArraysPart = "buffer_arrays[" + gqFastIndexID + "][" + currentCol + "][thread_id][" + currPool + "]";
+			bufferArraysPart = "index" + gqFastIndexID + "_col" + currentCol + "_buffer[thread_id][" + currPool + "]";
 		}
 		if (columnIteration == 0) {
 			// Size is initially 0, is passed by reference, and will calculated in the function
@@ -837,8 +849,8 @@ public class CodeGenerator {
 		functionBody += tabString + "while (1) {\n";
 		tabString += "\t";
 		for (int i=1; i<numInputs;i++) {
-			functionBody += tabString + "if (buffer_arrays[" + inputGQFastIndexIDs[0] + "][" + inputColIDs[0] + "][0][" + poolNums[0] + "][its[0]] ";
-			functionBody += " != buffer_arrays[" + inputGQFastIndexIDs[i] + "][" + inputColIDs[i] + "][0][" + poolNums[i] + "][its[" + i + "]]) {\n";
+			functionBody += tabString + "if (index" + inputGQFastIndexIDs[0] + "_col" + inputColIDs[0] + "_buffer[0][" + poolNums[0] + "][its[0]] ";
+			functionBody += " != index" + inputGQFastIndexIDs[i] + "_col" + inputColIDs[i] + "_buffer[0][" + poolNums[i] + "][its[" + i + "]]) {\n";
 			tabString += "\t";
 			functionBody += tabString + "match = false;\n";
 			functionBody += tabString + "break;\n";
@@ -851,8 +863,8 @@ public class CodeGenerator {
 		
 		functionBody += "\n" + tabString + "if (match) {\n";
 		tabString += "\t";
-		functionBody += tabString + queryName + "_intersection_buffer[intersection_index++] = buffer_arrays[" +
-						inputGQFastIndexIDs[0] + "][" + inputColIDs[0] + "][0][" + poolNums[0] + "][its[0]];\n";
+		functionBody += tabString + queryName + "_intersection_buffer[intersection_index++] = index" +
+						inputGQFastIndexIDs[0] + "_col" + inputColIDs[0] + "_buffer[0][" + poolNums[0] + "][its[0]];\n";
 		functionBody += tabString + "while(1) {\n";
 		tabString += "\t";
 		for (int i=0; i<numInputs; i++) {
@@ -870,16 +882,16 @@ public class CodeGenerator {
 		functionBody += tabString + "}\n";
 		functionBody += tabString + "else {\n";
 		tabString += "\t";
-		functionBody += "\n" + tabString + "uint64_t smallest = buffer_arrays["+inputGQFastIndexIDs[0] 
-				+ "][" + inputColIDs[0] + "][0][" + poolNums[0] + "][its[0]];\n";
+		functionBody += "\n" + tabString + "uint64_t smallest = index"+inputGQFastIndexIDs[0] 
+				+ "_col" + inputColIDs[0] + "_buffer[0][" + poolNums[0] + "][its[0]];\n";
 		functionBody += tabString + "int index_of_smallest = 0;\n";
 		functionBody += tabString + "uint32_t fragment_size_of_smallest = " + sizeNames.get(0) + ";\n";
 		for (int i=1; i<numInputs; i++) {
-			functionBody += "\n" + tabString + "if (smallest > buffer_arrays[" + inputGQFastIndexIDs[i] + "][" + inputColIDs[i] + "][0][" + 
+			functionBody += "\n" + tabString + "if (smallest > index" + inputGQFastIndexIDs[i] + "_col" + inputColIDs[i] + "_buffer[0][" + 
 					poolNums[i] + "][its["+i+"]]) {\n";
 			tabString += "\t";
-			functionBody += tabString + "smallest = buffer_arrays[" + inputGQFastIndexIDs[i] + "][" + inputColIDs[i] +
-					"][0][" + poolNums[i] + "][its["+i+"]];\n";
+			functionBody += tabString + "smallest = index" + inputGQFastIndexIDs[i] + "_col" + inputColIDs[i] +
+					"_buffer[0][" + poolNums[i] + "][its["+i+"]];\n";
 			functionBody += tabString + "index_of_smallest = " + i + ";\n";
 			functionBody += tabString + "fragment_size_of_smallest = " + sizeNames.get(i) + ";\n";
 			tabString = tabString.substring(0, tabString.length()-1);
@@ -1153,19 +1165,19 @@ public class CodeGenerator {
 			
 			if (threadID) {
 				mainString += "\n" + tabString + "if (!(" + drivAliasString 
-						+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
+						+ "_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
 					closingBraces[0]++;
 					tabString.append("\t");
 					mainString += tabString + drivAliasString + 
-						"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
+						"_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
 			}
 			else {
 				mainString += "\n" + tabString + "if (!(" + drivAliasString 
-					+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
+					+ "_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[0]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
 				closingBraces[0]++;
 				tabString.append("\t");
 				mainString += tabString + drivAliasString + 
-					"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
+					"_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[0]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
 			}
 		}
 		
@@ -1243,19 +1255,19 @@ public class CodeGenerator {
 			String drivAliasString = drivingAlias.getAlias();
 			if (threadID) {
 				mainString += "\n" + tabString + "if (!(" + drivAliasString 
-						+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
+						+ "_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
 					closingBraces[0]++;
 					tabString.append("\t");
 					mainString += tabString + drivAliasString + 
-						"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
+						"_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
 			}
 			else {
 				mainString += "\n" + tabString + "if (!(" + drivAliasString 
-					+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
+					+ "_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[0]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
 				closingBraces[0]++;
 				tabString.append("\t");
 				mainString += tabString + drivAliasString + 
-					"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
+					"_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[0]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
 			}
 		}
 		
@@ -1272,12 +1284,12 @@ public class CodeGenerator {
 
 			if (threadID) {
 				mainString += prevAlias + "_col" + previousColID + "_element = " +
-					"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][thread_id]" +
+					"index" + previousGQFastIndexID + "_col" + previousColID + "_buffer[thread_id]" +
 					"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + prevAlias + "_it];\n";
 			}
 			else {
 				mainString += prevAlias + "_col" + previousColID + "_element = " +
-						"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][0]" +
+						"index" + previousGQFastIndexID + "_col" + previousColID + "_buffer[0]" +
 						"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + prevAlias + "_it];\n";
 			}
 			
@@ -1423,19 +1435,19 @@ public class CodeGenerator {
 			String drivAliasString = drivingAlias.getAlias();
 			if (justStartedThreading) {
 				mainString += "\n" + tabString + "if (!(" + drivAliasString 
-						+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
+						+ "_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
 					closingBraces[0]++;
 					tabString.append("\t");
 					mainString += tabString + drivAliasString + 
-						"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][thread_id]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
+						"_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
 			}
 			else {
 				mainString += "\n" + tabString + "if (!(" + drivAliasString 
-					+ "_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
+					+ "_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[0]["+drivingPool+"]["+drivAliasString+ "_it]])) {\n";
 				closingBraces[0]++;
 				tabString.append("\t");
 				mainString += tabString + drivAliasString + 
-					"_bool_array[buffer_arrays[" + drivingGQFastIndexID +"][" + drivingAliasCol +"][0]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
+					"_bool_array[index" + drivingGQFastIndexID +"_col" + drivingAliasCol +"_buffer[0]["+drivingPool+"]["+drivAliasString+ "_it]] = true;\n";
 			}
 		}
 		
@@ -1831,12 +1843,12 @@ public class CodeGenerator {
 					
 					if (previousThreadID) {
 						mainString += previousAlias + "_col" + previousColID + "_element = " +
-							"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][0]" +
+							"index" + previousGQFastIndexID + "_col" + previousColID + "_buffer[0]" +
 							"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
 					}
 					else {
 						mainString += previousAlias + "_col" + previousColID + "_element = " +
-								"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][thread_id]" +
+								"index" + previousGQFastIndexID + "_col" + previousColID + "_buffer[thread_id]" +
 								"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
 					}
 				}
@@ -1867,12 +1879,12 @@ public class CodeGenerator {
 					
 					if (previousThreadID) {
 						mainString += previousAlias + "_col" + previousColID + "_element = " +
-							"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][0]" +
+							"index" + previousGQFastIndexID + "_col" + previousColID + "_buffer[0]" +
 							"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
 					}
 					else {
 						mainString += previousAlias + "_col" + previousColID + "_element = " +
-								"buffer_arrays[" + previousGQFastIndexID + "][" + previousColID + "][thread_id]" +
+								"index" + previousGQFastIndexID + "_col" + previousColID + "_buffer[thread_id]" +
 								"["+bufferPoolTrackingArray[previousIndexID][previousColID]+ "][" + previousAlias + "_it];\n";
 					}
 				}
@@ -2262,7 +2274,7 @@ public class CodeGenerator {
 		mainCppCode.add(benchmarkingString);
 		
 		// Array initializations
-		mainCppCode.add(bufferInitCode(query));
+		mainCppCode.add(bufferInitCode(query, globalsCppCode));
 	
 		mainCppCode.add(initResultArray(resultDataType, lastOp));
 		mainCppCode.add(initSemiJoinArray(operators, metadata, globalsCppCode));
