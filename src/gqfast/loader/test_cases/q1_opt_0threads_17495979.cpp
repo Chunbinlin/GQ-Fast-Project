@@ -25,7 +25,7 @@ void q1_opt_0threads_17495979_term1_col0_decode_BB(unsigned char* term1_col0_ptr
 
     cerr << "enter q1 opt term1 col0 decode bb\n";
 	index2_col0_buffer[0][0][0] = 0;
-
+    cerr << "c1\n";
 	int shiftbits = 0;
 	do {
 		term1_col0_bytes--;
@@ -35,8 +35,9 @@ void q1_opt_0threads_17495979_term1_col0_decode_BB(unsigned char* term1_col0_ptr
 		shiftbits += 7;
 	} while (!(*term1_col0_ptr++ & 128));
 	term1_fragment_size++;
-
+    cerr << "c2\n";
 	while (term1_col0_bytes > 0) {
+		cerr << "\c3\n";
 		shiftbits = 0;
 		uint32_t result = 0;
 
@@ -51,6 +52,7 @@ void q1_opt_0threads_17495979_term1_col0_decode_BB(unsigned char* term1_col0_ptr
 		} while (!(*term1_col0_ptr++ & 128));
 		index2_col0_buffer[0][0][term1_fragment_size] = index2_col0_buffer[0][0][term1_fragment_size-1]+1+result;
 		term1_fragment_size++;
+		cerr << "end c3\n";
 	}
 	cerr << "exit q1 opt term1 col0 decode bb\n";
 }
