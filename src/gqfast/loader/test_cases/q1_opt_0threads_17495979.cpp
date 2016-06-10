@@ -97,12 +97,16 @@ extern "C" int* q1_opt_0threads_17495979(int** null_checks) {
 
     cerr << "check 1\n";
 	max_frag = metadata.idx_max_fragment_sizes[2];
+	cerr << "max frag = " << max_frag << "\n";
 	cerr << "check 1b\n";
 	uint64_t*** index2_col0_buffer = buffer_arrays[2][0];
 	for (int i=0; i<NUM_THREADS; i++) {
 		index2_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
 		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
 			index2_col0_buffer[i][j] = new uint64_t[max_frag];
+			for (int k=0; k<max_frag; k++) {
+                index2_col0_buffer[i][j][k] = 0;
+			}
 		}
 	}
 	cerr << "check 2\n";
