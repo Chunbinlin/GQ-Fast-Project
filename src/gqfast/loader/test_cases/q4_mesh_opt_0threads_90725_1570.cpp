@@ -12,6 +12,11 @@ using namespace std;
 static int* R;
 static int* RC;
 
+static uint64_t*** index2_col0_buffer;
+static uint64_t*** index2_col1_buffer;
+static uint64_t*** index3_col0_buffer;
+static uint64_t*** index3_col1_buffer;
+
 static uint64_t* q4_mesh_opt_0threads_90725_1570_intersection_buffer;
 
 static int* term1_col1_huffman_tree_array;
@@ -29,14 +34,14 @@ extern inline void q4_mesh_opt_0threads_90725_1570_term1_col1_decode_Huffman(uns
 
 void q4_mesh_opt_0threads_90725_1570_doc1_col0_intersection0_decode_BB(unsigned char* doc1_col0_intersection_ptr_0, uint32_t doc1_col0_bytes_intersection0, uint32_t & doc1_intersection0_fragment_size) {
 
-	buffer_arrays[3][0][0][0][0] = 0;
+	index3_col0_buffer[0][0][0] = 0;
 
 	int shiftbits = 0;
 	do { 
 		doc1_col0_bytes_intersection0--;
 		uint32_t next_seven_bits = *doc1_col0_intersection_ptr_0 & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
-		buffer_arrays[3][0][0][0][0] |= next_seven_bits;
+		index3_col0_buffer[0][0][0] |= next_seven_bits;
 		shiftbits += 7;
 	} while (!(*doc1_col0_intersection_ptr_0++ & 128));
 	doc1_intersection0_fragment_size++;
@@ -54,21 +59,21 @@ void q4_mesh_opt_0threads_90725_1570_doc1_col0_intersection0_decode_BB(unsigned 
 			shiftbits += 7;
 
 		} while (!(*doc1_col0_intersection_ptr_0++ & 128));
-		buffer_arrays[3][0][0][0][doc1_intersection0_fragment_size] = buffer_arrays[3][0][0][0][doc1_intersection0_fragment_size-1]+1+result;
+		index3_col0_buffer[0][0][doc1_intersection0_fragment_size] = index3_col0_buffer[0][0][doc1_intersection0_fragment_size-1]+1+result;
 		doc1_intersection0_fragment_size++;
 	}
 }
 
 void q4_mesh_opt_0threads_90725_1570_doc1_col0_intersection1_decode_BB(unsigned char* doc1_col0_intersection_ptr_1, uint32_t doc1_col0_bytes_intersection1, uint32_t & doc1_intersection1_fragment_size) {
 
-	buffer_arrays[3][0][0][1][0] = 0;
+	index3_col0_buffer[0][1][0] = 0;
 
 	int shiftbits = 0;
 	do { 
 		doc1_col0_bytes_intersection1--;
 		uint32_t next_seven_bits = *doc1_col0_intersection_ptr_1 & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
-		buffer_arrays[3][0][0][1][0] |= next_seven_bits;
+		index3_col0_buffer[0][1][0] |= next_seven_bits;
 		shiftbits += 7;
 	} while (!(*doc1_col0_intersection_ptr_1++ & 128));
 	doc1_intersection1_fragment_size++;
@@ -86,7 +91,7 @@ void q4_mesh_opt_0threads_90725_1570_doc1_col0_intersection1_decode_BB(unsigned 
 			shiftbits += 7;
 
 		} while (!(*doc1_col0_intersection_ptr_1++ & 128));
-		buffer_arrays[3][0][0][1][doc1_intersection1_fragment_size] = buffer_arrays[3][0][0][1][doc1_intersection1_fragment_size-1]+1+result;
+		index3_col0_buffer[0][1][doc1_intersection1_fragment_size] = index3_col0_buffer[0][1][doc1_intersection1_fragment_size-1]+1+result;
 		doc1_intersection1_fragment_size++;
 	}
 }
@@ -104,7 +109,7 @@ void q4_mesh_opt_0threads_90725_1570_intersection(uint32_t doc1_intersection0_fr
 
 		bool match = true;
 		while (1) {
-			if (buffer_arrays[3][0][0][0][its[0]]  != buffer_arrays[3][0][0][1][its[1]]) {
+			if (index3_col0_buffer[0][0][its[0]]  != index3_col0_buffer[0][1][its[1]]) {
 				match = false;
 				break;
 			}
@@ -113,7 +118,7 @@ void q4_mesh_opt_0threads_90725_1570_intersection(uint32_t doc1_intersection0_fr
 		}
 
 		if (match) {
-			q4_mesh_opt_0threads_90725_1570_intersection_buffer[intersection_index++] = buffer_arrays[3][0][0][0][its[0]];
+			q4_mesh_opt_0threads_90725_1570_intersection_buffer[intersection_index++] = index3_col0_buffer[0][0][its[0]];
 			while(1) {
 				if (++its[0] == doc1_intersection0_fragment_size) {
 					end = true;
@@ -129,12 +134,12 @@ void q4_mesh_opt_0threads_90725_1570_intersection(uint32_t doc1_intersection0_fr
 		}
 		else {
 
-			uint64_t smallest = buffer_arrays[3][0][0][0][its[0]];
+			uint64_t smallest = index3_col0_buffer[0][0][its[0]];
 			int index_of_smallest = 0;
 			uint32_t fragment_size_of_smallest = doc1_intersection0_fragment_size;
 
-			if (smallest > buffer_arrays[3][0][0][1][its[1]]) {
-				smallest = buffer_arrays[3][0][0][1][its[1]];
+			if (smallest > index3_col0_buffer[0][1][its[1]]) {
+				smallest = index3_col0_buffer[0][1][its[1]];
 				index_of_smallest = 1;
 				fragment_size_of_smallest = doc1_intersection1_fragment_size;
 			}
@@ -151,14 +156,14 @@ void q4_mesh_opt_0threads_90725_1570_intersection(uint32_t doc1_intersection0_fr
 
 void q4_mesh_opt_0threads_90725_1570_term1_col0_decode_BB(unsigned char* term1_col0_ptr, uint32_t term1_col0_bytes, uint32_t & term1_fragment_size) {
 
-	buffer_arrays[2][0][0][0][0] = 0;
+	index2_col0_buffer[0][0][0] = 0;
 
 	int shiftbits = 0;
 	do { 
 		term1_col0_bytes--;
 		uint32_t next_seven_bits = *term1_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
-		buffer_arrays[2][0][0][0][0] |= next_seven_bits;
+		index2_col0_buffer[0][0][0] |= next_seven_bits;
 		shiftbits += 7;
 	} while (!(*term1_col0_ptr++ & 128));
 	term1_fragment_size++;
@@ -176,7 +181,7 @@ void q4_mesh_opt_0threads_90725_1570_term1_col0_decode_BB(unsigned char* term1_c
 			shiftbits += 7;
 
 		} while (!(*term1_col0_ptr++ & 128));
-		buffer_arrays[2][0][0][0][term1_fragment_size] = buffer_arrays[2][0][0][0][term1_fragment_size-1]+1+result;
+		index2_col0_buffer[0][0][term1_fragment_size] = index2_col0_buffer[0][0][term1_fragment_size-1]+1+result;
 		term1_fragment_size++;
 	}
 }
@@ -211,7 +216,7 @@ void q4_mesh_opt_0threads_90725_1570_term1_col1_decode_Huffman(unsigned char* te
 			}
 		}
 
-		buffer_arrays[2][1][0][0][i] = *tree_array;
+		index2_col1_buffer[0][0][i] = *tree_array;
 	}
 }
 
@@ -222,22 +227,34 @@ extern "C" int* q4_mesh_opt_0threads_90725_1570(int** null_checks) {
 	int max_frag;
 
 	max_frag = metadata.idx_max_fragment_sizes[2];
-	for(int i=0; i<metadata.idx_num_encodings[2]; i++) {
-		for (int j=0; j<NUM_THREADS; j++) {
-			buffer_arrays[2][i][j] = new uint64_t*[BUFFER_POOL_SIZE];
-			for (int k=0; k<BUFFER_POOL_SIZE; k++) {
-				buffer_arrays[2][i][j][k] = new uint64_t[max_frag];
-			}
+	index2_col0_buffer = buffer_arrays[2][0];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index2_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index2_col0_buffer[i][j] = new uint64_t[max_frag];
+		}
+	}
+	index2_col1_buffer = buffer_arrays[2][1];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index2_col1_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index2_col1_buffer[i][j] = new uint64_t[max_frag];
 		}
 	}
 
 	max_frag = metadata.idx_max_fragment_sizes[3];
-	for(int i=0; i<metadata.idx_num_encodings[3]; i++) {
-		for (int j=0; j<NUM_THREADS; j++) {
-			buffer_arrays[3][i][j] = new uint64_t*[BUFFER_POOL_SIZE];
-			for (int k=0; k<BUFFER_POOL_SIZE; k++) {
-				buffer_arrays[3][i][j][k] = new uint64_t[max_frag];
-			}
+	index3_col0_buffer = buffer_arrays[3][0];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index3_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index3_col0_buffer[i][j] = new uint64_t[max_frag];
+		}
+	}
+	index3_col1_buffer = buffer_arrays[3][1];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index3_col1_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index3_col1_buffer[i][j] = new uint64_t[max_frag];
 		}
 	}
 
@@ -279,8 +296,8 @@ extern "C" int* q4_mesh_opt_0threads_90725_1570(int** null_checks) {
 			q4_mesh_opt_0threads_90725_1570_term1_col1_decode_Huffman(term1_col1_ptr, term1_fragment_size);
 
 			for (uint32_t term1_it = 0; term1_it < term1_fragment_size; term1_it++) {
-				uint32_t term1_col0_element = buffer_arrays[2][0][0][0][term1_it];
-				unsigned char term1_col1_element = buffer_arrays[2][1][0][0][term1_it];
+				uint32_t term1_col0_element = index2_col0_buffer[0][0][term1_it];
+				unsigned char term1_col1_element = index2_col1_buffer[0][0][term1_it];
 
 				RC[term1_col0_element] = 1;
 				R[term1_col0_element] += term1_col1_element;
@@ -289,21 +306,29 @@ extern "C" int* q4_mesh_opt_0threads_90725_1570(int** null_checks) {
 	}
 
 
-	for (int j=0; j<metadata.idx_num_encodings[2]; j++) {
-		for (int k=0; k<NUM_THREADS; k++) {
-			for (int l=0; l<BUFFER_POOL_SIZE; l++) {
-				delete[] buffer_arrays[2][j][k][l];
-			}
-			delete[] buffer_arrays[2][j][k];
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index2_col0_buffer[j][k];
 		}
+		delete[] index2_col0_buffer[j];
 	}
-	for (int j=0; j<metadata.idx_num_encodings[3]; j++) {
-		for (int k=0; k<NUM_THREADS; k++) {
-			for (int l=0; l<BUFFER_POOL_SIZE; l++) {
-				delete[] buffer_arrays[3][j][k][l];
-			}
-			delete[] buffer_arrays[3][j][k];
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index2_col1_buffer[j][k];
 		}
+		delete[] index2_col1_buffer[j];
+	}
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index3_col0_buffer[j][k];
+		}
+		delete[] index3_col0_buffer[j];
+	}
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index3_col1_buffer[j][k];
+		}
+		delete[] index3_col1_buffer[j];
 	}
 	delete[] q4_mesh_opt_0threads_90725_1570_intersection_buffer;
 
