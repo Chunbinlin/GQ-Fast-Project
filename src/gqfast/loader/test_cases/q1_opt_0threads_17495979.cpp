@@ -12,10 +12,10 @@ using namespace std;
 static int* R;
 static int* RC;
 
-uint64_t*** index2_col0_buffer __attribute__ ((visibility ("default")));
-uint64_t*** index2_col1_buffer __attribute__ ((visibility ("default")));
-uint64_t*** index3_col0_buffer __attribute__ ((visibility ("default")));
-uint64_t*** index3_col1_buffer __attribute__ ((visibility ("default")));
+uint64_t*** index2_col0_buffer;
+uint64_t*** index2_col1_buffer;
+uint64_t*** index3_col0_buffer;
+uint64_t*** index3_col1_buffer;
 
 
 extern inline void q1_opt_0threads_17495979_term1_col0_decode_BB(unsigned char* term1_col0_ptr, uint32_t term1_col0_bytes, uint32_t & term1_fragment_size) __attribute__((always_inline));
@@ -100,16 +100,15 @@ extern "C" int* q1_opt_0threads_17495979(int** null_checks) {
 	max_frag = metadata.idx_max_fragment_sizes[2];
 	cerr << "max frag = " << max_frag << "\n";
 	cerr << "check 1b\n";
-	uint64_t*** index2_col0_buffer = buffer_arrays[2][0];
+
 	for (int i=0; i<NUM_THREADS; i++) {
-		index2_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		buffer_arrays[2][0][i] = new uint64_t*[BUFFER_POOL_SIZE];
 		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
-			index2_col0_buffer[i][j] = new uint64_t[max_frag];
-			for (int k=0; k<max_frag; k++) {
-                index2_col0_buffer[i][j][k] = 0;
-			}
+			buffer_arrays[2][0][i][j] = new uint64_t[max_frag];
 		}
 	}
+
+	uint64_t*** index2_col0_buffer = buffer_arrays[2][0];
 	cerr << "index2col0 buffer[0][0][0] = " << index2_col0_buffer[0][0][0] << "\n";
 	cerr << "check 2\n";
 	uint64_t*** index2_col1_buffer = buffer_arrays[2][1];
