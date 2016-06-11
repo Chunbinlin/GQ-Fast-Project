@@ -12,10 +12,10 @@ using namespace std;
 static int* R;
 static int* RC;
 
-static uint64_t*** index2_col0_buffer;
-static uint64_t*** index2_col1_buffer;
-static uint64_t*** index3_col0_buffer;
-static uint64_t*** index3_col1_buffer;
+extern uint64_t*** index2_col0_buffer;
+extern uint64_t*** index2_col1_buffer;
+extern uint64_t*** index3_col0_buffer;
+extern uint64_t*** index3_col1_buffer;
 
 extern inline void q1_opt_0threads_17495979_term1_col0_decode_BB(unsigned char* term1_col0_ptr, uint32_t term1_col0_bytes, uint32_t & term1_fragment_size) __attribute__((always_inline));
 
