@@ -101,18 +101,18 @@ public class CodeGenerator {
 	private static String bufferInitCode(MetaQuery query, List<String> globalsCppCode) {
 		
 		Set<Integer> indexSet = query.getIndexIDs(); 	
-		List<Integer> numColumnsList = query.getNumColumns(indexSet);
+		HashMap<Integer, Integer> numColumnsMap = query.getNumColumns(indexSet);
 		
 		String globalCodeString = "\n";
 		
 		String bufferInitString = "\n\tint max_frag;\n";
 		int i = 0;
 		for (Integer curr : indexSet) {
-			int numColumns = numColumnsList.get(i);
+			int numColumns = numColumnsMap.get(curr);
 			bufferInitString += "\n\tmax_frag = metadata.idx_max_fragment_sizes[" + curr + "];\n";
 			for (int j=0; j<numColumns; j++) {
 				globalCodeString += "static uint64_t*** index" + curr + "_col" + j + "_buffer;\n";
-				bufferInitString += "\tuint64_t*** index" + curr + "_col" + j + "_buffer = buffer_arrays[" + curr + "][" + j + "];\n";
+				bufferInitString += "\tindex" + curr + "_col" + j + "_buffer = buffer_arrays[" + curr + "][" + j + "];\n";
 				bufferInitString += "\tfor (int i=0; i<NUM_THREADS; i++) {\n";
 				bufferInitString += "\t\tindex"+curr+"_col"+ j + "_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];\n";
 				bufferInitString += "\t\tfor (int j=0; j<BUFFER_POOL_SIZE; j++) {\n";
@@ -139,13 +139,13 @@ public class CodeGenerator {
 	private static String bufferDeallocations(MetaQuery query) {
 		
 		Set<Integer> indexSet = query.getIndexIDs();
-		List<Integer> numColumnsList = query.getNumColumns(indexSet);
+		HashMap<Integer, Integer> numColumnsMap = query.getNumColumns(indexSet);
 		String bufferDeallocString = "\n";
 		String tabString = "\t";
 		
 		int i=0;
 		for (Integer curr : indexSet) {
-			int numColumns = numColumnsList.get(i);
+			int numColumns = numColumnsMap.get(curr);
 			/*bufferDeallocString += tabString + "for (int j=0; j<metadata.idx_num_encodings["+ curr +"]; j++) {\n";
 			tabString += "\t";*/
 			for (int j=0; j<numColumns; j++) {
