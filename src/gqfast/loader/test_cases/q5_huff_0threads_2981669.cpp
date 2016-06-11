@@ -12,6 +12,14 @@ using namespace std;
 static double* R;
 static int* RC;
 
+static uint64_t*** index0_col0_buffer;
+static uint64_t*** index1_col0_buffer;
+static uint64_t*** index2_col0_buffer;
+static uint64_t*** index2_col1_buffer;
+static uint64_t*** index3_col0_buffer;
+static uint64_t*** index3_col1_buffer;
+static uint64_t*** index4_col0_buffer;
+
 static int* doc1_col0_huffman_tree_array;
 static bool* doc1_col0_huffman_terminator_array;
 
@@ -78,7 +86,7 @@ void q5_huff_0threads_2981669_doc1_col0_decode_Huffman(unsigned char* doc1_col0_
 			}
 		}
 
-		buffer_arrays[0][0][0][0][doc1_fragment_size++] = *tree_array;
+		index0_col0_buffer[0][0][doc1_fragment_size++] = *tree_array;
 	}
 
 	if (mask != 0x100) {
@@ -102,7 +110,7 @@ void q5_huff_0threads_2981669_doc1_col0_decode_Huffman(unsigned char* doc1_col0_
 					}
 				}
 
-				buffer_arrays[0][0][0][0][doc1_fragment_size++] = *tree_array;
+				index0_col0_buffer[0][0][doc1_fragment_size++] = *tree_array;
 				bit_pos = mask;
 			}
 		}
@@ -140,7 +148,7 @@ void q5_huff_0threads_2981669_term_col0_decode_Huffman(unsigned char* term_col0_
 			}
 		}
 
-		buffer_arrays[2][0][0][0][term_fragment_size++] = *tree_array;
+		index2_col0_buffer[0][0][term_fragment_size++] = *tree_array;
 	}
 
 	if (mask != 0x100) {
@@ -164,7 +172,7 @@ void q5_huff_0threads_2981669_term_col0_decode_Huffman(unsigned char* term_col0_
 					}
 				}
 
-				buffer_arrays[2][0][0][0][term_fragment_size++] = *tree_array;
+				index2_col0_buffer[0][0][term_fragment_size++] = *tree_array;
 				bit_pos = mask;
 			}
 		}
@@ -201,7 +209,7 @@ void q5_huff_0threads_2981669_term_col1_decode_Huffman(unsigned char* term_col1_
 			}
 		}
 
-		buffer_arrays[2][1][0][0][i] = *tree_array;
+		index2_col1_buffer[0][0][i] = *tree_array;
 	}
 }
 
@@ -236,7 +244,7 @@ void q5_huff_0threads_2981669_doc2_col0_decode_Huffman(unsigned char* doc2_col0_
 			}
 		}
 
-		buffer_arrays[3][0][0][0][doc2_fragment_size++] = *tree_array;
+		index3_col0_buffer[0][0][doc2_fragment_size++] = *tree_array;
 	}
 
 	if (mask != 0x100) {
@@ -260,7 +268,7 @@ void q5_huff_0threads_2981669_doc2_col0_decode_Huffman(unsigned char* doc2_col0_
 					}
 				}
 
-				buffer_arrays[3][0][0][0][doc2_fragment_size++] = *tree_array;
+				index3_col0_buffer[0][0][doc2_fragment_size++] = *tree_array;
 				bit_pos = mask;
 			}
 		}
@@ -297,7 +305,7 @@ void q5_huff_0threads_2981669_doc2_col1_decode_Huffman(unsigned char* doc2_col1_
 			}
 		}
 
-		buffer_arrays[3][1][0][0][i] = *tree_array;
+		index3_col1_buffer[0][0][i] = *tree_array;
 	}
 }
 
@@ -359,7 +367,7 @@ void q5_huff_0threads_2981669_author2_col0_decode_Huffman(unsigned char* author2
 			}
 		}
 
-		buffer_arrays[4][0][0][0][author2_fragment_size++] = *tree_array;
+		index4_col0_buffer[0][0][author2_fragment_size++] = *tree_array;
 	}
 
 	if (mask != 0x100) {
@@ -383,7 +391,7 @@ void q5_huff_0threads_2981669_author2_col0_decode_Huffman(unsigned char* author2
 					}
 				}
 
-				buffer_arrays[4][0][0][0][author2_fragment_size++] = *tree_array;
+				index4_col0_buffer[0][0][author2_fragment_size++] = *tree_array;
 				bit_pos = mask;
 			}
 		}
@@ -397,52 +405,61 @@ extern "C" double* q5_huff_0threads_2981669(int** null_checks) {
 	int max_frag;
 
 	max_frag = metadata.idx_max_fragment_sizes[0];
-	for(int i=0; i<metadata.idx_num_encodings[0]; i++) {
-		for (int j=0; j<NUM_THREADS; j++) {
-			buffer_arrays[0][i][j] = new uint64_t*[BUFFER_POOL_SIZE];
-			for (int k=0; k<BUFFER_POOL_SIZE; k++) {
-				buffer_arrays[0][i][j][k] = new uint64_t[max_frag];
-			}
+	index0_col0_buffer = buffer_arrays[0][0];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index0_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index0_col0_buffer[i][j] = new uint64_t[max_frag];
 		}
 	}
 
 	max_frag = metadata.idx_max_fragment_sizes[1];
-	for(int i=0; i<metadata.idx_num_encodings[1]; i++) {
-		for (int j=0; j<NUM_THREADS; j++) {
-			buffer_arrays[1][i][j] = new uint64_t*[BUFFER_POOL_SIZE];
-			for (int k=0; k<BUFFER_POOL_SIZE; k++) {
-				buffer_arrays[1][i][j][k] = new uint64_t[max_frag];
-			}
+	index1_col0_buffer = buffer_arrays[1][0];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index1_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index1_col0_buffer[i][j] = new uint64_t[max_frag];
 		}
 	}
 
 	max_frag = metadata.idx_max_fragment_sizes[2];
-	for(int i=0; i<metadata.idx_num_encodings[2]; i++) {
-		for (int j=0; j<NUM_THREADS; j++) {
-			buffer_arrays[2][i][j] = new uint64_t*[BUFFER_POOL_SIZE];
-			for (int k=0; k<BUFFER_POOL_SIZE; k++) {
-				buffer_arrays[2][i][j][k] = new uint64_t[max_frag];
-			}
+	index2_col0_buffer = buffer_arrays[2][0];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index2_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index2_col0_buffer[i][j] = new uint64_t[max_frag];
+		}
+	}
+	index2_col1_buffer = buffer_arrays[2][1];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index2_col1_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index2_col1_buffer[i][j] = new uint64_t[max_frag];
 		}
 	}
 
 	max_frag = metadata.idx_max_fragment_sizes[3];
-	for(int i=0; i<metadata.idx_num_encodings[3]; i++) {
-		for (int j=0; j<NUM_THREADS; j++) {
-			buffer_arrays[3][i][j] = new uint64_t*[BUFFER_POOL_SIZE];
-			for (int k=0; k<BUFFER_POOL_SIZE; k++) {
-				buffer_arrays[3][i][j][k] = new uint64_t[max_frag];
-			}
+	index3_col0_buffer = buffer_arrays[3][0];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index3_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index3_col0_buffer[i][j] = new uint64_t[max_frag];
+		}
+	}
+	index3_col1_buffer = buffer_arrays[3][1];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index3_col1_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index3_col1_buffer[i][j] = new uint64_t[max_frag];
 		}
 	}
 
 	max_frag = metadata.idx_max_fragment_sizes[4];
-	for(int i=0; i<metadata.idx_num_encodings[4]; i++) {
-		for (int j=0; j<NUM_THREADS; j++) {
-			buffer_arrays[4][i][j] = new uint64_t*[BUFFER_POOL_SIZE];
-			for (int k=0; k<BUFFER_POOL_SIZE; k++) {
-				buffer_arrays[4][i][j][k] = new uint64_t[max_frag];
-			}
+	index4_col0_buffer = buffer_arrays[4][0];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index4_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index4_col0_buffer[i][j] = new uint64_t[max_frag];
 		}
 	}
 
@@ -488,7 +505,7 @@ extern "C" double* q5_huff_0threads_2981669(int** null_checks) {
 
 			for (uint32_t doc1_it = 0; doc1_it < doc1_fragment_size; doc1_it++) {
 
-				uint32_t doc1_col0_element = buffer_arrays[0][0][0][0][doc1_it];
+				uint32_t doc1_col0_element = index0_col0_buffer[0][0][doc1_it];
 
 				uint32_t* row_term = idx[2]->index_map[doc1_col0_element];
 				uint32_t term_col0_bytes = idx[2]->index_map[doc1_col0_element+1][0] - row_term[0];
@@ -503,8 +520,8 @@ extern "C" double* q5_huff_0threads_2981669(int** null_checks) {
 
 					for (uint32_t term_it = 0; term_it < term_fragment_size; term_it++) {
 
-						uint32_t term_col0_element = buffer_arrays[2][0][0][0][term_it];
-						unsigned char term_col1_element = buffer_arrays[2][1][0][0][term_it];
+						uint32_t term_col0_element = index2_col0_buffer[0][0][term_it];
+						unsigned char term_col1_element = index2_col1_buffer[0][0][term_it];
 
 						uint32_t* row_doc2 = idx[3]->index_map[term_col0_element];
 						uint32_t doc2_col0_bytes = idx[3]->index_map[term_col0_element+1][0] - row_doc2[0];
@@ -519,8 +536,8 @@ extern "C" double* q5_huff_0threads_2981669(int** null_checks) {
 
 							for (uint32_t doc2_it = 0; doc2_it < doc2_fragment_size; doc2_it++) {
 
-								uint32_t doc2_col0_element = buffer_arrays[3][0][0][0][doc2_it];
-								unsigned char doc2_col1_element = buffer_arrays[3][1][0][0][doc2_it];
+								uint32_t doc2_col0_element = index3_col0_buffer[0][0][doc2_it];
+								unsigned char doc2_col1_element = index3_col1_buffer[0][0][doc2_it];
 
 								uint32_t* row_year = idx[1]->index_map[doc2_col0_element];
 
@@ -537,7 +554,7 @@ extern "C" double* q5_huff_0threads_2981669(int** null_checks) {
 									q5_huff_0threads_2981669_author2_col0_decode_Huffman(author2_col0_ptr, author2_col0_bytes, author2_fragment_size);
 
 									for (uint32_t author2_it = 0; author2_it < author2_fragment_size; author2_it++) {
-										uint32_t author2_col0_element = buffer_arrays[4][0][0][0][author2_it];
+										uint32_t author2_col0_element = index4_col0_buffer[0][0][author2_it];
 
 										RC[author2_col0_element] = 1;
 										R[author2_col0_element] += (double)(term_col1_element*doc2_col1_element)/(2017-year_col0_element);
@@ -552,45 +569,47 @@ extern "C" double* q5_huff_0threads_2981669(int** null_checks) {
 	}
 
 
-	for (int j=0; j<metadata.idx_num_encodings[0]; j++) {
-		for (int k=0; k<NUM_THREADS; k++) {
-			for (int l=0; l<BUFFER_POOL_SIZE; l++) {
-				delete[] buffer_arrays[0][j][k][l];
-			}
-			delete[] buffer_arrays[0][j][k];
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index0_col0_buffer[j][k];
 		}
+		delete[] index0_col0_buffer[j];
 	}
-	for (int j=0; j<metadata.idx_num_encodings[1]; j++) {
-		for (int k=0; k<NUM_THREADS; k++) {
-			for (int l=0; l<BUFFER_POOL_SIZE; l++) {
-				delete[] buffer_arrays[1][j][k][l];
-			}
-			delete[] buffer_arrays[1][j][k];
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index1_col0_buffer[j][k];
 		}
+		delete[] index1_col0_buffer[j];
 	}
-	for (int j=0; j<metadata.idx_num_encodings[2]; j++) {
-		for (int k=0; k<NUM_THREADS; k++) {
-			for (int l=0; l<BUFFER_POOL_SIZE; l++) {
-				delete[] buffer_arrays[2][j][k][l];
-			}
-			delete[] buffer_arrays[2][j][k];
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index2_col0_buffer[j][k];
 		}
+		delete[] index2_col0_buffer[j];
 	}
-	for (int j=0; j<metadata.idx_num_encodings[3]; j++) {
-		for (int k=0; k<NUM_THREADS; k++) {
-			for (int l=0; l<BUFFER_POOL_SIZE; l++) {
-				delete[] buffer_arrays[3][j][k][l];
-			}
-			delete[] buffer_arrays[3][j][k];
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index2_col1_buffer[j][k];
 		}
+		delete[] index2_col1_buffer[j];
 	}
-	for (int j=0; j<metadata.idx_num_encodings[4]; j++) {
-		for (int k=0; k<NUM_THREADS; k++) {
-			for (int l=0; l<BUFFER_POOL_SIZE; l++) {
-				delete[] buffer_arrays[4][j][k][l];
-			}
-			delete[] buffer_arrays[4][j][k];
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index3_col0_buffer[j][k];
 		}
+		delete[] index3_col0_buffer[j];
+	}
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index3_col1_buffer[j][k];
+		}
+		delete[] index3_col1_buffer[j];
+	}
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index4_col0_buffer[j][k];
+		}
+		delete[] index4_col0_buffer[j];
 	}
 
 
