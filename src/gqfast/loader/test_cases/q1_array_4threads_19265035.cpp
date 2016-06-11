@@ -86,14 +86,14 @@ extern "C" int* q1_array_4threads_19265035(int** null_checks) {
 	int max_frag;
 
 	max_frag = metadata.idx_max_fragment_sizes[2];
-	uint64_t*** index2_col0_buffer = buffer_arrays[2][0];
+	index2_col0_buffer = buffer_arrays[2][0];
 	for (int i=0; i<NUM_THREADS; i++) {
 		index2_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
 		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
 			index2_col0_buffer[i][j] = new uint64_t[max_frag];
 		}
 	}
-	uint64_t*** index2_col1_buffer = buffer_arrays[2][1];
+	index2_col1_buffer = buffer_arrays[2][1];
 	for (int i=0; i<NUM_THREADS; i++) {
 		index2_col1_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
 		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
@@ -102,14 +102,14 @@ extern "C" int* q1_array_4threads_19265035(int** null_checks) {
 	}
 
 	max_frag = metadata.idx_max_fragment_sizes[3];
-	uint64_t*** index3_col0_buffer = buffer_arrays[3][0];
+	index3_col0_buffer = buffer_arrays[3][0];
 	for (int i=0; i<NUM_THREADS; i++) {
 		index3_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
 		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
 			index3_col0_buffer[i][j] = new uint64_t[max_frag];
 		}
 	}
-	uint64_t*** index3_col1_buffer = buffer_arrays[3][1];
+	index3_col1_buffer = buffer_arrays[3][1];
 	for (int i=0; i<NUM_THREADS; i++) {
 		index3_col1_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
 		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
