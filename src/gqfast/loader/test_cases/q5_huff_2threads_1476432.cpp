@@ -1,10 +1,10 @@
-#ifndef q5_huff_1threads_10246893_
-#define q5_huff_1threads_10246893_
+#ifndef q5_huff_2threads_1476432_
+#define q5_huff_2threads_1476432_
 
 #include "../fastr_index.hpp"
 #include "../global_vars.hpp"
 
-#define NUM_THREADS 10
+#define NUM_THREADS 2
 #define BUFFER_POOL_SIZE 1
 
 using namespace std;
@@ -45,23 +45,23 @@ static bool* year_col0_huffman_terminator_array;
 static int* author2_col0_huffman_tree_array;
 static bool* author2_col0_huffman_terminator_array;
 
-extern inline void q5_huff_1threads_10246893_doc1_col0_decode_Huffman(unsigned char* doc1_col0_ptr, uint32_t doc1_col0_bytes, uint32_t & doc1_fragment_size) __attribute__((always_inline));
+extern inline void q5_huff_2threads_1476432_doc1_col0_decode_Huffman(unsigned char* doc1_col0_ptr, uint32_t doc1_col0_bytes, uint32_t & doc1_fragment_size) __attribute__((always_inline));
 
-extern inline void q5_huff_1threads_10246893_term_col0_decode_Huffman(unsigned char* term_col0_ptr, uint32_t term_col0_bytes, uint32_t & term_fragment_size) __attribute__((always_inline));
+extern inline void q5_huff_2threads_1476432_term_col0_decode_Huffman(unsigned char* term_col0_ptr, uint32_t term_col0_bytes, uint32_t & term_fragment_size) __attribute__((always_inline));
 
-extern inline void q5_huff_1threads_10246893_term_col1_decode_Huffman(unsigned char* term_col1_ptr, uint32_t term_fragment_size) __attribute__((always_inline));
+extern inline void q5_huff_2threads_1476432_term_col1_decode_Huffman(unsigned char* term_col1_ptr, uint32_t term_fragment_size) __attribute__((always_inline));
 
-void* pthread_q5_huff_1threads_10246893_worker(void* arguments);
+void* pthread_q5_huff_2threads_1476432_worker(void* arguments);
 
-extern inline void q5_huff_1threads_10246893_doc2_col0_decode_Huffman_threaded(int thread_id, unsigned char* doc2_col0_ptr, uint32_t doc2_col0_bytes, uint32_t & doc2_fragment_size) __attribute__((always_inline));
+extern inline void q5_huff_2threads_1476432_doc2_col0_decode_Huffman_threaded(int thread_id, unsigned char* doc2_col0_ptr, uint32_t doc2_col0_bytes, uint32_t & doc2_fragment_size) __attribute__((always_inline));
 
-extern inline void q5_huff_1threads_10246893_doc2_col1_decode_Huffman_threaded(int thread_id, unsigned char* doc2_col1_ptr, uint32_t doc2_fragment_size) __attribute__((always_inline));
+extern inline void q5_huff_2threads_1476432_doc2_col1_decode_Huffman_threaded(int thread_id, unsigned char* doc2_col1_ptr, uint32_t doc2_fragment_size) __attribute__((always_inline));
 
-extern inline void q5_huff_1threads_10246893_year_col0_decode_Huffman(unsigned char* year_col0_ptr, uint32_t & year_col0_element) __attribute__((always_inline));
+extern inline void q5_huff_2threads_1476432_year_col0_decode_Huffman(unsigned char* year_col0_ptr, uint32_t & year_col0_element) __attribute__((always_inline));
 
-extern inline void q5_huff_1threads_10246893_author2_col0_decode_Huffman_threaded(int thread_id, unsigned char* author2_col0_ptr, uint32_t author2_col0_bytes, uint32_t & author2_fragment_size) __attribute__((always_inline));
+extern inline void q5_huff_2threads_1476432_author2_col0_decode_Huffman_threaded(int thread_id, unsigned char* author2_col0_ptr, uint32_t author2_col0_bytes, uint32_t & author2_fragment_size) __attribute__((always_inline));
 
-void q5_huff_1threads_10246893_doc1_col0_decode_Huffman(unsigned char* doc1_col0_ptr, uint32_t doc1_col0_bytes, uint32_t & doc1_fragment_size) {
+void q5_huff_2threads_1476432_doc1_col0_decode_Huffman(unsigned char* doc1_col0_ptr, uint32_t doc1_col0_bytes, uint32_t & doc1_fragment_size) {
 
 	bool* terminate_start = &(doc1_col0_huffman_terminator_array[0]);
 	int* tree_array_start = &(doc1_col0_huffman_tree_array[0]);
@@ -123,7 +123,7 @@ void q5_huff_1threads_10246893_doc1_col0_decode_Huffman(unsigned char* doc1_col0
 	}
 }
 
-void q5_huff_1threads_10246893_term_col0_decode_Huffman(unsigned char* term_col0_ptr, uint32_t term_col0_bytes, uint32_t & term_fragment_size) {
+void q5_huff_2threads_1476432_term_col0_decode_Huffman(unsigned char* term_col0_ptr, uint32_t term_col0_bytes, uint32_t & term_fragment_size) {
 
 	bool* terminate_start = &(term_col0_huffman_terminator_array[0]);
 	int* tree_array_start = &(term_col0_huffman_tree_array[0]);
@@ -185,7 +185,7 @@ void q5_huff_1threads_10246893_term_col0_decode_Huffman(unsigned char* term_col0
 	}
 }
 
-void q5_huff_1threads_10246893_term_col1_decode_Huffman(unsigned char* term_col1_ptr, uint32_t term_fragment_size) {
+void q5_huff_2threads_1476432_term_col1_decode_Huffman(unsigned char* term_col1_ptr, uint32_t term_fragment_size) {
 
 	bool* terminate_start = &(term_col1_huffman_terminator_array[0]);
 	int* tree_array_start = &(term_col1_huffman_tree_array[0]);
@@ -219,7 +219,7 @@ void q5_huff_1threads_10246893_term_col1_decode_Huffman(unsigned char* term_col1
 	}
 }
 
-void* pthread_q5_huff_1threads_10246893_worker(void* arguments) {
+void* pthread_q5_huff_2threads_1476432_worker(void* arguments) {
 
 	args_threading* args = (args_threading *) arguments;
 
@@ -238,10 +238,10 @@ void* pthread_q5_huff_1threads_10246893_worker(void* arguments) {
 
 			unsigned char* doc2_col0_ptr = &(idx[3]->fragment_data[0][row_doc2[0]]);
 			uint32_t doc2_fragment_size = 0;
-			q5_huff_1threads_10246893_doc2_col0_decode_Huffman_threaded(thread_id, doc2_col0_ptr, doc2_col0_bytes, doc2_fragment_size);
+			q5_huff_2threads_1476432_doc2_col0_decode_Huffman_threaded(thread_id, doc2_col0_ptr, doc2_col0_bytes, doc2_fragment_size);
 
 			unsigned char* doc2_col1_ptr = &(idx[3]->fragment_data[1][row_doc2[1]]);
-			q5_huff_1threads_10246893_doc2_col1_decode_Huffman_threaded(thread_id, doc2_col1_ptr, doc2_fragment_size);
+			q5_huff_2threads_1476432_doc2_col1_decode_Huffman_threaded(thread_id, doc2_col1_ptr, doc2_fragment_size);
 
 			for (uint32_t doc2_it = 0; doc2_it < doc2_fragment_size; doc2_it++) {
 
@@ -252,7 +252,7 @@ void* pthread_q5_huff_1threads_10246893_worker(void* arguments) {
 
 				unsigned char* year_col0_ptr = &(idx[1]->fragment_data[0][row_year[0]]);
 				uint32_t year_col0_element;
-				q5_huff_1threads_10246893_year_col0_decode_Huffman(year_col0_ptr, year_col0_element);
+				q5_huff_2threads_1476432_year_col0_decode_Huffman(year_col0_ptr, year_col0_element);
 
 				uint32_t* row_author2 = idx[4]->index_map[doc2_col0_element];
 				uint32_t author2_col0_bytes = idx[4]->index_map[doc2_col0_element+1][0] - row_author2[0];
@@ -260,7 +260,7 @@ void* pthread_q5_huff_1threads_10246893_worker(void* arguments) {
 
 					unsigned char* author2_col0_ptr = &(idx[4]->fragment_data[0][row_author2[0]]);
 					uint32_t author2_fragment_size = 0;
-					q5_huff_1threads_10246893_author2_col0_decode_Huffman_threaded(thread_id, author2_col0_ptr, author2_col0_bytes, author2_fragment_size);
+					q5_huff_2threads_1476432_author2_col0_decode_Huffman_threaded(thread_id, author2_col0_ptr, author2_col0_bytes, author2_fragment_size);
 
 					for (uint32_t author2_it = 0; author2_it < author2_fragment_size; author2_it++) {
 						uint32_t author2_col0_element = index4_col0_buffer[thread_id][0][author2_it];
@@ -279,7 +279,7 @@ void* pthread_q5_huff_1threads_10246893_worker(void* arguments) {
 	return nullptr;
 }
 
-void q5_huff_1threads_10246893_doc2_col0_decode_Huffman_threaded(int thread_id, unsigned char* doc2_col0_ptr, uint32_t doc2_col0_bytes, uint32_t & doc2_fragment_size) {
+void q5_huff_2threads_1476432_doc2_col0_decode_Huffman_threaded(int thread_id, unsigned char* doc2_col0_ptr, uint32_t doc2_col0_bytes, uint32_t & doc2_fragment_size) {
 
 	bool* terminate_start = &(doc2_col0_huffman_terminator_array[0]);
 	int* tree_array_start = &(doc2_col0_huffman_tree_array[0]);
@@ -341,7 +341,7 @@ void q5_huff_1threads_10246893_doc2_col0_decode_Huffman_threaded(int thread_id, 
 	}
 }
 
-void q5_huff_1threads_10246893_doc2_col1_decode_Huffman_threaded(int thread_id, unsigned char* doc2_col1_ptr, uint32_t doc2_fragment_size) {
+void q5_huff_2threads_1476432_doc2_col1_decode_Huffman_threaded(int thread_id, unsigned char* doc2_col1_ptr, uint32_t doc2_fragment_size) {
 
 	bool* terminate_start = &(doc2_col1_huffman_terminator_array[0]);
 	int* tree_array_start = &(doc2_col1_huffman_tree_array[0]);
@@ -375,7 +375,7 @@ void q5_huff_1threads_10246893_doc2_col1_decode_Huffman_threaded(int thread_id, 
 	}
 }
 
-void q5_huff_1threads_10246893_year_col0_decode_Huffman(unsigned char* year_col0_ptr, uint32_t & year_col0_element) {
+void q5_huff_2threads_1476432_year_col0_decode_Huffman(unsigned char* year_col0_ptr, uint32_t & year_col0_element) {
 
 	int mask = 0x100;
 	bool* terminator_array = &(year_col0_huffman_terminator_array[0]);
@@ -402,7 +402,7 @@ void q5_huff_1threads_10246893_year_col0_decode_Huffman(unsigned char* year_col0
 	year_col0_element = *tree_array;
 }
 
-void q5_huff_1threads_10246893_author2_col0_decode_Huffman_threaded(int thread_id, unsigned char* author2_col0_ptr, uint32_t author2_col0_bytes, uint32_t & author2_fragment_size) {
+void q5_huff_2threads_1476432_author2_col0_decode_Huffman_threaded(int thread_id, unsigned char* author2_col0_ptr, uint32_t author2_col0_bytes, uint32_t & author2_fragment_size) {
 
 	bool* terminate_start = &(author2_col0_huffman_terminator_array[0]);
 	int* tree_array_start = &(author2_col0_huffman_tree_array[0]);
@@ -464,7 +464,7 @@ void q5_huff_1threads_10246893_author2_col0_decode_Huffman_threaded(int thread_i
 	}
 }
 
-extern "C" double* q5_huff_1threads_10246893(int** null_checks) {
+extern "C" double* q5_huff_2threads_1476432(int** null_checks) {
 
 	benchmark_t1 = chrono::steady_clock::now();
 
@@ -555,7 +555,7 @@ extern "C" double* q5_huff_1threads_10246893(int** null_checks) {
 	author2_col0_huffman_terminator_array = idx[4]->huffman_terminator_array[0];
 
 	uint64_t author1_list[1];
-	author1_list[0] = 10246893;
+	author1_list[0] = 1476432;
 
 	for (int author1_it = 0; author1_it<1; author1_it++) {
 
@@ -567,7 +567,7 @@ extern "C" double* q5_huff_1threads_10246893(int** null_checks) {
 
 			unsigned char* doc1_col0_ptr = &(idx[0]->fragment_data[0][row_doc1[0]]);
 			uint32_t doc1_fragment_size = 0;
-			q5_huff_1threads_10246893_doc1_col0_decode_Huffman(doc1_col0_ptr, doc1_col0_bytes, doc1_fragment_size);
+			q5_huff_2threads_1476432_doc1_col0_decode_Huffman(doc1_col0_ptr, doc1_col0_bytes, doc1_fragment_size);
 
 			for (uint32_t doc1_it = 0; doc1_it < doc1_fragment_size; doc1_it++) {
 
@@ -579,10 +579,10 @@ extern "C" double* q5_huff_1threads_10246893(int** null_checks) {
 
 					unsigned char* term_col0_ptr = &(idx[2]->fragment_data[0][row_term[0]]);
 					uint32_t term_fragment_size = 0;
-					q5_huff_1threads_10246893_term_col0_decode_Huffman(term_col0_ptr, term_col0_bytes, term_fragment_size);
+					q5_huff_2threads_1476432_term_col0_decode_Huffman(term_col0_ptr, term_col0_bytes, term_fragment_size);
 
 					unsigned char* term_col1_ptr = &(idx[2]->fragment_data[1][row_term[1]]);
-					q5_huff_1threads_10246893_term_col1_decode_Huffman(term_col1_ptr, term_fragment_size);
+					q5_huff_2threads_1476432_term_col1_decode_Huffman(term_col1_ptr, term_fragment_size);
 
 					uint32_t thread_size = term_fragment_size/NUM_THREADS;
 					uint32_t position = 0;
@@ -596,7 +596,7 @@ extern "C" double* q5_huff_1threads_10246893(int** null_checks) {
 					arguments[NUM_THREADS-1].end = term_fragment_size;
 
 					for (int i=0; i<NUM_THREADS; i++) {
-						pthread_create(&threads[i], NULL, &pthread_q5_huff_1threads_10246893_worker, (void *) &arguments[i]);
+						pthread_create(&threads[i], NULL, &pthread_q5_huff_2threads_1476432_worker, (void *) &arguments[i]);
 					}
 
 					for (int i=0; i<NUM_THREADS; i++) {
