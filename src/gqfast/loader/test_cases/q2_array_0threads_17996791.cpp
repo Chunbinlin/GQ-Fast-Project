@@ -14,6 +14,7 @@ static int* RC;
 
 static uint64_t*** index1_col0_buffer;
 static uint64_t*** index2_col0_buffer;
+static uint64_t*** index2_col1_buffer;
 static uint64_t*** index3_col0_buffer;
 static uint64_t*** index3_col1_buffer;
 
@@ -92,6 +93,13 @@ extern "C" double* q2_array_0threads_17996791(int** null_checks) {
 		index2_col0_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
 		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
 			index2_col0_buffer[i][j] = new uint64_t[max_frag];
+		}
+	}
+	index2_col1_buffer = buffer_arrays[2][1];
+	for (int i=0; i<NUM_THREADS; i++) {
+		index2_col1_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];
+		for (int j=0; j<BUFFER_POOL_SIZE; j++) {
+			index2_col1_buffer[i][j] = new uint64_t[max_frag];
 		}
 	}
 
@@ -186,6 +194,12 @@ extern "C" double* q2_array_0threads_17996791(int** null_checks) {
 			delete[] index2_col0_buffer[j][k];
 		}
 		delete[] index2_col0_buffer[j];
+	}
+	for (int j=0; j<NUM_THREADS; j++) {
+		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
+			delete[] index2_col1_buffer[j][k];
+		}
+		delete[] index2_col1_buffer[j];
 	}
 	for (int j=0; j<NUM_THREADS; j++) {
 		for (int k=0; k<BUFFER_POOL_SIZE; k++) {
