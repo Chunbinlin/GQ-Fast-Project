@@ -6,7 +6,7 @@
 #include <ctime>
 #include <chrono>
 #include "fastr_index.hpp"
-
+#include <map>
 #define MAX_INDICES 6
 #define MAX_THREADS 8
 
@@ -82,5 +82,9 @@ extern struct Metadata metadata;
 extern uint64_t**** buffer_arrays[MAX_INDICES];
 
 int num_loaded_indices;
+
+enum command { iload_begin, iload_path, iload_num_encodings, iload_UA, iload_BCA, iload_BB, iload_Huffman, query_execute};
+
+map<char*, command> server_command_map;
 
 #endif

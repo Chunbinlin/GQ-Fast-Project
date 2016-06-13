@@ -5,6 +5,7 @@
 #include <boost/archive/binary_iarchive.hpp>
 
 #include "global_vars.hpp"
+#include "load.hpp"
 #include <fstream>
 
 template <typename T>

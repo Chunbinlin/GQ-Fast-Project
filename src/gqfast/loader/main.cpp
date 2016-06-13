@@ -1,9 +1,9 @@
 #include <iostream>
 #include <fstream>
-#include "load.hpp"
-#include "input_handling.hpp"
 #include "auto_tests.hpp"
+
 #include "serialization.hpp"
+#include "socket_server.hpp"
 // threads
 int num_threads;
 
@@ -42,6 +42,15 @@ void init_globals()
 
         buffer_arrays[i] = nullptr;
     }
+
+    server_command_map["load_index"]  = iload_begin;
+    server_command_map["path_filename"] = iload_path;
+    server_command_map["num_encoded_columns"] = iload_num_encodings;
+    server_command_map["Uncompress_Array"] = iload_UA;
+    server_command_map["Bit_Compress_Array"] = iload_BCA;
+    server_command_map["Byte_Aligned_Bitmap"] = iload_BB;
+    server_command_map["Huffman"] = iload_Huffman;
+    server_command_map["run_query"] = query_execute;
 
 }
 
@@ -106,7 +115,7 @@ int main(int argc, char ** argv)
                  "[3]\tBB\n"
                  "[4]\tHuffman\n"
                  "[5]\tOptimal compression\n\n";
-    while ((c = getopt(argc, argv, "hs:l:d:c:i:a:o:")) != -1)
+    while ((c = getopt(argc, argv, "hs:l:d:c:i:a:o:j")) != -1)
     {
         switch (c)
         {
@@ -180,7 +189,10 @@ int main(int argc, char ** argv)
                 exit(0);
             }
             break;
+        case 'j':
+            action = 'j';
         }
+
     }
 
 
@@ -244,6 +256,18 @@ int main(int argc, char ** argv)
         case 'i':
         {
             load_individual_table<int, uint32_t>(itable, database, compression);
+            break;
+        }
+        case 'j':
+        {
+            int result = java_program_communicator();
+            if (result == 0)
+            {
+                cout << "Server finished normally\n";
+            }
+            else {
+                cout << "Error on socket server call\n";
+            }
             break;
         }
         default:
