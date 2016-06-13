@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "input_handling.hpp"
 
 void automatic_tests(char* input_file, char* output_file)
