@@ -2,7 +2,7 @@ package gqfast.global;
 
 
 public class Global {
-	public enum Encodings { Uncompress_Array, Uncomress_Bitmap, Bit_Compress_Array, Byte_Align_Bitmap, Huffman };
+	public enum Encodings { Uncompress_Array, Uncompress_Bitmap, Bit_Compress_Array, Byte_Align_Bitmap, Huffman };
 	public enum Optypes {JOIN_OPERATOR, SEMIJOIN_OPERATOR, INTERSECTION_OPERATOR, AGGREGATION_OPERATOR,SELECTION_OPERATOR, THREADING_OPERATOR, RENAME_OPERATOR, PROJECTION_OPERATOR}; 
 	
 	

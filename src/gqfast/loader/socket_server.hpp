@@ -16,38 +16,80 @@
 #define PORT_NO 7235
 
 
-int read_from_socket(char contentBuffer[], char buffer[], int clisockfd)
+
+
+uint32_t read_int_from_socket(char contentBuffer[], char buffer[], int clisockfd)
 {
     int n=-1;
 
     bzero(buffer,BUFFER_SIZE);
     bzero(contentBuffer,BUFFER_SIZE-1);
 
-    n = read( clisockfd,buffer,BUFFER_SIZE-1);
+    n = recv(clisockfd,buffer,BUFFER_SIZE-1, MSG_WAITALL);
     if (n < 0)
     {
         perror("ERROR reading from socket");
-        return(1);
+        exit(0);
     }
+    uint32_t raw32;
 
-    strncpy(contentBuffer,buffer,strlen(buffer) - 1);
-    return 0;
+    strncpy(contentBuffer, buffer, n);
+    memcpy(&raw32,contentBuffer, 4);
+    cerr << raw32 << ", " << contentBuffer << "\n";
+    uint32_t readInt = ntohl(raw32);
+
+    return readInt;
 }
 
-int write_to_socket(int clisockfd, string messageString) {
+
+int read_string_from_socket(char contentBuffer[], char buffer[], int clisockfd)
+{
+
+    int n=-1;
+
+    bzero(buffer,BUFFER_SIZE);
+    bzero(contentBuffer,BUFFER_SIZE-1);
+
+    n = read(clisockfd,buffer,BUFFER_SIZE-1);
+    if (n < 0)
+    {
+        perror("ERROR reading from socket");
+        exit(0);
+    }
+
+    strncpy(contentBuffer, buffer, n);
+
+    return n;
+}
+
+
+
+void write_to_socket(int clisockfd, string messageString)
+{
 
     int n=-1;
     const char* message = messageString.c_str();
 
- //   strcpy(message, messageString.c_str());
-    n = write(clisockfd, message, messageString.length());
-  //  delete[] message;
+    uint32_t length = messageString.length();
+    length = htonl(length);
+
+    n = write(clisockfd, (const char*)&length, 4);
+    //  delete[] message;
     if (n < 0)
     {
         perror("ERROR writing to socket");
-        return(1);
+        exit(0);
     }
-    return 0;
+
+//   strcpy(message, messageString.c_str());
+    n = write(clisockfd, message, messageString.length());
+    //  delete[] message;
+    if (n < 0)
+    {
+        perror("ERROR writing to socket");
+        exit(0);
+    }
+
 }
 
 
@@ -66,7 +108,7 @@ int java_program_communicator()
     char contentBuffer[BUFFER_SIZE-1];
     struct sockaddr_in serv_addr, cli_addr;
 
-    string out_message;
+    char* out_message;
     //int optval;
 
     /* First call to socket() function */
@@ -105,51 +147,63 @@ int java_program_communicator()
     while (1)
     {
         out_message = "Waiting for message\n";
-        if(write_to_socket(clisockfd,out_message)) {
-            return 1;
-        }
-        cerr << "in first loop\n";
-        if(read_from_socket(contentBuffer, buffer, clisockfd)) {
-            return 1;
-        }
+        write_to_socket(clisockfd,out_message);
+        read_string_from_socket(contentBuffer, buffer, clisockfd);
+
         if (strcmp(start, contentBuffer) ==0)
         {
             while (strcmp(end, contentBuffer) !=0)
             {
-                out_message = "Continue message\n";
-                if (write_to_socket(clisockfd, out_message)) {
-                    return 1;
+
+                read_string_from_socket(contentBuffer, buffer, clisockfd);
+
+                string tempContentString(contentBuffer);
+                cerr << tempContentString << "\n";
+                if (server_command_map[tempContentString] == iload_begin)
+                {
+                    read_string_from_socket(contentBuffer, buffer, clisockfd);
+                    string filename(contentBuffer);
+                    uint32_t num_encodings = read_int_from_socket(contentBuffer, buffer, clisockfd);
+                    cerr << "num encodings = " << num_encodings << "\n";
+
+                    char* col_names[num_encodings];
+                    uint32_t encodings[num_encodings];
+                    for (uint32_t i=0; i<num_encodings; i++)
+                    {
+                        int n = read_string_from_socket(contentBuffer, buffer, clisockfd);
+                        char* temp = new char[n];
+                        strcpy(temp, contentBuffer);
+                        col_names[i] = temp;
+                        encodings[i] = read_int_from_socket(contentBuffer, buffer, clisockfd);
+                    }
+                    cerr << "filename = " << filename << "\n";
+                    cerr << "colname[0] = " << col_names[0] << "\n";
+                    cerr << "encodings[0] = " << encodings[0] << "\n";
+
+                    for (uint32_t i=0; i<num_encodings; i++)
+                    {
+                        delete[] col_names[i];
+                    }
                 }
 
-                if (read_from_socket(contentBuffer, buffer, clisockfd)) {
-                    return 1;
-                }
-
-                cerr << "in while loop\n";
 
             }
 
             out_message = "Message complete\n";
-            if (write_to_socket(clisockfd, out_message)) {
-                return 1;
-            }
+            write_to_socket(clisockfd, out_message);
 
         }
         else if (strcmp(shutdown, contentBuffer) ==0)
         {
             out_message = "Server shut down\n";
-            if (write_to_socket(clisockfd,out_message)) {
-                return 1;
-            }
+            write_to_socket(clisockfd,out_message);
             break;
         }
         else
         {
             printf("Unknown command: %s\n",buffer);
             out_message = "ERRCmd\n";
-            if (write_to_socket(clisockfd,out_message)) {
-                return 1;
-            }
+            write_to_socket(clisockfd,out_message);
         }
     }
 

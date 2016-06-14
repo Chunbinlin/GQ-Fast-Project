@@ -83,8 +83,8 @@ extern uint64_t**** buffer_arrays[MAX_INDICES];
 
 int num_loaded_indices;
 
-enum command { iload_begin, iload_path, iload_num_encodings, iload_UA, iload_BCA, iload_BB, iload_Huffman, query_execute};
+enum command { iload_begin=1, query_execute=2};
 
-map<char*, command> server_command_map;
+map<string, command> server_command_map;
 
 #endif

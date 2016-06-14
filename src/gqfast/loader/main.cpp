@@ -44,12 +44,6 @@ void init_globals()
     }
 
     server_command_map["load_index"]  = iload_begin;
-    server_command_map["path_filename"] = iload_path;
-    server_command_map["num_encoded_columns"] = iload_num_encodings;
-    server_command_map["Uncompress_Array"] = iload_UA;
-    server_command_map["Bit_Compress_Array"] = iload_BCA;
-    server_command_map["Byte_Aligned_Bitmap"] = iload_BB;
-    server_command_map["Huffman"] = iload_Huffman;
     server_command_map["run_query"] = query_execute;
 
 }
