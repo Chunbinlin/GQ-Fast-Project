@@ -451,9 +451,9 @@ public class PubmedQueryAS {
 		runQ5("q5_huff_1threads_5350530", 10, selections3,  MetaData.ENCODING_HUFFMAN);
 
 		runQ5("q5_huff_0threads_1476432", 1, selections4, MetaData.ENCODING_HUFFMAN);
-		runQ5("q5_huf_2threads_1476432", 2, selections4,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_2threads_1476432", 2, selections4,  MetaData.ENCODING_HUFFMAN);
 		runQ5("q5_huff_4threads_1476432", 4, selections4,  MetaData.ENCODING_HUFFMAN);
-		runQ5("q5_huf_1threads_1476432", 10, selections4,  MetaData.ENCODING_HUFFMAN);
+		runQ5("q5_huff_1threads_1476432", 10, selections4,  MetaData.ENCODING_HUFFMAN);
 
 		runQ5("q5_huff_0threads_4945389", 1, selections5, MetaData.ENCODING_HUFFMAN);
 		runQ5("q5_huff_2threads_4945389", 2, selections5,  MetaData.ENCODING_HUFFMAN);
