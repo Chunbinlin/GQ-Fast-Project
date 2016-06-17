@@ -21,7 +21,8 @@ public class CodeGenerator {
 	static boolean hasThreading;
 	static int threadOpIndex;
 	static boolean hasIntersection;
-	
+	static List<Integer> intersectionAliasAppearanceIDs;
+	static HashMap<Operator,Integer> joinAliasAppearanceIDs;
 
 	private static void checkThreading(MetaQuery query, List<Operator> operators) {
 		if (query.getNumThreads() > 1) {
@@ -98,29 +99,62 @@ public class CodeGenerator {
 	 * Output:	The part of the generated code that initializes the buffers used in the query processing
 	 * 
 	 */
-	private static String bufferInitCode(MetaQuery query, List<String> globalsCppCode) {
+	private static String bufferInitCode(List<Operator> operators , List<String> globalsCppCode) {
 		
-		Set<Integer> indexSet = query.getIndexIDs(); 	
-		HashMap<Integer, Integer> numColumnsMap = query.getNumColumns(indexSet);
-		
+		//Set<Integer> indexSet = query.getIndexIDs(); 	
 		String globalCodeString = "\n";
-		
 		String bufferInitString = "\n\tint max_frag;\n";
-		int i = 0;
-		for (Integer curr : indexSet) {
-			int numColumns = numColumnsMap.get(curr);
-			bufferInitString += "\n\tmax_frag = metadata.idx_max_fragment_sizes[" + curr + "];\n";
-			for (int j=0; j<numColumns; j++) {
-				globalCodeString += "static uint64_t*** index" + curr + "_col" + j + "_buffer;\n";
-				bufferInitString += "\tindex" + curr + "_col" + j + "_buffer = buffer_arrays[" + curr + "][" + j + "];\n";
-				bufferInitString += "\tfor (int i=0; i<NUM_THREADS; i++) {\n";
-				bufferInitString += "\t\tindex"+curr+"_col"+ j + "_buffer[i] = new uint64_t*[BUFFER_POOL_SIZE];\n";
-				bufferInitString += "\t\tfor (int j=0; j<BUFFER_POOL_SIZE; j++) {\n";
-				bufferInitString += "\t\t\tindex"+curr+"_col"+j + "_buffer[i][j] = new uint64_t[max_frag];\n";
-				bufferInitString += "\t\t}\n";
-				bufferInitString += "\t}\n";				
+		for (int i=0; i<operators.size(); i++) {
+			
+			Operator currOp = operators.get(i);
+			if (currOp.getType() == Optypes.INTERSECTION_OPERATOR) {
+				IntersectionOperator currInterOp = (IntersectionOperator) currOp;
+				List<Alias> aliases = currInterOp.getAliases();
+				List<Integer> colIDs = currInterOp.getColumnIDs();
+				for (int j=0; j<aliases.size(); j++) {
+					Alias currAlias = aliases.get(j);
+					String currAliasString = currAlias.getAlias();
+					int gqFastIndexID = currAlias.getAssociatedIndex().getGQFastIndexID();
+					int currColID = colIDs.get(j);
+					bufferInitString += "\n\tmax_frag = metadata.idx_max_fragment_sizes[" + gqFastIndexID + "];\n";
+					int currAppearance = intersectionAliasAppearanceIDs.get(j);
+					String bufferName = currAliasString + currAppearance + "_col" + currColID;
+					globalCodeString += "static uint64_t** " + bufferName + "_buffer;\n";
+					bufferInitString += "\t" + bufferName + "_buffer = new uint64_t*[NUM_THREADS];\n";
+					bufferInitString += "\tfor (int i=0; i<NUM_THREADS; i++) {\n";
+					bufferInitString += "\t\t" + bufferName + "_buffer[i] = new uint64_t[max_frag];\n";
+					bufferInitString += "\t}\n";	
+							
+				}
 			}
-			i++;
+			else if (currOp.getType() == Optypes.JOIN_OPERATOR || currOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
+				Alias currAlias;
+				List<Integer> colIDs;
+				if (currOp.getType() == Optypes.JOIN_OPERATOR) {
+					JoinOperator currJoinOp = (JoinOperator) currOp;
+					currAlias = currJoinOp.getAlias();
+					colIDs = currJoinOp.getColumnIDs();
+				}
+				else {
+					SemiJoinOperator currSemiOp = (SemiJoinOperator) currOp;
+					currAlias = currSemiOp.getAlias();
+					colIDs = currSemiOp.getColumnIDs();
+				}
+				String currAliasString = currAlias.getAlias();
+				int gqFastIndexID = currAlias.getAssociatedIndex().getGQFastIndexID();
+				bufferInitString += "\n\tmax_frag = metadata.idx_max_fragment_sizes[" + gqFastIndexID + "];\n";
+				int currAppearance = joinAliasAppearanceIDs.get(currOp);
+				for (int currColID : colIDs) {
+					String bufferName = currAliasString + currAppearance + "_col" + currColID;
+					globalCodeString += "static uint64_t** " + bufferName + "_buffer;\n";
+					bufferInitString += "\t" + bufferName + "_buffer = new uint64_t*[NUM_THREADS];\n";
+					bufferInitString += "\tfor (int i=0; i<NUM_THREADS; i++) {\n";
+					bufferInitString += "\t\t" + bufferName + "_buffer[i] = new uint64_t[max_frag];\n";
+					bufferInitString += "\t}\n";	
+				}
+				
+			}
+				
 		}
 		globalsCppCode.add(globalCodeString);
 		return bufferInitString;
@@ -2220,10 +2254,51 @@ public class CodeGenerator {
 		}
 	}
 	
-
-
-
-
+	private static void initAppearanceMapping(List<Operator> operators) {
+		
+		HashMap<Alias, Integer> aliasMap = new HashMap<Alias, Integer>();
+		
+		for (int i=0; i<operators.size(); i++) {
+			Operator currOp = operators.get(i);
+			if (currOp.getType() == Optypes.INTERSECTION_OPERATOR) {
+				IntersectionOperator currInterOp = (IntersectionOperator) currOp;
+				List<Alias> aliases = currInterOp.getAliases();
+				for (int j=0; j<aliases.size(); j++) {
+					Alias currAlias = aliases.get(j);	
+					if (aliasMap.get(currAlias) == null) {
+						aliasMap.put(currAlias, 1);
+					}
+					else {
+						int temp = aliasMap.get(currAlias) + 1;
+						aliasMap.put(currAlias, temp);
+					}
+					intersectionAliasAppearanceIDs.add(aliasMap.get(currAlias)); 
+				}
+			}
+			else if (currOp.getType() == Optypes.JOIN_OPERATOR || currOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
+				Alias currAlias;
+				if (currOp.getType() == Optypes.JOIN_OPERATOR) {
+					JoinOperator currJoinOp = (JoinOperator) currOp;
+					currAlias = currJoinOp.getAlias();
+				}
+				else {
+					SemiJoinOperator currSemiJoinOp = (SemiJoinOperator) currOp;
+					currAlias = currSemiJoinOp.getAlias();
+				}
+				if (aliasMap.get(currAlias) == null) {
+					aliasMap.put(currAlias, 1);
+				}
+				else {
+					int temp = aliasMap.get(currAlias) + 1;
+					aliasMap.put(currAlias, temp);
+				}
+				int currAppearanceID = aliasMap.get(currAlias);
+				joinAliasAppearanceIDs.put(currOp, currAppearanceID);
+				
+			}
+		}
+		
+	}
 
 	private static void writeToFile(String fullCppCode, String queryName) {
 
@@ -2237,6 +2312,12 @@ public class CodeGenerator {
 	}
 
 	public static void generateCode(List<Operator> operators, MetaData metadata) {
+		
+		List<Integer> intersectionAliasAppearanceIDs = new ArrayList<Integer>();
+		HashMap<Operator,Integer> joinAliasAppearanceIDs = new HashMap<Operator, Integer>();
+		
+		initAppearanceMapping(operators);
+		
 		
 		hasIntersection = false;
 		int resultDataType = 0;
@@ -2274,7 +2355,7 @@ public class CodeGenerator {
 		mainCppCode.add(benchmarkingString);
 		
 		// Array initializations
-		mainCppCode.add(bufferInitCode(query, globalsCppCode));
+		mainCppCode.add(bufferInitCode(operators, globalsCppCode));
 	
 		mainCppCode.add(initResultArray(resultDataType, lastOp));
 		mainCppCode.add(initSemiJoinArray(operators, metadata, globalsCppCode));
@@ -2320,6 +2401,8 @@ public class CodeGenerator {
 		
 		writeToFile(fullCppCode, query.getQueryName());
 	}
+
+	
 	
 
 
