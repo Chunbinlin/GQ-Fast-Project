@@ -188,7 +188,7 @@ public class SemmedDB {
 		aliases.add(alias5);
 		aliases.add(alias6);
 		
-		MetaQuery smdbOptimal = new MetaQuery(1, queryName, numThreads, 1, aliases);
+		MetaQuery smdbOptimal = new MetaQuery(1, queryName, numThreads, aliases);
 		
 		metadata.getQueryList().add(smdbOptimal);	
 		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);

@@ -38,7 +38,7 @@ public class PubmedQueryAS {
 		
 		// public MetaQuery(int queryID, String queryName, int numThreads,
 		// int numBuffers, int bufferPoolSize, List<String> aliases)
-		MetaQuery q5Optimal = new MetaQuery(0, queryName, numThreads, 1, aliases);
+		MetaQuery q5Optimal = new MetaQuery(0, queryName, numThreads, aliases);
 			
 		metadata.getQueryList().add(q5Optimal);
 		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);

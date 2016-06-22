@@ -27,7 +27,7 @@ public class PubmedQueryFAD {
 		
 		// public MetaQuery(int queryID, String queryName, int numThreads,
 		// int numBuffers, int bufferPoolSize, List<String> aliases)
-		MetaQuery q4Optimal = new MetaQuery(0, queryName, numThreads, 2, aliases);
+		MetaQuery q4Optimal = new MetaQuery(0, queryName, numThreads, aliases);
 				
 		metadata.getQueryList().add(q4Optimal);
 		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);
