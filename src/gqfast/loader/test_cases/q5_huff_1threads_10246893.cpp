@@ -15,6 +15,8 @@ static uint32_t doc1_col0_element;
 static double* R;
 static int* RC;
 
+static pthread_spinlock_t* r_spin_locks;
+
 static uint64_t** doc1_col0_buffer;
 static uint64_t** term_col0_buffer;
 static uint64_t** term_col1_buffer;
@@ -266,9 +268,9 @@ void* pthread_q5_huff_1threads_10246893_worker(void* arguments) {
 
 						RC[author2_col0_element] = 1;
 
-						pthread_spin_lock(&spin_locks[4][author2_col0_element]);
+						pthread_spin_lock(&r_spin_locks[author2_col0_element]);
 						R[author2_col0_element] += (double)(term_col1_element*doc2_col1_element)/(2017-year_col0_element);
-						pthread_spin_unlock(&spin_locks[4][author2_col0_element]);
+						pthread_spin_unlock(&r_spin_locks[author2_col0_element]);
 
 					}
 				}
@@ -509,6 +511,8 @@ extern "C" double* q5_huff_1threads_10246893(int** null_checks) {
 
 	RC = new int[metadata.idx_domains[4][0]]();
 	R = new double[metadata.idx_domains[4][0]]();
+
+	r_spin_locks = spin_locks[4];
 
 
 	doc1_col0_huffman_tree_array = idx[0]->huffman_tree_array[0];
