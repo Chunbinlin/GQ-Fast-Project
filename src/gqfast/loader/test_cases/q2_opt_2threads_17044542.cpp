@@ -15,6 +15,8 @@ static uint32_t year1_col0_element;
 static double* R;
 static int* RC;
 
+static pthread_spinlock_t* r_spin_locks;
+
 static uint64_t** year1_col0_buffer;
 static uint64_t** term1_col0_buffer;
 static uint64_t** term1_col1_buffer;
@@ -158,9 +160,9 @@ void* pthread_q2_opt_2threads_17044542_worker(void* arguments) {
 
 				RC[doc2_col0_element] = 1;
 
-				pthread_spin_lock(&spin_locks[3][doc2_col0_element]);
+				pthread_spin_lock(&r_spin_locks[doc2_col0_element]);
 				R[doc2_col0_element] += (double)(term1_col1_element*doc2_col1_element)/(ABS((int)year1_col0_element-(int)year2_col0_element)+1);
-				pthread_spin_unlock(&spin_locks[3][doc2_col0_element]);
+				pthread_spin_unlock(&r_spin_locks[doc2_col0_element]);
 
 			}
 		}
@@ -281,6 +283,8 @@ extern "C" double* q2_opt_2threads_17044542(int** null_checks) {
 
 	RC = new int[metadata.idx_domains[3][0]]();
 	R = new double[metadata.idx_domains[3][0]]();
+
+	r_spin_locks = spin_locks[3];
 
 
 	year1_col0_bits_info = idx[1]->dict[0]->bits_info;

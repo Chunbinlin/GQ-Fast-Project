@@ -14,6 +14,8 @@ static args_threading arguments[NUM_THREADS];
 static int* R;
 static int* RC;
 
+static pthread_spinlock_t* r_spin_locks;
+
 static uint64_t** term1_col0_buffer;
 static uint64_t** doc2_col0_buffer;
 
@@ -80,9 +82,9 @@ void* pthread_q1_opt_4threads_17495979_worker(void* arguments) {
 
 				RC[doc2_col0_element] = 1;
 
-				pthread_spin_lock(&spin_locks[3][doc2_col0_element]);
+				pthread_spin_lock(&r_spin_locks[doc2_col0_element]);
 				R[doc2_col0_element] += 1;
-				pthread_spin_unlock(&spin_locks[3][doc2_col0_element]);
+				pthread_spin_unlock(&r_spin_locks[doc2_col0_element]);
 
 			}
 		}
@@ -142,6 +144,8 @@ extern "C" int* q1_opt_4threads_17495979(int** null_checks) {
 
 	RC = new int[metadata.idx_domains[3][0]]();
 	R = new int[metadata.idx_domains[3][0]]();
+
+	r_spin_locks = spin_locks[3];
 
 
 	uint64_t doc1_list[1];

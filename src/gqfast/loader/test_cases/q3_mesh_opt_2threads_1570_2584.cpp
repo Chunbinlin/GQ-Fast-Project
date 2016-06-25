@@ -14,6 +14,8 @@ static args_threading arguments[NUM_THREADS];
 static int* R;
 static int* RC;
 
+static pthread_spinlock_t* r_spin_locks;
+
 static uint64_t* doc1_0_col0_intersection_buffer;
 static uint64_t* doc1_1_col0_intersection_buffer;
 static uint64_t** author1_col0_buffer;
@@ -178,9 +180,9 @@ void* pthread_q3_mesh_opt_2threads_1570_2584_worker(void* arguments) {
 
 				RC[author1_col0_element] = 1;
 
-				pthread_spin_lock(&spin_locks[4][author1_col0_element]);
+				pthread_spin_lock(&r_spin_locks[author1_col0_element]);
 				R[author1_col0_element] += 1;
-				pthread_spin_unlock(&spin_locks[4][author1_col0_element]);
+				pthread_spin_unlock(&r_spin_locks[author1_col0_element]);
 
 			}
 		}
@@ -224,6 +226,8 @@ extern "C" int* q3_mesh_opt_2threads_1570_2584(int** null_checks) {
 
 	RC = new int[metadata.idx_domains[4][0]]();
 	R = new int[metadata.idx_domains[4][0]]();
+
+	r_spin_locks = spin_locks[4];
 
 
 	q3_mesh_opt_2threads_1570_2584_intersection_buffer = new uint64_t[metadata.idx_max_fragment_sizes[3]];
