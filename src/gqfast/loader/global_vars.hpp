@@ -82,9 +82,6 @@ extern struct Metadata metadata;
 extern uint64_t**** buffer_arrays[MAX_INDICES];
 
 int num_loaded_indices;
-
-enum command { iload_begin=1, query_execute=2};
-
-map<string, command> server_command_map;
+bool idx_position_in_use[MAX_INDICES];
 
 #endif

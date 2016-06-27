@@ -41,6 +41,7 @@ void init_globals()
         metadata.idx_num_encodings[i] = 0;
 
         buffer_arrays[i] = nullptr;
+        idx_position_in_use[i] = false;
     }
 
     server_command_map["load_index"]  = iload_begin;
