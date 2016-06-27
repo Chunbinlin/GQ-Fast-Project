@@ -48,9 +48,6 @@ public class MetaQuery {
 		return numThreads;
 	}
 
-	public int getBufferPoolSize() {
-		return bufferPoolSize;
-	}
 
 	public List<Alias> getAliases() {
 		return aliases;
