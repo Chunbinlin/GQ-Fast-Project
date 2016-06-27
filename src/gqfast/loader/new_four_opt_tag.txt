@@ -1,113 +1,112 @@
-q1_opt_0threads_10296795.so
-, 1.53898 sec q1_opt_0threads_16966392.so
-, 1.50215 sec q1_opt_0threads_17044542.so
-, 0.327351 sec q1_opt_0threads_17495979.so
-, 2.427 sec q1_opt_0threads_17996791.so
-, 1.45125 sec q1_opt_0threads_18681952.so
-, 1.73221 sec q1_opt_0threads_19265035.so
-, 0.990811 sec q1_opt_1threads_10296795.so
-, 3.35529 sec q1_opt_1threads_16966392.so
-, 3.11549 sec q1_opt_1threads_17044542.so
-, 0.645709 sec q1_opt_1threads_17495979.so
-, 5.16332 sec q1_opt_1threads_17966791.so
-, 3.0458 sec q1_opt_1threads_18681952.so
-, 3.76216 sec q1_opt_1threads_19265035.so
-, 2.09079 sec q1_opt_2threads_10296795.so
-, 1.91123 sec q1_opt_2threads_16966392.so
-, 1.9435 sec q1_opt_2threads_17044542.so
-, 0.381714 sec q1_opt_2threads_17495979.so
-, 2.97936 sec q1_opt_2threads_17996791.so
-, 1.71318 sec q1_opt_2threads_18681952.so
-, 2.11982 sec q1_opt_2threads_19265035.so
-, 1.27157 sec q1_opt_4threads_10296795.so
-, 1.41162 sec q1_opt_4threads_16966392.so
-, 1.35481 sec q1_opt_4threads_17044542.so
-, 0.286217 sec q1_opt_4threads_17495979.so
-, 2.01651 sec q1_opt_4threads_17996791.so
-, 1.12817 sec q1_opt_4threads_18681952.so
-, 1.35637 sec q1_opt_4threads_19265035.so
-, 0.794803 sec q2_opt_0threads_10296795.so
-, 5.73886 sec q2_opt_0threads_16966392.so
-, 5.84934 sec q2_opt_0threads_17044542.so
-, 1.22734 sec q2_opt_0threads_17495979.so
-, 9.24039 sec q2_opt_0threads_17996791.so
-, 5.58073 sec q2_opt_0threads_18681952.so
-, 6.40578 sec q2_opt_0threads_19265035.so
-, 3.72443 sec q2_opt_1threads_10296795.so
-, 6.9365 sec q2_opt_1threads_16966392.so
-, 7.08855 sec q2_opt_1threads_17044542.so
-, 1.48882 sec q2_opt_1threads_17495979.so
-, 11.1683 sec q2_opt_1threads_17966791.so
-, 6.73899 sec q2_opt_1threads_18681952.so
-, 7.75314 sec q2_opt_1threads_19265035.so
-, 4.50061 sec q2_opt_2threads_10296795.so
-, 4.01406 sec q2_opt_2threads_16966392.so
-, 4.44479 sec q2_opt_2threads_17044542.so
-, 0.893014 sec q2_opt_2threads_17495979.so
-, 6.55113 sec q2_opt_2threads_17996791.so
-, 3.90135 sec q2_opt_2threads_18681952.so
-, 4.52833 sec q2_opt_2threads_19265035.so
-, 2.74656 sec q2_opt_4threads_10296795.so
-, 2.97886 sec q2_opt_4threads_16966392.so
-, 3.00713 sec q2_opt_4threads_17044542.so
-, 0.655647 sec q2_opt_4threads_17495979.so
-, 4.55564 sec q2_opt_4threads_17996791.so
-, 2.55321 sec q2_opt_4threads_18681952.so
-, 3.0756 sec q2_opt_4threads_19265035.so
-, 1.74742 sec q3_tag_opt_0threads_10350_17630.so
-, 0.0331329 sec q3_tag_opt_0threads_1130_2994.so
-, 0.0969116 sec q3_tag_opt_0threads_1412_10350.so
-, 0.0304486 sec q3_tag_opt_0threads_231_4366.so
-, 0.0157499 sec q3_tag_opt_0threads_254_7041.so
-, 0.0782151 sec q3_tag_opt_0threads_879_254.so
-, 0.0160133 sec q3_tag_opt_0threads_879_7041.so
-, 0.0500642 sec q3_tag_opt_1threads_10350_17630.so
-, 0.0351313 sec q3_tag_opt_1threads_1130_2994.so
-, 0.115315 sec q3_tag_opt_1threads_1412_10350.so
-, 0.0297853 sec q3_tag_opt_1threads_231_4366.so
-, 0.0158395 sec q3_tag_opt_1threads_254_7041.so
-, 0.086166 sec q3_tag_opt_1threads_879_254.so
-, 0.0159543 sec q3_tag_opt_1threads_879_7041.so
-, 0.0493044 sec q3_tag_opt_2threads_10350_17630.so
-, 0.0334771 sec q3_tag_opt_2threads_1330_2994.so
-, 0.0853488 sec q3_tag_opt_2threads_1412_10350.so
-, 0.02991 sec q3_tag_opt_2threads_231_4366.so
-, 0.0159682 sec q3_tag_opt_2threads_254_7041.so
-, 0.0723836 sec q3_tag_opt_2threads_879_254.so
-, 0.0160422 sec q3_tag_opt_2threads_879_7041.so
-, 0.0491062 sec q3_tag_opt_4threads_10350_17630.so
-, 0.0328967 sec q3_tag_opt_4threads_1330_2994.so
-, 0.0690419 sec q3_tag_opt_4threads_1412_10350.so
-, 0.0298756 sec q3_tag_opt_4threads_231_4366.so
-, 0.015876 sec q3_tag_opt_4threads_254_7041.so
-, 0.0653733 sec q3_tag_opt_4threads_879_254.so
-, 0.01591 sec q3_tag_opt_4threads_879_7041.so
-, 0.0487351 sec q4_tag_opt_0threads_10350_17630.so
-, 0.0369282 sec q4_tag_opt_0threads_1130_2994.so
-, 0.425347 sec q4_tag_opt_0threads_1412_10350.so
-, 0.0161452 sec q4_tag_opt_0threads_231_4366.so
-, 0.00363817 sec q4_tag_opt_0threads_254_7041.so
-, 0.206084 sec q4_tag_opt_0threads_879_254.so
-, 0.00358983 sec q4_tag_opt_0threads_879_7041.so
-, 0.0403311 sec q4_tag_opt_1threads_10350_17630.so
-, 0.0438521 sec q4_tag_opt_1threads_1130_2994.so
-, 0.56736 sec q4_tag_opt_1threads_1412_10350.so
-, 0.0162943 sec q4_tag_opt_1threads_231_4366.so
-, 0.00378032 sec q4_tag_opt_1threads_254_7041.so
-, 0.266339 sec q4_tag_opt_1threads_879_254.so
-, 0.00390198 sec q4_tag_opt_1threads_879_7041.so
-, 0.0416112 sec q4_tag_opt_2threads_10350_17630.so
-, 0.0391599 sec q4_tag_opt_2threads_1330_2994.so
-, 0.45615 sec q4_tag_opt_2threads_1412_10350.so
-, 0.0163279 sec q4_tag_opt_2threads_231_4366.so
-, 0.00399665 sec q4_tag_opt_2threads_254_7041.so
-, 0.219127 sec q4_tag_opt_2threads_879_254.so
-, 0.0038925 sec q4_tag_opt_2threads_879_7041.so
-, 0.0408578 sec q4_tag_opt_4threads_10350_17630.so
-, 0.0317383 sec q4_tag_opt_4threads_1330_2994.so
-, 0.302697 sec q4_tag_opt_4threads_1412_10350.so
-, 0.0163717 sec q4_tag_opt_4threads_231_4366.so
-, 0.00396895 sec q4_tag_opt_4threads_254_7041.so
-, 0.15637 sec q4_tag_opt_4threads_879_254.so
-, 0.00376427 sec q4_tag_opt_4threads_879_7041.so
-, 0.0395557 sec 
+q1_opt_0threads_10296795.so, 1.53138 sec
+q1_opt_0threads_16966392.so, 1.49637 sec
+q1_opt_0threads_17044542.so, 0.325027 sec
+q1_opt_0threads_17495979.so, 2.42484 sec
+q1_opt_0threads_17996791.so, 1.43924 sec
+q1_opt_0threads_18681952.so, 1.72221 sec
+q1_opt_0threads_19265035.so, 0.981357 sec
+q1_opt_1threads_10296795.so, 3.35616 sec
+q1_opt_1threads_16966392.so, 3.12109 sec
+q1_opt_1threads_17044542.so, 0.647509 sec
+q1_opt_1threads_17495979.so, 5.17061 sec
+q1_opt_1threads_17966791.so, 3.04937 sec
+q1_opt_1threads_18681952.so, 3.77054 sec
+q1_opt_1threads_19265035.so, 2.09409 sec
+q1_opt_2threads_10296795.so, 1.91896 sec
+q1_opt_2threads_16966392.so, 1.9477 sec
+q1_opt_2threads_17044542.so, 0.382288 sec
+q1_opt_2threads_17495979.so, 2.97918 sec
+q1_opt_2threads_17996791.so, 1.7183 sec
+q1_opt_2threads_18681952.so, 2.12178 sec
+q1_opt_2threads_19265035.so, 1.26491 sec
+q1_opt_4threads_10296795.so, 1.40439 sec
+q1_opt_4threads_16966392.so, 1.35359 sec
+q1_opt_4threads_17044542.so, 0.284667 sec
+q1_opt_4threads_17495979.so, 2.0331 sec
+q1_opt_4threads_17996791.so, 1.11703 sec
+q1_opt_4threads_18681952.so, 1.3352 sec
+q1_opt_4threads_19265035.so, 0.787068 sec
+q2_opt_0threads_10296795.so, 5.77325 sec
+q2_opt_0threads_16966392.so, 5.91383 sec
+q2_opt_0threads_17044542.so, 1.24194 sec
+q2_opt_0threads_17495979.so, 9.32529 sec
+q2_opt_0threads_17996791.so, 5.63412 sec
+q2_opt_0threads_18681952.so, 6.44826 sec
+q2_opt_0threads_19265035.so, 3.75677 sec
+q2_opt_1threads_10296795.so, 6.89828 sec
+q2_opt_1threads_16966392.so, 7.04501 sec
+q2_opt_1threads_17044542.so, 1.47869 sec
+q2_opt_1threads_17495979.so, 11.1134 sec
+q2_opt_1threads_17966791.so, 6.70205 sec
+q2_opt_1threads_18681952.so, 7.69736 sec
+q2_opt_1threads_19265035.so, 4.46792 sec
+q2_opt_2threads_10296795.so, 3.9865 sec
+q2_opt_2threads_16966392.so, 4.41148 sec
+q2_opt_2threads_17044542.so, 0.88516 sec
+q2_opt_2threads_17495979.so, 6.48124 sec
+q2_opt_2threads_17996791.so, 3.86308 sec
+q2_opt_2threads_18681952.so, 4.47677 sec
+q2_opt_2threads_19265035.so, 2.72637 sec
+q2_opt_4threads_10296795.so, 3.00596 sec
+q2_opt_4threads_16966392.so, 3.01063 sec
+q2_opt_4threads_17044542.so, 0.655106 sec
+q2_opt_4threads_17495979.so, 4.51546 sec
+q2_opt_4threads_17996791.so, 2.5634 sec
+q2_opt_4threads_18681952.so, 3.04386 sec
+q2_opt_4threads_19265035.so, 1.74342 sec
+q3_tag_opt_0threads_10350_17630.so, 0.0337336 sec
+q3_tag_opt_0threads_1130_2994.so, 0.096649 sec
+q3_tag_opt_0threads_1412_10350.so, 0.0305007 sec
+q3_tag_opt_0threads_231_4366.so, 0.0165441 sec
+q3_tag_opt_0threads_254_7041.so, 0.0782257 sec
+q3_tag_opt_0threads_879_254.so, 0.0161397 sec
+q3_tag_opt_0threads_879_7041.so, 0.0503506 sec
+q3_tag_opt_1threads_10350_17630.so, 0.0351826 sec
+q3_tag_opt_1threads_1130_2994.so, 0.113063 sec
+q3_tag_opt_1threads_1412_10350.so, 0.0303421 sec
+q3_tag_opt_1threads_231_4366.so, 0.016344 sec
+q3_tag_opt_1threads_254_7041.so, 0.0853827 sec
+q3_tag_opt_1threads_879_254.so, 0.0162044 sec
+q3_tag_opt_1threads_879_7041.so, 0.0498163 sec
+q3_tag_opt_2threads_10350_17630.so, 0.0337637 sec
+q3_tag_opt_2threads_1330_2994.so, 0.0846815 sec
+q3_tag_opt_2threads_1412_10350.so, 0.0309041 sec
+q3_tag_opt_2threads_231_4366.so, 0.0164148 sec
+q3_tag_opt_2threads_254_7041.so, 0.0725352 sec
+q3_tag_opt_2threads_879_254.so, 0.0162044 sec
+q3_tag_opt_2threads_879_7041.so, 0.0496481 sec
+q3_tag_opt_4threads_10350_17630.so, 0.0333511 sec
+q3_tag_opt_4threads_1330_2994.so, 0.0691457 sec
+q3_tag_opt_4threads_1412_10350.so, 0.0303055 sec
+q3_tag_opt_4threads_231_4366.so, 0.0166135 sec
+q3_tag_opt_4threads_254_7041.so, 0.0654464 sec
+q3_tag_opt_4threads_879_254.so, 0.016218 sec
+q3_tag_opt_4threads_879_7041.so, 0.0497921 sec
+q4_tag_opt_0threads_10350_17630.so, 0.037049 sec
+q4_tag_opt_0threads_1130_2994.so, 0.427335 sec
+q4_tag_opt_0threads_1412_10350.so, 0.0163821 sec
+q4_tag_opt_0threads_231_4366.so, 0.00389288 sec
+q4_tag_opt_0threads_254_7041.so, 0.206016 sec
+q4_tag_opt_0threads_879_254.so, 0.00383699 sec
+q4_tag_opt_0threads_879_7041.so, 0.0404504 sec
+q4_tag_opt_1threads_10350_17630.so, 0.0442494 sec
+q4_tag_opt_1threads_1130_2994.so, 0.568712 sec
+q4_tag_opt_1threads_1412_10350.so, 0.0165446 sec
+q4_tag_opt_1threads_231_4366.so, 0.00403327 sec
+q4_tag_opt_1threads_254_7041.so, 0.266538 sec
+q4_tag_opt_1threads_879_254.so, 0.00423875 sec
+q4_tag_opt_1threads_879_7041.so, 0.0416903 sec
+q4_tag_opt_2threads_10350_17630.so, 0.0389333 sec
+q4_tag_opt_2threads_1330_2994.so, 0.469737 sec
+q4_tag_opt_2threads_1412_10350.so, 0.0165349 sec
+q4_tag_opt_2threads_231_4366.so, 0.00405474 sec
+q4_tag_opt_2threads_254_7041.so, 0.222382 sec
+q4_tag_opt_2threads_879_254.so, 0.0041389 sec
+q4_tag_opt_2threads_879_7041.so, 0.0414504 sec
+q4_tag_opt_4threads_10350_17630.so, 0.0336727 sec
+q4_tag_opt_4threads_1330_2994.so, 0.302287 sec
+q4_tag_opt_4threads_1412_10350.so, 0.0166361 sec
+q4_tag_opt_4threads_231_4366.so, 0.00409266 sec
+q4_tag_opt_4threads_254_7041.so, 0.155905 sec
+q4_tag_opt_4threads_879_254.so, 0.00411072 sec
+q4_tag_opt_4threads_879_7041.so, 0.0399754 sec

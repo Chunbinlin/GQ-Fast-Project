@@ -1,113 +1,112 @@
-q1_array_0threads_10296795.so
-, 0.182466 sec q1_array_0threads_16966392.so
-, 0.350107 sec q1_array_0threads_17044542.so
-, 0.233241 sec q1_array_0threads_17495979.so
-, 0.268809 sec q1_array_0threads_17996791.so
-, 0.274881 sec q1_array_0threads_18681952.so
-, 0.039143 sec q1_array_0threads_19265035.so
-, 0.204754 sec q1_array_1threads_10296795.so
-, 0.255952 sec q1_array_1threads_16966392.so
-, 0.758883 sec q1_array_1threads_17044542.so
-, 0.496612 sec q1_array_1threads_17495979.so
-, 0.539697 sec q1_array_1threads_17966791.so
-, 0.595203 sec q1_array_1threads_18681952.so
-, 0.0545995 sec q1_array_1threads_19265035.so
-, 0.41371 sec q1_array_2threads_10296795.so
-, 0.22086 sec q1_array_2threads_16966392.so
-, 0.467881 sec q1_array_2threads_17044542.so
-, 0.321117 sec q1_array_2threads_17495979.so
-, 0.320317 sec q1_array_2threads_17996791.so
-, 0.348025 sec q1_array_2threads_18681952.so
-, 0.0548095 sec q1_array_2threads_19265035.so
-, 0.290351 sec q1_array_4threads_10296795.so
-, 0.136668 sec q1_array_4threads_16966392.so
-, 0.362621 sec q1_array_4threads_17044542.so
-, 0.234558 sec q1_array_4threads_17495979.so
-, 0.268595 sec q1_array_4threads_17996791.so
-, 0.325561 sec q1_array_4threads_18681952.so
-, 0.0550119 sec q1_array_4threads_19265035.so
-, 0.222872 sec q2_array_0threads_10296795.so
-, 0.49215 sec q2_array_0threads_16966392.so
-, 1.38313 sec q2_array_0threads_17044542.so
-, 0.879215 sec q2_array_0threads_17495979.so
-, 1.02608 sec q2_array_0threads_17996791.so
-, 1.07399 sec q2_array_0threads_18681952.so
-, 0.0902924 sec q2_array_0threads_19265035.so
-, 0.782421 sec q2_array_1threads_10296795.so
-, 0.58566 sec q2_array_1threads_16966392.so
-, 1.72029 sec q2_array_1threads_17044542.so
-, 1.09923 sec q2_array_1threads_17495979.so
-, 1.29188 sec q2_array_1threads_17966791.so
-, 1.33024 sec q2_array_1threads_18681952.so
-, 0.10374 sec q2_array_1threads_19265035.so
-, 0.967067 sec q2_array_2threads_10296795.so
-, 0.461957 sec q2_array_2threads_16966392.so
-, 1.12902 sec q2_array_2threads_17044542.so
-, 0.706388 sec q2_array_2threads_17495979.so
-, 0.783662 sec q2_array_2threads_17996791.so
-, 0.820052 sec q2_array_2threads_18681952.so
-, 0.104012 sec q2_array_2threads_19265035.so
-, 0.681291 sec q2_array_4threads_10296795.so
-, 0.285236 sec q2_array_4threads_16966392.so
-, 0.823562 sec q2_array_4threads_17044542.so
-, 0.50921 sec q2_array_4threads_17495979.so
-, 0.586422 sec q2_array_4threads_17996791.so
-, 0.703214 sec q2_array_4threads_18681952.so
-, 0.106088 sec q2_array_4threads_19265035.so
-, 0.506756 sec q3_mesh_array_0threads_1570_2584.so
-, 0.0556491 sec q3_mesh_array_0threads_4446_1478.so
-, 0.0133691 sec q3_mesh_array_0threads_4446_535.so
-, 0.0522254 sec q3_mesh_array_0threads_535_1478.so
-, 0.0700028 sec q3_mesh_array_0threads_7608_3646.so
-, 0.013315 sec q3_mesh_array_0threads_90725_1570.so
-, 0.0340601 sec q3_mesh_array_0threads_90725_2584.so
-, 0.0156076 sec q3_mesh_array_1threads_1570_2584.so
-, 0.0675476 sec q3_mesh_array_1threads_4446_1478.so
-, 0.0149427 sec q3_mesh_array_1threads_4446_535.so
-, 0.052874 sec q3_mesh_array_1threads_535_1478.so
-, 0.0781669 sec q3_mesh_array_1threads_7608_3646.so
-, 0.014855 sec q3_mesh_array_1threads_90725_1570.so
-, 0.0352935 sec q3_mesh_array_1threads_90725_2584.so
-, 0.0164083 sec q3_mesh_array_2threads_1570_2584.so
-, 0.0532168 sec q3_mesh_array_2threads_4446_1478.so
-, 0.0145582 sec q3_mesh_array_2threads_4446_535.so
-, 0.0518159 sec q3_mesh_array_2threads_535_1478.so
-, 0.066089 sec q3_mesh_array_2threads_7608_3646.so
-, 0.0145606 sec q3_mesh_array_2threads_90725_1570.so
-, 0.034764 sec q3_mesh_array_2threads_90725_2584.so
-, 0.0162215 sec q3_mesh_array_4threads_1570_2584.so
-, 0.0460592 sec q3_mesh_array_4threads_4446_1478.so
-, 0.0145623 sec q3_mesh_array_4threads_4446_535.so
-, 0.0515407 sec q3_mesh_array_4threads_535_1478.so
-, 0.0592777 sec q3_mesh_array_4threads_7608_3646.so
-, 0.0145961 sec q3_mesh_array_4threads_90725_1570.so
-, 0.0347623 sec q3_mesh_array_4threads_90725_2584.so
-, 0.0165021 sec q4_mesh_array_0threads_1570_2584.so
-, 0.0746837 sec q4_mesh_array_0threads_4446_1478.so
-, 0.00142263 sec q4_mesh_array_0threads_4446_535.so
-, 0.0428549 sec q4_mesh_array_0threads_535_1478.so
-, 0.0887825 sec q4_mesh_array_0threads_7608_3646.so
-, 0.00119528 sec q4_mesh_array_0threads_90725_1570.so
-, 0.0196639 sec q4_mesh_array_0threads_90725_2584.so
-, 0.00116169 sec q4_mesh_array_1threads_1570_2584.so
-, 0.100895 sec q4_mesh_array_1threads_4446_1478.so
-, 0.00184782 sec q4_mesh_array_1threads_4446_535.so
-, 0.0448569 sec q4_mesh_array_1threads_535_1478.so
-, 0.11368 sec q4_mesh_array_1threads_7608_3646.so
-, 0.00140562 sec q4_mesh_array_1threads_90725_1570.so
-, 0.0198069 sec q4_mesh_array_1threads_90725_2584.so
-, 0.00123606 sec q4_mesh_array_2threads_1570_2584.so
-, 0.100552 sec q4_mesh_array_2threads_4446_1478.so
-, 0.00178636 sec q4_mesh_array_2threads_4446_535.so
-, 0.0451117 sec q4_mesh_array_2threads_535_1478.so
-, 0.107154 sec q4_mesh_array_2threads_7608_3646.so
-, 0.00133536 sec q4_mesh_array_2threads_90725_1570.so
-, 0.0197212 sec q4_mesh_array_2threads_90725_2584.so
-, 0.00127304 sec q4_mesh_array_4threads_1570_2584.so
-, 0.0710703 sec q4_mesh_array_4threads_4446_1478.so
-, 0.00157343 sec q4_mesh_array_4threads_4446_535.so
-, 0.0426372 sec q4_mesh_array_4threads_535_1478.so
-, 0.083739 sec q4_mesh_array_4threads_7608_3646.so
-, 0.00133492 sec q4_mesh_array_4threads_90725_1570.so
-, 0.0199857 sec q4_mesh_array_4threads_90725_2584.so
-, 0.00125655 sec 
+q1_array_0threads_10296795.so, 0.191208 sec
+q1_array_0threads_16966392.so, 0.379583 sec
+q1_array_0threads_17044542.so, 0.233538 sec
+q1_array_0threads_17495979.so, 0.269354 sec
+q1_array_0threads_17996791.so, 0.274946 sec
+q1_array_0threads_18681952.so, 0.0399152 sec
+q1_array_0threads_19265035.so, 0.204524 sec
+q1_array_1threads_10296795.so, 0.255838 sec
+q1_array_1threads_16966392.so, 0.762625 sec
+q1_array_1threads_17044542.so, 0.497141 sec
+q1_array_1threads_17495979.so, 0.54101 sec
+q1_array_1threads_17966791.so, 0.596081 sec
+q1_array_1threads_18681952.so, 0.0537581 sec
+q1_array_1threads_19265035.so, 0.413338 sec
+q1_array_2threads_10296795.so, 0.220053 sec
+q1_array_2threads_16966392.so, 0.470752 sec
+q1_array_2threads_17044542.so, 0.322075 sec
+q1_array_2threads_17495979.so, 0.321903 sec
+q1_array_2threads_17996791.so, 0.347901 sec
+q1_array_2threads_18681952.so, 0.0539023 sec
+q1_array_2threads_19265035.so, 0.289226 sec
+q1_array_4threads_10296795.so, 0.136975 sec
+q1_array_4threads_16966392.so, 0.371051 sec
+q1_array_4threads_17044542.so, 0.232408 sec
+q1_array_4threads_17495979.so, 0.264224 sec
+q1_array_4threads_17996791.so, 0.322459 sec
+q1_array_4threads_18681952.so, 0.0544784 sec
+q1_array_4threads_19265035.so, 0.223221 sec
+q2_array_0threads_10296795.so, 0.530878 sec
+q2_array_0threads_16966392.so, 1.40681 sec
+q2_array_0threads_17044542.so, 0.918734 sec
+q2_array_0threads_17495979.so, 1.06686 sec
+q2_array_0threads_17996791.so, 1.11131 sec
+q2_array_0threads_18681952.so, 0.132946 sec
+q2_array_0threads_19265035.so, 0.821328 sec
+q2_array_1threads_10296795.so, 0.648232 sec
+q2_array_1threads_16966392.so, 1.78812 sec
+q2_array_1threads_17044542.so, 1.15743 sec
+q2_array_1threads_17495979.so, 1.35424 sec
+q2_array_1threads_17966791.so, 1.39177 sec
+q2_array_1threads_18681952.so, 0.149949 sec
+q2_array_1threads_19265035.so, 1.02878 sec
+q2_array_2threads_10296795.so, 0.524384 sec
+q2_array_2threads_16966392.so, 1.1823 sec
+q2_array_2threads_17044542.so, 0.769648 sec
+q2_array_2threads_17495979.so, 0.844954 sec
+q2_array_2threads_17996791.so, 0.876194 sec
+q2_array_2threads_18681952.so, 0.148575 sec
+q2_array_2threads_19265035.so, 0.730027 sec
+q2_array_4threads_10296795.so, 0.348242 sec
+q2_array_4threads_16966392.so, 0.887254 sec
+q2_array_4threads_17044542.so, 0.572789 sec
+q2_array_4threads_17495979.so, 0.633804 sec
+q2_array_4threads_17996791.so, 0.772193 sec
+q2_array_4threads_18681952.so, 0.143482 sec
+q2_array_4threads_19265035.so, 0.566501 sec
+q3_mesh_array_0threads_1570_2584.so, 0.056061 sec
+q3_mesh_array_0threads_4446_1478.so, 0.0136709 sec
+q3_mesh_array_0threads_4446_535.so, 0.0526855 sec
+q3_mesh_array_0threads_535_1478.so, 0.0707609 sec
+q3_mesh_array_0threads_7608_3646.so, 0.0134807 sec
+q3_mesh_array_0threads_90725_1570.so, 0.0347922 sec
+q3_mesh_array_0threads_90725_2584.so, 0.0160886 sec
+q3_mesh_array_1threads_1570_2584.so, 0.0663482 sec
+q3_mesh_array_1threads_4446_1478.so, 0.0151316 sec
+q3_mesh_array_1threads_4446_535.so, 0.0535798 sec
+q3_mesh_array_1threads_535_1478.so, 0.0786191 sec
+q3_mesh_array_1threads_7608_3646.so, 0.0145332 sec
+q3_mesh_array_1threads_90725_1570.so, 0.0356363 sec
+q3_mesh_array_1threads_90725_2584.so, 0.0164891 sec
+q3_mesh_array_2threads_1570_2584.so, 0.0532624 sec
+q3_mesh_array_2threads_4446_1478.so, 0.0149714 sec
+q3_mesh_array_2threads_4446_535.so, 0.0523253 sec
+q3_mesh_array_2threads_535_1478.so, 0.066492 sec
+q3_mesh_array_2threads_7608_3646.so, 0.0146157 sec
+q3_mesh_array_2threads_90725_1570.so, 0.0357627 sec
+q3_mesh_array_2threads_90725_2584.so, 0.0166865 sec
+q3_mesh_array_4threads_1570_2584.so, 0.0568206 sec
+q3_mesh_array_4threads_4446_1478.so, 0.0153319 sec
+q3_mesh_array_4threads_4446_535.so, 0.0528259 sec
+q3_mesh_array_4threads_535_1478.so, 0.0597181 sec
+q3_mesh_array_4threads_7608_3646.so, 0.0149402 sec
+q3_mesh_array_4threads_90725_1570.so, 0.0354614 sec
+q3_mesh_array_4threads_90725_2584.so, 0.0168492 sec
+q4_mesh_array_0threads_1570_2584.so, 0.0738415 sec
+q4_mesh_array_0threads_4446_1478.so, 0.00138291 sec
+q4_mesh_array_0threads_4446_535.so, 0.0428037 sec
+q4_mesh_array_0threads_535_1478.so, 0.0879508 sec
+q4_mesh_array_0threads_7608_3646.so, 0.00112909 sec
+q4_mesh_array_0threads_90725_1570.so, 0.0197895 sec
+q4_mesh_array_0threads_90725_2584.so, 0.00117051 sec
+q4_mesh_array_1threads_1570_2584.so, 0.0999549 sec
+q4_mesh_array_1threads_4446_1478.so, 0.00171404 sec
+q4_mesh_array_1threads_4446_535.so, 0.0444241 sec
+q4_mesh_array_1threads_535_1478.so, 0.112689 sec
+q4_mesh_array_1threads_7608_3646.so, 0.00139864 sec
+q4_mesh_array_1threads_90725_1570.so, 0.0202354 sec
+q4_mesh_array_1threads_90725_2584.so, 0.00122921 sec
+q4_mesh_array_2threads_1570_2584.so, 0.0933497 sec
+q4_mesh_array_2threads_4446_1478.so, 0.00177528 sec
+q4_mesh_array_2threads_4446_535.so, 0.0441444 sec
+q4_mesh_array_2threads_535_1478.so, 0.106062 sec
+q4_mesh_array_2threads_7608_3646.so, 0.00142085 sec
+q4_mesh_array_2threads_90725_1570.so, 0.0198695 sec
+q4_mesh_array_2threads_90725_2584.so, 0.00124302 sec
+q4_mesh_array_4threads_1570_2584.so, 0.071397 sec
+q4_mesh_array_4threads_4446_1478.so, 0.00152413 sec
+q4_mesh_array_4threads_4446_535.so, 0.0426487 sec
+q4_mesh_array_4threads_535_1478.so, 0.0846444 sec
+q4_mesh_array_4threads_7608_3646.so, 0.00127827 sec
+q4_mesh_array_4threads_90725_1570.so, 0.0200042 sec
+q4_mesh_array_4threads_90725_2584.so, 0.00121908 sec
