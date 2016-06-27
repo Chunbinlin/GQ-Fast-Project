@@ -2,6 +2,7 @@ package gqfast.global;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,18 +18,18 @@ public class MetaData {
 	public static final int BYTES_4 = 4;
 	public static final int BYTES_8 = 8;
 	
-	private List<MetaIndex> indexList;
+	private HashMap<Integer, MetaIndex> indexList;
 	private List<MetaQuery> queryList;
 	
 	private int currentQueryID;
 	
 	public MetaData() {
-		indexList = new ArrayList<MetaIndex>();
+		indexList = new HashMap<Integer, MetaIndex>();
 		queryList = new LinkedList<MetaQuery>();
 		currentQueryID = 0;
 	}
 	
-	public void setIndexList(List<MetaIndex> indexList)
+	public void setIndexList(HashMap<Integer, MetaIndex> indexList)
 	{
 		this.indexList = indexList;
 	}
@@ -41,7 +42,7 @@ public class MetaData {
 		this.currentQueryID = currentQueryID;
 	}
 
-	public List<MetaIndex> getIndexList() {
+	public HashMap<Integer, MetaIndex> getIndexList() {
 		return indexList;
 	}
 
@@ -49,7 +50,7 @@ public class MetaData {
 		return queryList;
 	}
 
-	public int getMaxIndexID() {
+/*	public int getMaxIndexID() {
 		int max = 0;
 		for (MetaIndex index : indexList) {
 			if (max < index.getGQFastIndexID()) {
@@ -69,5 +70,5 @@ public class MetaData {
 		}
 		return max;
 	}
-	
+	*/
 }
