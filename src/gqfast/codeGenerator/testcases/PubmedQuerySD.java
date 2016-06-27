@@ -51,8 +51,8 @@ public class PubmedQuerySD {
 		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList2.add(MetaData.BYTES_1);
 		
-		MetaIndex DT1 = new MetaIndex(0, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.getIndexList().add(DT1);
+		MetaIndex DT1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
+		metadata.getIndexList().put(indexID, DT1);
 		
 		// DT2
 		indexID = 3;
@@ -65,8 +65,8 @@ public class PubmedQuerySD {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(1, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().add(DT2);
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		metadata.getIndexList().put(indexID, DT2);
 		
 
 	}
@@ -85,8 +85,8 @@ public class PubmedQuerySD {
 		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList2.add(MetaData.BYTES_1);
 		
-		MetaIndex DT1 = new MetaIndex(0, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.getIndexList().add(DT1);
+		MetaIndex DT1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
+		metadata.getIndexList().put(indexID, DT1);
 		
 		// DT2
 		indexID = 3;
@@ -99,8 +99,8 @@ public class PubmedQuerySD {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(1, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().add(DT2);
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		metadata.getIndexList().put(indexID, DT2);
 
 	}
 	private static void initQ1Operators(List<Operator> operators, MetaQuery query, List<Integer> selections) {

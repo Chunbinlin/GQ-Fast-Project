@@ -47,8 +47,8 @@ public class PubmedQueryFAD {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(0, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().add(DT2);
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		metadata.getIndexList().put(indexID, DT2);
 		
 		// DT1
 		indexID = 2;
@@ -61,8 +61,8 @@ public class PubmedQueryFAD {
 		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList2.add(MetaData.BYTES_1);
 		
-		MetaIndex DT1 = new MetaIndex(1, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.getIndexList().add(DT1);
+		MetaIndex DT1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
+		metadata.getIndexList().put(indexID, DT1);
 		
 
 	}
@@ -81,8 +81,8 @@ public class PubmedQueryFAD {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(0, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().add(DT2);
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		metadata.getIndexList().put(indexID, DT2);
 		
 		
 		// DT1
@@ -96,8 +96,8 @@ public class PubmedQueryFAD {
 		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList2.add(MetaData.BYTES_1);
 		
-		MetaIndex DT1 = new MetaIndex(1, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.getIndexList().add(DT1);
+		MetaIndex DT1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
+		metadata.getIndexList().put(indexID, DT1);
 
 	}
 	private static void initQ4Operators(List<Operator> operators, MetaQuery query, List<Integer> selections) {

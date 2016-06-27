@@ -48,8 +48,8 @@ public class PubmedQueryAD {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(0, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().add(DT2);
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		metadata.getIndexList().put(indexID, DT2);
 		
 		// DA2
 		indexID = 4;
@@ -59,8 +59,8 @@ public class PubmedQueryAD {
 		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
 		columnEncodedByteSizesList4.add(MetaData.BYTES_4);
 		
-		MetaIndex DA2 = new MetaIndex(1, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
-		metadata.getIndexList().add(DA2);
+		MetaIndex DA2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
+		metadata.getIndexList().put(indexID, DA2);
 		
 
 	}
@@ -79,8 +79,8 @@ public class PubmedQueryAD {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(0, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().add(DT2);
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		metadata.getIndexList().put(indexID, DT2);
 		
 		
 		// DA2
@@ -91,8 +91,8 @@ public class PubmedQueryAD {
 		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
 		columnEncodedByteSizesList4.add(MetaData.BYTES_4);
 		
-		MetaIndex DA2 = new MetaIndex(1, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
-		metadata.getIndexList().add(DA2);
+		MetaIndex DA2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
+		metadata.getIndexList().put(indexID, DA2);
 
 	}
 	private static void initQ3Operators(List<Operator> operators, MetaQuery query, List<Integer> selections) {

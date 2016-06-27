@@ -57,8 +57,8 @@ public class PubmedQueryAS {
 		List<Integer> columnEncodedByteSizesList0 = new ArrayList<Integer>();
 		columnEncodedByteSizesList0.add(MetaData.BYTES_4);
 		
-		MetaIndex DA1 = new MetaIndex(0, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
-		metadata.getIndexList().add(DA1);
+		MetaIndex DA1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
+		metadata.getIndexList().put(indexID, DA1);
 		
 		// DY
 		indexID = 1;
@@ -68,8 +68,8 @@ public class PubmedQueryAS {
 		List<Integer> columnEncodedByteSizesList1 = new ArrayList<Integer>();
 		columnEncodedByteSizesList1.add(MetaData.BYTES_4);
 		
-		MetaIndex DY = new MetaIndex(1, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
-		metadata.getIndexList().add(DY);
+		MetaIndex DY = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
+		metadata.getIndexList().put(indexID, DY);
 
 		// DT1
 		indexID = 2;
@@ -82,8 +82,8 @@ public class PubmedQueryAS {
 		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList2.add(MetaData.BYTES_1);
 		
-		MetaIndex DT1 = new MetaIndex(2, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.getIndexList().add(DT1);
+		MetaIndex DT1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
+		metadata.getIndexList().put(indexID, DT1);
 		
 		// DT2
 		indexID = 3;
@@ -96,8 +96,8 @@ public class PubmedQueryAS {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(3, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().add(DT2);
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		metadata.getIndexList().put(indexID, DT2);
 		
 		// DA2
 		indexID = 4;
@@ -107,8 +107,8 @@ public class PubmedQueryAS {
 		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
 		columnEncodedByteSizesList4.add(MetaData.BYTES_4);
 		
-		MetaIndex DA2 = new MetaIndex(4, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
-		metadata.getIndexList().add(DA2);
+		MetaIndex DA2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
+		metadata.getIndexList().put(indexID, DA2);
 
 	}
 	private static void initQ5Indexes(MetaData metadata) {
@@ -121,8 +121,8 @@ public class PubmedQueryAS {
 		List<Integer> columnEncodedByteSizesList0 = new ArrayList<Integer>();
 		columnEncodedByteSizesList0.add(MetaData.BYTES_4);
 		
-		MetaIndex DA1 = new MetaIndex(0, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
-		metadata.getIndexList().add(DA1);
+		MetaIndex DA1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList0, columnEncodedByteSizesList0);
+		metadata.getIndexList().put(indexID, DA1);
 
 		// DY
 		indexID = 1;
@@ -132,8 +132,8 @@ public class PubmedQueryAS {
 		List<Integer> columnEncodedByteSizesList1 = new ArrayList<Integer>();
 		columnEncodedByteSizesList1.add(MetaData.BYTES_4);
 		
-		MetaIndex DY = new MetaIndex(1, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
-		metadata.getIndexList().add(DY);
+		MetaIndex DY = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList1, columnEncodedByteSizesList1);
+		metadata.getIndexList().put(indexID, DY);
 
 		// DT1
 		indexID = 2;
@@ -146,8 +146,8 @@ public class PubmedQueryAS {
 		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList2.add(MetaData.BYTES_1);
 		
-		MetaIndex DT1 = new MetaIndex(2, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.getIndexList().add(DT1);
+		MetaIndex DT1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
+		metadata.getIndexList().put(indexID, DT1);
 		
 		// DT2
 		indexID = 3;
@@ -160,8 +160,8 @@ public class PubmedQueryAS {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(3, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().add(DT2);
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		metadata.getIndexList().put(indexID, DT2);
 		
 		// DA2
 		indexID = 4;
@@ -171,8 +171,8 @@ public class PubmedQueryAS {
 		List<Integer> columnEncodedByteSizesList4 = new ArrayList<Integer>();
 		columnEncodedByteSizesList4.add(MetaData.BYTES_4);
 		
-		MetaIndex DA2 = new MetaIndex(4, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
-		metadata.getIndexList().add(DA2);
+		MetaIndex DA2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList4, columnEncodedByteSizesList4);
+		metadata.getIndexList().put(indexID, DA2);
 
 	}
 	
