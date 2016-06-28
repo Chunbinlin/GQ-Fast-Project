@@ -374,24 +374,34 @@ public class SemmedDB {
 		// SemmedDB Atropine Query
 		
 		//Optimal
-		runQuery("test_smdb_optimal_1threads", 1, true);
-		runQuery("test_smdb_optimal_4threads", 4, true);
+		runQuery("smdb_optimal_0threads", 1, true);
+		runQuery("smdb_optimal_1threads", 10, true);
+		runQuery("smdb_optimal_2threads", 2, true);
+		runQuery("smdb_optimal_4threads", 4, true);
 		
 		//Huffman
-		runQuery("test_smdb_huffman_1threads", 1, MetaData.ENCODING_HUFFMAN);
-		runQuery("test_smdb_huffman_4threads", 4, MetaData.ENCODING_HUFFMAN);
+		runQuery("smdb_huffman_0threads", 1, MetaData.ENCODING_HUFFMAN);
+		runQuery("smdb_huffman_1threads", 10, MetaData.ENCODING_HUFFMAN);
+		runQuery("smdb_huffman_2threads", 2, MetaData.ENCODING_HUFFMAN);
+		runQuery("smdb_huffman_4threads", 4, MetaData.ENCODING_HUFFMAN);
 		
 		//BCA
-		runQuery("test_smdb_bca_1threads", 1, MetaData.ENCODING_BCA);
-		runQuery("test_smdb_bca_4threads", 4, MetaData.ENCODING_BCA);
+		runQuery("smdb_bca_0threads", 1, MetaData.ENCODING_BCA);
+		runQuery("smdb_bca_1threads", 10, MetaData.ENCODING_BCA);
+		runQuery("smdb_bca_2threads", 2, MetaData.ENCODING_BCA);
+		runQuery("smdb_bca_4threads", 4, MetaData.ENCODING_BCA);
 		
 		//Array
-		runQuery("test_smdb_array_1threads", 1, MetaData.ENCODING_UA);
-		runQuery("test_smdb_array_4threads", 4, MetaData.ENCODING_UA);
+		runQuery("smdb_array_0threads", 1, MetaData.ENCODING_UA);
+		runQuery("smdb_array_1threads", 10, MetaData.ENCODING_UA);
+		runQuery("smdb_array_2threads", 2, MetaData.ENCODING_UA);
+		runQuery("smdb_array_4threads", 4, MetaData.ENCODING_UA);
 	
 		//BB
-		runQuery("test_smdb_bb_1threads", 1, MetaData.ENCODING_BB);
-		runQuery("test_smdb_bb_4threads", 4, MetaData.ENCODING_BB);	
+		runQuery("smdb_bb_0threads", 1, MetaData.ENCODING_BB);
+		runQuery("smdb_bb_1threads", 10, MetaData.ENCODING_BB);
+		runQuery("smdb_bb_2threads", 2, MetaData.ENCODING_BB);
+		runQuery("smdb_bb_4threads", 4, MetaData.ENCODING_BB);	
 		
 		
 	}
