@@ -4,7 +4,7 @@
 #include "../fastr_index.hpp"
 #include "../global_vars.hpp"
 
-#define NUM_THREADS 10
+#define NUM_THREADS 1
 
 using namespace std;
 
