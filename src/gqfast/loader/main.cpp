@@ -3,7 +3,10 @@
 #include "auto_tests.hpp"
 
 #include "serialization.hpp"
-#include "socket_server.hpp"
+#include "load.hpp"
+#include "input_handling.hpp"
+#include "global_vars.hpp"
+
 // threads
 int num_threads;
 
@@ -44,8 +47,6 @@ void init_globals()
         idx_position_in_use[i] = false;
     }
 
-    server_command_map["load_index"]  = iload_begin;
-    server_command_map["run_query"] = query_execute;
 
 }
 
@@ -193,7 +194,7 @@ int main(int argc, char ** argv)
 
     if (automate == 'y')
     {
-        load<int, uint32_t>(database, compression);
+        load_index<uint32_t>(idx, filename);
         cout << "\n...Indices have been loaded...\n";
         cout << "\n...Automated results will be sent to 'output.txt'\n";
         automatic_tests(auto_filename, outfile_name);
@@ -255,7 +256,7 @@ int main(int argc, char ** argv)
         }
         case 'j':
         {
-            int result = java_program_communicator();
+            int result = 1;
             if (result == 0)
             {
                 cout << "Server finished normally\n";

@@ -65,7 +65,7 @@ void automatic_tests(char* input_file, char* output_file)
             //    time_span3 = auto_handle_input<double>(func_name, r_pos);
             }
 
-            outfile << func_name << ", " << time_span.count() << " sec ";// << time_span2.count() << " sec, " << time_span3.count() << " sec\n";
+            outfile << func_name << ", " << time_span.count() << " sec\n";// << time_span2.count() << " sec, " << time_span3.count() << " sec\n";
         }
     }
     myfile.close();
