@@ -4,7 +4,7 @@
 #include "../fastr_index.hpp"
 #include "../global_vars.hpp"
 
-#define NUM_THREADS 1
+#define NUM_THREADS 10
 
 using namespace std;
 
@@ -64,7 +64,7 @@ void* pthread_smdb_array_1threads_worker(void* arguments) {
 		uint32_t predication1_col0_bytes = idx[1]->index_map[concept_semtype1_col0_element+1][0] - row_predication1[0];
 		if(predication1_col0_bytes) {
 
-			uint32_t* predication1_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[1]->fragment_data[0][row_predication1[0]]));
+			uint32_t* predication1_col0_ptr = (uint32_t *)(&(idx[1]->fragment_data[0][row_predication1[0]]));
 			uint32_t predication1_fragment_size = 0;
 			smdb_array_1threads_predication1_col0_decode_UA_threaded(thread_id, predication1_col0_ptr, predication1_col0_bytes, predication1_fragment_size);
 
@@ -76,7 +76,7 @@ void* pthread_smdb_array_1threads_worker(void* arguments) {
 				uint32_t sentence1_col0_bytes = idx[2]->index_map[predication1_col0_element+1][0] - row_sentence1[0];
 				if(sentence1_col0_bytes) {
 
-					uint32_t* sentence1_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[2]->fragment_data[0][row_sentence1[0]]));
+					uint32_t* sentence1_col0_ptr = (uint32_t *)(&(idx[2]->fragment_data[0][row_sentence1[0]]));
 					uint32_t sentence1_fragment_size = 0;
 					smdb_array_1threads_sentence1_col0_decode_UA_threaded(thread_id, sentence1_col0_ptr, sentence1_col0_bytes, sentence1_fragment_size);
 
@@ -91,7 +91,7 @@ void* pthread_smdb_array_1threads_worker(void* arguments) {
 							uint32_t predication2_col0_bytes = idx[3]->index_map[sentence1_col0_element+1][0] - row_predication2[0];
 							if(predication2_col0_bytes) {
 
-								uint32_t* predication2_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[3]->fragment_data[0][row_predication2[0]]));
+								uint32_t* predication2_col0_ptr = (uint32_t *)(&(idx[3]->fragment_data[0][row_predication2[0]]));
 								uint32_t predication2_fragment_size = 0;
 								smdb_array_1threads_predication2_col0_decode_UA_threaded(thread_id, predication2_col0_ptr, predication2_col0_bytes, predication2_fragment_size);
 
@@ -103,7 +103,7 @@ void* pthread_smdb_array_1threads_worker(void* arguments) {
 									uint32_t concept_semtype2_col0_bytes = idx[4]->index_map[predication2_col0_element+1][0] - row_concept_semtype2[0];
 									if(concept_semtype2_col0_bytes) {
 
-										uint32_t* concept_semtype2_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[4]->fragment_data[0][row_concept_semtype2[0]]));
+										uint32_t* concept_semtype2_col0_ptr = (uint32_t *)(&(idx[4]->fragment_data[0][row_concept_semtype2[0]]));
 										uint32_t concept_semtype2_fragment_size = 0;
 										smdb_array_1threads_concept_semtype2_col0_decode_UA_threaded(thread_id, concept_semtype2_col0_ptr, concept_semtype2_col0_bytes, concept_semtype2_fragment_size);
 
@@ -115,7 +115,7 @@ void* pthread_smdb_array_1threads_worker(void* arguments) {
 											uint32_t concept2_col0_bytes = idx[5]->index_map[concept_semtype2_col0_element+1][0] - row_concept2[0];
 											if(concept2_col0_bytes) {
 
-												uint32_t* concept2_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[5]->fragment_data[0][row_concept2[0]]));
+												uint32_t* concept2_col0_ptr = (uint32_t *)(&(idx[5]->fragment_data[0][row_concept2[0]]));
 												uint32_t concept2_fragment_size = 0;
 												smdb_array_1threads_concept2_col0_decode_UA_threaded(thread_id, concept2_col0_ptr, concept2_col0_bytes, concept2_fragment_size);
 
@@ -248,7 +248,7 @@ extern "C" int* smdb_array_1threads(int** null_checks) {
 		uint32_t concept_semtype1_col0_bytes = idx[0]->index_map[concept1_col0_element+1][0] - row_concept_semtype1[0];
 		if(concept_semtype1_col0_bytes) {
 
-			uint32_t* concept_semtype1_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[0]->fragment_data[0][row_concept_semtype1[0]]));
+			uint32_t* concept_semtype1_col0_ptr = (uint32_t *)(&(idx[0]->fragment_data[0][row_concept_semtype1[0]]));
 			uint32_t concept_semtype1_fragment_size = 0;
 			smdb_array_1threads_concept_semtype1_col0_decode_UA(concept_semtype1_col0_ptr, concept_semtype1_col0_bytes, concept_semtype1_fragment_size);
 
