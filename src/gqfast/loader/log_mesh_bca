@@ -1,0 +1,130 @@
+
+...Begin loading file ./pubmed/da1.csv
+...61315092 lines read in.
+Dictionary created on encoding 0:
+25 bits needed to encode a value
+First pass
+
+Second pass
+
+Creating index map of size 48751320
+Creating fragment data of size = 198745698
+
+Completed 61315092 row accesses
+Number of fragments = 10225870
+Min fragment size = 1
+Max fragment size = 5712
+ID of Max = 1517585
+Mean fragment size = 5.99608
+Standard deviation = 21.9388
+
+encoding 1 has byte size in index 0 of 4
+index 0 has map byte size of 4
+Total loading time: 2.78981 sec
+
+
+...Begin loading file ./pubmed/dy.csv
+...14293636 lines read in.
+Dictionary created on encoding 0:
+11 bits needed to encode a value
+First pass
+
+Second pass
+
+Creating index map of size 93305204
+Creating fragment data of size = 28587279
+
+Completed 14293636 row accesses
+Number of fragments = 14293636
+Min fragment size = 1
+Max fragment size = 1
+ID of Max = 1
+Mean fragment size = 1
+Standard deviation = 0
+
+encoding 1 has byte size in index 1 of 2
+index 1 has map byte size of 4
+Total loading time: 2.41405 sec
+
+
+...Begin loading file ./pubmed/dt1_mesh.csv
+...207092075 lines read in.
+Dictionary created on encoding 0:
+18 bits needed to encode a value
+Dictionary created on encoding 1:
+4 bits needed to encode a value
+First pass
+
+Second pass
+
+Creating index map of size 186610408
+Creating fragment data of size = 469445705
+Creating fragment data of size = 105854561
+
+Completed 207092075 row accesses
+Number of fragments = 9198661
+Min fragment size = 1
+Max fragment size = 667
+ID of Max = 14803336
+Mean fragment size = 22.5133
+Standard deviation = 17.5297
+
+encoding 1 has byte size in index 2 of 4
+encoding 2 has byte size in index 2 of 1
+index 2 has map byte size of 4
+Total loading time: 8.90995 sec
+
+
+...Begin loading file ./pubmed/dt2_mesh.csv
+...207092075 lines read in.
+Dictionary created on encoding 0:
+25 bits needed to encode a value
+Dictionary created on encoding 1:
+4 bits needed to encode a value
+First pass
+
+Second pass
+
+Creating index map of size 1789656
+Creating fragment data of size = 647246382
+Creating fragment data of size = 103588080
+
+Completed 207092075 row accesses
+Number of fragments = 132092
+Min fragment size = 1
+Max fragment size = 4660744
+ID of Max = 535
+Mean fragment size = 1567.79
+Standard deviation = 39014.6
+
+encoding 1 has byte size in index 3 of 4
+encoding 2 has byte size in index 3 of 1
+index 3 has map byte size of 4
+Total loading time: 6.82934 sec
+
+
+...Begin loading file ./pubmed/da2.csv
+...61315092 lines read in.
+Dictionary created on encoding 0:
+24 bits needed to encode a value
+First pass
+
+Second pass
+
+Creating index map of size 93305204
+Creating fragment data of size = 183945283
+
+Completed 61315092 row accesses
+Number of fragments = 14091972
+Min fragment size = 1
+Max fragment size = 3163
+ID of Max = 19951876
+Mean fragment size = 4.35107
+Standard deviation = 8.04077
+
+encoding 1 has byte size in index 4 of 4
+index 4 has map byte size of 4
+Total loading time: 3.30102 sec
+
+
+...Indices have been loaded...Please enter the name of the library file you are loading (don't include the .so extension; path is assumed to be current dir): 

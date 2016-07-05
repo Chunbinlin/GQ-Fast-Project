@@ -1,4 +1,4 @@
-Loading indices took 84.9046 seconds.
+Loading indices took 84.3918 seconds.
 
 ...Indices have been loaded...
 
@@ -7,8 +7,10 @@ test file = test_smdb_array.txt
 calling int autohandle with func smdb_array_0threads.soand rpos 5
 Opening ./test_cases/smdb_array_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847last loop func = 0.176125 sec
-domain2 = 199114924domain5 = 1377847last loop func = 0.155436 sec
+domain2 = 199114924domain5 = 1377847results array = 0.00635417 sec
+bool array = 0.184334 sec
+domain2 = 199114924domain5 = 1377847results array = 0.00590808 sec
+bool array = 0.163496 sec
 Closing library...
 calling int autohandle with func smdb_array_1threads.soand rpos 5
 Opening ./test_cases/smdb_array_1threads.so
@@ -25,8 +27,10 @@ Closing library...
 calling int autohandle with func smdb_array_0threads.soand rpos 5
 Opening ./test_cases/smdb_array_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847last loop func = 0.164734 sec
-domain2 = 199114924domain5 = 1377847last loop func = 0.16607 sec
+domain2 = 199114924domain5 = 1377847results array = 0.00407696 sec
+bool array = 0.165364 sec
+domain2 = 199114924domain5 = 1377847results array = 0.00512533 sec
+bool array = 0.164161 sec
 Closing library...
 calling int autohandle with func smdb_array_1threads.soand rpos 5
 Opening ./test_cases/smdb_array_1threads.so
@@ -43,8 +47,10 @@ Closing library...
 calling int autohandle with func smdb_array_0threads.soand rpos 5
 Opening ./test_cases/smdb_array_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847last loop func = 0.166347 sec
-domain2 = 199114924domain5 = 1377847last loop func = 0.166509 sec
+domain2 = 199114924domain5 = 1377847results array = 0.00355496 sec
+bool array = 0.165394 sec
+domain2 = 199114924domain5 = 1377847results array = 0.00519992 sec
+bool array = 0.164196 sec
 Closing library...
 calling int autohandle with func smdb_array_1threads.soand rpos 5
 Opening ./test_cases/smdb_array_1threads.so
@@ -61,8 +67,10 @@ Closing library...
 calling int autohandle with func smdb_array_0threads.soand rpos 5
 Opening ./test_cases/smdb_array_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847last loop func = 0.165039 sec
-domain2 = 199114924domain5 = 1377847last loop func = 0.164717 sec
+domain2 = 199114924domain5 = 1377847results array = 0.00347555 sec
+bool array = 0.161174 sec
+domain2 = 199114924domain5 = 1377847results array = 0.00499574 sec
+bool array = 0.160116 sec
 Closing library...
 calling int autohandle with func smdb_array_1threads.soand rpos 5
 Opening ./test_cases/smdb_array_1threads.so
@@ -79,8 +87,10 @@ Closing library...
 calling int autohandle with func smdb_array_0threads.soand rpos 5
 Opening ./test_cases/smdb_array_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847last loop func = 0.16285 sec
-domain2 = 199114924domain5 = 1377847last loop func = 0.165626 sec
+domain2 = 199114924domain5 = 1377847results array = 0.0034744 sec
+bool array = 0.161314 sec
+domain2 = 199114924domain5 = 1377847results array = 0.00506471 sec
+bool array = 0.160623 sec
 Closing library...
 calling int autohandle with func smdb_array_1threads.soand rpos 5
 Opening ./test_cases/smdb_array_1threads.so
