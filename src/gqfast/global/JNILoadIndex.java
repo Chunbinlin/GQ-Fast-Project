@@ -6,10 +6,10 @@ public class JNILoadIndex {
 	//private int numEncodings;
 	//private int[] colEncodings;
 	
-	//private long[] discoveredColDomains;
-	//private int discoveredIndexMapByteSize;
-	//private int[] discoveredColByteSizes;
-	//private int loaderIndexID;
+	private long[] discoveredColDomains;
+	private int discoveredIndexMapByteSize;
+	private int[] discoveredColByteSizes;
+	private int loaderIndexID;
 	
 	public JNILoadIndex() {
 		//this.pathAndFileName = pathAndFileName;
@@ -24,7 +24,7 @@ public class JNILoadIndex {
 	}
 	
 	
-	public native MetaIndex cpp_load_index(String path, int nEnc, int[] colEncs);    
+	public native void cpp_load_index(String path, int nEnc, int[] colEncs);    
     
 	static {
         System.loadLibrary("cpploadindex");
@@ -32,7 +32,17 @@ public class JNILoadIndex {
 
     public void print (String pathAndFileName, int numEncodings, int[] colEncodings) {
     	
-    	MetaIndex myMetaIndex = cpp_load_index(pathAndFileName, numEncodings, colEncodings);
+		discoveredColDomains = new long[numEncodings];
+		discoveredIndexMapByteSize = -1;
+		discoveredColByteSizes = new int[numEncodings];
+		loaderIndexID = -1;
+    	
+    	cpp_load_index(pathAndFileName, numEncodings, colEncodings);
+    	MetaIndex myMetaIndex;
+    	
+    	
+    	
+    	
     	
     }
     
