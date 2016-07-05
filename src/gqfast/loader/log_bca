@@ -1,14 +1,14 @@
-Loading indices took 81.1095 seconds.
+Loading indices took 72.8455 seconds.
 
 ...Indices have been loaded...
 
 ...Automated results will be sent to 'output.txt'
-test file = test_smdb_array.txt
-calling int autohandle with func smdb_array_0threads.soand rpos 5
-Opening ./test_cases/smdb_array_0threads.so
+test file = test_smdb_bca.txt
+calling int autohandle with func smdb_bca_0threads.soand rpos 5
+Opening ./test_cases/smdb_bca_0threads.so
 Loading symbol query_type...
-last loop func = 0.0151941 sec
-last loop func = 0.0151205 sec
+last loop func = 0.0159027 sec
+last loop func = 0.0157379 sec
 Closing library...
 Position 2019: 18619
 Position 55682: 1540
@@ -30,32 +30,8 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_1threads.soand rpos 5
-Opening ./test_cases/smdb_array_1threads.so
-Loading symbol query_type...
-Closing library...
-Position 2019: 18619
-Position 55682: 1540
-Position 815529: 1443
-Position 18332: 1167
-Position 16115: 1163
-Position 1587: 951
-Position 304: 932
-Position 17657: 921
-Position 38411: 682
-Position 6682: 649
-Position 16828: 642
-Position 21087: 601
-Position 3431: 594
-Position 18416: 583
-Position 6556: 479
-Position 16517: 413
-Position 17427: 403
-Position 19302: 379
-Position 664963: 336
-Position 1190254: 316
-calling int autohandle with func smdb_array_2threads.soand rpos 5
-Opening ./test_cases/smdb_array_2threads.so
+calling int autohandle with func smdb_bca_1threads.soand rpos 5
+Opening ./test_cases/smdb_bca_1threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -78,8 +54,8 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_4threads.soand rpos 5
-Opening ./test_cases/smdb_array_4threads.so
+calling int autohandle with func smdb_bca_2threads.soand rpos 5
+Opening ./test_cases/smdb_bca_2threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -102,34 +78,8 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_0threads.soand rpos 5
-Opening ./test_cases/smdb_array_0threads.so
-Loading symbol query_type...
-last loop func = 0.0152377 sec
-last loop func = 0.0152533 sec
-Closing library...
-Position 2019: 18619
-Position 55682: 1540
-Position 815529: 1443
-Position 18332: 1167
-Position 16115: 1163
-Position 1587: 951
-Position 304: 932
-Position 17657: 921
-Position 38411: 682
-Position 6682: 649
-Position 16828: 642
-Position 21087: 601
-Position 3431: 594
-Position 18416: 583
-Position 6556: 479
-Position 16517: 413
-Position 17427: 403
-Position 19302: 379
-Position 664963: 336
-Position 1190254: 316
-calling int autohandle with func smdb_array_1threads.soand rpos 5
-Opening ./test_cases/smdb_array_1threads.so
+calling int autohandle with func smdb_bca_4threads.soand rpos 5
+Opening ./test_cases/smdb_bca_4threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -152,8 +102,34 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_2threads.soand rpos 5
-Opening ./test_cases/smdb_array_2threads.so
+calling int autohandle with func smdb_bca_0threads.soand rpos 5
+Opening ./test_cases/smdb_bca_0threads.so
+Loading symbol query_type...
+last loop func = 0.0156416 sec
+last loop func = 0.0158843 sec
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_1threads.soand rpos 5
+Opening ./test_cases/smdb_bca_1threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -176,8 +152,8 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_4threads.soand rpos 5
-Opening ./test_cases/smdb_array_4threads.so
+calling int autohandle with func smdb_bca_2threads.soand rpos 5
+Opening ./test_cases/smdb_bca_2threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -200,34 +176,8 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_0threads.soand rpos 5
-Opening ./test_cases/smdb_array_0threads.so
-Loading symbol query_type...
-last loop func = 0.0151076 sec
-last loop func = 0.0150845 sec
-Closing library...
-Position 2019: 18619
-Position 55682: 1540
-Position 815529: 1443
-Position 18332: 1167
-Position 16115: 1163
-Position 1587: 951
-Position 304: 932
-Position 17657: 921
-Position 38411: 682
-Position 6682: 649
-Position 16828: 642
-Position 21087: 601
-Position 3431: 594
-Position 18416: 583
-Position 6556: 479
-Position 16517: 413
-Position 17427: 403
-Position 19302: 379
-Position 664963: 336
-Position 1190254: 316
-calling int autohandle with func smdb_array_1threads.soand rpos 5
-Opening ./test_cases/smdb_array_1threads.so
+calling int autohandle with func smdb_bca_4threads.soand rpos 5
+Opening ./test_cases/smdb_bca_4threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -250,8 +200,34 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_2threads.soand rpos 5
-Opening ./test_cases/smdb_array_2threads.so
+calling int autohandle with func smdb_bca_0threads.soand rpos 5
+Opening ./test_cases/smdb_bca_0threads.so
+Loading symbol query_type...
+last loop func = 0.0154712 sec
+last loop func = 0.0156475 sec
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_1threads.soand rpos 5
+Opening ./test_cases/smdb_bca_1threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -274,8 +250,8 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_4threads.soand rpos 5
-Opening ./test_cases/smdb_array_4threads.so
+calling int autohandle with func smdb_bca_2threads.soand rpos 5
+Opening ./test_cases/smdb_bca_2threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -298,34 +274,8 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_0threads.soand rpos 5
-Opening ./test_cases/smdb_array_0threads.so
-Loading symbol query_type...
-last loop func = 0.0156297 sec
-last loop func = 0.0162031 sec
-Closing library...
-Position 2019: 18619
-Position 55682: 1540
-Position 815529: 1443
-Position 18332: 1167
-Position 16115: 1163
-Position 1587: 951
-Position 304: 932
-Position 17657: 921
-Position 38411: 682
-Position 6682: 649
-Position 16828: 642
-Position 21087: 601
-Position 3431: 594
-Position 18416: 583
-Position 6556: 479
-Position 16517: 413
-Position 17427: 403
-Position 19302: 379
-Position 664963: 336
-Position 1190254: 316
-calling int autohandle with func smdb_array_1threads.soand rpos 5
-Opening ./test_cases/smdb_array_1threads.so
+calling int autohandle with func smdb_bca_4threads.soand rpos 5
+Opening ./test_cases/smdb_bca_4threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -348,8 +298,34 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_2threads.soand rpos 5
-Opening ./test_cases/smdb_array_2threads.so
+calling int autohandle with func smdb_bca_0threads.soand rpos 5
+Opening ./test_cases/smdb_bca_0threads.so
+Loading symbol query_type...
+last loop func = 0.016026 sec
+last loop func = 0.0160331 sec
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_1threads.soand rpos 5
+Opening ./test_cases/smdb_bca_1threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -372,8 +348,8 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_4threads.soand rpos 5
-Opening ./test_cases/smdb_array_4threads.so
+calling int autohandle with func smdb_bca_2threads.soand rpos 5
+Opening ./test_cases/smdb_bca_2threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -396,34 +372,8 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_0threads.soand rpos 5
-Opening ./test_cases/smdb_array_0threads.so
-Loading symbol query_type...
-last loop func = 0.0151482 sec
-last loop func = 0.0151605 sec
-Closing library...
-Position 2019: 18619
-Position 55682: 1540
-Position 815529: 1443
-Position 18332: 1167
-Position 16115: 1163
-Position 1587: 951
-Position 304: 932
-Position 17657: 921
-Position 38411: 682
-Position 6682: 649
-Position 16828: 642
-Position 21087: 601
-Position 3431: 594
-Position 18416: 583
-Position 6556: 479
-Position 16517: 413
-Position 17427: 403
-Position 19302: 379
-Position 664963: 336
-Position 1190254: 316
-calling int autohandle with func smdb_array_1threads.soand rpos 5
-Opening ./test_cases/smdb_array_1threads.so
+calling int autohandle with func smdb_bca_4threads.soand rpos 5
+Opening ./test_cases/smdb_bca_4threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -446,8 +396,34 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_2threads.soand rpos 5
-Opening ./test_cases/smdb_array_2threads.so
+calling int autohandle with func smdb_bca_0threads.soand rpos 5
+Opening ./test_cases/smdb_bca_0threads.so
+Loading symbol query_type...
+last loop func = 0.0156205 sec
+last loop func = 0.0167274 sec
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_1threads.soand rpos 5
+Opening ./test_cases/smdb_bca_1threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
@@ -470,8 +446,32 @@ Position 17427: 403
 Position 19302: 379
 Position 664963: 336
 Position 1190254: 316
-calling int autohandle with func smdb_array_4threads.soand rpos 5
-Opening ./test_cases/smdb_array_4threads.so
+calling int autohandle with func smdb_bca_2threads.soand rpos 5
+Opening ./test_cases/smdb_bca_2threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_4threads.soand rpos 5
+Opening ./test_cases/smdb_bca_4threads.so
 Loading symbol query_type...
 Closing library...
 Position 2019: 18619
