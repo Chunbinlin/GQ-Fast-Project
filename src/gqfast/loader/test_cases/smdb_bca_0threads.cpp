@@ -201,6 +201,7 @@ extern "C" int* smdb_bca_0threads(int** null_checks) {
 	uint64_t concept1_list[1];
 	concept1_list[0] = 2019;
 
+	t1 = chrono::steady_clock::now();
 	for (int concept1_it = 0; concept1_it<1; concept1_it++) {
 
 		uint64_t concept1_col0_element = concept1_list[concept1_it];
@@ -274,10 +275,10 @@ extern "C" int* smdb_bca_0threads(int** null_checks) {
 
 														unsigned char* concept2_col0_ptr = &(idx[5]->fragment_data[0][row_concept2[0]]);
 														uint32_t concept2_fragment_size = 0;
-														t1 = chrono::steady_clock::now();
+
 														smdb_bca_0threads_concept2_col0_decode_BCA(concept2_col0_ptr, concept2_col0_bytes, concept2_fragment_size);
-                                                        t2 = chrono::steady_clock::now();
-														tspan += chrono::duration_cast<chrono::duration<double>>(t2 - t1);
+
+
 
 														for (uint32_t concept2_it = 0; concept2_it < concept2_fragment_size; concept2_it++) {
 															uint32_t concept2_col0_element = concept2_col0_buffer[concept2_it];
@@ -299,6 +300,8 @@ extern "C" int* smdb_bca_0threads(int** null_checks) {
 		}
 	}
 
+    t2 = chrono::steady_clock::now();
+    tspan = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
 	cerr << "last loop func = " << tspan.count() << " sec\n";
 
 	delete[] concept_semtype1_col0_buffer;
