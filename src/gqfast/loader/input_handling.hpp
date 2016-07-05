@@ -233,7 +233,7 @@ chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_p
     //cout << "Query " << filename << " processed in " << time_span.count() << " seconds.\n\n";
 
 
-
+    /*
     pair<int, T> * tops_result = top_k(result, 20, domain_temp);
 
     cout.precision(17);
@@ -243,6 +243,7 @@ chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_p
     }
 
     delete[] tops_result;
+    */
 
     delete[] result;
     delete[] cold_result;
