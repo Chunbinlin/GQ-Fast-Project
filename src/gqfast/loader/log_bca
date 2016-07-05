@@ -1,4 +1,4 @@
-Loading indices took 78.7426 seconds.
+Loading indices took 75.6862 seconds.
 
 ...Indices have been loaded...
 
@@ -7,10 +7,10 @@ test file = test_smdb_bca.txt
 calling int autohandle with func smdb_bca_0threads.soand rpos 5
 Opening ./test_cases/smdb_bca_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847result arrays = 0.00968812 sec
-bool array = 0.239907 sec
-domain2 = 199114924domain5 = 1377847result arrays = 0.0066164 sec
-bool array = 0.226254 sec
+domain2 = 199114924domain5 = 1377847result arrays = 0.00862867 sec
+bool array = 0.211719 sec
+domain2 = 199114924domain5 = 1377847result arrays = 0.00640996 sec
+bool array = 0.20179 sec
 Closing library...
 calling int autohandle with func smdb_bca_1threads.soand rpos 5
 Opening ./test_cases/smdb_bca_1threads.so
@@ -27,10 +27,10 @@ Closing library...
 calling int autohandle with func smdb_bca_0threads.soand rpos 5
 Opening ./test_cases/smdb_bca_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847result arrays = 0.0028514 sec
-bool array = 0.230017 sec
-domain2 = 199114924domain5 = 1377847result arrays = 0.00879136 sec
-bool array = 0.225591 sec
+domain2 = 199114924domain5 = 1377847result arrays = 0.00279851 sec
+bool array = 0.153037 sec
+domain2 = 199114924domain5 = 1377847result arrays = 0.005597 sec
+bool array = 0.151584 sec
 Closing library...
 calling int autohandle with func smdb_bca_1threads.soand rpos 5
 Opening ./test_cases/smdb_bca_1threads.so
@@ -47,10 +47,10 @@ Closing library...
 calling int autohandle with func smdb_bca_0threads.soand rpos 5
 Opening ./test_cases/smdb_bca_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847result arrays = 0.00338428 sec
-bool array = 0.222922 sec
-domain2 = 199114924domain5 = 1377847result arrays = 0.00877564 sec
-bool array = 0.22837 sec
+domain2 = 199114924domain5 = 1377847result arrays = 0.00178012 sec
+bool array = 0.153212 sec
+domain2 = 199114924domain5 = 1377847result arrays = 0.00561124 sec
+bool array = 0.153593 sec
 Closing library...
 calling int autohandle with func smdb_bca_1threads.soand rpos 5
 Opening ./test_cases/smdb_bca_1threads.so
@@ -67,10 +67,10 @@ Closing library...
 calling int autohandle with func smdb_bca_0threads.soand rpos 5
 Opening ./test_cases/smdb_bca_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847result arrays = 0.00360467 sec
-bool array = 0.22837 sec
-domain2 = 199114924domain5 = 1377847result arrays = 0.00909941 sec
-bool array = 0.231514 sec
+domain2 = 199114924domain5 = 1377847result arrays = 0.00178211 sec
+bool array = 0.154502 sec
+domain2 = 199114924domain5 = 1377847result arrays = 0.00555363 sec
+bool array = 0.154714 sec
 Closing library...
 calling int autohandle with func smdb_bca_1threads.soand rpos 5
 Opening ./test_cases/smdb_bca_1threads.so
@@ -87,10 +87,10 @@ Closing library...
 calling int autohandle with func smdb_bca_0threads.soand rpos 5
 Opening ./test_cases/smdb_bca_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847result arrays = 0.00263675 sec
-bool array = 0.227719 sec
-domain2 = 199114924domain5 = 1377847result arrays = 0.00799349 sec
-bool array = 0.23142 sec
+domain2 = 199114924domain5 = 1377847result arrays = 0.00167254 sec
+bool array = 0.152019 sec
+domain2 = 199114924domain5 = 1377847result arrays = 0.00546659 sec
+bool array = 0.151812 sec
 Closing library...
 calling int autohandle with func smdb_bca_1threads.soand rpos 5
 Opening ./test_cases/smdb_bca_1threads.so
