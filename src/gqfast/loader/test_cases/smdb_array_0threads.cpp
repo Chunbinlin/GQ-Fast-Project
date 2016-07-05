@@ -93,7 +93,7 @@ extern "C" int* smdb_array_0threads(int** null_checks) {
 
 	benchmark_t1 = chrono::steady_clock::now();
 
-	tspan = steady_clock::duration::zero();
+	tspan = chrono::steady_clock::duration::zero();
 
 	int max_frag;
 
