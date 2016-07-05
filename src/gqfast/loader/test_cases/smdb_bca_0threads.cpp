@@ -182,11 +182,17 @@ extern "C" int* smdb_bca_0threads(int** null_checks) {
 	RC = new int[metadata.idx_domains[5][0]]();
 	R = new int[metadata.idx_domains[5][0]]();
 
+
+    t2 = chrono::steady_clock::now();
+    tspan = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
+	cerr << "result arrays = " << tspan.count() << " sec\n";
+
+	t1 = chrono::steady_clock::now();
 	sentence1_bool_array = new bool[metadata.idx_domains[2][0]]();
 
     t2 = chrono::steady_clock::now();
     tspan = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
-	cerr << "last loop func = " << tspan.count() << " sec\n";
+	cerr << "bool array = " << tspan.count() << " sec\n";
 
 	concept_semtype1_col0_bits_info = idx[0]->dict[0]->bits_info;
 	concept_semtype1_col0_offset = idx[0]->dict[0]->offset;
