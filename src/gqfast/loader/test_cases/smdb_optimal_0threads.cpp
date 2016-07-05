@@ -7,6 +7,10 @@
 
 using namespace std;
 
+static chrono::steady_clock::time_point t1;
+static chrono::steady_clock::time_point t2;
+static chrono::duration<double> tspan;
+
 static int* R;
 static int* RC;
 
@@ -39,7 +43,7 @@ void smdb_optimal_0threads_concept_semtype1_col0_decode_BB(unsigned char* concep
 	concept_semtype1_col0_buffer[0] = 0;
 
 	int shiftbits = 0;
-	do { 
+	do {
 		concept_semtype1_col0_bytes--;
 		uint32_t next_seven_bits = *concept_semtype1_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
@@ -71,7 +75,7 @@ void smdb_optimal_0threads_predication1_col0_decode_BB(unsigned char* predicatio
 	predication1_col0_buffer[0] = 0;
 
 	int shiftbits = 0;
-	do { 
+	do {
 		predication1_col0_bytes--;
 		uint32_t next_seven_bits = *predication1_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
@@ -103,7 +107,7 @@ void smdb_optimal_0threads_sentence1_col0_decode_BB(unsigned char* sentence1_col
 	sentence1_col0_buffer[0] = 0;
 
 	int shiftbits = 0;
-	do { 
+	do {
 		sentence1_col0_bytes--;
 		uint32_t next_seven_bits = *sentence1_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
@@ -135,7 +139,7 @@ void smdb_optimal_0threads_predication2_col0_decode_BB(unsigned char* predicatio
 	predication2_col0_buffer[0] = 0;
 
 	int shiftbits = 0;
-	do { 
+	do {
 		predication2_col0_bytes--;
 		uint32_t next_seven_bits = *predication2_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
@@ -174,11 +178,11 @@ void smdb_optimal_0threads_concept_semtype2_col0_decode_Huffman(unsigned char* c
 		bool* terminator_array = terminate_start;
 		int* tree_array = tree_array_start;
 
-		while(!*terminator_array) { 
+		while(!*terminator_array) {
 
 			char direction = *concept_semtype2_col0_ptr & (mask >>= 1);
 
-			if (mask == 1) { 
+			if (mask == 1) {
 				mask = 0x100;
 				concept_semtype2_col0_ptr++;
 				concept_semtype2_col0_bytes--;
@@ -229,7 +233,7 @@ void smdb_optimal_0threads_concept2_col0_decode_BB(unsigned char* concept2_col0_
 	concept2_col0_buffer[0] = 0;
 
 	int shiftbits = 0;
-	do { 
+	do {
 		concept2_col0_bytes--;
 		uint32_t next_seven_bits = *concept2_col0_ptr & 127;
 		next_seven_bits = next_seven_bits << shiftbits;
@@ -280,10 +284,24 @@ extern "C" int* smdb_optimal_0threads(int** null_checks) {
 	max_frag = metadata.idx_max_fragment_sizes[5];
 	concept2_col0_buffer = new uint64_t[max_frag];
 
+	cerr << "domain2 = " << metadata.idx_domains[2][0];
+	cerr << "domain5 = " << metadata.idx_domains[5][0];
+
+	t1 = chrono::steady_clock::now();
 	RC = new int[metadata.idx_domains[5][0]]();
 	R = new int[metadata.idx_domains[5][0]]();
 
+
+    t2 = chrono::steady_clock::now();
+    tspan = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
+	cerr << "result arrays = " << tspan.count() << " sec\n";
+
+	t1 = chrono::steady_clock::now();
 	sentence1_bool_array = new bool[metadata.idx_domains[2][0]]();
+
+    t2 = chrono::steady_clock::now();
+    tspan = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
+	cerr << "bool array = " << tspan.count() << " sec\n";
 
 	concept_semtype2_col0_huffman_tree_array = idx[4]->huffman_tree_array[0];
 	concept_semtype2_col0_huffman_terminator_array = idx[4]->huffman_terminator_array[0];
