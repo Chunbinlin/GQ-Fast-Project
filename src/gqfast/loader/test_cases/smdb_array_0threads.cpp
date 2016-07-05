@@ -115,15 +115,20 @@ extern "C" int* smdb_array_0threads(int** null_checks) {
 	max_frag = metadata.idx_max_fragment_sizes[5];
 	concept2_col0_buffer = new uint64_t[max_frag];
 
+	t1 = chrono::steady_clock::now();
 	RC = new int[metadata.idx_domains[5][0]]();
 	R = new int[metadata.idx_domains[5][0]]();
 
 	sentence1_bool_array = new bool[metadata.idx_domains[2][0]]();
 
+    t2 = chrono::steady_clock::now();
+    tspan = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
+	cerr << "last loop func = " << tspan.count() << " sec\n";
+
 	uint64_t concept1_list[1];
 	concept1_list[0] = 2019;
 
-	t1 = chrono::steady_clock::now();
+
 	for (int concept1_it = 0; concept1_it<1; concept1_it++) {
 
 		uint64_t concept1_col0_element = concept1_list[concept1_it];
@@ -220,9 +225,7 @@ extern "C" int* smdb_array_0threads(int** null_checks) {
 			}
 		}
 	}
-    t2 = chrono::steady_clock::now();
-    tspan = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
-	cerr << "last loop func = " << tspan.count() << " sec\n";
+
 
 	delete[] concept_semtype1_col0_buffer;
 	delete[] predication1_col0_buffer;
