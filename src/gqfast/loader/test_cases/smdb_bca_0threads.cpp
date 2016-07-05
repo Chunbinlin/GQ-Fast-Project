@@ -153,7 +153,7 @@ extern "C" int* smdb_bca_0threads(int** null_checks) {
 
 	benchmark_t1 = chrono::steady_clock::now();
 
-	tspan = chrono::duration_cast<chrono::duration<double>>(0.0);
+	tspan = steady_clock::duration::zero();
 
 	int max_frag;
 
