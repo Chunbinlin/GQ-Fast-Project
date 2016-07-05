@@ -1,4 +1,4 @@
-Loading indices took 81.1095 seconds.
+Loading indices took 83.7126 seconds.
 
 ...Indices have been loaded...
 
@@ -7,8 +7,8 @@ test file = test_smdb_array.txt
 calling int autohandle with func smdb_array_0threads.soand rpos 5
 Opening ./test_cases/smdb_array_0threads.so
 Loading symbol query_type...
-last loop func = 0.0151941 sec
-last loop func = 0.0151205 sec
+last loop func = 0.16794 sec
+last loop func = 0.174788 sec
 Closing library...
 Position 2019: 18619
 Position 55682: 1540
@@ -105,8 +105,8 @@ Position 1190254: 316
 calling int autohandle with func smdb_array_0threads.soand rpos 5
 Opening ./test_cases/smdb_array_0threads.so
 Loading symbol query_type...
-last loop func = 0.0152377 sec
-last loop func = 0.0152533 sec
+last loop func = 0.171239 sec
+last loop func = 0.174107 sec
 Closing library...
 Position 2019: 18619
 Position 55682: 1540
@@ -203,8 +203,8 @@ Position 1190254: 316
 calling int autohandle with func smdb_array_0threads.soand rpos 5
 Opening ./test_cases/smdb_array_0threads.so
 Loading symbol query_type...
-last loop func = 0.0151076 sec
-last loop func = 0.0150845 sec
+last loop func = 0.17409 sec
+last loop func = 0.176879 sec
 Closing library...
 Position 2019: 18619
 Position 55682: 1540
@@ -301,8 +301,8 @@ Position 1190254: 316
 calling int autohandle with func smdb_array_0threads.soand rpos 5
 Opening ./test_cases/smdb_array_0threads.so
 Loading symbol query_type...
-last loop func = 0.0156297 sec
-last loop func = 0.0162031 sec
+last loop func = 0.152959 sec
+last loop func = 0.15762 sec
 Closing library...
 Position 2019: 18619
 Position 55682: 1540
@@ -399,8 +399,8 @@ Position 1190254: 316
 calling int autohandle with func smdb_array_0threads.soand rpos 5
 Opening ./test_cases/smdb_array_0threads.so
 Loading symbol query_type...
-last loop func = 0.0151482 sec
-last loop func = 0.0151605 sec
+last loop func = 0.151585 sec
+last loop func = 0.154875 sec
 Closing library...
 Position 2019: 18619
 Position 55682: 1540
