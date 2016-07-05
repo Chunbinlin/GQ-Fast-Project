@@ -7,6 +7,10 @@
 
 using namespace std;
 
+static chrono::steady_clock::time_point t1;
+static chrono::steady_clock::time_point t2;
+static chrono::duration<double> tspan;
+
 static int* R;
 static int* RC;
 
@@ -88,6 +92,8 @@ void smdb_array_0threads_concept2_col0_decode_UA(uint32_t* concept2_col0_ptr, ui
 extern "C" int* smdb_array_0threads(int** null_checks) {
 
 	benchmark_t1 = chrono::steady_clock::now();
+
+	tspan = 0;
 
 	int max_frag;
 
@@ -190,8 +196,10 @@ extern "C" int* smdb_array_0threads(int** null_checks) {
 
 														uint32_t* concept2_col0_ptr = reinterpret_cast<uint32_t *>(&(idx[5]->fragment_data[0][row_concept2[0]]));
 														uint32_t concept2_fragment_size = 0;
+														t1 = chrono::steady_clock::now();
 														smdb_array_0threads_concept2_col0_decode_UA(concept2_col0_ptr, concept2_col0_bytes, concept2_fragment_size);
-
+                                                        t2 = chrono::steady_clock::now();
+														tspan += chrono::duration_cast<chrono::duration<double>>(t2 - t1);
 														for (uint32_t concept2_it = 0; concept2_it < concept2_fragment_size; concept2_it++) {
 															uint32_t concept2_col0_element = concept2_col0_buffer[concept2_it];
 
@@ -212,6 +220,7 @@ extern "C" int* smdb_array_0threads(int** null_checks) {
 		}
 	}
 
+	cerr << "last loop func = " << tspan.count() << " sec\n";
 
 	delete[] concept_semtype1_col0_buffer;
 	delete[] predication1_col0_buffer;

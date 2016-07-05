@@ -232,6 +232,18 @@ chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_p
     timespan = chrono::duration_cast<chrono::duration<double>>(benchmark_t2 - benchmark_t1);
     //cout << "Query " << filename << " processed in " << time_span.count() << " seconds.\n\n";
 
+
+
+    pair<int, T> * tops_result = top_k(result, 20, domain_temp);
+
+    cout.precision(17);
+    for (int i=0; i<20; i++)
+    {
+        cout << "Position " << tops_result[i].first << ": " << tops_result[i].second << "\n";
+    }
+
+    delete[] tops_result;
+
     delete[] result;
     delete[] cold_result;
 
