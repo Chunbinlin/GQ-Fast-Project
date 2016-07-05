@@ -115,7 +115,10 @@ extern "C" int* smdb_array_0threads(int** null_checks) {
 	max_frag = metadata.idx_max_fragment_sizes[5];
 	concept2_col0_buffer = new uint64_t[max_frag];
 
+	cerr << "domain2 = " << metadata.idx_domains[2][0];
+	cerr << "domain5 = " << metadata.idx_domains[5][0];
 	t1 = chrono::steady_clock::now();
+
 	RC = new int[metadata.idx_domains[5][0]]();
 	R = new int[metadata.idx_domains[5][0]]();
 
