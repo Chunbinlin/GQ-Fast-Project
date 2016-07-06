@@ -6,9 +6,6 @@
 
 
 using namespace std;
-static chrono::steady_clock::time_point t1;
-static chrono::steady_clock::time_point t2;
-static chrono::duration<double> tspan;
 
 static int* R;
 static int* RC;
@@ -64,11 +61,11 @@ void smdb_huffman_0threads_concept_semtype1_col0_decode_Huffman(unsigned char* c
 		bool* terminator_array = terminate_start;
 		int* tree_array = tree_array_start;
 
-		while(!*terminator_array) {
+		while(!*terminator_array) { 
 
 			char direction = *concept_semtype1_col0_ptr & (mask >>= 1);
 
-			if (mask == 1) {
+			if (mask == 1) { 
 				mask = 0x100;
 				concept_semtype1_col0_ptr++;
 				concept_semtype1_col0_bytes--;
@@ -126,11 +123,11 @@ void smdb_huffman_0threads_predication1_col0_decode_Huffman(unsigned char* predi
 		bool* terminator_array = terminate_start;
 		int* tree_array = tree_array_start;
 
-		while(!*terminator_array) {
+		while(!*terminator_array) { 
 
 			char direction = *predication1_col0_ptr & (mask >>= 1);
 
-			if (mask == 1) {
+			if (mask == 1) { 
 				mask = 0x100;
 				predication1_col0_ptr++;
 				predication1_col0_bytes--;
@@ -188,11 +185,11 @@ void smdb_huffman_0threads_sentence1_col0_decode_Huffman(unsigned char* sentence
 		bool* terminator_array = terminate_start;
 		int* tree_array = tree_array_start;
 
-		while(!*terminator_array) {
+		while(!*terminator_array) { 
 
 			char direction = *sentence1_col0_ptr & (mask >>= 1);
 
-			if (mask == 1) {
+			if (mask == 1) { 
 				mask = 0x100;
 				sentence1_col0_ptr++;
 				sentence1_col0_bytes--;
@@ -250,11 +247,11 @@ void smdb_huffman_0threads_predication2_col0_decode_Huffman(unsigned char* predi
 		bool* terminator_array = terminate_start;
 		int* tree_array = tree_array_start;
 
-		while(!*terminator_array) {
+		while(!*terminator_array) { 
 
 			char direction = *predication2_col0_ptr & (mask >>= 1);
 
-			if (mask == 1) {
+			if (mask == 1) { 
 				mask = 0x100;
 				predication2_col0_ptr++;
 				predication2_col0_bytes--;
@@ -312,11 +309,11 @@ void smdb_huffman_0threads_concept_semtype2_col0_decode_Huffman(unsigned char* c
 		bool* terminator_array = terminate_start;
 		int* tree_array = tree_array_start;
 
-		while(!*terminator_array) {
+		while(!*terminator_array) { 
 
 			char direction = *concept_semtype2_col0_ptr & (mask >>= 1);
 
-			if (mask == 1) {
+			if (mask == 1) { 
 				mask = 0x100;
 				concept_semtype2_col0_ptr++;
 				concept_semtype2_col0_bytes--;
@@ -374,11 +371,11 @@ void smdb_huffman_0threads_concept2_col0_decode_Huffman(unsigned char* concept2_
 		bool* terminator_array = terminate_start;
 		int* tree_array = tree_array_start;
 
-		while(!*terminator_array) {
+		while(!*terminator_array) { 
 
 			char direction = *concept2_col0_ptr & (mask >>= 1);
 
-			if (mask == 1) {
+			if (mask == 1) { 
 				mask = 0x100;
 				concept2_col0_ptr++;
 				concept2_col0_bytes--;
@@ -448,24 +445,11 @@ extern "C" int* smdb_huffman_0threads(int** null_checks) {
 	max_frag = metadata.idx_max_fragment_sizes[5];
 	concept2_col0_buffer = new uint64_t[max_frag];
 
-	cerr << "domain2 = " << metadata.idx_domains[2][0];
-	cerr << "domain5 = " << metadata.idx_domains[5][0];
-
-	t1 = chrono::steady_clock::now();
 	RC = new int[metadata.idx_domains[5][0]]();
 	R = new int[metadata.idx_domains[5][0]]();
 
-
-    t2 = chrono::steady_clock::now();
-    tspan = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
-	cerr << "result arrays = " << tspan.count() << " sec\n";
-
-	t1 = chrono::steady_clock::now();
-	sentence1_bool_array = new bool[metadata.idx_domains[2][0]]();
-
-    t2 = chrono::steady_clock::now();
-    tspan = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
-	cerr << "bool array = " << tspan.count() << " sec\n";
+	uint64_t sentence1_domain = metadata.idx_domains[2][0];
+	sentence1_bool_array = new bool[sentence1_domain]();
 
 	concept_semtype1_col0_huffman_tree_array = idx[0]->huffman_tree_array[0];
 	concept_semtype1_col0_huffman_terminator_array = idx[0]->huffman_terminator_array[0];

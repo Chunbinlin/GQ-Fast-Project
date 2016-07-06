@@ -7,10 +7,6 @@
 
 using namespace std;
 
-static chrono::steady_clock::time_point t1;
-static chrono::steady_clock::time_point t2;
-static chrono::duration<double> tspan;
-
 static int* R;
 static int* RC;
 
@@ -153,8 +149,6 @@ extern "C" int* smdb_bca_0threads(int** null_checks) {
 
 	benchmark_t1 = chrono::steady_clock::now();
 
-	tspan = chrono::steady_clock::duration::zero();
-
 	int max_frag;
 
 	max_frag = metadata.idx_max_fragment_sizes[0];
@@ -175,24 +169,11 @@ extern "C" int* smdb_bca_0threads(int** null_checks) {
 	max_frag = metadata.idx_max_fragment_sizes[5];
 	concept2_col0_buffer = new uint64_t[max_frag];
 
-	cerr << "domain2 = " << metadata.idx_domains[2][0];
-	cerr << "domain5 = " << metadata.idx_domains[5][0];
-
-	t1 = chrono::steady_clock::now();
 	RC = new int[metadata.idx_domains[5][0]]();
 	R = new int[metadata.idx_domains[5][0]]();
 
-
-    t2 = chrono::steady_clock::now();
-    tspan = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
-	cerr << "result arrays = " << tspan.count() << " sec\n";
-
-	t1 = chrono::steady_clock::now();
-	sentence1_bool_array = new bool[metadata.idx_domains[2][0]]();
-
-    t2 = chrono::steady_clock::now();
-    tspan = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
-	cerr << "bool array = " << tspan.count() << " sec\n";
+	uint64_t sentence1_domain = metadata.idx_domains[2][0];
+	sentence1_bool_array = new bool[sentence1_domain]();
 
 	concept_semtype1_col0_bits_info = idx[0]->dict[0]->bits_info;
 	concept_semtype1_col0_offset = idx[0]->dict[0]->offset;
@@ -214,7 +195,6 @@ extern "C" int* smdb_bca_0threads(int** null_checks) {
 
 	uint64_t concept1_list[1];
 	concept1_list[0] = 2019;
-
 
 	for (int concept1_it = 0; concept1_it<1; concept1_it++) {
 
@@ -289,10 +269,7 @@ extern "C" int* smdb_bca_0threads(int** null_checks) {
 
 														unsigned char* concept2_col0_ptr = &(idx[5]->fragment_data[0][row_concept2[0]]);
 														uint32_t concept2_fragment_size = 0;
-
 														smdb_bca_0threads_concept2_col0_decode_BCA(concept2_col0_ptr, concept2_col0_bytes, concept2_fragment_size);
-
-
 
 														for (uint32_t concept2_it = 0; concept2_it < concept2_fragment_size; concept2_it++) {
 															uint32_t concept2_col0_element = concept2_col0_buffer[concept2_it];

@@ -4,7 +4,7 @@
 #include "../fastr_index.hpp"
 #include "../global_vars.hpp"
 
-#define NUM_THREADS 1
+#define NUM_THREADS 10
 
 using namespace std;
 
@@ -24,6 +24,7 @@ static uint64_t** concept_semtype2_col0_buffer;
 static uint64_t** concept2_col0_buffer;
 
 static bool* sentence1_bool_array;
+static pthread_spinlock_t* sentence1_spin_lock;
 
 static uint32_t* concept_semtype1_col0_bits_info;
 static uint64_t concept_semtype1_col0_offset;
@@ -108,8 +109,16 @@ void* pthread_smdb_bca_1threads_worker(void* arguments) {
 					for (uint32_t sentence1_it = 0; sentence1_it < sentence1_fragment_size; sentence1_it++) {
 
 
-						if (!(sentence1_bool_array[sentence1_col0_buffer[thread_id][sentence1_it]])) {
-							sentence1_bool_array[sentence1_col0_buffer[thread_id][sentence1_it]] = true;
+						bool sentence1_unvisited = false;
+
+						uint64_t current_it = sentence1_col0_buffer[thread_id][sentence1_it];
+						pthread_spin_lock(&sentence1_spin_lock[current_it]);
+						if (!sentence1_bool_array[current_it]) {
+							sentence1_bool_array[current_it] = true;
+							sentence1_unvisited = true;
+						}
+						pthread_spin_unlock(&sentence1_spin_lock[current_it]);
+						if (sentence1_unvisited) {
 							uint32_t sentence1_col0_element = sentence1_col0_buffer[thread_id][sentence1_it];
 
 							uint32_t* row_predication2 = idx[3]->index_map[sentence1_col0_element];
@@ -295,7 +304,12 @@ extern "C" int* smdb_bca_1threads(int** null_checks) {
 
 	r_spin_locks = spin_locks[5];
 
-	sentence1_bool_array = new bool[metadata.idx_domains[2][0]]();
+	uint64_t sentence1_domain = metadata.idx_domains[2][0];
+	sentence1_bool_array = new bool[sentence1_domain]();
+	sentence1_spin_lock = new pthread_spinlock_t[sentence1_domain];
+	for (uint64_t i=0; i<sentence1_domain; i++) {
+		pthread_spin_init(&sentence1_spin_lock[i], PTHREAD_PROCESS_PRIVATE);
+	}
 
 	concept_semtype1_col0_bits_info = idx[0]->dict[0]->bits_info;
 	concept_semtype1_col0_offset = idx[0]->dict[0]->offset;
@@ -378,6 +392,7 @@ extern "C" int* smdb_bca_1threads(int** null_checks) {
 	delete[] concept2_col0_buffer;
 
 	delete[] sentence1_bool_array;
+	delete[] sentence1_spin_lock;
 
 
 	*null_checks = RC;
