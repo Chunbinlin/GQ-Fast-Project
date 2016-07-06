@@ -255,14 +255,18 @@ public class CodeGenerator {
 			MetaData metadata) {
 		
 		String semiDeallocString = "\n";
+		int i = 0;
 		for (Operator currentOp : operators) {
 			if (currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 				SemiJoinOperator semiOp = (SemiJoinOperator)currentOp;
 				String alias = semiOp.getDrivingAlias().getAlias();
 				semiDeallocString += "\tdelete[] " + alias + "_bool_array;\n";
-				semiDeallocString += "\n";
+				if (hasThreading && i > threadOpIndex) {
+					semiDeallocString += "\tdelete[] " + alias + "_spin_lock;\n";
+				}
+				semiDeallocString += "\n";	
 			}
-		
+			i++;
 		}
 		return semiDeallocString;
 		
@@ -331,6 +335,7 @@ public class CodeGenerator {
 		
 		String resultString = "\n";
 		
+		int i = 0;
 		for (Operator currentOp: operators) {
 			if (currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 				SemiJoinOperator currentSemiJoinOp = (SemiJoinOperator) currentOp;
@@ -338,11 +343,21 @@ public class CodeGenerator {
 				int gqFastIndexID = currentSemiJoinOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
 				
 				String globalDeclarationString = "\nstatic bool* " + alias + "_bool_array;\n";
+				if (hasThreading && i > threadOpIndex) {
+					globalDeclarationString += "static pthread_spinlock_t* " + alias + "_spin_lock;\n";
+				}
 				globalsCppCode.add(globalDeclarationString);
 				
-				resultString += "\t" + alias + "_bool_array = new bool[metadata.idx_domains[" + gqFastIndexID + "][0]]();\n";
-				
+				resultString += "\tuint64_t " + alias + "_domain = metadata.idx_domains[" + gqFastIndexID + "][0];";
+				resultString += "\t" + alias + "_bool_array = new bool["+alias +"_domain]();\n";
+				if (hasThreading && i > threadOpIndex) {
+					resultString += "\t" + alias + "_spin_lock = new pthread_spinlock_t["+alias+"_domain][0]];\n";
+					resultString += "\t for uint64_t i=0; i<"+alias+"_domain; i++) {\n";
+					resultString += "\t\tpthread_spin_init(&" + alias + "_spin_lock[i], PTHREAD_PROCESS_PRIVATE);\n";
+					resultString += "\t}\n";
+				}
 			}
+			i++;
 		}
 		
 		return resultString;
@@ -1257,12 +1272,19 @@ public class CodeGenerator {
 			//int drivingAppearance = joinAliasAppearanceIDs.get(drivingAlias);
 			if (hasThreading) {
 				if (threadID) {
-					mainString += "\n" + tabString + "if (!(" + drivAliasString 
-							+ "_bool_array[" + drivAliasString + "_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]])) {\n";
-						closingBraces[0]++;
-						tabString.append("\t");
-						mainString += tabString + drivAliasString + 
-							"_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]] = true;\n";
+					mainString += "\n" + tabString + "bool" + drivAliasString + "_unvisited = false;\n";
+					mainString += "\n uint64_t current_it = " + drivAliasString + "_col" + 
+							drivingAliasCol + "_buffer[thread_id]["+drivAliasString+"_it];\n"; 
+					mainString += tabString + "pthread_spin_lock(&" + drivAliasString + "_spin_lock[current_it]);\n"; 
+					mainString += tabString + "if (!" + drivAliasString + "_bool_array[current_it]) {\n";
+					mainString += tabString + "\t" + drivAliasString + "_bool_array[current_it] = true\n";
+					mainString += tabString + "\t" + drivAliasString + "_unvisited = true;\n";
+					mainString += tabString + "}\n";
+					mainString += tabString + "pthread_spin_unlock(&" + drivAliasString + "_spin_lock[current_it]);\n";
+					mainString += tabString + "if (" + drivAliasString + "_unvisited_) {\n";	
+					closingBraces[0]++;
+					tabString.append("\t");
+					
 				}
 				else {
 					mainString += "\n" + tabString + "if (!(" + drivAliasString 
@@ -1358,12 +1380,18 @@ public class CodeGenerator {
 			String drivAliasString = drivingAlias.getAlias();
 			if (hasThreading) {
 				if (threadID) {
-					mainString += "\n" + tabString + "if (!(" + drivAliasString 
-							+ "_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]])) {\n";
+					mainString += "\n" + tabString + "bool" + drivAliasString + "_unvisited = false;\n";
+					mainString += "\n uint64_t current_it = " + drivAliasString + "_col" + 
+							drivingAliasCol + "_buffer[thread_id]["+drivAliasString+"_it];\n"; 
+					mainString += tabString + "pthread_spin_lock(&" + drivAliasString + "_spin_lock[current_it]);\n"; 
+					mainString += tabString + "if (!" + drivAliasString + "_bool_array[current_it]) {\n";
+					mainString += tabString + "\t" + drivAliasString + "_bool_array[current_it] = true\n";
+					mainString += tabString + "\t" + drivAliasString + "_unvisited = true;\n";
+					mainString += tabString + "}\n";
+					mainString += tabString + "pthread_spin_unlock(&" + drivAliasString + "_spin_lock[current_it]);\n";
+					mainString += tabString + "if (" + drivAliasString + "_unvisited_) {\n";	
 					closingBraces[0]++;
 					tabString.append("\t");
-					mainString += tabString + drivAliasString + 
-							"_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]] = true;\n";
 				}
 				else {
 					mainString += "\n" + tabString + "if (!(" + drivAliasString 
@@ -1556,12 +1584,18 @@ public class CodeGenerator {
 			//int drivingAppearance = joinAliasAppearanceIDs.get(drivingAlias);
 			if (hasThreading) {
 				if (justStartedThreading) {
-					mainString += "\n" + tabString + "if (!(" + drivAliasString 
-							+ "_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]])) {\n";
+					mainString += "\n" + tabString + "bool" + drivAliasString + "_unvisited = false;\n";
+					mainString += "\n uint64_t current_it = " + drivAliasString + "_col" + 
+							drivingAliasCol + "_buffer[thread_id]["+drivAliasString+"_it];\n"; 
+					mainString += tabString + "pthread_spin_lock(&" + drivAliasString + "_spin_lock[current_it]);\n"; 
+					mainString += tabString + "if (!" + drivAliasString + "_bool_array[current_it]) {\n";
+					mainString += tabString + "\t" + drivAliasString + "_bool_array[current_it] = true\n";
+					mainString += tabString + "\t" + drivAliasString + "_unvisited = true;\n";
+					mainString += tabString + "}\n";
+					mainString += tabString + "pthread_spin_unlock(&" + drivAliasString + "_spin_lock[current_it]);\n";
+					mainString += tabString + "if (" + drivAliasString + "_unvisited_) {\n";	
 					closingBraces[0]++;
 					tabString.append("\t");
-					mainString += tabString + drivAliasString + 
-							"_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]] = true;\n";
 				}
 				else {
 					mainString += "\n" + tabString + "if (!(" + drivAliasString 
