@@ -1,4 +1,4 @@
-Loading indices took 64.4094 seconds.
+Loading indices took 121.085 seconds.
 
 ...Indices have been loaded...
 
@@ -7,101 +7,481 @@ test file = test_smdb_opt.txt
 calling int autohandle with func smdb_optimal_0threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847result arrays = 0.00722869 sec
-bool array = 0.235847 sec
-domain2 = 199114924domain5 = 1377847result arrays = 0.00867194 sec
-bool array = 0.223042 sec
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_1threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_1threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_2threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_2threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_4threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_4threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_0threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847result arrays = 0.00510505 sec
-bool array = 0.221214 sec
-domain2 = 199114924domain5 = 1377847result arrays = 0.00633081 sec
-bool array = 0.22042 sec
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_1threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_1threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_2threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_2threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_4threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_4threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_0threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847result arrays = 0.00467654 sec
-bool array = 0.216571 sec
-domain2 = 199114924domain5 = 1377847result arrays = 0.00693867 sec
-bool array = 0.215874 sec
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_1threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_1threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_2threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_2threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_4threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_4threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_0threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847result arrays = 0.0048902 sec
-bool array = 0.217183 sec
-domain2 = 199114924domain5 = 1377847result arrays = 0.00712965 sec
-bool array = 0.221327 sec
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_1threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_1threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_2threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_2threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_4threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_4threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_0threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_0threads.so
 Loading symbol query_type...
-domain2 = 199114924domain5 = 1377847result arrays = 0.00434275 sec
-bool array = 0.217432 sec
-domain2 = 199114924domain5 = 1377847result arrays = 0.00701892 sec
-bool array = 0.214225 sec
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_1threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_1threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_2threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_2threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 calling int autohandle with func smdb_optimal_4threads.soand rpos 5
 Opening ./test_cases/smdb_optimal_4threads.so
 Loading symbol query_type...
 Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
 Deleting globals
