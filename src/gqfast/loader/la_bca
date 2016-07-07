@@ -1,0 +1,487 @@
+Loading indices took 71.4672 seconds.
+
+...Indices have been loaded...
+
+...Automated results will be sent to 'output.txt'
+test file = test_smdb_bca.txt
+calling int autohandle with func smdb_bca_0threads.soand rpos 5
+Opening ./test_cases/smdb_bca_0threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_1threads.soand rpos 5
+Opening ./test_cases/smdb_bca_1threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_2threads.soand rpos 5
+Opening ./test_cases/smdb_bca_2threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_4threads.soand rpos 5
+Opening ./test_cases/smdb_bca_4threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_0threads.soand rpos 5
+Opening ./test_cases/smdb_bca_0threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_1threads.soand rpos 5
+Opening ./test_cases/smdb_bca_1threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_2threads.soand rpos 5
+Opening ./test_cases/smdb_bca_2threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_4threads.soand rpos 5
+Opening ./test_cases/smdb_bca_4threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_0threads.soand rpos 5
+Opening ./test_cases/smdb_bca_0threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_1threads.soand rpos 5
+Opening ./test_cases/smdb_bca_1threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_2threads.soand rpos 5
+Opening ./test_cases/smdb_bca_2threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_4threads.soand rpos 5
+Opening ./test_cases/smdb_bca_4threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_0threads.soand rpos 5
+Opening ./test_cases/smdb_bca_0threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_1threads.soand rpos 5
+Opening ./test_cases/smdb_bca_1threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_2threads.soand rpos 5
+Opening ./test_cases/smdb_bca_2threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_4threads.soand rpos 5
+Opening ./test_cases/smdb_bca_4threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_0threads.soand rpos 5
+Opening ./test_cases/smdb_bca_0threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_1threads.soand rpos 5
+Opening ./test_cases/smdb_bca_1threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_2threads.soand rpos 5
+Opening ./test_cases/smdb_bca_2threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+calling int autohandle with func smdb_bca_4threads.soand rpos 5
+Opening ./test_cases/smdb_bca_4threads.so
+Loading symbol query_type...
+Closing library...
+Position 2019: 18619
+Position 55682: 1540
+Position 815529: 1443
+Position 18332: 1167
+Position 16115: 1163
+Position 1587: 951
+Position 304: 932
+Position 17657: 921
+Position 38411: 682
+Position 6682: 649
+Position 16828: 642
+Position 21087: 601
+Position 3431: 594
+Position 18416: 583
+Position 6556: 479
+Position 16517: 413
+Position 17427: 403
+Position 19302: 379
+Position 664963: 336
+Position 1190254: 316
+Deleting globals
