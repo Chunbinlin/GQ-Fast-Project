@@ -4,6 +4,7 @@
 #include "../fastr_index.hpp"
 #include "../global_vars.hpp"
 
+#include <atomic>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ static uint64_t* predication2_col0_buffer;
 static uint64_t* concept_semtype2_col0_buffer;
 static uint64_t* concept2_col0_buffer;
 
-static bool* sentence1_bool_array;
+static atomic<bool>* sentence1_bool_array;
 
 static uint32_t* concept_semtype1_col0_bits_info;
 static uint64_t concept_semtype1_col0_offset;
@@ -173,7 +174,7 @@ extern "C" int* smdb_bca_0threads(int** null_checks) {
 	R = new int[metadata.idx_domains[5][0]]();
 
 	uint64_t sentence1_domain = metadata.idx_domains[2][0];
-	sentence1_bool_array = new bool[sentence1_domain]();
+	sentence1_bool_array = new atomic<bool>[sentence1_domain]();
 
 	concept_semtype1_col0_bits_info = idx[0]->dict[0]->bits_info;
 	concept_semtype1_col0_offset = idx[0]->dict[0]->offset;

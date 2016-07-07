@@ -4,6 +4,7 @@
 #include "../fastr_index.hpp"
 #include "../global_vars.hpp"
 
+#include <atomic>
 #define NUM_THREADS 2
 
 using namespace std;
@@ -23,7 +24,7 @@ static uint64_t** predication2_col0_buffer;
 static uint64_t** concept_semtype2_col0_buffer;
 static uint64_t** concept2_col0_buffer;
 
-static bool* sentence1_bool_array;
+static atomic<bool>* sentence1_bool_array;
 static pthread_spinlock_t* sentence1_spin_lock;
 
 static int* concept_semtype2_col0_huffman_tree_array;
@@ -110,16 +111,8 @@ void* pthread_smdb_optimal_2threads_worker(void* arguments) {
 					for (uint32_t sentence1_it = 0; sentence1_it < sentence1_fragment_size; sentence1_it++) {
 
 
-						bool sentence1_unvisited = false;
-
-						uint64_t current_it = sentence1_col0_buffer[thread_id][sentence1_it];
-						pthread_spin_lock(&sentence1_spin_lock[current_it]);
-						if (!sentence1_bool_array[current_it]) {
-							sentence1_bool_array[current_it] = true;
-							sentence1_unvisited = true;
-						}
-						pthread_spin_unlock(&sentence1_spin_lock[current_it]);
-						if (sentence1_unvisited) {
+						if (!(sentence1_bool_array[sentence1_col0_buffer[thread_id][sentence1_it]])) {
+							sentence1_bool_array[sentence1_col0_buffer[thread_id][sentence1_it]] = true;
 							uint32_t sentence1_col0_element = sentence1_col0_buffer[thread_id][sentence1_it];
 
 							uint32_t* row_predication2 = idx[3]->index_map[sentence1_col0_element];
@@ -416,11 +409,7 @@ extern "C" int* smdb_optimal_2threads(int** null_checks) {
 	r_spin_locks = spin_locks[5];
 
 	uint64_t sentence1_domain = metadata.idx_domains[2][0];
-	sentence1_bool_array = new bool[sentence1_domain]();
-	sentence1_spin_lock = new pthread_spinlock_t[sentence1_domain];
-	for (uint64_t i=0; i<sentence1_domain; i++) {
-		pthread_spin_init(&sentence1_spin_lock[i], PTHREAD_PROCESS_PRIVATE);
-	}
+	sentence1_bool_array = new atomic<bool>[sentence1_domain]();
 
 	concept_semtype2_col0_huffman_tree_array = idx[4]->huffman_tree_array[0];
 	concept_semtype2_col0_huffman_terminator_array = idx[4]->huffman_terminator_array[0];
