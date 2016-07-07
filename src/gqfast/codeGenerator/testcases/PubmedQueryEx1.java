@@ -78,7 +78,7 @@ public class PubmedQueryEx1 {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(0, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
 		metadata.getIndexList().add(DT2);
 	}
 	
@@ -94,8 +94,8 @@ public class PubmedQueryEx1 {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(0, indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().add(DT2);
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
+		metadata.getIndexList().put(indexID,DT2);
 	}
 	
 	
