@@ -57,7 +57,7 @@ public class PubmedQueryEx1 {
 		
 		// public MetaQuery(int queryID, String queryName, int numThreads,
 		// int numBuffers, int bufferPoolSize, List<String> aliases)
-		MetaQuery e1Optimal = new MetaQuery(0, queryName, numThreads, 1, aliases);
+		MetaQuery e1Optimal = new MetaQuery(0, queryName, numThreads, aliases);
 				
 		metadata.getQueryList().add(e1Optimal);
 		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);
@@ -79,7 +79,7 @@ public class PubmedQueryEx1 {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
 		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().add(DT2);
+		metadata.getIndexList().put(indexID,DT2);
 	}
 	
 	private static void initEx1Indexes(MetaData metadata, int encoding) {
