@@ -8,18 +8,23 @@ public class MetaIndex {
 	private int gqFastIndexID;
 	private int numColumns;
 	private int indexMapByteSize;
+	private long indexDomain;
+	
 	private List<Integer> columnEncodingsList;
 	private List<Integer> columnEncodedByteSizesList;
+	private List<Long> columnDomains;
 	
 	public MetaIndex(int gqFastIndexID, int numColumns, int indexMapByteSize,
-			List<Integer> columnEncodingsList,
-			List<Integer> columnEncodedByteSizesList) {
+			long indexDomain, List<Integer> columnEncodingsList,
+			List<Integer> columnEncodedByteSizesList, List<Long> columnDomains) {
 		//this.indexID = indexID;
 		this.gqFastIndexID = gqFastIndexID;
 		this.numColumns = numColumns;
 		this.indexMapByteSize = indexMapByteSize;
+		this.indexDomain = indexDomain;
 		this.columnEncodingsList = columnEncodingsList;
 		this.columnEncodedByteSizesList = columnEncodedByteSizesList;
+		this.columnDomains = columnDomains;
 	}
 
 	
@@ -41,5 +46,33 @@ public class MetaIndex {
 
 	public List<Integer> getColumnEncodedByteSizesList() {
 		return columnEncodedByteSizesList;
+	}
+
+
+	public long getIndexDomain() {
+		return indexDomain;
+	}
+
+
+	public List<Long> getColumnDomains() {
+		return columnDomains;
 	}	
+	
+	public void print() {
+		System.out.println("...print MetaIndex... ");
+		System.out.println("gqFastIndexID = " + gqFastIndexID);
+		System.out.println("numColumns = " + numColumns);
+		System.out.println("indexMapByteSize = " + indexMapByteSize);
+		System.out.println("indexDomain = " + indexDomain);
+		
+		for (int i=0; i<numColumns; i++) {
+			System.out.println("colEncoding " + i + " = " + columnEncodingsList.get(i));
+			System.out.println("colEncodedByteSize " + i + " = " + columnEncodedByteSizesList.get(i));
+			System.out.println("colDomain " + i + " = " + columnDomains.get(i));
+		}
+		System.out.println("...end print MetaIndex...");
+		
+	}
+	
+	
 }
