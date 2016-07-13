@@ -7,7 +7,7 @@
 using namespace std;
 
 
-int findEmptyIndexPosition()
+int find_empty_index_position()
 {
     for (int i=0; i<MAX_INDICES; i++)
     {
@@ -47,16 +47,16 @@ void init_buffer(int pos)
 
 }
 
-int load(string path, Encodings encodings[], int num_encodings)
+int load(string path, Encodings* encodings[], int num_encodings)
 {
 
-    int indexID = findEmptyIndexPosition();
+    int indexID = find_empty_index_position();
     if (indexID < 0) return -1;
 
 
-    idx[indexID] = buildIndex<int, uint32_t>(path, encodings, numEncodings, indexID);
+    idx[indexID] = buildIndex<int, uint32_t>(path, encodings, num_encodings, indexID);
     init_buffer(indexID);
-    idx_position_in_use[indeXID] = true;
+    idx_position_in_use[indexID] = true;
 
     return indexID;
 

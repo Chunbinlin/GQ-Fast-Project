@@ -82,13 +82,13 @@ void read_in_file(vector<T> * input_file, string filename, uint64_t max_column_i
 *               is not bit-aligned compressed.
 */
 template <typename T>
-void init_dictionaries(vector<T> * input_file, dictionary** dict, Encodings encodings[], int num_encodings,
+void init_dictionaries(vector<T> * input_file, dictionary** dict, Encodings* encodings[], int num_encodings,
                        uint64_t max_column_ids[], uint64_t min_column_ids[])
 {
 
     for (int i=0; i<num_encodings; i++)
     {
-        if (encodings[i].getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED)
+        if (encodings[i]->getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED)
         {
 
             uint64_t max = max_column_ids[i+1];
@@ -131,14 +131,14 @@ void init_dictionaries(vector<T> * input_file, dictionary** dict, Encodings enco
 *               that is to be encoded as Huffman will have all the necessary structures loaded into appropriate arrays.
 */
 template <typename T>
-void init_huffman_structures(vector<T> * input_file, Encodings encodings[], int num_encodings,
+void init_huffman_structures(vector<T> * input_file, Encodings* encodings[], int num_encodings,
                              vector<Node<T> *> & huffman_tree, T** & huffman_tree_array, bool** & huffman_terminator_array,
                              vector<encoding_dict<T> *> & encoding_dictionary, int huffman_tree_sizes[])
 {
 
     for (int i=0; i<num_encodings; i++)
     {
-        if (encodings[i].getEncoding() == ENCODING_HUFFMAN)
+        if (encodings[i]->getEncoding() == ENCODING_HUFFMAN)
         {
 
             // cerr << "Huffman: encoded column " << i << " is of size " << input_file[i+1].size() << "\n";
@@ -193,7 +193,7 @@ void init_huffman_structures(vector<T> * input_file, Encodings encodings[], int 
 template <typename T>
 void process_old_value(vector<T> & keys, vector<uint32_t> & key_counts, int num_encodings, uint32_t bit_count[],
                        vector<vector<uint32_t> > & byte_count, vector<vector<T> > & fragment_to_encode, uint32_t key_counter,
-                       vector<encoding_dict<T> *> & encoding_dictionary, T oldValue, Encodings encodings[],
+                       vector<encoding_dict<T> *> & encoding_dictionary, T oldValue, Encodings* encodings[],
                        vector<vector<unsigned char*> > & huffman_column, vector<vector<unsigned char *> > & bitmap_column,
                        dictionary ** dict)
 {
@@ -207,7 +207,7 @@ void process_old_value(vector<T> & keys, vector<uint32_t> & key_counts, int num_
     {
 
         // Calculate bytes for bit-aligned compression
-        if (encodings[i].getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED)
+        if (encodings[i]->getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED)
         {
             uint32_t bytes = ceil((float)bit_count[i] * key_counter / 8);
             byte_count[i].push_back(bytes);
@@ -215,7 +215,7 @@ void process_old_value(vector<T> & keys, vector<uint32_t> & key_counts, int num_
 
         // Huffman fragment encoding is done here to preserve byte-alignment between fragments
         // encode() is found in the file "huffman.hpp"
-        else if (encodings[i].getEncoding() == ENCODING_HUFFMAN)
+        else if (encodings[i]->getEncoding() == ENCODING_HUFFMAN)
         {
 
             uint32_t bytes = 0;
@@ -229,7 +229,7 @@ void process_old_value(vector<T> & keys, vector<uint32_t> & key_counts, int num_
 
         }
         // encode_bitmap() in byte_aligned_bitmap.hpp
-        else if (encodings[i].getEncoding() == ENCODING_BYTE_ALIGNED_BITMAP)
+        else if (encodings[i]->getEncoding() == ENCODING_BYTE_ALIGNED_BITMAP)
         {
             uint32_t bytes = 0;
             encode_bitmap(fragment_to_encode[i], bitmap_column[i], bytes);
@@ -513,7 +513,7 @@ int getByteSize(uint64_t domain) {
 *   Notes:      None
 */
 template <typename TValue, typename TIndexMap>
-fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int num_encodings, int index_id)
+fastr_index<TIndexMap> * buildIndex(string filename, Encodings* encodings[], int num_encodings, int index_id)
 {
 
     //vector<int> & domains, int & max_frag_size) {
@@ -573,7 +573,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
     for (int i=0; i<num_encodings; i++)
     {
         // get the bit encoding size
-        if (encodings[i].getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED)
+        if (encodings[i]->getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED)
         {
             bit_count[i] = dict[i]->bits_info[0];
         }
@@ -615,7 +615,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
         for (int i=0; i<num_encodings; i++)
         {
             next_val = input_file[i+1][n];
-            int curr_encoding = encodings[i].getEncoding();
+            int curr_encoding = encodings[i]->getEncoding();
 
             if (curr_encoding == ENCODING_HUFFMAN || curr_encoding == ENCODING_BYTE_ALIGNED_BITMAP)
             {
@@ -633,8 +633,8 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
     input_file[0].clear();
     for (int i=0; i<num_encodings; i++)
     {
-        if  (!(encodings[i].getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED) &&
-                !(encodings[i].getEncoding() == ENCODING_UNCOMPRESSED))
+        if  (!(encodings[i]->getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED) &&
+                !(encodings[i]->getEncoding() == ENCODING_UNCOMPRESSED))
         {
             input_file[i+1].clear();
         }
@@ -693,14 +693,14 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
     for (int i=0; i<num_encodings; i++)
     {
 
-        switch(encodings[i].getEncoding())
+        switch(encodings[i]->getEncoding())
         {
 
         case ENCODING_UNCOMPRESSED:
         {
 
             int data_type;
-            if (encodings[i].getColumnName() == "Fre")
+            if (encodings[i]->getColumnName() == "Fre")
             {
                 size_of_current_array[i] = total_row_count;
                 data_type = CHAR_1BYTE;
@@ -796,7 +796,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings encodings[], int 
     int * encoding_types = new int[num_encodings];
     for (int i=0; i<num_encodings; i++)
     {
-        encoding_types[i] = encodings[i].getEncoding();
+        encoding_types[i] = encodings[i]->getEncoding();
     }
 
     fastr_index<TIndexMap>* new_index = new fastr_index<TIndexMap>(domain_size, num_encodings, size_of_current_array, encoding_types);

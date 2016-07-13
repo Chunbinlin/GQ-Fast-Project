@@ -27,15 +27,15 @@ public class JNILoader {
 		//loaderIndexID = -1;
 	}
 	
-	public native void cpp_open_loader();
-	public native void cpp_close_loader();
-	public native void cpp_load_index(String path, int nEnc, int[] colEncs);    
-    public native int[] run_query_aggregate_int(String queryName, int resultArrayGQFastIndexID);
-    public native double[] run_query_aggregate_double(String queryName, int resultarraGQFastIndexID);
+	public native void cppOpenLoader();
+	public native void cppCloseLoader();
+	public native void cppLoadIndex(String path, int nEnc, int[] colEncs);    
+    public native int[] runQueryAggregateInt(String queryName, int resultArrayGQFastIndexID);
+    public native double[] runQueryAggregateDouble(String queryName, int resultarraGQFastIndexID);
 	
 	static {
-        System.loadLibrary("cpploadindex");
-    }        
+		System.loadLibrary("gqfast_global_JNILoader");
+	}        
 
     public void print (String pathAndFileName, int numEncodings, int[] colEncodings) {
     	
@@ -45,8 +45,8 @@ public class JNILoader {
 		loaderIndexID = -1;
     	discoveredIndexDomain = -1;
     	
-    	cpp_load_index(pathAndFileName, numEncodings, colEncodings);
-    	   		
+    	cppOpenLoader();
+    	cppLoadIndex(pathAndFileName, numEncodings, colEncodings);   		
     	MetaIndex myMetaIndex;
     	if (loaderIndexID >= 0) {
     		List<Integer> colEncodingsList = new ArrayList<Integer>();
@@ -67,12 +67,12 @@ public class JNILoader {
     		System.err.println("Error! index ID not initialized properly");
     	}
     	
-      	
+      	cppCloseLoader();
     }
     
     public static void main(String[] args) {
     	
-    	String p = "./pubmed/DA1.csv";
+    	String p = "./gqfast/loader/pubmed/da1.csv";
     	int n = 1;
     	int[] c = {1};
     	
