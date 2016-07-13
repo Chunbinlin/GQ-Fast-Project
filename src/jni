@@ -1,0 +1,4 @@
+g++ -fPIC -std=c++11 -I/usr/lib/jvm/java-1.8.0-openjdk-amd64/include -I/usr/lib/jvm/java-1.8.0-openjdk-amd64/include/linux -c ./gqfast/loader/encodings.cpp gqfast_global_JNILoader.cpp 
+
+g++ -shared -o libgqfast_global_JNILoader.so encodings.o gqfast_global_JNILoader.o
+

@@ -9,42 +9,42 @@ extern "C" {
 #endif
 /*
  * Class:     gqfast_global_JNILoader
- * Method:    cpp_open_loader
+ * Method:    cppOpenLoader
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_gqfast_global_JNILoader_cpp_1open_1loader
+JNIEXPORT void JNICALL Java_gqfast_global_JNILoader_cppOpenLoader
   (JNIEnv *, jobject);
 
 /*
  * Class:     gqfast_global_JNILoader
- * Method:    cpp_close_loader
+ * Method:    cppCloseLoader
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_gqfast_global_JNILoader_cpp_1close_1loader
+JNIEXPORT void JNICALL Java_gqfast_global_JNILoader_cppCloseLoader
   (JNIEnv *, jobject);
 
 /*
  * Class:     gqfast_global_JNILoader
- * Method:    cpp_load_index
+ * Method:    cppLoadIndex
  * Signature: (Ljava/lang/String;I[I)V
  */
-JNIEXPORT void JNICALL Java_gqfast_global_JNILoader_cpp_1load_1index
+JNIEXPORT void JNICALL Java_gqfast_global_JNILoader_cppLoadIndex
   (JNIEnv *, jobject, jstring, jint, jintArray);
 
 /*
  * Class:     gqfast_global_JNILoader
- * Method:    run_query_aggregate_int
+ * Method:    runQueryAggregateInt
  * Signature: (Ljava/lang/String;I)[I
  */
-JNIEXPORT jintArray JNICALL Java_gqfast_global_JNILoader_run_1query_1aggregate_1int
+JNIEXPORT jintArray JNICALL Java_gqfast_global_JNILoader_runQueryAggregateInt
   (JNIEnv *, jobject, jstring, jint);
 
 /*
  * Class:     gqfast_global_JNILoader
- * Method:    run_query_aggregate_double
+ * Method:    runQueryAggregateDouble
  * Signature: (Ljava/lang/String;I)[D
  */
-JNIEXPORT jdoubleArray JNICALL Java_gqfast_global_JNILoader_run_1query_1aggregate_1double
+JNIEXPORT jdoubleArray JNICALL Java_gqfast_global_JNILoader_runQueryAggregateDouble
   (JNIEnv *, jobject, jstring, jint);
 
 #ifdef __cplusplus
