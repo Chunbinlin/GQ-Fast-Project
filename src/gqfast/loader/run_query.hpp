@@ -96,7 +96,7 @@ T* handle_input(string func_name, int r_pos, int r_col)
 {
 
     uint64_t domain_temp = metadata.idx_domains[r_pos][r_col];
-    string filename = "./gqfast/loader/test_cases/" + func_name + ".so";
+    string filename = "./" + func_name + ".so";
 
     int* cold_checks;
     int* null_checks;
