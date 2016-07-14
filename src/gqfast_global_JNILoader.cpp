@@ -16,8 +16,8 @@ chrono::steady_clock::time_point benchmark_t1;
 chrono::steady_clock::time_point benchmark_t2;
 
 // Pre-declared index pointers
-fastr_index<uint32_t>* idx_32[MAX_INDICES];
-fastr_index<uint64_t>* idx_64[MAX_INDICES];
+fastr_index<uint32_t>* idx[MAX_INDICES];
+
 
 // Metadata wrapper
 Metadata metadata;
