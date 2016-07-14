@@ -41,7 +41,7 @@ public class JNILoader {
 		loaderIndexID = -1;
     	discoveredIndexDomain = -1;
 		
-    	int colEncodingInts[] = new int[numEncodings];
+    	int[] colEncodingInts = new int[numEncodings];
     	for (int i=0; i<numEncodings; i++) {
     		
     		Encodings currEnc = colEncodings[i];
