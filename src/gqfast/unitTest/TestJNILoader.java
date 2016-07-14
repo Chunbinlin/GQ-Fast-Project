@@ -91,10 +91,10 @@ public class TestJNILoader {
     	MetaData metadata = new MetaData();
     	metadata.setIndexMap(indexMap);
     	
-    	String queryName = "q5_opt_0threads_2981669";
+    	String queryName = "q5_array_4threads_2981669";
     	int numThreads = 4;
     	initQ5Queries(metadata, queryName, numThreads);
-    	newLoader.runQuery(queryName, AggregationOperator.AGGREGATION_DOUBLE, idx4.getGQFastIndexID());
+    	newLoader.runQuery(queryName, AggregationOperator.AGGREGATION_DOUBLE, idx4.getGQFastIndexID(), 0);
     	    	
     	newLoader.closeLoader();   	
     	
