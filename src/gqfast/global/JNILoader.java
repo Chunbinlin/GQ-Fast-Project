@@ -85,7 +85,6 @@ public class JNILoader {
   
     		myMetaIndex = new MetaIndex(loaderIndexID, numEncodings, discoveredIndexMapByteSize, 
     				discoveredIndexDomain, colEncodingsList, colEncodedByteSizeList, colDomains);
-    		myMetaIndex.print();
     		return myMetaIndex;
     	}
     	else {
