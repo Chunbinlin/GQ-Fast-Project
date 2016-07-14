@@ -16,7 +16,8 @@ chrono::steady_clock::time_point benchmark_t1;
 chrono::steady_clock::time_point benchmark_t2;
 
 // Pre-declared index pointers
-fastr_index<uint32_t>* idx[MAX_INDICES];
+fastr_index<uint32_t>* idx_32[MAX_INDICES];
+fastr_index<uint64_t>* idx_64[MAX_INDICES];
 
 // Metadata wrapper
 Metadata metadata;
@@ -210,12 +211,32 @@ JNIEXPORT void JNICALL Java_gqfast_global_JNILoader_cppLoadIndex
 }
 
 JNIEXPORT jintArray JNICALL Java_gqfast_global_JNILoader_runQueryAggregateInt
-(JNIEnv *env, jobject thisObj, jstring funcName, jint resultIndexID)
+(JNIEnv *env, jobject thisObj, jstring jFuncName, jint resultIndexID, jint resultCol)
 {
+    // First parameter is string
+    const char *cFuncName = env->GetStringUTFChars(jFuncName, NULL);
+    if (NULL == cFuncName) return NULL;
+    string funcName(cFuncName);
+    env->ReleaseStringUTFChars(jFuncName, cFuncName);  // release resources
+    cerr << "Function name set to " << funcName << "\n";
 
-    jintArray j;
+     // Second parameter
+    int resIndexID = (int) resultIndexID;
+    cerr << "Result index id " << resIndexID << "\n";
 
-    return j;
+    int resCol = (int) resultCol;
+    cerr << "Result col is " << resCol << "\n";
+
+    int* result = handle_input<int>(funcName, resIndexID, resCol);
+    jint* jresult = reinterpret_cast<jint*>(result);
+
+    uint64_t result_domain = metadata.idx_domains[resIndexID][resCol];
+    jintArray outJNIArray = env->NewIntArray(result_domain);  // allocate
+
+    if (NULL == outJNIArray) return NULL;
+    env->SetIntArrayRegion(outJNIArray, 0 , result_domain, jresult);  // copy
+
+    return outJNIArray;
 
 }
 
@@ -225,17 +246,33 @@ JNIEXPORT jintArray JNICALL Java_gqfast_global_JNILoader_runQueryAggregateInt
  * Signature: (Ljava/lang/String;I)[D
  */
 JNIEXPORT jdoubleArray JNICALL Java_gqfast_global_JNILoader_runQueryAggregateDouble
-(JNIEnv *env, jobject thisObj, jstring funcName, jint resultIndexID)
+(JNIEnv *env, jobject thisObj, jstring jFuncName, jint resultIndexID, jint resultCol)
 {
 
+    // First parameter is string
+    const char *cFuncName = env->GetStringUTFChars(jFuncName, NULL);
+    if (NULL == cFuncName) return NULL;
+    string funcName(cFuncName);
+    env->ReleaseStringUTFChars(jFuncName, cFuncName);  // release resources
+    cerr << "Function name set to " << funcName << "\n";
 
-    jdoubleArray j;
+     // Second parameter
+    int resIndexID = (int) resultIndexID;
+    cerr << "Result index id " << resIndexID << "\n";
 
-    return j;
+    int resCol = (int) resultCol;
+    cerr << "Result col is " << resCol << "\n";
 
+    double* result = handle_input<double>(funcName, resIndexID, resCol);
+    jdouble* jresult = reinterpret_cast<jdouble*>(result);
 
+    uint64_t result_domain = metadata.idx_domains[resIndexID][resCol];
+    jdoubleArray outJNIArray = env->NewDoubleArray(result_domain);  // allocate
 
+    if (NULL == outJNIArray) return NULL;
+    env->SetDoubleArrayRegion(outJNIArray, 0 , result_domain, jresult);  // copy
 
+    return outJNIArray;
 
 }
 

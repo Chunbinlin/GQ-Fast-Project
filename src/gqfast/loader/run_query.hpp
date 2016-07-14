@@ -57,7 +57,7 @@ pair<int, T> * top_k(T* result, int k, int domain)
 }
 
 
-
+/*
 template <typename T>
 void write_result_to_file(T* result, int* null_checks, int domain)
 {
@@ -88,15 +88,15 @@ void write_result_to_file(T* result, int* null_checks, int domain)
     myfile.close();
 
 }
-
+*/
 
 
 template <typename T>
-void handle_input(string func_name, int r_pos)
+T* handle_input(string func_name, int r_pos, int r_col)
 {
 
-    int domain_temp = metadata.idx_domains[r_pos][0];
-    string filename = "./test_cases/" + func_name + ".so";
+    uint64_t domain_temp = metadata.idx_domains[r_pos][r_col];
+    string filename = "./gqfast/loader/test_cases/" + func_name + ".so";
 
     int* cold_checks;
     int* null_checks;
@@ -109,7 +109,7 @@ void handle_input(string func_name, int r_pos)
     if (!handle)
     {
         cerr << "Cannot open library: " << dlerror() << '\n';
-        return;
+        return NULL;
     }
 
     cout << "Loading symbol query_type...\n";
@@ -124,7 +124,7 @@ void handle_input(string func_name, int r_pos)
         cerr << "Cannot load symbol 'query_type': " << dlsym_error <<
              '\n';
         dlclose(handle);
-        return;
+        return NULL;
     }
 
     T* cold_result = query(&cold_checks);
@@ -159,18 +159,20 @@ void handle_input(string func_name, int r_pos)
     }
 
     delete[] tops_result;
-
-    write_result_to_file(result, null_checks, domain_temp);
-
-    delete[] result;
     delete[] cold_result;
 
     delete[] cold_checks;
     delete[] null_checks;
 
+    return result;
+    //write_result_to_file(result, null_checks, domain_temp);
+
+    //delete[] result;
+
+
 }
 
-
+/*
 
 template <typename T>
 chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_pos)
@@ -243,7 +245,7 @@ chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_p
     }
 
     delete[] tops_result;
-    */
+
 
     delete[] result;
     delete[] cold_result;
@@ -254,7 +256,7 @@ chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_p
     return timespan;
 
 }
-
+*/
 
 
 

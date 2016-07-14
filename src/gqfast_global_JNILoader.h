@@ -34,18 +34,18 @@ JNIEXPORT void JNICALL Java_gqfast_global_JNILoader_cppLoadIndex
 /*
  * Class:     gqfast_global_JNILoader
  * Method:    runQueryAggregateInt
- * Signature: (Ljava/lang/String;I)[I
+ * Signature: (Ljava/lang/String;II)[I
  */
 JNIEXPORT jintArray JNICALL Java_gqfast_global_JNILoader_runQueryAggregateInt
-  (JNIEnv *, jobject, jstring, jint);
+  (JNIEnv *, jobject, jstring, jint, jint);
 
 /*
  * Class:     gqfast_global_JNILoader
  * Method:    runQueryAggregateDouble
- * Signature: (Ljava/lang/String;I)[D
+ * Signature: (Ljava/lang/String;II)[D
  */
 JNIEXPORT jdoubleArray JNICALL Java_gqfast_global_JNILoader_runQueryAggregateDouble
-  (JNIEnv *, jobject, jstring, jint);
+  (JNIEnv *, jobject, jstring, jint, jint);
 
 #ifdef __cplusplus
 }

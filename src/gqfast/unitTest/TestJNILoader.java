@@ -1,14 +1,46 @@
 package gqfast.unitTest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import gqfast.codeGenerator.AggregationOperator;
 import gqfast.global.Global.Encodings;
+import gqfast.global.Alias;
 import gqfast.global.JNILoader;
 import gqfast.global.MetaData;
 import gqfast.global.MetaIndex;
+import gqfast.global.MetaQuery;
 
 public class TestJNILoader {
 
+	private static void initQ5Queries(MetaData metadata, String queryName, int numThreads) {
+
+		List<Alias> aliases = new ArrayList<Alias>();
+		
+		Alias alias0 = new Alias(0, "author1");
+		Alias alias1 = new Alias(1, "doc1", metadata.getIndexMap().get(0));
+		Alias alias2 = new Alias(2, "term", metadata.getIndexMap().get(2));
+		Alias alias3 = new Alias(3, "doc2", metadata.getIndexMap().get(3));
+		Alias alias4 = new Alias(4, "author2", metadata.getIndexMap().get(4));
+		Alias alias5 = new Alias(5, "year", metadata.getIndexMap().get(1));
+		
+		aliases.add(alias0);
+		aliases.add(alias1);
+		aliases.add(alias2);
+		aliases.add(alias3);
+		aliases.add(alias4);
+		aliases.add(alias5);
+		
+		// public MetaQuery(int queryID, String queryName, int numThreads,
+		// int numBuffers, int bufferPoolSize, List<String> aliases)
+		MetaQuery q5Optimal = new MetaQuery(0, queryName, numThreads, aliases);
+			
+		metadata.getQueryList().add(q5Optimal);
+		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);
+		
+	}
+	
     public static void main(String[] args) {
     	
     	
@@ -59,7 +91,13 @@ public class TestJNILoader {
     	MetaData metadata = new MetaData();
     	metadata.setIndexMap(indexMap);
     	
-    	return;
+    	String queryName = "q5_opt_0threads_2981669";
+    	int numThreads = 4;
+    	initQ5Queries(metadata, queryName, numThreads);
+    	newLoader.runQuery(queryName, AggregationOperator.AGGREGATION_DOUBLE, idx4.getGQFastIndexID());
+    	    	
+    	newLoader.closeLoader();   	
+    	
     	  	
     }
 	

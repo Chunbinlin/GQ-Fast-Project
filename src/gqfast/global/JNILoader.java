@@ -1,5 +1,6 @@
 package gqfast.global;
 
+import gqfast.codeGenerator.AggregationOperator;
 import gqfast.global.Global.Encodings;
 
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ public class JNILoader {
 	public native void cppOpenLoader();
 	public native void cppCloseLoader();
 	public native void cppLoadIndex(String path, int nEnc, int[] colEncs);    
-    public native int[] runQueryAggregateInt(String queryName, int resultArrayGQFastIndexID);
-    public native double[] runQueryAggregateDouble(String queryName, int resultarraGQFastIndexID);
+    public native int[] runQueryAggregateInt(String queryName, int resultArrayGQFastIndexID, int resultCol);
+    public native double[] runQueryAggregateDouble(String queryName, int resultArrayGQFastIndexID, int resultCol);
 	
 	static {
 		System.loadLibrary("gqfast_global_JNILoader");
@@ -94,7 +95,15 @@ public class JNILoader {
 			
 	}
 	
-	
+	public void runQuery(String queryName, int aggregationType, int resultArrayGQFastIndexID, int resultCol) {
+		
+		if (aggregationType == AggregationOperator.AGGREGATION_INT) {
+			runQueryAggregateInt(queryName, resultArrayGQFastIndexID, resultCol);
+		}
+		else if (aggregationType == AggregationOperator.AGGREGATION_DOUBLE) {
+			runQueryAggregateDouble(queryName, resultArrayGQFastIndexID, resultCol);
+		}
+	}
 	
 	
 	
