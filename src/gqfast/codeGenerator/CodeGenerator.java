@@ -1990,7 +1990,7 @@ public class CodeGenerator {
 				int previousGQIndexID = previousJoinOp.getAlias().getAssociatedIndex().getGQFastIndexID();
 				//int previousGQFastIndexID = previousJoinOp.getAlias().getAssociatedIndex().getGQFastIndexID();
 				for (int previousColID : previousJoinOp.getColumnIDs()) {
-					MetaIndex previousIndex = metadata.getIndexList().get(previousGQIndexID);
+					MetaIndex previousIndex = metadata.getIndexMap().get(previousGQIndexID);
 					int colBytes = previousIndex.getColumnEncodedByteSizesList().get(previousColID);
 					mainString += tabString + getElementPrimitive(colBytes) + " ";
 					if (hasThreading) {
@@ -2030,7 +2030,7 @@ public class CodeGenerator {
 				//int previousGQFastIndexID = previousSemiJoinOp.getAlias().getAssociatedIndex().getGQFastIndexID();
 				
 				for (int previousColID : previousSemiJoinOp.getColumnIDs()) {
-					MetaIndex previousIndex = metadata.getIndexList().get(previousGQIndexID);
+					MetaIndex previousIndex = metadata.getIndexMap().get(previousGQIndexID);
 					int colBytes = previousIndex.getColumnEncodedByteSizesList().get(previousColID);
 					mainString += tabString + getElementPrimitive(colBytes) + " ";
 					if (hasThreading) {
