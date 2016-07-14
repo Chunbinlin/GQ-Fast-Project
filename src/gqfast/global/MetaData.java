@@ -18,20 +18,20 @@ public class MetaData {
 	public static final int BYTES_4 = 4;
 	public static final int BYTES_8 = 8;
 	
-	private HashMap<Integer, MetaIndex> indexList;
+	private HashMap<Integer, MetaIndex> indexMap;
 	private List<MetaQuery> queryList;
 	
 	private int currentQueryID;
 	
 	public MetaData() {
-		indexList = new HashMap<Integer, MetaIndex>();
+		indexMap = new HashMap<Integer, MetaIndex>();
 		queryList = new LinkedList<MetaQuery>();
 		currentQueryID = 0;
 	}
 	
-	public void setIndexList(HashMap<Integer, MetaIndex> indexList)
+	public void setIndexMap(HashMap<Integer, MetaIndex> indexList)
 	{
-		this.indexList = indexList;
+		this.indexMap = indexList;
 	}
 
 	public int getCurrentQueryID() {
@@ -42,8 +42,8 @@ public class MetaData {
 		this.currentQueryID = currentQueryID;
 	}
 
-	public HashMap<Integer, MetaIndex> getIndexList() {
-		return indexList;
+	public HashMap<Integer, MetaIndex> getIndexMap() {
+		return indexMap;
 	}
 
 	public List<MetaQuery> getQueryList() {
