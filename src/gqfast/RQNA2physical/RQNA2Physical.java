@@ -16,6 +16,7 @@ import gqfast.logical2RQNA.RelationalAlgebra2RQNA;
 import gqfast.unitTest.TestTree_logical2RQNA;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class RQNA2Physical
@@ -33,7 +34,7 @@ public class RQNA2Physical
         RQNA2Physical rqna2physical = new RQNA2Physical();
         rqna2physical.RQNA2Physical(null,RQNA);
 	}
-	public R2P_Output RQNA2Physical(List<MetaIndex> indexList, TreeNode RQNA)
+	public R2P_Output RQNA2Physical(HashMap<Integer, MetaIndex> indexList, TreeNode RQNA)
 	{
 		R2P_Output output = new R2P_Output();
 		//input of code generator
@@ -45,11 +46,11 @@ public class RQNA2Physical
 		int queryID = 0;
 		String queryName = "Q0"; 
 		int numThreads = 4;
-		int bufferPoolSize = 1000;
+		//int bufferPoolSize = 1000;
 		getRename(RQNA);
 		travel(RQNA);
 		query = new  MetaQuery(queryID, queryName, numThreads,
-				 bufferPoolSize, aliases);
+				 aliases);
 		//add meatQuery into metaData
 		metadata.getQueryList().add(query);
 		//add meatIndex into metaData
