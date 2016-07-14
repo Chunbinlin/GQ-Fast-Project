@@ -28,14 +28,14 @@ public class TestJNILoader {
     	MetaIndex idx1 = newLoader.loadIndex(file1Path, file1Cols, file1Encs);
     	idx1.print();  	
     	
-    	String file2Path = "./gqfast/loader/pubmed/dt1.csv";
+    	String file2Path = "./gqfast/loader/pubmed/dt1_mesh.csv";
     	int file2Cols = 2;
     	Encodings[] file2Encs = {Encodings.Uncompress_Array,Encodings.Uncompress_Array};
     	
     	MetaIndex idx2 = newLoader.loadIndex(file2Path, file2Cols, file2Encs);
     	idx2.print();  	
     	
-    	String file3Path = "./gqfast/loader/pubmed/dt2.csv";
+    	String file3Path = "./gqfast/loader/pubmed/dt2_mesh.csv";
     	int file3Cols = 2;
     	Encodings[] file3Encs = {Encodings.Uncompress_Array,Encodings.Uncompress_Array};
     	
