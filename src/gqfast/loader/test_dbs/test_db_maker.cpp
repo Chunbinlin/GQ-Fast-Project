@@ -6,14 +6,18 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <utility>
 #include <unordered_map>
 
-#define INITIAL_AUTHOR_IDS 1000
+#define INITIAL_AUTHOR_IDS 100
 #define LIMIT_DOCS_PER_TERM 100
 
 #define INITIAL_CONCEPT_IDS 50000
 
 using namespace std;
+
+vector<pair<uint32_t, uint32_t> > da1_table;
+vector<pair<uint32_t, uint32_t> > dt1_table;
 
 vector<uint32_t> author_ids;
 vector<uint32_t> doc_ids;
@@ -25,6 +29,41 @@ vector<uint32_t> concept_ids;
 vector<uint32_t> concept_semtype_ids;
 vector<uint32_t> predication_ids;
 vector<uint32_t> sentence_ids;
+
+void load_table(vector<pair<uint32_t, uint32_t> > & table, string filename)
+{
+    cerr << "Loading table from " << filename << "\n";
+    string line;
+    ifstream myfile(filename);
+
+    uint64_t lines_read_in = 0;
+
+    // skip line 1
+    getline(myfile, line);
+
+    while (getline(myfile,line))
+    {
+        lines_read_in++;
+        stringstream lineStream(line);
+        string cell;
+
+        pair<uint32_t, uint32_t> current_pair;
+        getline(lineStream,cell,',');
+        current_pair.first =  atoi(cell.c_str());
+        getline(lineStream,cell,',');
+        current_pair.second = atoi(cell.c_str());
+
+        table.push_back(current_pair);
+    }
+
+    myfile.close();
+
+    cerr << "Lines read-in: " << lines_read_in << "\n";
+    cerr << "Table is of size " << table.size();
+
+}
+
+
 
 void count_docs_per_term()
 {
@@ -259,9 +298,10 @@ void get_pubmed_ids()
 
 int main (int argc, char** argv)
 {
-
-    count_docs_per_term();
-    get_pubmed_ids();
+    load_table(da1_table, "../pubmed/da1.csv");
+    load_table(dt1_table, "../pubmed/dt1_mesh.csv");
+    //count_docs_per_term();
+    //get_pubmed_ids();
 
 
     return 0;
