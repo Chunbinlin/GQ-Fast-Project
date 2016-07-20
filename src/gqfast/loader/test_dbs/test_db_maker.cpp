@@ -59,7 +59,7 @@ void load_table(vector<pair<uint32_t, uint32_t> > & table, string filename)
     myfile.close();
 
     cerr << "Lines read-in: " << lines_read_in << "\n";
-    cerr << "Table is of size " << table.size();
+    cerr << "Table is of size " << table.size() << "\n";
 
 }
 
@@ -113,30 +113,22 @@ void count_docs_per_term()
 void get_pubmed_ids()
 {
 
-    string line_da1;
-    ifstream file_da1("../pubmed/da1.csv");
-
     uint32_t author_count = 0;
     uint32_t doc_count = 0;
     uint32_t term_count = 0;
-
-    // skip line 1
-    getline(file_da1, line_da1);
 
     unordered_map<uint32_t, int> author_map;
     unordered_map<uint32_t, int> doc_map;
     unordered_map<uint32_t, int> term_map;
 
     // First read in initial author ids and associated docs
+    vector<pair<uint32_t, uint32_t> >::iterator da_it = da1_table.begin();
+
     while (author_count<INITIAL_AUTHOR_IDS)
     {
+        pair<uint32_t, uint32_t> current_pair = *da_it++;
 
-        getline(file_da1,line_da1);
-        stringstream lineStream(line_da1);
-        string cell;
-
-        getline(lineStream,cell,',');
-        uint32_t current_author =  atoi(cell.c_str());
+        uint32_t current_author = current_pair.first;
 
         if (!author_map[current_author])
         {
@@ -145,8 +137,7 @@ void get_pubmed_ids()
             author_count++;
         }
 
-        getline(lineStream,cell,',');
-        uint32_t current_doc = atoi(cell.c_str());
+        uint32_t current_doc = current_pair.second;
         if (!doc_map[current_doc])
         {
             doc_map[current_doc] = 1;
@@ -154,7 +145,6 @@ void get_pubmed_ids()
             doc_count++;
         }
     }
-    file_da1.close();
 
     cerr << "author_count = " << author_count << "\n";
     cerr << "doc_count = " << doc_count << "\n";
@@ -168,75 +158,16 @@ void get_pubmed_ids()
         cerr << "\nPass "  << ++passes << "\n\n";
 
         old_author_count = author_count;
-
-        cerr << "Reading DT1...\n";
-        string line_dt1;
-        ifstream file_dt1("../pubmed/dt1_mesh.csv");
-
-        // Skip line 1
-        getline(file_dt1, line_dt1);
-
-        uint32_t lines_read_in = 0;
-        int percent = 0;
-
-
-        while (getline(file_dt1, line_dt1))
+        cerr << "Scanning DA1...\n";
+        vector<pair<uint32_t, uint32_t> >::iterator da1_it = da1_table.begin();
+        for (; da1_it != da1_table.end(); da1_it++)
         {
-            lines_read_in++;
-            if (lines_read_in % 20709200 == 0)
+            pair<uint32_t, uint32_t> current_pair = *da1_it;
+            uint32_t current_author = current_pair.first;
+
+            if (author_map[current_author])
             {
-                percent += 10;
-                cerr << percent << "% complete\n";
-            }
-            stringstream lineStream(line_dt1);
-            string cell;
-
-            getline(lineStream,cell,',');
-            uint32_t current_doc =  atoi(cell.c_str());
-
-            if (doc_map[current_doc])
-            {
-                getline(lineStream,cell,',');
-                uint32_t current_term = atoi(cell.c_str());
-                if (!term_map[current_term] && docs_per_term[current_term]<=LIMIT_DOCS_PER_TERM)
-                {
-                    term_map[current_term] = 1;
-                    term_ids.push_back(current_term);
-                    term_count++;
-                }
-            }
-        }
-        file_dt1.close();
-        cerr << "term_count = " << term_count << "\n";
-
-        cerr << "Reading DT2...\n";
-        string line_dt2;
-        ifstream file_dt2("../pubmed/dt2_mesh.csv");
-
-        // Skip line 1
-        getline(file_dt2, line_dt2);
-
-        lines_read_in = 0;
-        percent = 0;
-
-        while (getline(file_dt2, line_dt2))
-        {
-            lines_read_in++;
-            if (lines_read_in % 20709200 == 0)
-            {
-                percent += 10;
-                cerr << percent << "% complete\n";
-            }
-            stringstream lineStream(line_dt2);
-            string cell;
-
-            getline(lineStream,cell,',');
-            uint32_t current_term =  atoi(cell.c_str());
-
-            if (term_map[current_term])
-            {
-                getline(lineStream,cell,',');
-                uint32_t current_doc = atoi(cell.c_str());
+                uint32_t current_doc = current_pair.second;
                 if (!doc_map[current_doc])
                 {
                     doc_map[current_doc] = 1;
@@ -245,37 +176,61 @@ void get_pubmed_ids()
                 }
             }
         }
-        file_dt2.close();
+
         cerr << "doc_count = " << doc_count << "\n";
 
-        cerr << "Reading DA2...\n";
-        string line_da2;
-        ifstream file_da2("../pubmed/da2.csv");
+        cerr << "Scanning DT1...\n";
 
-        // Skip line 1
-        getline(file_da2, line_da2);
-
-        lines_read_in = 0;
-        percent = 0;
-
-        while (getline(file_da2, line_da2))
+        vector<pair<uint32_t, uint32_t> >::iterator dt1_it = dt1_table.begin();
+        for (; dt1_it != dt1_table.end(); dt1_it++)
         {
-            lines_read_in++;
-            if (lines_read_in % 6131500 == 0)
-            {
-                percent += 10;
-                cerr << percent << "% complete\n";
-            }
-            stringstream lineStream(line_da2);
-            string cell;
-
-            getline(lineStream,cell,',');
-            uint32_t current_doc =  atoi(cell.c_str());
+            pair<uint32_t, uint32_t> current_pair = *dt1_it;
+            uint32_t current_doc = current_pair.first;
 
             if (doc_map[current_doc])
             {
-                getline(lineStream,cell,',');
-                uint32_t current_author = atoi(cell.c_str());
+                uint32_t current_term = current_pair.second;
+                if (!term_map[current_term] && docs_per_term[current_term]<=LIMIT_DOCS_PER_TERM)
+                {
+                    term_map[current_term] = 1;
+                    term_ids.push_back(current_term);
+                    term_count++;
+                }
+            }
+        }
+
+        cerr << "term_count = " << term_count << "\n";
+
+        cerr << "Scanning DT2...\n";
+        vector<pair<uint32_t, uint32_t> >::iterator dt2_it = dt1_table.begin();
+        for (; dt2_it != dt1_table.end(); dt2_it++)
+        {
+            pair<uint32_t, uint32_t> current_pair = *dt2_it;
+            uint32_t current_term =  current_pair.second;
+
+            if (term_map[current_term])
+            {
+                uint32_t current_doc = current_pair.first;
+                if (!doc_map[current_doc])
+                {
+                    doc_map[current_doc] = 1;
+                    doc_ids.push_back(current_doc);
+                    doc_count++;
+                }
+            }
+        }
+        cerr << "doc_count = " << doc_count << "\n";
+
+        cerr << "Scanning DA2...\n";
+        vector<pair<uint32_t, uint32_t> >::iterator da2_it = da1_table.begin();
+        for (; da2_it != da1_table.end(); da2_it++)
+        {
+           pair<uint32_t, uint32_t> current_pair = *da2_it;
+           uint32_t current_doc =  current_pair.second;
+
+           if (doc_map[current_doc])
+           {
+                uint32_t current_author = current_pair.first;
                 if (!author_map[current_author])
                 {
                     author_map[current_author] = 1;
@@ -284,9 +239,7 @@ void get_pubmed_ids()
                 }
             }
         }
-        file_da2.close();
         cerr << "New author_count = " << author_count << "\n";
-
     }
 
     cerr << "\nCompleted read-in " << passes << " passes...\n";
