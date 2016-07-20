@@ -31,7 +31,7 @@ void count_docs_per_term()
 
     cerr << "Reading DT2...\n";
     string line_dt2;
-    ifstream file_dt2("./pubmed/dt2_mesh.csv");
+    ifstream file_dt2("../pubmed/dt2_mesh.csv");
 
     // Skip line 1
     getline(file_dt2, line_dt2);
@@ -75,7 +75,7 @@ void get_pubmed_ids()
 {
 
     string line_da1;
-    ifstream file_da1("./pubmed/da1.csv");
+    ifstream file_da1("../pubmed/da1.csv");
 
     uint32_t author_count = 0;
     uint32_t doc_count = 0;
@@ -132,7 +132,7 @@ void get_pubmed_ids()
 
         cerr << "Reading DT1...\n";
         string line_dt1;
-        ifstream file_dt1("./pubmed/dt1_mesh.csv");
+        ifstream file_dt1("../pubmed/dt1_mesh.csv");
 
         // Skip line 1
         getline(file_dt1, line_dt1);
@@ -172,7 +172,7 @@ void get_pubmed_ids()
 
         cerr << "Reading DT2...\n";
         string line_dt2;
-        ifstream file_dt2("./pubmed/dt2_mesh.csv");
+        ifstream file_dt2("../pubmed/dt2_mesh.csv");
 
         // Skip line 1
         getline(file_dt2, line_dt2);
@@ -211,7 +211,7 @@ void get_pubmed_ids()
 
         cerr << "Reading DA2...\n";
         string line_da2;
-        ifstream file_da2("./pubmed/da2.csv");
+        ifstream file_da2("../pubmed/da2.csv");
 
         // Skip line 1
         getline(file_da2, line_da2);
