@@ -253,8 +253,8 @@ int main (int argc, char** argv)
 {
     load_table(da1_table, "../pubmed/da1.csv");
     load_table(dt1_table, "../pubmed/dt1_mesh.csv");
-    //count_docs_per_term();
-    //get_pubmed_ids();
+    count_docs_per_term();
+    get_pubmed_ids();
 
 
     return 0;
