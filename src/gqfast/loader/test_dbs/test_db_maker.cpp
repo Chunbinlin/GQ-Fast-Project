@@ -10,7 +10,7 @@
 #include <utility>
 #include <unordered_map>
 
-#define INITIAL_AUTHOR_IDS 200000
+#define INITIAL_AUTHOR_IDS 100000
 #define LIMIT_DOCS_PER_TERM 100
 #define MAX_FAN_OUT 250
 #define INITIAL_CONCEPT_IDS 50000
@@ -573,7 +573,7 @@ void get_pubmed_ids()
 int main (int argc, char** argv)
 {
     load_table(da1_table, "../pubmed/da1.csv");
-    load_table(dt1_table, "../pubmed/dt1_tag.csv");
+    load_table(dt1_table, "../pubmed/dt1_mesh.csv");
 
     get_pubmed_ids();
     map_new_ids(author_ids, new_author_id_mapping);
