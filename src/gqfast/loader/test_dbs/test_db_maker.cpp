@@ -11,7 +11,7 @@
 
 #define INITIAL_AUTHOR_IDS 100
 #define LIMIT_DOCS_PER_TERM 100
-
+#define MAX_FAN_OUT 250
 #define INITIAL_CONCEPT_IDS 50000
 
 using namespace std;
@@ -160,6 +160,7 @@ void get_pubmed_ids()
         old_author_count = author_count;
         cerr << "Scanning DA1...\n";
         vector<pair<uint32_t, uint32_t> >::iterator da1_it = da1_table.begin();
+        int new_ids = 0;
         for (; da1_it != da1_table.end(); da1_it++)
         {
             pair<uint32_t, uint32_t> current_pair = *da1_it;
@@ -168,8 +169,9 @@ void get_pubmed_ids()
             if (author_map[current_author])
             {
                 uint32_t current_doc = current_pair.second;
-                if (!doc_map[current_doc])
+                if (!doc_map[current_doc] && new_ids < MAX_FAN_OUT)
                 {
+                    new_ids++;
                     doc_map[current_doc] = 1;
                     doc_ids.push_back(current_doc);
                     doc_count++;
@@ -182,6 +184,7 @@ void get_pubmed_ids()
         cerr << "Scanning DT1...\n";
 
         vector<pair<uint32_t, uint32_t> >::iterator dt1_it = dt1_table.begin();
+        new_ids = 0;
         for (; dt1_it != dt1_table.end(); dt1_it++)
         {
             pair<uint32_t, uint32_t> current_pair = *dt1_it;
@@ -190,8 +193,9 @@ void get_pubmed_ids()
             if (doc_map[current_doc])
             {
                 uint32_t current_term = current_pair.second;
-                if (!term_map[current_term] && docs_per_term[current_term]<=LIMIT_DOCS_PER_TERM)
+                if (!term_map[current_term] && docs_per_term[current_term]<=LIMIT_DOCS_PER_TERM && new_ids < MAX_FAN_OUT)
                 {
+                    new_ids++;
                     term_map[current_term] = 1;
                     term_ids.push_back(current_term);
                     term_count++;
@@ -203,6 +207,7 @@ void get_pubmed_ids()
 
         cerr << "Scanning DT2...\n";
         vector<pair<uint32_t, uint32_t> >::iterator dt2_it = dt1_table.begin();
+        new_ids = 0;
         for (; dt2_it != dt1_table.end(); dt2_it++)
         {
             pair<uint32_t, uint32_t> current_pair = *dt2_it;
@@ -211,8 +216,9 @@ void get_pubmed_ids()
             if (term_map[current_term])
             {
                 uint32_t current_doc = current_pair.first;
-                if (!doc_map[current_doc])
+                if (!doc_map[current_doc] && new_ids <MAX_FAN_OUT)
                 {
+                    new_ids++;
                     doc_map[current_doc] = 1;
                     doc_ids.push_back(current_doc);
                     doc_count++;
@@ -223,6 +229,7 @@ void get_pubmed_ids()
 
         cerr << "Scanning DA2...\n";
         vector<pair<uint32_t, uint32_t> >::iterator da2_it = da1_table.begin();
+        new_ids = 0;
         for (; da2_it != da1_table.end(); da2_it++)
         {
            pair<uint32_t, uint32_t> current_pair = *da2_it;
@@ -231,8 +238,9 @@ void get_pubmed_ids()
            if (doc_map[current_doc])
            {
                 uint32_t current_author = current_pair.first;
-                if (!author_map[current_author])
+                if (!author_map[current_author] && new_ids < MAX_FAN_OUT)
                 {
+                    new_ids++;
                     author_map[current_author] = 1;
                     author_ids.push_back(current_author);
                     author_count++;
@@ -242,7 +250,7 @@ void get_pubmed_ids()
         cerr << "New author_count = " << author_count << "\n";
     }
 
-    cerr << "\nCompleted read-in " << passes << " passes...\n";
+    cerr << "\nCompleted read in " << passes << " passes...\n";
     cerr << "Final author count = " << author_count << "\n";
     cerr << "Final doc count = " << doc_count << "\n";
     cerr << "Final term count = " << term_count << "\n";
