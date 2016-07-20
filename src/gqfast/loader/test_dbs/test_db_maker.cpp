@@ -5,11 +5,12 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <utility>
 #include <unordered_map>
 
-#define INITIAL_AUTHOR_IDS 100
+#define INITIAL_AUTHOR_IDS 200000
 #define LIMIT_DOCS_PER_TERM 100
 #define MAX_FAN_OUT 250
 #define INITIAL_CONCEPT_IDS 50000
@@ -19,16 +20,16 @@ using namespace std;
 vector<pair<uint32_t, uint32_t> > da1_table;
 vector<pair<uint32_t, uint32_t> > dt1_table;
 
-vector<uint32_t> author_ids;
-vector<uint32_t> doc_ids;
-vector<uint32_t> term_ids;
+set<uint32_t> author_ids;
+set<uint32_t> doc_ids;
+set<uint32_t> term_ids;
 
-unordered_map <uint32_t, int> docs_per_term;
+//unordered_map <uint32_t, int> docs_per_term;
 
-vector<uint32_t> concept_ids;
-vector<uint32_t> concept_semtype_ids;
-vector<uint32_t> predication_ids;
-vector<uint32_t> sentence_ids;
+set<uint32_t> concept_ids;
+set<uint32_t> concept_semtype_ids;
+set<uint32_t> predication_ids;
+set<uint32_t> sentence_ids;
 
 void load_table(vector<pair<uint32_t, uint32_t> > & table, string filename)
 {
@@ -64,7 +65,7 @@ void load_table(vector<pair<uint32_t, uint32_t> > & table, string filename)
 }
 
 
-
+/*
 void count_docs_per_term()
 {
 
@@ -107,9 +108,83 @@ void count_docs_per_term()
 
 
 }
+*/
+
+void get_pubmed_ids()
+{
+    // First read in initial author ids and associated docs
+    vector<pair<uint32_t, uint32_t> >::iterator da_it = da1_table.begin();
+
+    while (author_ids.size() <INITIAL_AUTHOR_IDS)
+    {
+        pair<uint32_t, uint32_t> current_pair = *da_it++;
+
+        uint32_t current_author = current_pair.first;
+        author_ids.emplace(current_author);
+        uint32_t current_doc = current_pair.second;
+        doc_ids.emplace(current_doc);
+
+
+    }
+
+    cerr << "author_count = " << author_ids.size() << "\n";
+    cerr << "doc_count = " << doc_ids.size() << "\n";
+
+    // Find associated terms
+    cerr << "Scanning DT1...\n";
+
+    for (auto dt1_it = dt1_table.begin(); dt1_it != dt1_table.end(); dt1_it++)
+    {
+        pair<uint32_t, uint32_t> current_pair = *dt1_it;
+        uint32_t current_doc = current_pair.first;
+
+        if (doc_ids.find(current_doc) != doc_ids.end())
+        {
+            uint32_t current_term = current_pair.second;
+            term_ids.emplace(current_term);
+        }
+    }
+
+    cerr << "term_count = " << term_ids.size() << "\n";
+
+    // Prune term set
+    unordered_map<uint32_t, int> docs_per_term;
+
+    cerr << "Scanning DT2...\n";
+
+    for (auto dt2_it = dt1_table.begin(); dt2_it != dt1_table.end(); dt2_it++)
+    {
+        pair<uint32_t, uint32_t> current_pair = *dt2_it;
+        uint32_t current_term = current_pair.second;
+
+        if (term_ids.find(current_term) != term_ids.end())
+        {
+            uint32_t current_doc = current_pair.first;
+            if (doc_ids.find(current_doc) != doc_ids.end())
+            {
+                docs_per_term[current_term]++;
+            }
+        }
+    }
+
+    for (auto term_it = docs_per_term.begin(); term_it != docs_per_term.end(); term_it++)
+    {
+        uint32_t current_term = term_it->first;
+        int current_doc_count = term_it->second;
+
+        if (current_doc_count < 2)
+        {
+            term_ids.erase(current_term);
+        }
+    }
+
+    cerr << "pruned term_count = " << term_ids.size() << "\n";
+
+}
 
 
 
+/*
 void get_pubmed_ids()
 {
 
@@ -148,6 +223,11 @@ void get_pubmed_ids()
 
     cerr << "author_count = " << author_count << "\n";
     cerr << "doc_count = " << doc_count << "\n";
+
+
+
+
+
 
     uint32_t old_author_count = 0;
 
@@ -250,18 +330,18 @@ void get_pubmed_ids()
         cerr << "New author_count = " << author_count << "\n";
     }
 
+
     cerr << "\nCompleted read in " << passes << " passes...\n";
     cerr << "Final author count = " << author_count << "\n";
     cerr << "Final doc count = " << doc_count << "\n";
     cerr << "Final term count = " << term_count << "\n";
-
-}
+}*/
 
 int main (int argc, char** argv)
 {
     load_table(da1_table, "../pubmed/da1.csv");
     load_table(dt1_table, "../pubmed/dt1_mesh.csv");
-    count_docs_per_term();
+
     get_pubmed_ids();
 
 
