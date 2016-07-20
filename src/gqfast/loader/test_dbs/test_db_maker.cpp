@@ -18,7 +18,7 @@
 using namespace std;
 
 vector<pair<uint32_t, uint32_t> > da1_table;
-vector<pair<uint32_t, uint32_t> > dt1_table;
+vector<pair<pair<uint32_t, uint32_t>, int> > dt1_table;
 
 set<uint32_t> author_ids;
 set<uint32_t> doc_ids;
@@ -64,6 +64,45 @@ void load_table(vector<pair<uint32_t, uint32_t> > & table, string filename)
 
 }
 
+void load_table(vector<pair<pair<uint32_t, uint32_t>, int> > & table, string filename)
+{
+
+cerr << "Loading table from " << filename << "\n";
+    string line;
+    ifstream myfile(filename);
+
+    uint64_t lines_read_in = 0;
+
+    // skip line 1
+    getline(myfile, line);
+
+    while (getline(myfile,line))
+    {
+        lines_read_in++;
+        stringstream lineStream(line);
+        string cell;
+
+        pair<uint32_t, uint32_t> current_pair;
+
+        getline(lineStream,cell,',');
+        current_pair.first =  atoi(cell.c_str());
+        getline(lineStream,cell,',');
+        current_pair.second = atoi(cell.c_str());
+        getline(lineStream,cell,',');
+        int third = atoi(cell.c_str());
+
+        pair<pair<uint32_t, uint32_t>, int> current_triple;
+        current_triple.first = current_pair;
+        current_triple.second = third;
+        table.push_back(current_triple);
+    }
+
+    myfile.close();
+
+    cerr << "Lines read-in: " << lines_read_in << "\n";
+    cerr << "Table is of size " << table.size() << "\n";
+
+}
 
 /*
 void count_docs_per_term()
@@ -135,7 +174,7 @@ void get_pubmed_ids()
 
     for (auto dt1_it = dt1_table.begin(); dt1_it != dt1_table.end(); dt1_it++)
     {
-        pair<uint32_t, uint32_t> current_pair = *dt1_it;
+        pair<uint32_t, uint32_t> current_pair = dt1_it->first;
         uint32_t current_doc = current_pair.first;
 
         if (doc_ids.find(current_doc) != doc_ids.end())
@@ -154,7 +193,7 @@ void get_pubmed_ids()
 
     for (auto dt2_it = dt1_table.begin(); dt2_it != dt1_table.end(); dt2_it++)
     {
-        pair<uint32_t, uint32_t> current_pair = *dt2_it;
+        pair<uint32_t, uint32_t> current_pair = dt2_it->first;
         uint32_t current_term = current_pair.second;
 
         if (term_ids.find(current_term) != term_ids.end())
@@ -340,7 +379,7 @@ void get_pubmed_ids()
 int main (int argc, char** argv)
 {
     load_table(da1_table, "../pubmed/da1.csv");
-    load_table(dt1_table, "../pubmed/dt1_mesh.csv");
+    load_table(dt1_table, "../pubmed/dt1_tag.csv");
 
     get_pubmed_ids();
 
