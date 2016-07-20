@@ -24,6 +24,10 @@ set<uint32_t> author_ids;
 set<uint32_t> doc_ids;
 set<uint32_t> term_ids;
 
+unordered_map<uint32_t, int> new_author_id_mapping;
+unordered_map<uint32_t, int> new_doc_id_mapping;
+unordered_map<uint32_t, int> new_term_id_mapping;
+
 //unordered_map <uint32_t, int> docs_per_term;
 
 set<uint32_t> concept_ids;
@@ -222,6 +226,196 @@ void get_pubmed_ids()
 }
 
 
+void map_new_ids(set<uint32_t> & ids, unordered_map<uint32_t, int> & new_id_map)
+{
+    int curr_id = 1;
+    for (auto it = ids.begin(); it != ids.end(); it++)
+    {
+        new_id_map[*it] = curr_id++;
+    }
+
+}
+
+bool tripleCompare(const pair<pair<uint32_t,uint32_t>,int>& firstElem, const pair<pair<uint32_t,uint32_t>,int> & secondElem) {
+    if (firstElem.first.first == secondElem.first.first) {
+        return firstElem.first.second < secondElem.first.second;
+    }
+
+    return firstElem.first.first < secondElem.first.first;
+
+}
+
+
+bool pairCompare(const pair<uint32_t,uint32_t>& firstElem, const pair<uint32_t,uint32_t>& secondElem) {
+    if (firstElem.first == secondElem.first) {
+        return firstElem.second < secondElem.second;
+    }
+
+    return firstElem.first < secondElem.first;
+
+}
+
+void generate_test_pubmed()
+{
+
+    cerr << "Creating test_da tables\n";
+
+    vector<pair<uint32_t, uint32_t> > new_da1_table;
+    vector<pair<uint32_t, uint32_t> > new_da2_table;
+
+    for (auto da1_it = da1_table.begin(); da1_it != da1_table.end(); da1_it++)
+    {
+        uint32_t current_author = da1_it->first;
+        uint32_t current_doc = da1_it->second;
+
+        if (new_author_id_mapping[current_author] && new_doc_id_mapping[current_doc])
+        {
+            pair<uint32_t, uint32_t> current_da1_pair;
+            current_da1_pair.first = new_author_id_mapping[current_author];
+            current_da1_pair.second = new_doc_id_mapping[current_doc];
+
+            new_da1_table.push_back(current_da1_pair);
+
+            pair<uint32_t, uint32_t> current_da2_pair;
+            current_da2_pair.first = new_doc_id_mapping[current_doc];
+            current_da2_pair.second = new_author_id_mapping[current_author];
+            new_da2_table.push_back(current_da2_pair);
+        }
+
+    }
+
+    sort(new_da1_table.begin(), new_da1_table.end(), pairCompare);
+    sort(new_da2_table.begin(), new_da2_table.end(), pairCompare);
+
+    cerr << "Writing Test DA1 to file, size = " << new_da1_table.size() << "\n";
+    ofstream my_da1_outfile("./test_da1.csv");
+    my_da1_outfile << new_da1_table.size() << "\n";
+    for (auto new_da1_it = new_da1_table.begin(); new_da1_it != new_da1_table.end(); new_da1_it++)
+    {
+        my_da1_outfile << new_da1_it->first << "," << new_da1_it->second << "\n";
+    }
+
+    my_da1_outfile.close();
+    new_da1_table.clear();
+
+    cerr << "Writing Test DA2 to file, size = " << new_da2_table.size() << "\n";
+    ofstream my_da2_outfile("./test_da2.csv");
+    my_da2_outfile << new_da2_table.size() << "\n";
+    for (auto new_da2_it = new_da2_table.begin(); new_da2_it != new_da2_table.end(); new_da2_it++)
+    {
+        my_da2_outfile << new_da2_it->first << "," << new_da2_it->second << "\n";
+    }
+
+    my_da2_outfile.close();
+    new_da2_table.clear();
+
+
+    cerr << "Creating test_dt tables\n";
+
+    vector<pair<pair<uint32_t, uint32_t>, int> > new_dt1_table;
+    vector<pair<pair<uint32_t, uint32_t>, int> > new_dt2_table;
+
+    for (auto dt1_it = dt1_table.begin(); dt1_it != dt1_table.end(); dt1_it++)
+    {
+        uint32_t current_doc = dt1_it->first.first;
+        uint32_t current_term = dt1_it->first.second;
+        uint32_t current_fre = dt1_it->second;
+
+        if (new_doc_id_mapping[current_doc] && new_term_id_mapping[current_term])
+        {
+            pair<uint32_t, uint32_t> current_dt1_pair;
+            current_dt1_pair.first = new_doc_id_mapping[current_doc];
+            current_dt1_pair.second = new_term_id_mapping[current_term];
+
+            pair<pair<uint32_t, uint32_t>, int> current_dt1_triple;
+            current_dt1_triple.first = current_dt1_pair;
+            current_dt1_triple.second = current_fre;
+
+            new_dt1_table.push_back(current_dt1_triple);
+
+            pair<uint32_t, uint32_t> current_dt2_pair;
+            current_dt2_pair.second = new_doc_id_mapping[current_doc];
+            current_dt2_pair.first = new_term_id_mapping[current_term];
+
+            pair<pair<uint32_t, uint32_t>, int> current_dt2_triple;
+            current_dt2_triple.first = current_dt2_pair;
+            current_dt2_triple.second = current_fre;
+
+            new_dt2_table.push_back(current_dt2_triple);
+        }
+
+    }
+
+    sort(new_dt1_table.begin(), new_dt1_table.end(), tripleCompare);
+    sort(new_dt2_table.begin(), new_dt2_table.end(), tripleCompare);
+
+    cerr << "Writing Test DT1 to file, size = " << new_dt1_table.size() << "\n";
+    ofstream my_dt1_outfile("./test_dt1.csv");
+    my_dt1_outfile << new_dt1_table.size() << "\n";
+    for (auto new_dt1_it = new_dt1_table.begin(); new_dt1_it != new_dt1_table.end(); new_dt1_it++)
+    {
+        my_dt1_outfile << new_dt1_it->first.first << "," << new_dt1_it->first.second << "," << new_dt1_it->second << "\n";
+    }
+
+    my_dt1_outfile.close();
+    new_dt1_table.clear();
+
+    cerr << "Writing Test DT2 to file, size = " << new_dt2_table.size() << "\n";
+    ofstream my_dt2_outfile("./test_dt2.csv");
+    my_dt2_outfile << new_dt2_table.size() << "\n";
+    for (auto new_dt2_it = new_dt2_table.begin(); new_dt2_it != new_dt2_table.end(); new_dt2_it++)
+    {
+         my_dt2_outfile << new_dt2_it->first.first << "," << new_dt2_it->first.second << "," << new_dt2_it->second << "\n";
+    }
+
+    my_dt2_outfile.close();
+    new_dt2_table.clear();
+
+    cerr << "Creating test_dy table\n";
+    vector<pair<int, int> > new_dy_table;
+
+    cerr << "Loading original dy\n";
+    string line;
+    ifstream myfile("../pubmed/dy.csv");
+
+    // skip line 1
+    getline(myfile, line);
+    while (getline(myfile,line))
+    {
+        stringstream lineStream(line);
+        string cell;
+
+        getline(lineStream,cell,',');
+        uint32_t current_doc =  atoi(cell.c_str());
+        if (new_doc_id_mapping[current_doc])
+        {
+            int new_doc_id = new_doc_id_mapping[current_doc];
+            getline(lineStream,cell,',');
+            int current_year = atoi(cell.c_str());
+
+            pair<int, int> current_pair;
+            current_pair.first = new_doc_id;
+            current_pair.second = current_year;
+
+            new_dy_table.push_back(current_pair);
+        }
+
+    }
+    myfile.close();
+
+    cerr << "Writing Test DY to file, size = " << new_dy_table.size() << "\n";
+    ofstream my_dy_outfile("./test_dy.csv");
+    my_dy_outfile << new_dy_table.size() << "\n";
+    for (auto new_dy_it = new_dy_table.begin(); new_dy_it != new_dy_table.end(); new_dy_it++)
+    {
+        my_dy_outfile << new_dy_it->first << "," << new_dy_it->second << "\n";
+    }
+
+    my_dy_outfile.close();
+    new_dy_table.clear();
+
+
+}
 
 /*
 void get_pubmed_ids()
@@ -382,6 +576,11 @@ int main (int argc, char** argv)
     load_table(dt1_table, "../pubmed/dt1_tag.csv");
 
     get_pubmed_ids();
+    map_new_ids(author_ids, new_author_id_mapping);
+    map_new_ids(doc_ids, new_doc_id_mapping);
+    map_new_ids(term_ids, new_term_id_mapping);
+
+    generate_test_pubmed();
 
 
     return 0;
