@@ -17,6 +17,8 @@
 
 using namespace std;
 
+uint32_t debug_var;
+
 vector<pair<uint32_t, uint32_t> > da1_table;
 vector<pair<pair<uint32_t, uint32_t>, int> > dt1_table;
 
@@ -232,6 +234,11 @@ void map_new_ids(set<uint32_t> & ids, unordered_map<uint32_t, int> & new_id_map)
     for (auto it = ids.begin(); it != ids.end(); it++)
     {
         new_id_map[*it] = curr_id++;
+        if (curr_id == 2)
+        {
+            debug_var = *it;
+            cerr << "debug var is = " << debug_var << "\n";
+        }
     }
 
 }
@@ -321,6 +328,13 @@ void generate_test_pubmed()
         uint32_t current_term = dt1_it->first.second;
         uint32_t current_fre = dt1_it->second;
 
+        if (current_term == debug_var)
+        {
+            cerr << "for debug var " << debug_var << ":\n";
+            cerr << "current doc = " << current_doc << "\n";
+            cerr << "new_doc_id_mapping[current_doc] = " << new_doc_id_mapping[current_doc] << "\n";
+            cerr << "new_term_id_mapping[current_term] = " << new_term_id_mapping[current_term] << "\n";
+        }
         if (new_doc_id_mapping[current_doc] && new_term_id_mapping[current_term])
         {
             pair<uint32_t, uint32_t> current_dt1_pair;
