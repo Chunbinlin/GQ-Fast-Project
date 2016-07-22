@@ -24,6 +24,7 @@ vector<pair<pair<uint32_t, uint32_t>, int> > dt1_table;
 
 set<uint32_t> author_ids;
 set<uint32_t> doc_ids;
+set<uint32_t> dt_doc_ids;
 set<uint32_t> term_ids;
 
 unordered_map<uint32_t, int> new_author_id_mapping;
@@ -101,6 +102,9 @@ cerr << "Loading table from " << filename << "\n";
         current_triple.first = current_pair;
         current_triple.second = third;
         table.push_back(current_triple);
+        if (filename == "../pubmed/dt1_mesh.csv" || filename == "../pubmed/dt1_tag.csv") {
+            dt_doc_ids.emplace(current_triple.first.first);
+        }
     }
 
     myfile.close();
@@ -164,10 +168,14 @@ void get_pubmed_ids()
     {
         pair<uint32_t, uint32_t> current_pair = *da_it++;
 
-        uint32_t current_author = current_pair.first;
-        author_ids.emplace(current_author);
         uint32_t current_doc = current_pair.second;
-        doc_ids.emplace(current_doc);
+
+        if (dt_doc_ids.find(current_doc) != dt_doc_ids.end()) {
+
+            uint32_t current_author = current_pair.first;
+            author_ids.emplace(current_author);
+            doc_ids.emplace(current_doc);
+        }
 
 
     }
