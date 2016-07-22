@@ -17,7 +17,7 @@
 
 using namespace std;
 
-uint32_t debug_var;
+//uint32_t debug_var;
 
 vector<pair<uint32_t, uint32_t> > da1_table;
 vector<pair<pair<uint32_t, uint32_t>, int> > dt1_table;
@@ -242,11 +242,11 @@ void map_new_ids(set<uint32_t> & ids, unordered_map<uint32_t, int> & new_id_map)
     for (auto it = ids.begin(); it != ids.end(); it++)
     {
         new_id_map[*it] = curr_id++;
-        if (curr_id == 2)
+        /*if (curr_id == 2)
         {
             debug_var = *it;
             cerr << "debug var is = " << debug_var << "\n";
-        }
+        }*/
     }
 
 }
@@ -336,13 +336,13 @@ void generate_test_pubmed()
         uint32_t current_term = dt1_it->first.second;
         uint32_t current_fre = dt1_it->second;
 
-        if (current_doc == debug_var)
+        /*if (current_doc == debug_var)
         {
             cerr << "for debug var " << debug_var << ":\n";
             cerr << "current term = " << current_term << "\n";
             cerr << "new_doc_id_mapping[current_doc] = " << new_doc_id_mapping[current_doc] << "\n";
             cerr << "new_term_id_mapping[current_term] = " << new_term_id_mapping[current_term] << "\n";
-        }
+        }*/
         if (new_doc_id_mapping[current_doc] && new_term_id_mapping[current_term])
         {
 
@@ -353,9 +353,9 @@ void generate_test_pubmed()
             pair<pair<uint32_t, uint32_t>, int> current_dt1_triple;
             current_dt1_triple.first = current_dt1_pair;
             current_dt1_triple.second = current_fre;
-            if (current_doc == debug_var) {
+            /*if (current_doc == debug_var) {
                 cerr << "adding to table with doc = " << current_doc << "mapped to " << current_dt1_triple.first.first << "\n";
-            }
+            }*/
             new_dt1_table.push_back(current_dt1_triple);
 
             pair<uint32_t, uint32_t> current_dt2_pair;
@@ -604,7 +604,6 @@ int main (int argc, char** argv)
     map_new_ids(author_ids, new_author_id_mapping);
     map_new_ids(doc_ids, new_doc_id_mapping);
     map_new_ids(term_ids, new_term_id_mapping);
-    debug_var = 43;
     generate_test_pubmed();
 
 
