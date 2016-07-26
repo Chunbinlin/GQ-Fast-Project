@@ -17,11 +17,14 @@
 
 using namespace std;
 
+//uint32_t debug_var;
+
 vector<pair<uint32_t, uint32_t> > da1_table;
 vector<pair<pair<uint32_t, uint32_t>, int> > dt1_table;
 
 set<uint32_t> author_ids;
 set<uint32_t> doc_ids;
+set<uint32_t> dt_doc_ids;
 set<uint32_t> term_ids;
 
 unordered_map<uint32_t, int> new_author_id_mapping;
@@ -99,6 +102,9 @@ cerr << "Loading table from " << filename << "\n";
         current_triple.first = current_pair;
         current_triple.second = third;
         table.push_back(current_triple);
+        if (filename == "../pubmed/dt1_mesh.csv" || filename == "../pubmed/dt1_tag.csv") {
+            dt_doc_ids.emplace(current_triple.first.first);
+        }
     }
 
     myfile.close();
@@ -162,10 +168,14 @@ void get_pubmed_ids()
     {
         pair<uint32_t, uint32_t> current_pair = *da_it++;
 
-        uint32_t current_author = current_pair.first;
-        author_ids.emplace(current_author);
         uint32_t current_doc = current_pair.second;
-        doc_ids.emplace(current_doc);
+
+        if (dt_doc_ids.find(current_doc) != dt_doc_ids.end()) {
+
+            uint32_t current_author = current_pair.first;
+            author_ids.emplace(current_author);
+            doc_ids.emplace(current_doc);
+        }
 
 
     }
@@ -232,6 +242,11 @@ void map_new_ids(set<uint32_t> & ids, unordered_map<uint32_t, int> & new_id_map)
     for (auto it = ids.begin(); it != ids.end(); it++)
     {
         new_id_map[*it] = curr_id++;
+        /*if (curr_id == 2)
+        {
+            debug_var = *it;
+            cerr << "debug var is = " << debug_var << "\n";
+        }*/
     }
 
 }
@@ -321,8 +336,16 @@ void generate_test_pubmed()
         uint32_t current_term = dt1_it->first.second;
         uint32_t current_fre = dt1_it->second;
 
+        /*if (current_doc == debug_var)
+        {
+            cerr << "for debug var " << debug_var << ":\n";
+            cerr << "current term = " << current_term << "\n";
+            cerr << "new_doc_id_mapping[current_doc] = " << new_doc_id_mapping[current_doc] << "\n";
+            cerr << "new_term_id_mapping[current_term] = " << new_term_id_mapping[current_term] << "\n";
+        }*/
         if (new_doc_id_mapping[current_doc] && new_term_id_mapping[current_term])
         {
+
             pair<uint32_t, uint32_t> current_dt1_pair;
             current_dt1_pair.first = new_doc_id_mapping[current_doc];
             current_dt1_pair.second = new_term_id_mapping[current_term];
@@ -330,7 +353,9 @@ void generate_test_pubmed()
             pair<pair<uint32_t, uint32_t>, int> current_dt1_triple;
             current_dt1_triple.first = current_dt1_pair;
             current_dt1_triple.second = current_fre;
-
+            /*if (current_doc == debug_var) {
+                cerr << "adding to table with doc = " << current_doc << "mapped to " << current_dt1_triple.first.first << "\n";
+            }*/
             new_dt1_table.push_back(current_dt1_triple);
 
             pair<uint32_t, uint32_t> current_dt2_pair;
@@ -579,7 +604,6 @@ int main (int argc, char** argv)
     map_new_ids(author_ids, new_author_id_mapping);
     map_new_ids(doc_ids, new_doc_id_mapping);
     map_new_ids(term_ids, new_term_id_mapping);
-
     generate_test_pubmed();
 
 
