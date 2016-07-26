@@ -15,6 +15,7 @@
 #include <set>
 #include <sstream>
 #include <fstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -127,10 +128,144 @@ void load_tables(bool tag_flag)
     cerr << "Authors range from " << *it_first << " to " << *it_last << "\n";
 }
 
+bool pairCompare(const pair<uint32_t,uint32_t>& firstElem, const pair<uint32_t,uint32_t>& secondElem) {
+    if (firstElem.first == secondElem.first) {
+        return firstElem.second < secondElem.second;
+    }
+
+    return firstElem.first < secondElem.first;
+
+}
+
+void generate_edge_file()
+{
+
+    cerr << "Generating edge file: building pairs\n";
+
+    vector<pair<uint32_t, uint32_t> > edge_table;
+
+    vector<pair<uint32_t,uint32_t> >::iterator vit = dt1_table.begin();
+    for (; vit != dt1_table.end(); ++vit)
+    {
+        pair<uint32_t, uint32_t> source_pair;
+        source_pair.first = vit->first;
+        source_pair.second = vit->second;
+
+        edge_table.push_back(source_pair);
+
+        pair<uint32_t, uint32_t> dest_pair;
+        dest_pair.first = vit->second;
+        dest_pair.second = vit->first;
+
+        edge_table.push_back(dest_pair);
+
+
+
+    }
+
+    dt1_table.clear();
+    vit = da1_table.begin();
+    for (; vit != da1_table.end(); ++vit)
+    {
+        pair<uint32_t, uint32_t> source_pair;
+        source_pair.first = vit->first;
+        source_pair.second = vit->second;
+
+        edge_table.push_back(source_pair);
+
+        pair<uint32_t, uint32_t> dest_pair;
+        dest_pair.first = vit->second;
+        dest_pair.second = vit->first;
+
+        edge_table.push_back(dest_pair);
+
+    }
+    da1_table.clear();
+
+    cerr << "Pairs loaded, sorting...\n";
+    sort(edge_table.begin(), edge_table.end(), pairCompare);
+
+    cerr << "Sorted. Now writing to file 'edges.csv'\n";
+
+    ofstream my_edges_file("./edges.csv");
+    my_edges_file << edge_table.size() << "\n";
+    for (auto new_it = edge_table.begin(); new_it != edge_table.end(); new_it++)
+    {
+        my_edges_file << new_it->first << "," << new_it->second << "\n";
+    }
+
+    my_edges_file.close();
+
+
+    cerr << "Edge file written\n";
+}
+
+void generate_node_file()
+{
+
+    cerr << "Building node pairs\n";
+    vector<pair<uint32_t, uint32_t> > node_table;
+
+    set<uint32_t>::iterator vit = doc_ids.begin();
+    for (; vit != doc_ids.end(); ++vit)
+    {
+        pair<uint32_t, uint32_t> temp;
+        temp.first = *vit;
+        temp.second = DOC_PROPERTY;
+
+        node_table.push_back(temp);
+    }
+
+    vit = term_ids.begin();
+    for (; vit != term_ids.end(); ++vit)
+    {
+        pair<uint32_t, uint32_t> temp;
+        temp.first = *vit;
+        temp.second = TERM_PROPERTY;
+
+        node_table.push_back(temp);
+    }
+
+    vit = author_ids.begin();
+    for (; vit != author_ids.end(); ++vit)
+    {
+        pair<uint32_t, uint32_t> temp;
+        temp.first = *vit;
+        temp.second = AUTHOR_PROPERTY;
+
+        node_table.push_back(temp);
+    }
+
+    cerr << "Pairs loaded, sorting...\n";
+    sort(node_table.begin(), node_table.end(), pairCompare);
+
+    cerr << "Sorted. Now writing to file 'nodes.csv'\n";
+
+    ofstream my_nodes_file("./nodes.csv");
+    my_nodes_file << node_table.size() << "\n";
+    for (auto new_it = node_table.begin(); new_it != node_table.end(); new_it++)
+    {
+        my_nodes_file << new_it->first << "," << new_it->second << "\n";
+    }
+
+    my_nodes_file.close();
+
+
+    cerr << "Node file written\n";
+
+
+
+}
+
+
+
+
 int main (int argc, char** argv)
 {
     load_tables(false);
 
+    generate_edge_file();
+    generate_node_file();
 
     return 0;
 }
