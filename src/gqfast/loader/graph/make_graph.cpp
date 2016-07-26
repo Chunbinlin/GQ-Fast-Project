@@ -145,7 +145,7 @@ void generate_edge_file()
     vector<pair<uint32_t, uint32_t> > edge_table;
 
     vector<pair<uint32_t,uint32_t> >::iterator vit = dt1_table.begin();
-    for (; vit != dt1_table.end(); ++vit)
+    for (; vit != dt1_table.end();)
     {
         pair<uint32_t, uint32_t> source_pair;
         source_pair.first = vit->first;
@@ -159,13 +159,12 @@ void generate_edge_file()
 
         edge_table.push_back(dest_pair);
 
-
+        vit = dt1_table.erase(vit);
 
     }
 
-    dt1_table.clear();
     vit = da1_table.begin();
-    for (; vit != da1_table.end(); ++vit)
+    for (; vit != da1_table.end(); )
     {
         pair<uint32_t, uint32_t> source_pair;
         source_pair.first = vit->first;
@@ -179,8 +178,8 @@ void generate_edge_file()
 
         edge_table.push_back(dest_pair);
 
+        vit = da1_table.erase(vit);
     }
-    da1_table.clear();
 
     cerr << "Pairs loaded, sorting...\n";
     sort(edge_table.begin(), edge_table.end(), pairCompare);
