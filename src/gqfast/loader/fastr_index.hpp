@@ -42,7 +42,7 @@ public:
 
 
 
-    fastr_index(int ds, int nfd, unsigned int* fdl, int* htas, bool flag) : domain_size(ds), num_fragment_data(nfd),
+    fastr_index(uint64_t ds, int nfd, unsigned int* fdl, int* htas, bool flag) : domain_size(ds), num_fragment_data(nfd),
         fragment_data_length(fdl), huffman_tree_array_size(htas), load_flag(flag)
     {
         index_map = new T*[domain_size+1];
