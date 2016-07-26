@@ -104,10 +104,27 @@ void load_tables(bool tag_flag)
     cerr << "Lines read-in da1: " << lines_read_in << "\n";
     cerr << "DA Table is of size " << da1_table.size() << "\n";
 
-    cerr << "Num docs = " << doc_ids.size();
-    cerr << "Num term = " << term_ids.size();
-    cerr << "Num authors = " << author_ids.size();
+    set<uint32_t>::iterator it_first;
+    set<uint32_t>::iterator it_last;
 
+
+    cerr << "Num docs = " << doc_ids.size() << "\n";
+    it_first = doc_ids.begin();
+    it_last = doc_ids.end();
+    it_last--;
+    cerr << "Docs range from " << *it_first << " to " << *it_last << "\n";
+
+    cerr << "Num term = " << term_ids.size() << "\n";
+    it_first = term_ids.begin();
+    it_last = term_ids.end();
+    it_last--;
+    cerr << "Terms range from " << *it_first << " to " << *it_last << "\n";
+
+    cerr << "Num authors = " << author_ids.size() << "\n";
+    it_first = author_ids.begin();
+    it_last = author_ids.end();
+    it_last--;
+    cerr << "Authors range from " << *it_first << " to " << *it_last << "\n";
 }
 
 int main (int argc, char** argv)
