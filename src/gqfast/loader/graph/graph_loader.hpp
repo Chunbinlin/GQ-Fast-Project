@@ -177,7 +177,7 @@ void process_old_value(vector<T> & keys, vector<uint32_t> & key_counts, uint32_t
 
 template <typename TValue, typename TIndexMap>
 void assign_data_uncompressed(unordered_map<TIndexMap, unsigned char*> & index_map,
-        vector<TValue> & keys, vector<uint32_t> & key_counts, vector<TValue> & column)
+                              vector<TValue> & keys, vector<uint32_t> & key_counts, vector<TValue> & column)
 {
 
     uint64_t column_iterator = 0;
@@ -210,7 +210,7 @@ void assign_data_uncompressed(unordered_map<TIndexMap, unsigned char*> & index_m
 
 template <typename TValue, typename TIndexMap>
 void assign_data_dictionary(unordered_map<TIndexMap, unsigned char*> & index_map, vector<uint32_t> & byte_count,
-        vector<TValue> & keys, vector<uint32_t> & key_counts, vector<TValue> & column,
+                            vector<TValue> & keys, vector<uint32_t> & key_counts, vector<TValue> & column,
                             dictionary* dict)
 {
 
@@ -242,6 +242,7 @@ void assign_data_dictionary(unordered_map<TIndexMap, unsigned char*> & index_map
 
                 unsigned char emplacer = (unsigned char)encoded_val;
                 emplacer = emplacer << bit_pos;
+                // Emplaces value in fragment
                 fragment[byte_pos] |= emplacer;
 
                 if (bits_remaining < empty_bits_in_current_byte)
@@ -272,49 +273,35 @@ void assign_data_dictionary(unordered_map<TIndexMap, unsigned char*> & index_map
 
 }
 
-/*  Function:   assign_data_huffma()
-*   Input:
-*               fragment_column:    The fragment array that will hold the assigned column
-*               index_map:          A 2D array that holds the offsets of all key positions in the fragment_column
-*               map_size:           The number of positions in the index map
-*               curr_col:           The index of the current column in question
-*               keys:               A reference to a vector to contain each unique key in the table
-*               key_counts:         A reference to a vector that contains the number of occurrences of each key
-*               byte_count:         A reference to a vector that holds the size in bytes of each fragment
-*               huffman_column:     A reference to a vector that contains the already encoded fragments that will
-*                                   be assigned to fragment_column
-*   Output:     None
-*   Notes:      Huffman fragments are assigned here
-*/
 template <typename TValue, typename TIndexMap>
-void assign_data_huffman(unsigned char * fragment_column, TIndexMap ** index_map, uint64_t map_size, int curr_col,
-                         vector<TValue> & keys, vector<uint32_t> & key_counts, vector<uint32_t> & byte_count,
+void assign_data_huffman(unordered_map<TIndexMap, unsigned char*> & index_map, vector<TValue> & keys, vector<uint32_t> & key_counts, vector<uint32_t> & byte_count,
                          vector<unsigned char*> & huffman_column)
 {
 
-    TIndexMap fragment_col_ptr = 0;
-    uint32_t key_iterator = 0;
 
-    for (uint64_t i=0; i<map_size; i++)
+    for (uint32_t i=0; i<keys.size(); i++)
     {
-        index_map[i][curr_col] = fragment_col_ptr;
+        TValue curr_key = keys[i];
+        uint32_t fragment_size = key_counts[i];
+        uint32_t bytes_needed_for_key = byte_count[i];
 
-        if (i == keys[key_iterator])
+        unsigned char* fragment = new unsigned char[sizeof(uint32_t) + bytes_needed_for_key];
+
+        // Emplaces size
+        uint32_t* ptr_to_fragment_size = (uint32_t *) &(fragment[0]);
+        *ptr_to_fragment_size = fragment_size;
+
+        unsigned char * encoded_huffman_fragment_ptr = huffman_column[i];
+        uint32_t fragment_it = sizeof(uint32_t);
+        for (int j=0; j<bytes_needed_for_key; j++)
         {
-            uint32_t curr_count = key_counts[key_iterator];
-
-            unsigned char * my_char_ptr = huffman_column[key_iterator];
-
-            for (uint32_t j=0; j<byte_count[key_iterator]; j++)
-            {
-                fragment_column[fragment_col_ptr++] = my_char_ptr[j];
-            }
-
-            key_iterator++;
+            fragment[fragment_it++] = encoded_huffman_fragment_ptr[j];
         }
 
+
+        index_map[curr_key] = fragment;
     }
-    index_map[map_size][curr_col] = fragment_col_ptr;
+
     // Delete previously copied char arrays
     for (int i=0; i<huffman_column.size(); i++)
     {
@@ -323,53 +310,33 @@ void assign_data_huffman(unsigned char * fragment_column, TIndexMap ** index_map
 
 }
 
-/*  Function:   assign_data_bitmap()
-*   Input:
-*               fragment_column:    The fragment array that will hold the assigned column
-*               index_map:          A 2D array that holds the offsets of all key positions in the fragment_column
-*               map_size:           The number of positions in the index map
-*               curr_col:           The index of the current column in question
-*               keys:               A reference to a vector to contain each unique key in the table
-*               key_counts:         A reference to a vector that contains the number of occurrences of each key
-*               byte_count:         A reference to a vector that holds the size in bytes of each fragment
-*               bitmap_column:      A reference to a vector that contains the already encoded fragments that will
-*                                   be assigned to fragment_column
-*   Output:     None
-*   Notes:      Byte-aligned bitmap (BB) fragments are assigned here
-*/
 template <typename TValue, typename TIndexMap>
-void assign_data_bitmap(unsigned char * fragment_column, TIndexMap ** index_map, uint64_t map_size, int curr_col,
-                        vector<TValue> & keys, vector<uint32_t> & key_counts, vector<uint32_t> & byte_count,
-                        vector<unsigned char *> & bitmap_column)
+void assign_data_bitmap(unordered_map<TIndexMap, unsigned char *> index_map, vector<TValue> & keys, vector<uint32_t> & key_counts,
+                        vector<uint32_t> & byte_count, vector<unsigned char *> & bitmap_column)
 {
 
-    TIndexMap fragment_col_ptr = 0;
-    uint32_t key_iterator = 0;
-
-    for (uint64_t i=0; i<map_size; i++)
+    for (uint32_t i=0; i<keys.size(); i++)
     {
+        TValue curr_key = keys[i];
+        uint32_t fragment_size = key_counts[i];
+        uint32_t bytes_needed_for_key = byte_count[i];
 
-        index_map[i][curr_col] = fragment_col_ptr;
+        unsigned char* fragment = new unsigned char[sizeof(uint32_t) + bytes_needed_for_key];
 
+        // Emplaces size
+        uint32_t* ptr_to_fragment_size = (uint32_t *) &(fragment[0]);
+        *ptr_to_fragment_size = fragment_size;
 
-        if (i == keys[key_iterator])
+        unsigned char * encoded_bitmap_fragment_ptr = bitmap_column[i];
+        uint32_t fragment_it = sizeof(uint32_t);
+        for (int j=0; j<bytes_needed_for_key; j++)
         {
-            uint32_t curr_count = key_counts[key_iterator];
-            // Assign values to the fragment column
-            // Simple because encoding has already been achieved
-            unsigned char * my_char_ptr = bitmap_column[key_iterator];
-
-            for (int j=0; j<byte_count[key_iterator]; j++)
-            {
-                fragment_column[fragment_col_ptr] = my_char_ptr[j];
-                fragment_col_ptr++;
-            }
-
-            key_iterator++;
+            fragment[fragment_it++] = encoded_bitmap_fragment_ptr[j];
         }
 
+        index_map[curr_key] = fragment;
     }
-    index_map[map_size][curr_col] = fragment_col_ptr;
+
     // Delete copied unsigned char arrays
     for (int i=0; i<bitmap_column.size(); i++)
     {
@@ -409,7 +376,7 @@ int getByteSize(uint64_t domain)
 *   Notes:      None
 */
 template <typename TValue, typename TIndexMap>
-hash_index<TIndexMap>* buildIndex(string filename, Encodings* encoding, int index_id)
+graph_index<TIndexMap>* buildIndex(string filename, Encodings* encoding, int index_id)
 {
 
     vector<TValue> * input_file = new vector<TValue>[2];    // To store table in memory
@@ -573,49 +540,22 @@ hash_index<TIndexMap>* buildIndex(string filename, Encodings* encoding, int inde
     case ENCODING_HUFFMAN:
     {
 
-        uint32_t sum = 0;
-        for (uint32_t j=0; j<byte_count[i].size(); j++)
-        {
-            sum += byte_count[i][j];
-        }
-        size_of_current_array[i] = sum;
-
-        // Allocate and initialize
-        cerr << "creating fragment data of size = " << size_of_current_array[i] << "\n";
-        fragment_data[i] = new unsigned char[size_of_current_array[i]]();
-
-        assign_data_huffman(fragment_data[i], index_map, domain_size, i, keys, key_counts,
-                            byte_count[i], huffman_column[i]);
+        assign_data_huffman(index_map, keys, key_counts,
+                            byte_count, huffman_column);
+        cerr << "Huffman: index map is of size " << index_map.size() << "\n";
         break;
     }
     case ENCODING_BYTE_ALIGNED_BITMAP:
     {
-        uint32_t sum = 0;
-        int max_bytes = 0;
-        for (uint32_t j=0; j<byte_count[i].size(); j++)
-        {
-            sum += byte_count[i][j];
-            if (max_bytes < byte_count[i][j])
-            {
-                max_bytes = byte_count[i][j];
-            }
-        }
-        cerr << "\nMax size of BB fragment in bytes is " << max_bytes << "\n\n";
-        size_of_current_array[i] = sum + 1;
-
-        // Allocate and initialize
-        cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
-        fragment_data[i] = new unsigned char[size_of_current_array[i]]();
-
-        assign_data_bitmap(fragment_data[i], index_map, domain_size, i, keys, key_counts,
-                           byte_count[i], bitmap_column[i]);
+        assign_data_bitmap(index_map, keys, key_counts, byte_count, bitmap_column);
+        cerr << "BB: index map is of size " << index_map.size() << "\n";
         break;
     }
     }
 
 
 
-// Now the input file is definitely no longer necessary
+    // Now the input file is definitely no longer necessary
     for (int i=1; i<num_encodings+1; i++)
     {
         input_file[i].clear();
@@ -623,17 +563,12 @@ hash_index<TIndexMap>* buildIndex(string filename, Encodings* encoding, int inde
     delete[] input_file;
 
 
-// Sets the index to point to the new map
-    int * encoding_types = new int[num_encodings];
-    for (int i=0; i<num_encodings; i++)
-    {
-        encoding_types[i] = encodings[i]->getEncoding();
-    }
+    // Sets the index to point to the new map
+    int encoding_type = encodings->getEncoding();
 
-    fastr_index<TIndexMap>* new_index = new fastr_index<TIndexMap>(domain_size, num_encodings, size_of_current_array, encoding_types);
+    graph_index<TIndexMap>* new_index = new graph_index<TIndexMap>(domain_size, encoding_type);
     new_index->set_index_map(index_map);
-    new_index->set_data(fragment_data);
-    new_index->set_huffman(huffman_tree_array, huffman_terminator_array, huffman_tree_sizes);
+    new_index->set_huffman(huffman_tree_array, huffman_terminator_array, huffman_tree_size);
     new_index->set_dictionary(dict);
     cerr << "\nCompleted " << total_row_count << " row accesses\n";
     cerr << "Number of fragments = " << keys.size() << "\n";
@@ -643,9 +578,9 @@ hash_index<TIndexMap>* buildIndex(string filename, Encodings* encoding, int inde
     cerr << "Mean fragment size = " << avg_size << "\n";
     cerr << "Standard deviation = " << std_dev << "\n\n";
 
-//Update metadata for encodings
+    //Update metadata for encodings
     metadata.idx_max_fragment_sizes[index_id] = max_size;
-    metadata.idx_num_encodings[index_id] = num_encodings;
+    metadata.idx_num_encodings[index_id] = 1;
     for (int i=1; i<num_encodings+1; i++)
     {
         metadata.idx_domains[index_id].push_back(max_column_ids[i]+1);
@@ -658,36 +593,21 @@ hash_index<TIndexMap>* buildIndex(string filename, Encodings* encoding, int inde
     cerr << "index " << index_id << " has map byte size of " << metadata.idx_map_byte_sizes[index_id] << "\n";
 
 
-// Memory clean-up
-    for (int i=0; i<num_encodings; i++)
+    // Memory clean-up
+    if (encoding_dictionary)
     {
-        huffman_column[i].clear();
-        fragment_to_encode[i].clear();
-        if (huffman_tree[i])
+        for (auto it=encoding_dictionary->begin(); it != encoding_dictionary->end(); ++it)
         {
-            delete huffman_tree[i];
-        }
-        if (encoding_dictionary[i])
-        {
-            for (auto it=encoding_dictionary[i]->begin(); it != encoding_dictionary[i]->end(); ++it)
+            if (it->second.bits)
             {
-                if (it->second.bits)
-                {
-                    delete[] it->second.bits;
-                }
+                delete[] it->second.bits;
             }
-            delete encoding_dictionary[i];
         }
+        delete encoding_dictionary;
     }
 
     delete[] max_column_ids;
     delete[] min_column_ids;
-
-    huffman_tree.clear();
-    encoding_dictionary.clear();
-
-    keys.clear();
-    key_counts.clear();
 
     auto t_cts = std::chrono::high_resolution_clock::now();
     cerr << "Total loading time: "

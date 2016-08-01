@@ -30,7 +30,7 @@ public:
     bool* huffman_terminator_array;
 
 
-    hash_index(int ds, int htas) : domain_size(ds)
+    hash_index(int ds, int fet) : domain_size(ds), fragment_encoding_type(fet)
     {
 
     }
@@ -46,7 +46,7 @@ public:
 
     }
 
-    void set_index_map(unordered_map<T, unsigned char*> new_map)
+    void set_index_map(unordered_map<T, unsigned char*> & new_map)
     {
         index_map = new_map;
     }
