@@ -273,11 +273,11 @@ int main(int argc, char ** argv)
                         cin >> result_data_type;
                         if (result_data_type == 'd')
                         {
-                            handle_input<double>(library_file, result_domain);
+                            //handle_input<double>(library_file, result_domain);
                         }
                         else if (result_data_type == 'i')
                         {
-                            handle_input<int>(library_file, result_domain);
+                            //handle_input<int>(library_file, result_domain);
                         }
                         cout << "\nLoad another file(y/n)?\n";
                         cin >> testing;
