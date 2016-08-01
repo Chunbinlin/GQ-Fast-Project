@@ -256,6 +256,88 @@ chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_p
 }
 
 
+template <typename T>
+chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_pos, int id_to_test, int id2_to_test)
+{
+    chrono::duration<double> timespan;
+    int domain_temp = metadata.idx_domains[r_pos][0];
+    string filename = "./test_cases/" + unformatted_func_name;
+
+    string func_name = unformatted_func_name.substr(0, unformatted_func_name.size()-3);
+
+    int* cold_checks;
+    int* null_checks;
+    int count = 0;
+
+    // load the symbol
+    cout << "Opening " << filename << "\n";
+
+    void* handle = dlopen(filename.c_str(), RTLD_NOW);
+    if (!handle)
+    {
+        cerr << "Cannot open library: " << dlerror() << '\n';
+        return timespan;
+    }
+
+    cout << "Loading symbol query_type...\n";
+    typedef T* (*query_type)(int **, int, int);
+
+    // reset errors
+    dlerror();
+    query_type query = (query_type) dlsym(handle, func_name.c_str());
+    const char *dlsym_error = dlerror();
+    if (dlsym_error)
+    {
+        cerr << "Cannot load symbol 'query_type': " << dlsym_error <<
+             '\n';
+        dlclose(handle);
+        return timespan;
+    }
+
+    T* cold_result = query(&cold_checks, id_to_test, id2_to_test);
+    T* result = query(&null_checks, id_to_test, id2_to_test);
+
+    for (int i=0; i<domain_temp; i++)
+    {
+        if (null_checks[i])
+        {
+            count++;
+            if (count == 1)
+            {
+                benchmark_t2 = chrono::steady_clock::now();
+            }
+        }
+    }
+
+    // close the library
+    cout << "Closing library...\n";
+    dlclose(handle);
+
+    timespan = chrono::duration_cast<chrono::duration<double>>(benchmark_t2 - benchmark_t1);
+    cout << "Query " << filename << " processed in " << timespan.count() << " seconds.\n\n";
+
+
+
+    pair<int, T> * tops_result = top_k(result, 20, domain_temp);
+
+    cout.precision(17);
+    for (int i=0; i<20; i++)
+    {
+        cout << "Position " << tops_result[i].first << ": " << tops_result[i].second << "\n";
+    }
+
+    delete[] tops_result;
+
+
+    delete[] result;
+    delete[] cold_result;
+
+    delete[] cold_checks;
+    delete[] null_checks;
+
+    return timespan;
+
+}
 
 
 #endif
