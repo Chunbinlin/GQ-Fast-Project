@@ -230,7 +230,7 @@ chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_p
     dlclose(handle);
 
     timespan = chrono::duration_cast<chrono::duration<double>>(benchmark_t2 - benchmark_t1);
-    cout << "Query " << filename << " processed in " << time_span.count() << " seconds.\n\n";
+    cout << "Query " << filename << " processed in " << timespan.count() << " seconds.\n\n";
 
 
 
