@@ -5,7 +5,7 @@
 #include "../global_vars.hpp"
 
 #include <atomic>
-#define NUM_THREADS 10
+#define NUM_THREADS 1
 
 using namespace std;
 
