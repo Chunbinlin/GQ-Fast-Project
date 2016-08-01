@@ -1,11 +1,11 @@
-#ifndef q1_array_1threads_
-#define q1_array_1threads_
+#ifndef q1_array_4threads_
+#define q1_array_4threads_
 
 #include "../graph_index.hpp"
 #include "../graph_global_vars.hpp"
 
 #include <atomic>
-#define NUM_THREADS 1
+#define NUM_THREADS 4
 
 using namespace std;
 
@@ -20,13 +20,13 @@ static pthread_spinlock_t* r_spin_locks;
 static uint64_t** term1_col0_buffer;
 static uint64_t** doc2_col0_buffer;
 
-extern inline void q1_array_1threads_term1_col0_decode_UA(uint32_t* term1_col0_ptr, uint32_t & term1_fragment_size) __attribute__((always_inline));
+extern inline void q1_array_4threads_term1_col0_decode_UA(uint32_t* term1_col0_ptr, uint32_t & term1_fragment_size) __attribute__((always_inline));
 
-void* pthread_q1_array_1threads_worker(void* arguments);
+void* pthread_q1_array_4threads_worker(void* arguments);
 
-extern inline void q1_array_1threads_doc2_col0_decode_UA_threaded(int thread_id, uint32_t* doc2_col0_ptr, uint32_t & doc2_fragment_size) __attribute__((always_inline));
+extern inline void q1_array_4threads_doc2_col0_decode_UA_threaded(int thread_id, uint32_t* doc2_col0_ptr, uint32_t & doc2_fragment_size) __attribute__((always_inline));
 
-void q1_array_1threads_term1_col0_decode_UA(uint32_t* term1_col0_ptr, uint32_t & term1_fragment_size) {
+void q1_array_4threads_term1_col0_decode_UA(uint32_t* term1_col0_ptr, uint32_t & term1_fragment_size) {
 
 
     uint32_t buffer_it = 0;
@@ -44,7 +44,7 @@ void q1_array_1threads_term1_col0_decode_UA(uint32_t* term1_col0_ptr, uint32_t &
 	term1_fragment_size = buffer_it;
 }
 
-void* pthread_q1_array_1threads_worker(void* arguments) {
+void* pthread_q1_array_4threads_worker(void* arguments) {
 
 	args_threading* args = (args_threading *) arguments;
 
@@ -62,7 +62,7 @@ void* pthread_q1_array_1threads_worker(void* arguments) {
 			uint32_t* doc2_frag_ptr = reinterpret_cast<uint32_t *>(&(frag_doc2[0]));
 			uint32_t doc2_frag_size = *doc2_frag_ptr;
 			doc2_frag_ptr++;
-			q1_array_1threads_doc2_col0_decode_UA_threaded(thread_id, doc2_frag_ptr, doc2_frag_size);
+			q1_array_4threads_doc2_col0_decode_UA_threaded(thread_id, doc2_frag_ptr, doc2_frag_size);
 
 			for (uint32_t doc2_it = 0; doc2_it < doc2_frag_size; doc2_it++) {
 				uint32_t doc2_col0_element = doc2_col0_buffer[thread_id][doc2_it];
@@ -79,7 +79,7 @@ void* pthread_q1_array_1threads_worker(void* arguments) {
 	return nullptr;
 }
 
-void q1_array_1threads_doc2_col0_decode_UA_threaded(int thread_id, uint32_t* doc2_col0_ptr, uint32_t & doc2_fragment_size) {
+void q1_array_4threads_doc2_col0_decode_UA_threaded(int thread_id, uint32_t* doc2_col0_ptr, uint32_t & doc2_fragment_size) {
 
     uint32_t buffer_it = 0;
 	for (uint32_t i=0; i<doc2_fragment_size; i++) {
@@ -96,7 +96,7 @@ void q1_array_1threads_doc2_col0_decode_UA_threaded(int thread_id, uint32_t* doc
     doc2_fragment_size = buffer_it;
 }
 
-extern "C" int* q1_array_1threads(int** null_checks, int doc1) {
+extern "C" int* q1_array_4threads(int** null_checks, int doc1) {
 
 	benchmark_t1 = chrono::steady_clock::now();
 
@@ -134,7 +134,7 @@ extern "C" int* q1_array_1threads(int** null_checks, int doc1) {
 			uint32_t term1_frag_size = *frag_term1_ptr;
 			frag_term1_ptr++;
 
-			q1_array_1threads_term1_col0_decode_UA(frag_term1_ptr, term1_frag_size);
+			q1_array_4threads_term1_col0_decode_UA(frag_term1_ptr, term1_frag_size);
 
 			uint32_t thread_size = term1_frag_size/NUM_THREADS;
 			uint32_t position = 0;
@@ -148,7 +148,7 @@ extern "C" int* q1_array_1threads(int** null_checks, int doc1) {
 			arguments[NUM_THREADS-1].end = term1_frag_size;
 
 			for (int i=0; i<NUM_THREADS; i++) {
-				pthread_create(&threads[i], NULL, &pthread_q1_array_1threads_worker, (void *) &arguments[i]);
+				pthread_create(&threads[i], NULL, &pthread_q1_array_4threads_worker, (void *) &arguments[i]);
 			}
 
 			for (int i=0; i<NUM_THREADS; i++) {
