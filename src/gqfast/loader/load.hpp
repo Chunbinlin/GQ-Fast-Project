@@ -47,36 +47,36 @@ void pubmed_create_indices(int my_encoding, string dt1, string dt2)
 {
 
 
-    Encodings encoding1("Doc", my_encoding);
-    Encodings first_index_encodings[1] = {encoding1};
+    Encodings* encoding1 = new Encodings("Doc", my_encoding);
+    Encodings* first_index_encodings[1] = {encoding1};
 
     idx[0] = buildIndex<TValue, TIndexMap>("./pubmed/da1.csv", first_index_encodings, 1, 0);
     init_buffer(0);
 
-    Encodings encoding2("Year", my_encoding);
-    Encodings second_index_encodings[1] = {encoding2};
+    Encodings* encoding2 = new Encodings("Year", my_encoding);
+    Encodings* second_index_encodings[1] = {encoding2};
 
     idx[1] = buildIndex<TValue, TIndexMap>("./pubmed/dy.csv", second_index_encodings, 1, 1);
     init_buffer(1);
 
-    Encodings encoding3("Term", my_encoding);
-    Encodings encoding4("Fre",my_encoding);
-    Encodings third_index_encodings[2] = {encoding3, encoding4};
+    Encodings* encoding3 = new Encodings("Term", my_encoding);
+    Encodings* encoding4 = new Encodings("Fre",my_encoding);
+    Encodings* third_index_encodings[2] = {encoding3, encoding4};
 
     idx[2] = buildIndex<TValue, TIndexMap>(dt1, third_index_encodings, 2, 2);
     init_buffer(2);
 
-    Encodings encoding5("Doc", my_encoding);
-    Encodings encoding6("Fre", my_encoding);
+    Encodings* encoding5 = new Encodings("Doc", my_encoding);
+    Encodings* encoding6 = new Encodings("Fre", my_encoding);
 
-    Encodings fourth_index_encodings[2] = {encoding5, encoding6};
+    Encodings* fourth_index_encodings[2] = {encoding5, encoding6};
 
     idx[3] = buildIndex<TValue, TIndexMap>(dt2, fourth_index_encodings, 2, 3);
     init_buffer(3);
 
-    Encodings encoding7("Author", my_encoding);
+    Encodings* encoding7 = new Encodings("Author", my_encoding);
 
-    Encodings fifth_index_encodings[1] = {encoding7};
+    Encodings* fifth_index_encodings[1] = {encoding7};
 
     idx[4] = buildIndex<TValue, TIndexMap>("./pubmed/da2.csv", fifth_index_encodings, 1, 4);
     init_buffer(4);
@@ -86,7 +86,7 @@ void pubmed_create_indices(int my_encoding, string dt1, string dt2)
 template <typename TValue, typename TIndexMap>
 void pubmed_create_optimal_indices(string dt1, string dt2)
 {
-
+/*
 
     Encodings encoding1("Doc", ENCODING_BYTE_ALIGNED_BITMAP);
     Encodings first_index_encodings[1] = {encoding1};
@@ -121,14 +121,14 @@ void pubmed_create_optimal_indices(string dt1, string dt2)
 
     idx[4] = buildIndex<TValue, TIndexMap>("./pubmed/da2.csv", fifth_index_encodings, 1, 4);
     init_buffer(4);
-
+*/
 }
 
 template <typename TValue, typename TIndexMap>
 void semmeddb_create_indices(int encoding_name)
 {
 
-
+/*
     Encodings encoding1("CONCEPT_SEMTYPE_ID", encoding_name);
     Encodings first_index_encodings[1] = {encoding1};
 
@@ -169,14 +169,14 @@ void semmeddb_create_indices(int encoding_name)
 
     idx[5] = buildIndex<TValue, TIndexMap>("./semmeddb/cs2.csv", sixth_index_encodings, 1, 5);
     init_buffer(5);
-
+*/
 }
 
 
 template <typename TValue, typename TIndexMap>
 void semmeddb_create_optimal_indices()
 {
-
+/*
 
     Encodings encoding1("CONCEPT_SEMTYPE_ID", ENCODING_BYTE_ALIGNED_BITMAP);
     Encodings first_index_encodings[1] = {encoding1};
@@ -217,12 +217,14 @@ void semmeddb_create_optimal_indices()
 
     idx[5] = buildIndex<TValue, TIndexMap>("./semmeddb/cs2.csv", sixth_index_encodings, 1, 5);
     init_buffer(5);
+    */
 }
 
 
 template <typename TValue, typename TIndexMap>
 int load_individual_table(int itable, int database, int encoding_name)
 {
+/*
     if (database == SEMMEDDB)
     {
         switch (itable)
@@ -469,7 +471,7 @@ int load_individual_table(int itable, int database, int encoding_name)
         }
 
     }
-
+*/
 }
 
 template <typename TValue, typename TIndexMap>
