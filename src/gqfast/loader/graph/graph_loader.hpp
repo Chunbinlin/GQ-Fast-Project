@@ -187,7 +187,7 @@ void assign_data_uncompressed(unordered_map<TIndexMap, unsigned char*> & index_m
         TValue curr_key = keys[i];
         uint32_t fragment_size = key_counts[i];
 
-        unsigned char* fragment = new unsigned char[sizeof(uint32_t) + fragment_size];
+        unsigned char* fragment = new unsigned char[sizeof(uint32_t) + (fragment_size*sizeof(TValue))];
 
         uint32_t* ptr_to_fragment_size = (uint32_t *) &(fragment[0]);
         *ptr_to_fragment_size = fragment_size;
