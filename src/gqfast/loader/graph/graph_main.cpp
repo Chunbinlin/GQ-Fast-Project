@@ -257,7 +257,7 @@ int main(int argc, char ** argv)
                 if (result)
                 {
                     cout << "\n...Indices have been loaded...\n";
-                    char testing = 'y';
+                    char testing = 'n';
                     while (testing == 'y')
                     {
                         string library_file;
