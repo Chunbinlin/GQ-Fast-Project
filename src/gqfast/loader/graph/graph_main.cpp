@@ -194,7 +194,7 @@ int main(int argc, char ** argv)
         //load_index<uint32_t>(idx, filename);
         cout << "\n...Indices have been loaded...\n";
         cout << "\n...Automated results will be sent to" << outfile_name << "\n";
-        automatic_tests(auto_filename, outfile_name);
+        automatic_tests(auto_filename, outfile_name, true);
     }
     else
     {
