@@ -56,7 +56,7 @@ public class RQNA2Physical
 		//add meatIndex into metaData
 		metadata.setCurrentQueryID(queryID);
 		//add queryID into metaData
-		metadata.setIndexList(indexList);
+		metadata.setIndexMap(indexList);
 		
 		output.setMetaData(metadata);
 		output.setOperators(operators);
