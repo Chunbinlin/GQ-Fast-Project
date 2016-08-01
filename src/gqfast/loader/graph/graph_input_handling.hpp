@@ -94,10 +94,10 @@ void write_result_to_file(T* result, int* null_checks, int domain)
 template <typename T>
 void handle_input(string func_name, int r_pos)
 {
-
+    cerr << "in handle input\n";
     int domain_temp = metadata.idx_domains[r_pos][0];
     string filename = "./test_cases/" + func_name + ".so";
-
+    cerr << "filename = " << filename << "\n";
     int* cold_checks;
     int* null_checks;
     int count = 0;
@@ -173,7 +173,7 @@ void handle_input(string func_name, int r_pos)
 
 
 template <typename T>
-chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_pos)
+chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_pos, int id_to_test)
 {
     chrono::duration<double> timespan;
     int domain_temp = metadata.idx_domains[r_pos][0];
@@ -196,7 +196,7 @@ chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_p
     }
 
     cout << "Loading symbol query_type...\n";
-    typedef T* (*query_type)(int **);
+    typedef T* (*query_type)(int **, int);
 
     // reset errors
     dlerror();
@@ -210,8 +210,8 @@ chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_p
         return timespan;
     }
 
-    T* cold_result = query(&cold_checks);
-    T* result = query(&null_checks);
+    T* cold_result = query(&cold_checks, id_to_test);
+    T* result = query(&null_checks, id_to_test);
 
     for (int i=0; i<domain_temp; i++)
     {
@@ -230,10 +230,10 @@ chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_p
     dlclose(handle);
 
     timespan = chrono::duration_cast<chrono::duration<double>>(benchmark_t2 - benchmark_t1);
-    //cout << "Query " << filename << " processed in " << time_span.count() << " seconds.\n\n";
+    cout << "Query " << filename << " processed in " << timespan.count() << " seconds.\n\n";
 
 
-    /*
+
     pair<int, T> * tops_result = top_k(result, 20, domain_temp);
 
     cout.precision(17);
@@ -243,7 +243,7 @@ chrono::duration<double> auto_handle_input(string unformatted_func_name, int r_p
     }
 
     delete[] tops_result;
-    */
+
 
     delete[] result;
     delete[] cold_result;

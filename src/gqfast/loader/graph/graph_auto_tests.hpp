@@ -26,6 +26,7 @@ void automatic_tests(char* input_file, char* output_file)
         string func_name;
         int r_pos;
         char output_type;
+        int id_to_test;
         int counter = 0;
         chrono::duration<double> time_span;
         chrono::duration<double> time_span2;
@@ -46,6 +47,10 @@ void automatic_tests(char* input_file, char* output_file)
             {
                 output_type = cell[0];
             }
+            else if (counter == 3)
+            {
+                id_to_test = atoi(cell.c_str());
+            }
             counter++;
         }
         if (valid)
@@ -53,14 +58,14 @@ void automatic_tests(char* input_file, char* output_file)
             if (output_type == 'i')
             {
                 cout << "calling int autohandle with func " << func_name << "and rpos " << r_pos << "\n";
-                time_span = auto_handle_input<int>(func_name, r_pos);
+                time_span = auto_handle_input<int>(func_name, r_pos, id_to_test);
             //    time_span2 = auto_handle_input<int>(func_name, r_pos);
             //    time_span3 = auto_handle_input<int>(func_name, r_pos);
             }
             else if (output_type == 'd')
             {
                 cout << "calling double autohandle with func " << func_name << "and rpos " << r_pos << "\n";
-                time_span = auto_handle_input<double>(func_name, r_pos);
+                time_span = auto_handle_input<double>(func_name, r_pos, id_to_test);
             //    time_span2 = auto_handle_input<double>(func_name, r_pos);
             //    time_span3 = auto_handle_input<double>(func_name, r_pos);
             }
