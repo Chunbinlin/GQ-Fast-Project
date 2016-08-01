@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-//#include "graph_auto_tests.hpp"
+#include "graph_auto_tests.hpp"
 #include "graph_load.hpp"
 #include "graph_input_handling.hpp"
 #include "graph_global_vars.hpp"
@@ -190,10 +190,11 @@ int main(int argc, char ** argv)
 
     if (automate == 'y')
     {
+        load<int, uint32_t>(database, compression);
         //load_index<uint32_t>(idx, filename);
-        //cout << "\n...Indices have been loaded...\n";
-        //cout << "\n...Automated results will be sent to 'output.txt'\n";
-        //automatic_tests(auto_filename, outfile_name);
+        cout << "\n...Indices have been loaded...\n";
+        cout << "\n...Automated results will be sent to" << outfile_name << "\n";
+        automatic_tests(auto_filename, outfile_name);
     }
     else
     {
