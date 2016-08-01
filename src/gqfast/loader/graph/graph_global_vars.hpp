@@ -4,7 +4,7 @@
 #include <vector>
 #include <ctime>
 #include <chrono>
-#include "hash_index.hpp"
+#include "graph_index.hpp"
 #include <map>
 #define MAX_INDICES 6
 #define MAX_THREADS 8
@@ -22,7 +22,7 @@ extern chrono::steady_clock::time_point benchmark_t1;
 extern chrono::steady_clock::time_point benchmark_t2;
 
 // Pre-declared index pointers
-extern hash_index<uint32_t>* idx[MAX_INDICES];
+extern graph_index<uint32_t>* idx[MAX_INDICES];
 
 // Metadata
 struct Metadata

@@ -9,7 +9,7 @@
 #include <cmath>
 #include <cstddef>
 
-#include "global_vars.hpp"
+#include "graph_global_vars.hpp"
 
 #define TERMINATING_BYTES 7
 
@@ -556,7 +556,7 @@ graph_index<TIndexMap>* buildIndex(string filename, Encodings* encoding, int ind
 
 
     // Now the input file is definitely no longer necessary
-    for (int i=1; i<num_encodings+1; i++)
+    for (int i=1; i<2; i++)
     {
         input_file[i].clear();
     }
@@ -564,7 +564,7 @@ graph_index<TIndexMap>* buildIndex(string filename, Encodings* encoding, int ind
 
 
     // Sets the index to point to the new map
-    int encoding_type = encodings->getEncoding();
+    int encoding_type = encoding->getEncoding();
 
     graph_index<TIndexMap>* new_index = new graph_index<TIndexMap>(domain_size, encoding_type);
     new_index->set_index_map(index_map);
@@ -581,7 +581,7 @@ graph_index<TIndexMap>* buildIndex(string filename, Encodings* encoding, int ind
     //Update metadata for encodings
     metadata.idx_max_fragment_sizes[index_id] = max_size;
     metadata.idx_num_encodings[index_id] = 1;
-    for (int i=1; i<num_encodings+1; i++)
+    for (int i=1; i<2; i++)
     {
         metadata.idx_domains[index_id].push_back(max_column_ids[i]+1);
         int bytes_size = getByteSize(max_column_ids[i]+1);

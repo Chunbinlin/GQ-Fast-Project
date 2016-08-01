@@ -30,14 +30,14 @@ public:
     bool* huffman_terminator_array;
 
 
-    hash_index(int ds, int fet) : domain_size(ds), fragment_encoding_type(fet)
+    graph_index(int ds, int fet) : domain_size(ds), fragment_encoding_type(fet)
     {
 
     }
 
     // Destructor
 
-    ~fastr_index()
+    ~graph_index()
     {
 
         delete[] huffman_tree_array;
