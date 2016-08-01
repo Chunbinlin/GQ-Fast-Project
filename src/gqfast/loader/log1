@@ -1,0 +1,91 @@
+Loading indices took 168.924 seconds.
+
+...Indices have been loaded...
+
+...Automated results will be sent to 'output.txt'
+test file = queries.txt
+calling int autohandle with func q1_array_0threads_10296795.soand rpos 3
+Opening ./test_cases/q1_array_0threads_10296795.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_0threads_16966392.soand rpos 3
+Opening ./test_cases/q1_array_0threads_16966392.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_0threads_17044542.soand rpos 3
+Opening ./test_cases/q1_array_0threads_17044542.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_0threads_17495979.soand rpos 3
+Opening ./test_cases/q1_array_0threads_17495979.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_0threads_17996791.soand rpos 3
+Opening ./test_cases/q1_array_0threads_17996791.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_0threads_18681952.soand rpos 3
+Opening ./test_cases/q1_array_0threads_18681952.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_0threads_19265035.soand rpos 3
+Opening ./test_cases/q1_array_0threads_19265035.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_1threads_10296795.soand rpos 3
+Opening ./test_cases/q1_array_1threads_10296795.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_1threads_16966392.soand rpos 3
+Opening ./test_cases/q1_array_1threads_16966392.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_1threads_17044542.soand rpos 3
+Opening ./test_cases/q1_array_1threads_17044542.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_1threads_17495979.soand rpos 3
+Opening ./test_cases/q1_array_1threads_17495979.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_1threads_17996791.soand rpos 3
+Opening ./test_cases/q1_array_1threads_17996791.so
+Cannot open library: ./test_cases/q1_array_1threads_17996791.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_1threads_18681952.soand rpos 3
+Opening ./test_cases/q1_array_1threads_18681952.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_1threads_19265035.soand rpos 3
+Opening ./test_cases/q1_array_1threads_19265035.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_2threads_10296795.soand rpos 3
+Opening ./test_cases/q1_array_2threads_10296795.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_2threads_16966392.soand rpos 3
+Opening ./test_cases/q1_array_2threads_16966392.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_2threads_17044542.soand rpos 3
+Opening ./test_cases/q1_array_2threads_17044542.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_2threads_17495979.soand rpos 3
+Opening ./test_cases/q1_array_2threads_17495979.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_2threads_17996791.soand rpos 3
+Opening ./test_cases/q1_array_2threads_17996791.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_2threads_18681952.soand rpos 3
+Opening ./test_cases/q1_array_2threads_18681952.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_2threads_19265035.soand rpos 3
+Opening ./test_cases/q1_array_2threads_19265035.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_4threads_10296795.soand rpos 3
+Opening ./test_cases/q1_array_4threads_10296795.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_4threads_16966392.soand rpos 3
+Opening ./test_cases/q1_array_4threads_16966392.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_4threads_17044542.soand rpos 3
+Opening ./test_cases/q1_array_4threads_17044542.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_4threads_17495979.soand rpos 3
+Opening ./test_cases/q1_array_4threads_17495979.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_4threads_17996791.soand rpos 3
+Opening ./test_cases/q1_array_4threads_17996791.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_4threads_18681952.soand rpos 3
+Opening ./test_cases/q1_array_4threads_18681952.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+calling int autohandle with func q1_array_4threads_19265035.soand rpos 3
+Opening ./test_cases/q1_array_4threads_19265035.so
+Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Deleting globals
