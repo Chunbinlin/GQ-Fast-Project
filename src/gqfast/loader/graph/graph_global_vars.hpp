@@ -9,6 +9,10 @@
 #define MAX_INDICES 6
 #define MAX_THREADS 8
 
+#define DOC_PROPERTY 1
+#define TERM_PROPERTY 2
+#define AUTHOR_PROPERTY 3
+
 #define SIZE_UINT32_T 4
 
 #define ABS(x) ((x)<0 ? -(x) : (x))

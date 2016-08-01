@@ -400,15 +400,6 @@ graph_index<TIndexMap>* buildIndex(string filename, Encodings* encoding, int ind
     init_huffman_structures(input_file, encoding, huffman_tree, huffman_tree_array,
                             huffman_terminator_array, encoding_dictionary, huffman_tree_size);
 
-    if (huffman_terminator_array)
-    {
-        cerr << "huffman term exists\n";
-    }
-    else
-    {
-        cerr << "huffman term array dne\n";
-    }
-
     // domain_size (of first column) will specify the size of the index map
     // +1 because we want to access the index at the last value
     uint64_t domain_size = max_column_ids[0] + 1;

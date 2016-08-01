@@ -57,19 +57,19 @@ void delete_globals()
 
         if (idx[i])
         {
-            cerr << "deleting index " << i << "\n";
+            //cerr << "deleting index " << i << "\n";
             int num_encodings = 1;
             // Free the associated buffer
             for (int j=0; j<num_encodings; j++)
             {
-                cerr << "deleting buffer["<<i<<"]["<<j<<"]\n";
+              //  cerr << "deleting buffer["<<i<<"]["<<j<<"]\n";
                 delete[] buffer_arrays[i][j];
             }
-            cerr << "deleting buffer["<<i<<"]\n";
+           // cerr << "deleting buffer["<<i<<"]\n";
             delete[] buffer_arrays[i];
-            cerr << "deleting index " << i << "\n";
+           // cerr << "deleting index " << i << "\n";
             delete idx[i];
-            cerr << "deleting spinlocks " << i << "\n";
+           // cerr << "deleting spinlocks " << i << "\n";
             delete[] spin_locks[i];
         }
     }
@@ -257,7 +257,7 @@ int main(int argc, char ** argv)
                 if (result)
                 {
                     cout << "\n...Indices have been loaded...\n";
-                    char testing = 'n';
+                    char testing = 'y';
                     while (testing == 'y')
                     {
                         string library_file;
@@ -273,11 +273,11 @@ int main(int argc, char ** argv)
                         cin >> result_data_type;
                         if (result_data_type == 'd')
                         {
-                            //handle_input<double>(library_file, result_domain);
+                            handle_input<double>(library_file, result_domain);
                         }
                         else if (result_data_type == 'i')
                         {
-                            //handle_input<int>(library_file, result_domain);
+                            handle_input<int>(library_file, result_domain);
                         }
                         cout << "\nLoad another file(y/n)?\n";
                         cin >> testing;

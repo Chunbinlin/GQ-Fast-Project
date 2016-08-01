@@ -113,7 +113,7 @@ void handle_input(string func_name, int r_pos)
     }
 
     cout << "Loading symbol query_type...\n";
-    typedef T* (*query_type)(int **);
+    typedef T* (*query_type)(int **, int);
 
     // reset errors
     dlerror();
@@ -127,8 +127,8 @@ void handle_input(string func_name, int r_pos)
         return;
     }
 
-    T* cold_result = query(&cold_checks);
-    T* result = query(&null_checks);
+    T* cold_result = query(&cold_checks, 10296795);
+    T* result = query(&null_checks, 10296795);
 
     for (int i=0; i<domain_temp; i++)
     {
