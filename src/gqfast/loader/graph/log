@@ -1,0 +1,772 @@
+...24489750 lines read in.
+First pass
+
+Second pass
+
+UA: index map is of size 24489750
+
+Completed 24489750 row accesses
+Number of fragments = 24489750
+Min fragment size = 1
+Max fragment size = 1
+ID of Max = 1
+Mean fragment size = 1
+Standard deviation = 0
+
+encoding 1 has byte size in index 0 of 1
+index 0 has map byte size of 4
+Total loading time: 10.7454 sec
+
+...536814334 lines read in.
+First pass
+
+Second pass
+
+UA: index map is of size 24489750
+
+Completed 536814334 row accesses
+Number of fragments = 24489750
+Min fragment size = 1
+Max fragment size = 4660744
+ID of Max = 23326834
+Mean fragment size = 21.92
+Standard deviation = 2867.66
+
+encoding 1 has byte size in index 1 of 4
+index 1 has map byte size of 4
+Total loading time: 19.251 sec
+
+
+...Indices have been loaded...
+
+...Automated results will be sent tooutput.txt
+test file = queries.txt
+calling int autohandle with func q1_array_0threads.so and rpos 1 and id 10296795
+Opening ./test_cases/q1_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads.so processed in 1.98628 seconds.
+
+Position 22397176: 11
+Position 8075058: 11
+Position 20167127: 11
+Position 14347565: 11
+Position 13812347: 11
+Position 19066517: 11
+Position 11382606: 11
+Position 15237882: 11
+Position 17066077: 11
+Position 15016185: 11
+Position 21300271: 11
+Position 23045678: 11
+Position 18149097: 11
+Position 8773067: 11
+Position 10012350: 11
+Position 16015191: 11
+Position 20168367: 11
+Position 17896248: 11
+Position 13813920: 11
+Position 16366571: 11
+calling int autohandle with func q1_array_0threads.so and rpos 1 and id 16966392
+Opening ./test_cases/q1_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads.so processed in 6.3181009320000001 seconds.
+
+Position 16966392: 43
+Position 15106484: 37
+Position 6801948: 35
+Position 11329558: 35
+Position 878472: 35
+Position 21620978: 35
+Position 17144412: 35
+Position 17316945: 35
+Position 9891418: 35
+Position 9595041: 35
+Position 9218094: 35
+Position 14550448: 35
+Position 16296065: 35
+Position 13478760: 35
+Position 8772439: 35
+Position 9999759: 35
+Position 73369: 34
+Position 7102973: 34
+Position 6318218: 33
+Position 11405601: 33
+calling int autohandle with func q1_array_0threads.so and rpos 1 and id 17044542
+Opening ./test_cases/q1_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads.so processed in 3.885925539 seconds.
+
+Position 17044542: 21
+Position 16154311: 19
+Position 15724765: 18
+Position 10483770: 18
+Position 6344103: 18
+Position 8027946: 17
+Position 14102307: 17
+Position 8435909: 17
+Position 10533148: 17
+Position 7962694: 17
+Position 13334627: 17
+Position 22958066: 17
+Position 14030491: 17
+Position 9460297: 17
+Position 14834709: 17
+Position 9415321: 17
+Position 7464645: 17
+Position 241238: 17
+Position 6268798: 17
+Position 10323192: 17
+calling int autohandle with func q1_array_0threads.so and rpos 1 and id 17495979
+Opening ./test_cases/q1_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads.so processed in 4.5192517969999999 seconds.
+
+Position 17495979: 24
+Position 8180400: 23
+Position 20800308: 23
+Position 16062399: 22
+Position 8219731: 22
+Position 14213192: 22
+Position 8458612: 22
+Position 17556298: 22
+Position 18125996: 22
+Position 14513873: 22
+Position 10938815: 22
+Position 18634769: 22
+Position 23070480: 21
+Position 18515028: 21
+Position 19380977: 21
+Position 17827131: 21
+Position 21449031: 21
+Position 10473022: 21
+Position 17933720: 21
+Position 8058758: 21
+calling int autohandle with func q1_array_0threads.so and rpos 1 and id 17996791
+Opening ./test_cases/q1_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads.so processed in 4.8379300010000001 seconds.
+
+Position 17996791: 25
+Position 21992203: 23
+Position 22269430: 23
+Position 18301612: 23
+Position 17355671: 23
+Position 20866835: 22
+Position 22983079: 22
+Position 20390036: 22
+Position 18780797: 22
+Position 10757928: 22
+Position 22306630: 22
+Position 22625823: 22
+Position 21848984: 22
+Position 15854141: 22
+Position 18506962: 22
+Position 18764728: 22
+Position 22329142: 22
+Position 22485378: 22
+Position 15557966: 22
+Position 19608064: 22
+calling int autohandle with func q1_array_0threads.so and rpos 1 and id 18681952
+Opening ./test_cases/q1_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads.so processed in 0.33127911300000001 seconds.
+
+Position 11376464: 1
+Position 11376374: 1
+Position 11376375: 1
+Position 11376377: 1
+Position 11376382: 1
+Position 11376384: 1
+Position 11376399: 1
+Position 11376408: 1
+Position 11376434: 1
+Position 11376444: 1
+Position 11376361: 1
+Position 11376465: 1
+Position 11376474: 1
+Position 11376478: 1
+Position 11376481: 1
+Position 11376517: 1
+Position 11376535: 1
+Position 11376570: 1
+Position 11376589: 1
+Position 11376284: 1
+calling int autohandle with func q1_array_0threads.so and rpos 1 and id 19265035
+Opening ./test_cases/q1_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads.so processed in 3.5679063000000002 seconds.
+
+Position 19265035: 22
+Position 6258928: 17
+Position 10068843: 17
+Position 10616317: 16
+Position 21734461: 16
+Position 17759395: 16
+Position 18077832: 16
+Position 10438388: 16
+Position 19408566: 16
+Position 6639920: 15
+Position 14462254: 15
+Position 19104260: 15
+Position 21560617: 15
+Position 20015468: 15
+Position 14029150: 14
+Position 23080110: 14
+Position 11261156: 14
+Position 17689748: 14
+Position 20847278: 14
+Position 22133845: 14
+calling int autohandle with func q1_array_1threads.so and rpos 1 and id 10296795
+Opening ./test_cases/q1_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads.so processed in 2.0605747089999999 seconds.
+
+Position 22397176: 11
+Position 8075058: 11
+Position 20167127: 11
+Position 14347565: 11
+Position 13812347: 11
+Position 19066517: 11
+Position 11382606: 11
+Position 15237882: 11
+Position 17066077: 11
+Position 15016185: 11
+Position 21300271: 11
+Position 23045678: 11
+Position 18149097: 11
+Position 8773067: 11
+Position 10012350: 11
+Position 16015191: 11
+Position 20168367: 11
+Position 17896248: 11
+Position 13813920: 11
+Position 16366571: 11
+calling int autohandle with func q1_array_1threads.so and rpos 1 and id 16966392
+Opening ./test_cases/q1_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads.so processed in 6.5306424339999998 seconds.
+
+Position 16966392: 43
+Position 15106484: 37
+Position 6801948: 35
+Position 11329558: 35
+Position 878472: 35
+Position 21620978: 35
+Position 17144412: 35
+Position 17316945: 35
+Position 9891418: 35
+Position 9595041: 35
+Position 9218094: 35
+Position 14550448: 35
+Position 16296065: 35
+Position 13478760: 35
+Position 8772439: 35
+Position 9999759: 35
+Position 73369: 34
+Position 7102973: 34
+Position 6318218: 33
+Position 11405601: 33
+calling int autohandle with func q1_array_1threads.so and rpos 1 and id 17044542
+Opening ./test_cases/q1_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads.so processed in 4.034295706 seconds.
+
+Position 17044542: 21
+Position 16154311: 19
+Position 15724765: 18
+Position 10483770: 18
+Position 6344103: 18
+Position 8027946: 17
+Position 14102307: 17
+Position 8435909: 17
+Position 10533148: 17
+Position 7962694: 17
+Position 13334627: 17
+Position 22958066: 17
+Position 14030491: 17
+Position 9460297: 17
+Position 14834709: 17
+Position 9415321: 17
+Position 7464645: 17
+Position 241238: 17
+Position 6268798: 17
+Position 10323192: 17
+calling int autohandle with func q1_array_1threads.so and rpos 1 and id 17495979
+Opening ./test_cases/q1_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads.so processed in 4.6831528819999999 seconds.
+
+Position 17495979: 24
+Position 8180400: 23
+Position 20800308: 23
+Position 16062399: 22
+Position 8219731: 22
+Position 14213192: 22
+Position 8458612: 22
+Position 17556298: 22
+Position 18125996: 22
+Position 14513873: 22
+Position 10938815: 22
+Position 18634769: 22
+Position 23070480: 21
+Position 18515028: 21
+Position 19380977: 21
+Position 17827131: 21
+Position 21449031: 21
+Position 10473022: 21
+Position 17933720: 21
+Position 8058758: 21
+calling int autohandle with func q1_array_1threads.so and rpos 1 and id 17966791
+Opening ./test_cases/q1_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads.so processed in -16.504581046999999 seconds.
+
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+calling int autohandle with func q1_array_1threads.so and rpos 1 and id 18681952
+Opening ./test_cases/q1_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads.so processed in 0.34246797899999998 seconds.
+
+Position 11376464: 1
+Position 11376374: 1
+Position 11376375: 1
+Position 11376377: 1
+Position 11376382: 1
+Position 11376384: 1
+Position 11376399: 1
+Position 11376408: 1
+Position 11376434: 1
+Position 11376444: 1
+Position 11376361: 1
+Position 11376465: 1
+Position 11376474: 1
+Position 11376478: 1
+Position 11376481: 1
+Position 11376517: 1
+Position 11376535: 1
+Position 11376570: 1
+Position 11376589: 1
+Position 11376284: 1
+calling int autohandle with func q1_array_1threads.so and rpos 1 and id 19265035
+Opening ./test_cases/q1_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads.so processed in 3.6909407910000001 seconds.
+
+Position 19265035: 22
+Position 6258928: 17
+Position 10068843: 17
+Position 10616317: 16
+Position 21734461: 16
+Position 17759395: 16
+Position 18077832: 16
+Position 10438388: 16
+Position 19408566: 16
+Position 6639920: 15
+Position 14462254: 15
+Position 19104260: 15
+Position 21560617: 15
+Position 20015468: 15
+Position 14029150: 14
+Position 23080110: 14
+Position 11261156: 14
+Position 17689748: 14
+Position 20847278: 14
+Position 22133845: 14
+calling int autohandle with func q1_array_2threads.so and rpos 1 and id 10296795
+Opening ./test_cases/q1_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads.so processed in 1.5914015420000001 seconds.
+
+Position 22397176: 11
+Position 8075058: 11
+Position 20167127: 11
+Position 14347565: 11
+Position 13812347: 11
+Position 19066517: 11
+Position 11382606: 11
+Position 15237882: 11
+Position 17066077: 11
+Position 15016185: 11
+Position 21300271: 11
+Position 23045678: 11
+Position 18149097: 11
+Position 8773067: 11
+Position 10012350: 11
+Position 16015191: 11
+Position 20168367: 11
+Position 17896248: 11
+Position 13813920: 11
+Position 16366571: 11
+calling int autohandle with func q1_array_2threads.so and rpos 1 and id 16966392
+Opening ./test_cases/q1_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads.so processed in 3.8622283629999998 seconds.
+
+Position 16966392: 43
+Position 15106484: 37
+Position 6801948: 35
+Position 11329558: 35
+Position 878472: 35
+Position 21620978: 35
+Position 17144412: 35
+Position 17316945: 35
+Position 9891418: 35
+Position 9595041: 35
+Position 9218094: 35
+Position 14550448: 35
+Position 16296065: 35
+Position 13478760: 35
+Position 8772439: 35
+Position 9999759: 35
+Position 73369: 34
+Position 7102973: 34
+Position 6318218: 33
+Position 11405601: 33
+calling int autohandle with func q1_array_2threads.so and rpos 1 and id 17044542
+Opening ./test_cases/q1_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads.so processed in 2.447718246 seconds.
+
+Position 17044542: 21
+Position 16154311: 19
+Position 15724765: 18
+Position 10483770: 18
+Position 6344103: 18
+Position 8027946: 17
+Position 14102307: 17
+Position 8435909: 17
+Position 10533148: 17
+Position 7962694: 17
+Position 13334627: 17
+Position 22958066: 17
+Position 14030491: 17
+Position 9460297: 17
+Position 14834709: 17
+Position 9415321: 17
+Position 7464645: 17
+Position 241238: 17
+Position 6268798: 17
+Position 10323192: 17
+calling int autohandle with func q1_array_2threads.so and rpos 1 and id 17495979
+Opening ./test_cases/q1_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads.so processed in 2.4373880040000002 seconds.
+
+Position 17495979: 24
+Position 8180400: 23
+Position 20800308: 23
+Position 16062399: 22
+Position 8219731: 22
+Position 14213192: 22
+Position 8458612: 22
+Position 17556298: 22
+Position 18125996: 22
+Position 14513873: 22
+Position 10938815: 22
+Position 18634769: 22
+Position 23070480: 21
+Position 18515028: 21
+Position 19380977: 21
+Position 17827131: 21
+Position 21449031: 21
+Position 10473022: 21
+Position 17933720: 21
+Position 8058758: 21
+calling int autohandle with func q1_array_2threads.so and rpos 1 and id 17996791
+Opening ./test_cases/q1_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads.so processed in 2.618717846 seconds.
+
+Position 17996791: 25
+Position 21992203: 23
+Position 22269430: 23
+Position 18301612: 23
+Position 17355671: 23
+Position 20866835: 22
+Position 22983079: 22
+Position 20390036: 22
+Position 18780797: 22
+Position 10757928: 22
+Position 22306630: 22
+Position 22625823: 22
+Position 21848984: 22
+Position 15854141: 22
+Position 18506962: 22
+Position 18764728: 22
+Position 22329142: 22
+Position 22485378: 22
+Position 15557966: 22
+Position 19608064: 22
+calling int autohandle with func q1_array_2threads.so and rpos 1 and id 18681952
+Opening ./test_cases/q1_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads.so processed in 0.34342868100000001 seconds.
+
+Position 11376464: 1
+Position 11376374: 1
+Position 11376375: 1
+Position 11376377: 1
+Position 11376382: 1
+Position 11376384: 1
+Position 11376399: 1
+Position 11376408: 1
+Position 11376434: 1
+Position 11376444: 1
+Position 11376361: 1
+Position 11376465: 1
+Position 11376474: 1
+Position 11376478: 1
+Position 11376481: 1
+Position 11376517: 1
+Position 11376535: 1
+Position 11376570: 1
+Position 11376589: 1
+Position 11376284: 1
+calling int autohandle with func q1_array_2threads.so and rpos 1 and id 19265035
+Opening ./test_cases/q1_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads.so processed in 2.3077155060000001 seconds.
+
+Position 19265035: 22
+Position 6258928: 17
+Position 10068843: 17
+Position 10616317: 16
+Position 21734461: 16
+Position 17759395: 16
+Position 18077832: 16
+Position 10438388: 16
+Position 19408566: 16
+Position 6639920: 15
+Position 14462254: 15
+Position 19104260: 15
+Position 21560617: 15
+Position 20015468: 15
+Position 14029150: 14
+Position 23080110: 14
+Position 11261156: 14
+Position 17689748: 14
+Position 20847278: 14
+Position 22133845: 14
+calling int autohandle with func q1_array_4threads.so and rpos 1 and id 10296795
+Opening ./test_cases/q1_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads.so processed in 0.78308096800000004 seconds.
+
+Position 22397176: 11
+Position 8075058: 11
+Position 20167127: 11
+Position 14347565: 11
+Position 13812347: 11
+Position 19066517: 11
+Position 11382606: 11
+Position 15237882: 11
+Position 17066077: 11
+Position 15016185: 11
+Position 21300271: 11
+Position 23045678: 11
+Position 18149097: 11
+Position 8773067: 11
+Position 10012350: 11
+Position 16015191: 11
+Position 20168367: 11
+Position 17896248: 11
+Position 13813920: 11
+Position 16366571: 11
+calling int autohandle with func q1_array_4threads.so and rpos 1 and id 16966392
+Opening ./test_cases/q1_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads.so processed in 2.151294515 seconds.
+
+Position 16966392: 43
+Position 15106484: 37
+Position 6801948: 35
+Position 11329558: 35
+Position 878472: 35
+Position 21620978: 35
+Position 17144412: 35
+Position 17316945: 35
+Position 9891418: 35
+Position 9595041: 35
+Position 9218094: 35
+Position 14550448: 35
+Position 16296065: 35
+Position 13478760: 35
+Position 8772439: 35
+Position 9999759: 35
+Position 73369: 34
+Position 7102973: 34
+Position 6318218: 33
+Position 11405601: 33
+calling int autohandle with func q1_array_4threads.so and rpos 1 and id 17044542
+Opening ./test_cases/q1_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads.so processed in 1.6742535670000001 seconds.
+
+Position 17044542: 21
+Position 16154311: 19
+Position 15724765: 18
+Position 10483770: 18
+Position 6344103: 18
+Position 8027946: 17
+Position 14102307: 17
+Position 8435909: 17
+Position 10533148: 17
+Position 7962694: 17
+Position 13334627: 17
+Position 22958066: 17
+Position 14030491: 17
+Position 9460297: 17
+Position 14834709: 17
+Position 9415321: 17
+Position 7464645: 17
+Position 241238: 17
+Position 6268798: 17
+Position 10323192: 17
+calling int autohandle with func q1_array_4threads.so and rpos 1 and id 17495979
+Opening ./test_cases/q1_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads.so processed in 1.658367827 seconds.
+
+Position 17495979: 24
+Position 8180400: 23
+Position 20800308: 23
+Position 16062399: 22
+Position 8219731: 22
+Position 14213192: 22
+Position 8458612: 22
+Position 17556298: 22
+Position 18125996: 22
+Position 14513873: 22
+Position 10938815: 22
+Position 18634769: 22
+Position 23070480: 21
+Position 18515028: 21
+Position 19380977: 21
+Position 17827131: 21
+Position 21449031: 21
+Position 10473022: 21
+Position 17933720: 21
+Position 8058758: 21
+calling int autohandle with func q1_array_4threads.so and rpos 1 and id 17996791
+Opening ./test_cases/q1_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads.so processed in 2.0434996910000001 seconds.
+
+Position 17996791: 25
+Position 21992203: 23
+Position 22269430: 23
+Position 18301612: 23
+Position 17355671: 23
+Position 20866835: 22
+Position 22983079: 22
+Position 20390036: 22
+Position 18780797: 22
+Position 10757928: 22
+Position 22306630: 22
+Position 22625823: 22
+Position 21848984: 22
+Position 15854141: 22
+Position 18506962: 22
+Position 18764728: 22
+Position 22329142: 22
+Position 22485378: 22
+Position 15557966: 22
+Position 19608064: 22
+calling int autohandle with func q1_array_4threads.so and rpos 1 and id 18681952
+Opening ./test_cases/q1_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads.so processed in 0.35266892799999999 seconds.
+
+Position 11376464: 1
+Position 11376374: 1
+Position 11376375: 1
+Position 11376377: 1
+Position 11376382: 1
+Position 11376384: 1
+Position 11376399: 1
+Position 11376408: 1
+Position 11376434: 1
+Position 11376444: 1
+Position 11376361: 1
+Position 11376465: 1
+Position 11376474: 1
+Position 11376478: 1
+Position 11376481: 1
+Position 11376517: 1
+Position 11376535: 1
+Position 11376570: 1
+Position 11376589: 1
+Position 11376284: 1
+calling int autohandle with func q1_array_4threads.so and rpos 1 and id 19265035
+Opening ./test_cases/q1_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads.so processed in 1.41571874 seconds.
+
+Position 19265035: 22
+Position 6258928: 17
+Position 10068843: 17
+Position 10616317: 16
+Position 21734461: 16
+Position 17759395: 16
+Position 18077832: 16
+Position 10438388: 16
+Position 19408566: 16
+Position 6639920: 15
+Position 14462254: 15
+Position 19104260: 15
+Position 21560617: 15
+Position 20015468: 15
+Position 14029150: 14
+Position 23080110: 14
+Position 11261156: 14
+Position 17689748: 14
+Position 20847278: 14
+Position 22133845: 14
+Deleting globals
