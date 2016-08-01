@@ -5,7 +5,7 @@
 #include <fstream>
 #include <dlfcn.h>             // dll functions
 #include <utility>             // std::pair
-#include "global_vars.hpp"
+#include "graph_global_vars.hpp"
 
 template <typename T>
 class sort_comparator

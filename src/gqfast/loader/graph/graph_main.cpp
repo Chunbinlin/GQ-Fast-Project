@@ -2,7 +2,7 @@
 #include <fstream>
 //#include "graph_auto_tests.hpp"
 #include "graph_load.hpp"
-//#include "graph_input_handling.hpp"
+#include "graph_input_handling.hpp"
 #include "graph_global_vars.hpp"
 
 // threads
@@ -62,14 +62,14 @@ void delete_globals()
             // Free the associated buffer
             for (int j=0; j<num_encodings; j++)
             {
-                cerr << "deleting buffer["+i+"]["+j+"]\n";
+                cerr << "deleting buffer["<<i<<"]["<<j<<"]\n";
                 delete[] buffer_arrays[i][j];
             }
-            cerr << "deleting buffer["+i+"]\n";
+            cerr << "deleting buffer["<<i<<"]\n";
             delete[] buffer_arrays[i];
-            cerr << "deleting index " + i + "\n";
+            cerr << "deleting index " << i << "\n";
             delete idx[i];
-            cerr << "deleting spinlocks " + i + "\n";
+            cerr << "deleting spinlocks " << i << "\n";
             delete[] spin_locks[i];
         }
     }
