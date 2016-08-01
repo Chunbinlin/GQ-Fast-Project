@@ -57,16 +57,19 @@ void delete_globals()
 
         if (idx[i])
         {
-
+            cerr << "deleting index " << i << "\n";
             int num_encodings = 1;
             // Free the associated buffer
             for (int j=0; j<num_encodings; j++)
             {
+                cerr << "deleting buffer["+i+"]["+j+"]\n";
                 delete[] buffer_arrays[i][j];
             }
-
+            cerr << "deleting buffer["+i+"]\n";
             delete[] buffer_arrays[i];
+            cerr << "deleting index " + i + "\n";
             delete idx[i];
+            cerr << "deleting spinlocks " + i + "\n";
             delete[] spin_locks[i];
         }
     }
@@ -253,8 +256,8 @@ int main(int argc, char ** argv)
                 int result = load<int, uint32_t>(database, compression);
                 if (result)
                 {
-                    cout << "\n...Indices have been loaded...";
-                    /*char testing = 'y';
+                    cout << "\n...Indices have been loaded...\n";
+                    char testing = 'y';
                     while (testing == 'y')
                     {
                         string library_file;
@@ -279,7 +282,7 @@ int main(int argc, char ** argv)
                         cout << "\nLoad another file(y/n)?\n";
                         cin >> testing;
                     }
-                    */
+
                 }
                 else
                 {
