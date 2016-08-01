@@ -157,13 +157,13 @@ extern "C" int* q3_mesh_array_0threads(int** null_checks, int term1, int term2) 
 
 	q3_mesh_array_0threads_intersection_buffer = new uint64_t[metadata.idx_max_fragment_sizes[1]];
 
-	unsigned char* frag_doc1_0_col0_intersection0 = idx[1]->index_map[term1];
+	unsigned char* frag_doc1_0_col0_intersection0 = idx[1]->index_map[term1+MAX_DOC_ID];
 	uint32_t* frag_doc1_0_col0_intersection_ptr_0 = reinterpret_cast<uint32_t *>(&(frag_doc1_0_col0_intersection0));
 	uint32_t doc1_0_intersection0_fragment_size = *frag_doc1_0_col0_intersection_ptr_0++;
 
 	q3_mesh_array_0threads_doc1_0_col0_intersection0_decode_UA(frag_doc1_0_col0_intersection_ptr_0, doc1_0_intersection0_fragment_size);
 
-	unsigned char* frag_doc1_1_col0_intersection1 = idx[1]->index_map[term2];
+	unsigned char* frag_doc1_1_col0_intersection1 = idx[1]->index_map[term2+MAX_DOC_ID];
 	uint32_t* frag_doc1_1_col0_intersection_ptr_1 = reinterpret_cast<uint32_t *>(&(frag_doc1_1_col0_intersection1));
 	uint32_t doc1_1_intersection1_fragment_size = *frag_doc1_1_col0_intersection_ptr_1++;
 
