@@ -1,4 +1,4 @@
-Loading indices took 168.924 seconds.
+Loading indices took 147.991 seconds.
 
 ...Indices have been loaded...
 
@@ -6,86 +6,707 @@ Loading indices took 168.924 seconds.
 test file = queries.txt
 calling int autohandle with func q1_array_0threads_10296795.soand rpos 3
 Opening ./test_cases/q1_array_0threads_10296795.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads_10296795.so processed in 0.185536 seconds.
+
+Position 15480040: 11
+Position 10662385: 11
+Position 22618465: 11
+Position 11530463: 11
+Position 16224848: 11
+Position 6397262: 11
+Position 15573014: 11
+Position 21300271: 11
+Position 9487380: 11
+Position 19060061: 11
+Position 14816274: 11
+Position 20048141: 11
+Position 15237882: 11
+Position 22526738: 11
+Position 11684214: 11
+Position 19848537: 11
+Position 14480788: 11
+Position 19327618: 11
+Position 6642384: 11
+Position 20290285: 11
 calling int autohandle with func q1_array_0threads_16966392.soand rpos 3
 Opening ./test_cases/q1_array_0threads_16966392.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads_16966392.so processed in 0.32919126900000001 seconds.
+
+Position 16966392: 43
+Position 15106484: 37
+Position 878472: 35
+Position 8772439: 35
+Position 9218094: 35
+Position 14550448: 35
+Position 21620978: 35
+Position 17144412: 35
+Position 13478760: 35
+Position 11329558: 35
+Position 9999759: 35
+Position 9891418: 35
+Position 16296065: 35
+Position 17316945: 35
+Position 6801948: 35
+Position 9595041: 35
+Position 73369: 34
+Position 7102973: 34
+Position 39655: 33
+Position 16054109: 33
 calling int autohandle with func q1_array_0threads_17044542.soand rpos 3
 Opening ./test_cases/q1_array_0threads_17044542.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads_17044542.so processed in 0.21847613099999999 seconds.
+
+Position 17044542: 21
+Position 16154311: 19
+Position 15724765: 18
+Position 6344103: 18
+Position 10483770: 18
+Position 14834709: 17
+Position 337401: 17
+Position 9460297: 17
+Position 22958066: 17
+Position 685164: 17
+Position 7962694: 17
+Position 16746679: 17
+Position 7564495: 17
+Position 9415321: 17
+Position 6268798: 17
+Position 18360227: 17
+Position 8435909: 17
+Position 10323192: 17
+Position 7753376: 17
+Position 9168869: 17
 calling int autohandle with func q1_array_0threads_17495979.soand rpos 3
 Opening ./test_cases/q1_array_0threads_17495979.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads_17495979.so processed in 0.25464380599999997 seconds.
+
+Position 17495979: 24
+Position 20800308: 23
+Position 8180400: 23
+Position 14213192: 22
+Position 17556298: 22
+Position 18125996: 22
+Position 18634769: 22
+Position 14513873: 22
+Position 8219731: 22
+Position 16062399: 22
+Position 10938815: 22
+Position 8458612: 22
+Position 9659277: 21
+Position 17933720: 21
+Position 9374497: 21
+Position 8291832: 21
+Position 8058758: 21
+Position 21449031: 21
+Position 6703675: 21
+Position 10473022: 21
 calling int autohandle with func q1_array_0threads_17996791.soand rpos 3
 Opening ./test_cases/q1_array_0threads_17996791.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads_17996791.so processed in 0.25837993199999998 seconds.
+
+Position 17996791: 25
+Position 21992203: 23
+Position 22269430: 23
+Position 17355671: 23
+Position 18301612: 23
+Position 21848984: 22
+Position 19608064: 22
+Position 22625823: 22
+Position 17311289: 22
+Position 18506962: 22
+Position 14770339: 22
+Position 21204225: 22
+Position 15854141: 22
+Position 22983079: 22
+Position 22306630: 22
+Position 10757928: 22
+Position 22329142: 22
+Position 20523930: 22
+Position 18764728: 22
+Position 15182757: 22
 calling int autohandle with func q1_array_0threads_18681952.soand rpos 3
 Opening ./test_cases/q1_array_0threads_18681952.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads_18681952.so processed in 0.037773050000000002 seconds.
+
+Position 10854459: 1
+Position 22159050: 1
+Position 22159051: 1
+Position 22159052: 1
+Position 22159053: 1
+Position 16321506: 1
+Position 22159057: 1
+Position 9541956: 1
+Position 7196102: 1
+Position 7196101: 1
+Position 19324787: 1
+Position 7196099: 1
+Position 18176906: 1
+Position 19324779: 1
+Position 7196097: 1
+Position 7196096: 1
+Position 22159073: 1
+Position 18176901: 1
+Position 10854465: 1
+Position 18176900: 1
 calling int autohandle with func q1_array_0threads_19265035.soand rpos 3
 Opening ./test_cases/q1_array_0threads_19265035.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_0threads_19265035.so processed in 0.19484264100000001 seconds.
+
+Position 19265035: 22
+Position 10068843: 17
+Position 6258928: 17
+Position 18077832: 16
+Position 10616317: 16
+Position 17759395: 16
+Position 19408566: 16
+Position 10438388: 16
+Position 21734461: 16
+Position 14462254: 15
+Position 6639920: 15
+Position 20015468: 15
+Position 19104260: 15
+Position 21560617: 15
+Position 13277708: 14
+Position 17110012: 14
+Position 22215149: 14
+Position 10287244: 14
+Position 14671450: 14
+Position 369534: 14
 calling int autohandle with func q1_array_1threads_10296795.soand rpos 3
 Opening ./test_cases/q1_array_1threads_10296795.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads_10296795.so processed in 0.25346742300000003 seconds.
+
+Position 15480040: 11
+Position 10662385: 11
+Position 22618465: 11
+Position 11530463: 11
+Position 16224848: 11
+Position 6397262: 11
+Position 15573014: 11
+Position 21300271: 11
+Position 9487380: 11
+Position 19060061: 11
+Position 14816274: 11
+Position 20048141: 11
+Position 15237882: 11
+Position 22526738: 11
+Position 11684214: 11
+Position 19848537: 11
+Position 14480788: 11
+Position 19327618: 11
+Position 6642384: 11
+Position 20290285: 11
 calling int autohandle with func q1_array_1threads_16966392.soand rpos 3
 Opening ./test_cases/q1_array_1threads_16966392.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads_16966392.so processed in 0.74865838399999995 seconds.
+
+Position 16966392: 43
+Position 15106484: 37
+Position 878472: 35
+Position 8772439: 35
+Position 9218094: 35
+Position 14550448: 35
+Position 21620978: 35
+Position 17144412: 35
+Position 13478760: 35
+Position 11329558: 35
+Position 9999759: 35
+Position 9891418: 35
+Position 16296065: 35
+Position 17316945: 35
+Position 6801948: 35
+Position 9595041: 35
+Position 73369: 34
+Position 7102973: 34
+Position 39655: 33
+Position 16054109: 33
 calling int autohandle with func q1_array_1threads_17044542.soand rpos 3
 Opening ./test_cases/q1_array_1threads_17044542.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads_17044542.so processed in 0.49157015799999998 seconds.
+
+Position 17044542: 21
+Position 16154311: 19
+Position 15724765: 18
+Position 6344103: 18
+Position 10483770: 18
+Position 14834709: 17
+Position 337401: 17
+Position 9460297: 17
+Position 22958066: 17
+Position 685164: 17
+Position 7962694: 17
+Position 16746679: 17
+Position 7564495: 17
+Position 9415321: 17
+Position 6268798: 17
+Position 18360227: 17
+Position 8435909: 17
+Position 10323192: 17
+Position 7753376: 17
+Position 9168869: 17
 calling int autohandle with func q1_array_1threads_17495979.soand rpos 3
 Opening ./test_cases/q1_array_1threads_17495979.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads_17495979.so processed in 0.53884375900000003 seconds.
+
+Position 17495979: 24
+Position 20800308: 23
+Position 8180400: 23
+Position 14213192: 22
+Position 17556298: 22
+Position 18125996: 22
+Position 18634769: 22
+Position 14513873: 22
+Position 8219731: 22
+Position 16062399: 22
+Position 10938815: 22
+Position 8458612: 22
+Position 9659277: 21
+Position 17933720: 21
+Position 9374497: 21
+Position 8291832: 21
+Position 8058758: 21
+Position 21449031: 21
+Position 6703675: 21
+Position 10473022: 21
 calling int autohandle with func q1_array_1threads_17996791.soand rpos 3
 Opening ./test_cases/q1_array_1threads_17996791.so
 Cannot open library: ./test_cases/q1_array_1threads_17996791.so: cannot open shared object file: No such file or directory
 calling int autohandle with func q1_array_1threads_18681952.soand rpos 3
 Opening ./test_cases/q1_array_1threads_18681952.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads_18681952.so processed in 0.052005252000000002 seconds.
+
+Position 10854459: 1
+Position 22159050: 1
+Position 22159051: 1
+Position 22159052: 1
+Position 22159053: 1
+Position 16321506: 1
+Position 22159057: 1
+Position 9541956: 1
+Position 7196102: 1
+Position 7196101: 1
+Position 19324787: 1
+Position 7196099: 1
+Position 18176906: 1
+Position 19324779: 1
+Position 7196097: 1
+Position 7196096: 1
+Position 22159073: 1
+Position 18176901: 1
+Position 10854465: 1
+Position 18176900: 1
 calling int autohandle with func q1_array_1threads_19265035.soand rpos 3
 Opening ./test_cases/q1_array_1threads_19265035.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_1threads_19265035.so processed in 0.40741016099999999 seconds.
+
+Position 19265035: 22
+Position 10068843: 17
+Position 6258928: 17
+Position 18077832: 16
+Position 10616317: 16
+Position 17759395: 16
+Position 19408566: 16
+Position 10438388: 16
+Position 21734461: 16
+Position 14462254: 15
+Position 6639920: 15
+Position 20015468: 15
+Position 19104260: 15
+Position 21560617: 15
+Position 13277708: 14
+Position 17110012: 14
+Position 22215149: 14
+Position 10287244: 14
+Position 14671450: 14
+Position 369534: 14
 calling int autohandle with func q1_array_2threads_10296795.soand rpos 3
 Opening ./test_cases/q1_array_2threads_10296795.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads_10296795.so processed in 0.21508946400000001 seconds.
+
+Position 15480040: 11
+Position 10662385: 11
+Position 22618465: 11
+Position 11530463: 11
+Position 16224848: 11
+Position 6397262: 11
+Position 15573014: 11
+Position 21300271: 11
+Position 9487380: 11
+Position 19060061: 11
+Position 14816274: 11
+Position 20048141: 11
+Position 15237882: 11
+Position 22526738: 11
+Position 11684214: 11
+Position 19848537: 11
+Position 14480788: 11
+Position 19327618: 11
+Position 6642384: 11
+Position 20290285: 11
 calling int autohandle with func q1_array_2threads_16966392.soand rpos 3
 Opening ./test_cases/q1_array_2threads_16966392.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads_16966392.so processed in 0.45740312900000002 seconds.
+
+Position 16966392: 43
+Position 15106484: 37
+Position 878472: 35
+Position 8772439: 35
+Position 9218094: 35
+Position 14550448: 35
+Position 21620978: 35
+Position 17144412: 35
+Position 13478760: 35
+Position 11329558: 35
+Position 9999759: 35
+Position 9891418: 35
+Position 16296065: 35
+Position 17316945: 35
+Position 6801948: 35
+Position 9595041: 35
+Position 73369: 34
+Position 7102973: 34
+Position 39655: 33
+Position 16054109: 33
 calling int autohandle with func q1_array_2threads_17044542.soand rpos 3
 Opening ./test_cases/q1_array_2threads_17044542.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads_17044542.so processed in 0.31489363799999998 seconds.
+
+Position 17044542: 21
+Position 16154311: 19
+Position 15724765: 18
+Position 6344103: 18
+Position 10483770: 18
+Position 14834709: 17
+Position 337401: 17
+Position 9460297: 17
+Position 22958066: 17
+Position 685164: 17
+Position 7962694: 17
+Position 16746679: 17
+Position 7564495: 17
+Position 9415321: 17
+Position 6268798: 17
+Position 18360227: 17
+Position 8435909: 17
+Position 10323192: 17
+Position 7753376: 17
+Position 9168869: 17
 calling int autohandle with func q1_array_2threads_17495979.soand rpos 3
 Opening ./test_cases/q1_array_2threads_17495979.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads_17495979.so processed in 0.31608487499999999 seconds.
+
+Position 17495979: 24
+Position 20800308: 23
+Position 8180400: 23
+Position 14213192: 22
+Position 17556298: 22
+Position 18125996: 22
+Position 18634769: 22
+Position 14513873: 22
+Position 8219731: 22
+Position 16062399: 22
+Position 10938815: 22
+Position 8458612: 22
+Position 9659277: 21
+Position 17933720: 21
+Position 9374497: 21
+Position 8291832: 21
+Position 8058758: 21
+Position 21449031: 21
+Position 6703675: 21
+Position 10473022: 21
 calling int autohandle with func q1_array_2threads_17996791.soand rpos 3
 Opening ./test_cases/q1_array_2threads_17996791.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads_17996791.so processed in 0.34123873399999999 seconds.
+
+Position 17996791: 25
+Position 21992203: 23
+Position 22269430: 23
+Position 17355671: 23
+Position 18301612: 23
+Position 21848984: 22
+Position 19608064: 22
+Position 22625823: 22
+Position 17311289: 22
+Position 18506962: 22
+Position 14770339: 22
+Position 21204225: 22
+Position 15854141: 22
+Position 22983079: 22
+Position 22306630: 22
+Position 10757928: 22
+Position 22329142: 22
+Position 20523930: 22
+Position 18764728: 22
+Position 15182757: 22
 calling int autohandle with func q1_array_2threads_18681952.soand rpos 3
 Opening ./test_cases/q1_array_2threads_18681952.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads_18681952.so processed in 0.051527739000000003 seconds.
+
+Position 10854459: 1
+Position 22159050: 1
+Position 22159051: 1
+Position 22159052: 1
+Position 22159053: 1
+Position 16321506: 1
+Position 22159057: 1
+Position 9541956: 1
+Position 7196102: 1
+Position 7196101: 1
+Position 19324787: 1
+Position 7196099: 1
+Position 18176906: 1
+Position 19324779: 1
+Position 7196097: 1
+Position 7196096: 1
+Position 22159073: 1
+Position 18176901: 1
+Position 10854465: 1
+Position 18176900: 1
 calling int autohandle with func q1_array_2threads_19265035.soand rpos 3
 Opening ./test_cases/q1_array_2threads_19265035.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_2threads_19265035.so processed in 0.28444708099999999 seconds.
+
+Position 19265035: 22
+Position 10068843: 17
+Position 6258928: 17
+Position 18077832: 16
+Position 10616317: 16
+Position 17759395: 16
+Position 19408566: 16
+Position 10438388: 16
+Position 21734461: 16
+Position 14462254: 15
+Position 6639920: 15
+Position 20015468: 15
+Position 19104260: 15
+Position 21560617: 15
+Position 13277708: 14
+Position 17110012: 14
+Position 22215149: 14
+Position 10287244: 14
+Position 14671450: 14
+Position 369534: 14
 calling int autohandle with func q1_array_4threads_10296795.soand rpos 3
 Opening ./test_cases/q1_array_4threads_10296795.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads_10296795.so processed in 0.14084987700000001 seconds.
+
+Position 15480040: 11
+Position 10662385: 11
+Position 22618465: 11
+Position 11530463: 11
+Position 16224848: 11
+Position 6397262: 11
+Position 15573014: 11
+Position 21300271: 11
+Position 9487380: 11
+Position 19060061: 11
+Position 14816274: 11
+Position 20048141: 11
+Position 15237882: 11
+Position 22526738: 11
+Position 11684214: 11
+Position 19848537: 11
+Position 14480788: 11
+Position 19327618: 11
+Position 6642384: 11
+Position 20290285: 11
 calling int autohandle with func q1_array_4threads_16966392.soand rpos 3
 Opening ./test_cases/q1_array_4threads_16966392.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads_16966392.so processed in 0.35770022200000001 seconds.
+
+Position 16966392: 43
+Position 15106484: 37
+Position 878472: 35
+Position 8772439: 35
+Position 9218094: 35
+Position 14550448: 35
+Position 21620978: 35
+Position 17144412: 35
+Position 13478760: 35
+Position 11329558: 35
+Position 9999759: 35
+Position 9891418: 35
+Position 16296065: 35
+Position 17316945: 35
+Position 6801948: 35
+Position 9595041: 35
+Position 73369: 34
+Position 7102973: 34
+Position 39655: 33
+Position 16054109: 33
 calling int autohandle with func q1_array_4threads_17044542.soand rpos 3
 Opening ./test_cases/q1_array_4threads_17044542.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads_17044542.so processed in 0.25161019099999998 seconds.
+
+Position 17044542: 21
+Position 16154311: 19
+Position 15724765: 18
+Position 6344103: 18
+Position 10483770: 18
+Position 14834709: 17
+Position 337401: 17
+Position 9460297: 17
+Position 22958066: 17
+Position 685164: 17
+Position 7962694: 17
+Position 16746679: 17
+Position 7564495: 17
+Position 9415321: 17
+Position 6268798: 17
+Position 18360227: 17
+Position 8435909: 17
+Position 10323192: 17
+Position 7753376: 17
+Position 9168869: 17
 calling int autohandle with func q1_array_4threads_17495979.soand rpos 3
 Opening ./test_cases/q1_array_4threads_17495979.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads_17495979.so processed in 0.278194885 seconds.
+
+Position 17495979: 24
+Position 20800308: 23
+Position 8180400: 23
+Position 14213192: 22
+Position 17556298: 22
+Position 18125996: 22
+Position 18634769: 22
+Position 14513873: 22
+Position 8219731: 22
+Position 16062399: 22
+Position 10938815: 22
+Position 8458612: 22
+Position 9659277: 21
+Position 17933720: 21
+Position 9374497: 21
+Position 8291832: 21
+Position 8058758: 21
+Position 21449031: 21
+Position 6703675: 21
+Position 10473022: 21
 calling int autohandle with func q1_array_4threads_17996791.soand rpos 3
 Opening ./test_cases/q1_array_4threads_17996791.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads_17996791.so processed in 0.30057497100000002 seconds.
+
+Position 17996791: 25
+Position 21992203: 23
+Position 22269430: 23
+Position 17355671: 23
+Position 18301612: 23
+Position 21848984: 22
+Position 19608064: 22
+Position 22625823: 22
+Position 17311289: 22
+Position 18506962: 22
+Position 14770339: 22
+Position 21204225: 22
+Position 15854141: 22
+Position 22983079: 22
+Position 22306630: 22
+Position 10757928: 22
+Position 22329142: 22
+Position 20523930: 22
+Position 18764728: 22
+Position 15182757: 22
 calling int autohandle with func q1_array_4threads_18681952.soand rpos 3
 Opening ./test_cases/q1_array_4threads_18681952.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads_18681952.so processed in 0.051476722000000003 seconds.
+
+Position 10854459: 1
+Position 22159050: 1
+Position 22159051: 1
+Position 22159052: 1
+Position 22159053: 1
+Position 16321506: 1
+Position 22159057: 1
+Position 9541956: 1
+Position 7196102: 1
+Position 7196101: 1
+Position 19324787: 1
+Position 7196099: 1
+Position 18176906: 1
+Position 19324779: 1
+Position 7196097: 1
+Position 7196096: 1
+Position 22159073: 1
+Position 18176901: 1
+Position 10854465: 1
+Position 18176900: 1
 calling int autohandle with func q1_array_4threads_19265035.soand rpos 3
 Opening ./test_cases/q1_array_4threads_19265035.so
-Cannot open library: ../../../libgqfast_global_JNILoader.so: cannot open shared object file: No such file or directory
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q1_array_4threads_19265035.so processed in 0.21783318400000001 seconds.
+
+Position 19265035: 22
+Position 10068843: 17
+Position 6258928: 17
+Position 18077832: 16
+Position 10616317: 16
+Position 17759395: 16
+Position 19408566: 16
+Position 10438388: 16
+Position 21734461: 16
+Position 14462254: 15
+Position 6639920: 15
+Position 20015468: 15
+Position 19104260: 15
+Position 21560617: 15
+Position 13277708: 14
+Position 17110012: 14
+Position 22215149: 14
+Position 10287244: 14
+Position 14671450: 14
+Position 369534: 14
 Deleting globals
