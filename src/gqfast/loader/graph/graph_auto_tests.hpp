@@ -57,14 +57,14 @@ void automatic_tests(char* input_file, char* output_file)
         {
             if (output_type == 'i')
             {
-                cout << "calling int autohandle with func " << func_name << "and rpos " << r_pos << "\n";
+                cout << "calling int autohandle with func " << func_name << " and rpos " << r_pos << " and id " << id_to_test << "\n";
                 time_span = auto_handle_input<int>(func_name, r_pos, id_to_test);
             //    time_span2 = auto_handle_input<int>(func_name, r_pos);
             //    time_span3 = auto_handle_input<int>(func_name, r_pos);
             }
             else if (output_type == 'd')
             {
-                cout << "calling double autohandle with func " << func_name << "and rpos " << r_pos << "\n";
+                cout << "calling double autohandle with func " << func_name << " and rpos " << r_pos << " and id " << id_to_test << "\n";
                 time_span = auto_handle_input<double>(func_name, r_pos, id_to_test);
             //    time_span2 = auto_handle_input<double>(func_name, r_pos);
             //    time_span3 = auto_handle_input<double>(func_name, r_pos);

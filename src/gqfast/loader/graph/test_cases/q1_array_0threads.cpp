@@ -14,13 +14,13 @@ static int* RC;
 static uint64_t* term1_col0_buffer;
 static uint64_t* doc2_col0_buffer;
 
-extern inline void q1_array_0threads_term1_col0_decode_UA(uint32_t* term1_col0_ptr, uint32_t term1_col0_bytes, uint32_t & term1_fragment_size) __attribute__((always_inline));
+extern inline void q1_array_0threads_term1_col0_decode_UA(uint32_t* term1_col0_ptr, uint32_t & term1_fragment_size) __attribute__((always_inline));
 
-extern inline void q1_array_0threads_doc2_col0_decode_UA(uint32_t* doc2_col0_ptr, uint32_t doc2_col0_bytes, uint32_t & doc2_fragment_size) __attribute__((always_inline));
+extern inline void q1_array_0threads_doc2_col0_decode_UA(uint32_t* doc2_col0_ptr, uint32_t & doc2_fragment_size) __attribute__((always_inline));
 
 void q1_array_0threads_term1_col0_decode_UA(uint32_t* term1_col0_ptr, uint32_t & term1_fragment_size) {
 
-    int buffer_it = 0;
+    uint32_t buffer_it = 0;
 	for (uint32_t i=0; i<term1_fragment_size; i++) {
 		uint32_t term_candidate = *term1_col0_ptr++;
 
@@ -37,7 +37,7 @@ void q1_array_0threads_term1_col0_decode_UA(uint32_t* term1_col0_ptr, uint32_t &
 
 void q1_array_0threads_doc2_col0_decode_UA(uint32_t* doc2_col0_ptr, uint32_t & doc2_fragment_size) {
 
-	int buffer_it = 0;
+	uint32_t buffer_it = 0;
 	for (uint32_t i=0; i<doc2_fragment_size; i++) {
 		uint32_t doc_candidate = *doc2_col0_ptr++;
 
