@@ -72,7 +72,7 @@ void read_in_file(vector<T> * input_file, string filename, uint64_t max_column_i
 }
 
 template <typename T>
-void init_dictionary(vector<T> * input_file, dictionary* dict, Encodings* encoding, uint64_t max_column_ids[], uint64_t min_column_ids[])
+void init_dictionary(vector<T> * input_file, dictionary* & dict, Encodings* encoding, uint64_t max_column_ids[], uint64_t min_column_ids[])
 {
 
     if (encoding->getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED)
@@ -399,6 +399,15 @@ graph_index<TIndexMap>* buildIndex(string filename, Encodings* encoding, int ind
 
     init_huffman_structures(input_file, encoding, huffman_tree, huffman_tree_array,
                             huffman_terminator_array, encoding_dictionary, huffman_tree_size);
+
+    if (huffman_terminator_array)
+    {
+        cerr << "huffman term exists\n";
+    }
+    else
+    {
+        cerr << "huffman term array dne\n";
+    }
 
     // domain_size (of first column) will specify the size of the index map
     // +1 because we want to access the index at the last value
