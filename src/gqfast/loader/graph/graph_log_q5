@@ -1,0 +1,500 @@
+Opening ./test_cases/q5_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_0threads.so processed in 104.005 seconds.
+
+Position 25067589: 11446
+Position 29231992: 11369
+Position 24553211: 9960
+Position 32080685: 9851
+Position 25836851: 9808
+Position 34007656: 8879
+Position 28138307: 8602
+Position 28480919: 8522
+Position 29539657: 8418
+Position 23762837: 8232
+Position 28924821: 8001
+Position 29138268: 7904
+Position 26160202: 7655
+Position 32997482: 7630
+Position 31033555: 7585
+Position 32289529: 7557
+Position 31774212: 7549
+Position 34554218: 7424
+Position 33921496: 7313
+Position 27209874: 7305
+Opening ./test_cases/q5_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_0threads.so processed in 7.4902161200000004 seconds.
+
+Position 25067589: 826
+Position 34007656: 787
+Position 29231992: 764
+Position 32080685: 716
+Position 29539657: 695
+Position 25836851: 664
+Position 28480919: 660
+Position 24553211: 590
+Position 28138307: 584
+Position 30533538: 583
+Position 27209874: 576
+Position 27846818: 573
+Position 33921496: 555
+Position 26160202: 554
+Position 32997482: 548
+Position 28924821: 548
+Position 24418789: 541
+Position 29138268: 538
+Position 33618139: 538
+Position 31774212: 536
+Opening ./test_cases/q5_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_0threads.so processed in 156.51791085400001 seconds.
+
+Position 29231992: 18851
+Position 25067589: 17937
+Position 25836851: 16612
+Position 32080685: 15544
+Position 24553211: 15119
+Position 34007656: 14519
+Position 28138307: 14479
+Position 28480919: 14007
+Position 29539657: 13495
+Position 23762837: 13080
+Position 29138268: 12980
+Position 28924821: 12470
+Position 31033555: 12197
+Position 31774212: 12148
+Position 26160202: 11970
+Position 32997482: 11844
+Position 33618139: 11695
+Position 27209874: 11694
+Position 32289529: 11462
+Position 30533538: 11431
+Opening ./test_cases/q5_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_0threads.so processed in 114.300995668 seconds.
+
+Position 25067589: 13300
+Position 29231992: 13012
+Position 25836851: 11551
+Position 32080685: 11474
+Position 24553211: 11243
+Position 34007656: 10364
+Position 28138307: 10177
+Position 29539657: 10175
+Position 28480919: 9961
+Position 23762837: 9134
+Position 26160202: 9006
+Position 28924821: 9005
+Position 29138268: 8999
+Position 33921496: 8831
+Position 31033555: 8727
+Position 31774212: 8695
+Position 32997482: 8685
+Position 27209874: 8658
+Position 32289529: 8579
+Position 29022845: 8503
+Opening ./test_cases/q5_array_0threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_0threads.so processed in 279.49468636099999 seconds.
+
+Position 25067589: 37207
+Position 29231992: 34172
+Position 32080685: 31891
+Position 25836851: 31244
+Position 24553211: 30274
+Position 34007656: 30070
+Position 28138307: 29227
+Position 29539657: 28572
+Position 28480919: 27581
+Position 28924821: 25651
+Position 23762837: 25576
+Position 26160202: 25259
+Position 27209874: 25072
+Position 31774212: 24940
+Position 32997482: 24854
+Position 31033555: 24671
+Position 29022845: 24546
+Position 32289529: 24343
+Position 29138268: 24068
+Position 30533538: 23714
+Opening ./test_cases/q5_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_1threads.so processed in 98.290018704000005 seconds.
+
+Position 25067589: 11446
+Position 29231992: 11369
+Position 24553211: 9960
+Position 32080685: 9851
+Position 25836851: 9808
+Position 34007656: 8879
+Position 28138307: 8602
+Position 28480919: 8522
+Position 29539657: 8418
+Position 23762837: 8232
+Position 28924821: 8001
+Position 29138268: 7904
+Position 26160202: 7655
+Position 32997482: 7630
+Position 31033555: 7585
+Position 32289529: 7557
+Position 31774212: 7549
+Position 34554218: 7424
+Position 33921496: 7313
+Position 27209874: 7305
+Opening ./test_cases/q5_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_1threads.so processed in 7.0597196850000001 seconds.
+
+Position 25067589: 826
+Position 34007656: 787
+Position 29231992: 764
+Position 32080685: 716
+Position 29539657: 695
+Position 25836851: 664
+Position 28480919: 660
+Position 24553211: 590
+Position 28138307: 584
+Position 30533538: 583
+Position 27209874: 576
+Position 27846818: 573
+Position 33921496: 555
+Position 26160202: 554
+Position 32997482: 548
+Position 28924821: 548
+Position 24418789: 541
+Position 29138268: 538
+Position 33618139: 538
+Position 31774212: 536
+Opening ./test_cases/q5_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_1threads.so processed in 149.70370851800001 seconds.
+
+Position 29231992: 18851
+Position 25067589: 17937
+Position 25836851: 16612
+Position 32080685: 15544
+Position 24553211: 15119
+Position 34007656: 14519
+Position 28138307: 14479
+Position 28480919: 14007
+Position 29539657: 13495
+Position 23762837: 13080
+Position 29138268: 12980
+Position 28924821: 12470
+Position 31033555: 12197
+Position 31774212: 12148
+Position 26160202: 11970
+Position 32997482: 11844
+Position 33618139: 11695
+Position 27209874: 11694
+Position 32289529: 11462
+Position 30533538: 11431
+Opening ./test_cases/q5_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_1threads.so processed in 111.668182708 seconds.
+
+Position 25067589: 13300
+Position 29231992: 13012
+Position 25836851: 11551
+Position 32080685: 11474
+Position 24553211: 11243
+Position 34007656: 10364
+Position 28138307: 10177
+Position 29539657: 10175
+Position 28480919: 9961
+Position 23762837: 9134
+Position 26160202: 9006
+Position 28924821: 9005
+Position 29138268: 8999
+Position 33921496: 8831
+Position 31033555: 8727
+Position 31774212: 8695
+Position 32997482: 8685
+Position 27209874: 8658
+Position 32289529: 8579
+Position 29022845: 8503
+Opening ./test_cases/q5_array_1threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_1threads.so processed in 221.87082646100001 seconds.
+
+Position 25067589: 32983
+Position 32080685: 27904
+Position 29231992: 27482
+Position 25836851: 26961
+Position 34007656: 26186
+Position 28138307: 25366
+Position 24553211: 24216
+Position 29539657: 24065
+Position 28480919: 23070
+Position 26160202: 22035
+Position 28924821: 22014
+Position 31033555: 21969
+Position 31774212: 21840
+Position 23762837: 20939
+Position 32997482: 20597
+Position 27209874: 20338
+Position 32289529: 20236
+Position 29022845: 20120
+Position 29138268: 19889
+Position 24863255: 19347
+Opening ./test_cases/q5_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_2threads.so processed in 54.703455665 seconds.
+
+Position 25067589: 11446
+Position 29231992: 11369
+Position 24553211: 9960
+Position 32080685: 9851
+Position 25836851: 9808
+Position 34007656: 8879
+Position 28138307: 8602
+Position 28480919: 8522
+Position 29539657: 8418
+Position 23762837: 8232
+Position 28924821: 8001
+Position 29138268: 7904
+Position 26160202: 7655
+Position 32997482: 7630
+Position 31033555: 7585
+Position 32289529: 7557
+Position 31774212: 7549
+Position 34554218: 7424
+Position 33921496: 7313
+Position 27209874: 7305
+Opening ./test_cases/q5_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_2threads.so processed in 6.4498399370000001 seconds.
+
+Position 25067589: 826
+Position 34007656: 787
+Position 29231992: 764
+Position 32080685: 716
+Position 29539657: 695
+Position 25836851: 664
+Position 28480919: 660
+Position 24553211: 590
+Position 28138307: 584
+Position 30533538: 583
+Position 27209874: 576
+Position 27846818: 573
+Position 33921496: 555
+Position 26160202: 554
+Position 32997482: 548
+Position 28924821: 548
+Position 24418789: 541
+Position 29138268: 538
+Position 33618139: 538
+Position 31774212: 536
+Opening ./test_cases/q5_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_2threads.so processed in 92.513971796999996 seconds.
+
+Position 29231992: 18851
+Position 25067589: 17937
+Position 25836851: 16612
+Position 32080685: 15544
+Position 24553211: 15119
+Position 34007656: 14519
+Position 28138307: 14479
+Position 28480919: 14007
+Position 29539657: 13495
+Position 23762837: 13080
+Position 29138268: 12980
+Position 28924821: 12470
+Position 31033555: 12197
+Position 31774212: 12148
+Position 26160202: 11970
+Position 32997482: 11844
+Position 33618139: 11695
+Position 27209874: 11694
+Position 32289529: 11462
+Position 30533538: 11431
+Opening ./test_cases/q5_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_2threads.so processed in 58.525702795999997 seconds.
+
+Position 25067589: 13300
+Position 29231992: 13012
+Position 25836851: 11551
+Position 32080685: 11474
+Position 24553211: 11243
+Position 34007656: 10364
+Position 28138307: 10177
+Position 29539657: 10175
+Position 28480919: 9961
+Position 23762837: 9134
+Position 26160202: 9006
+Position 28924821: 9005
+Position 29138268: 8999
+Position 33921496: 8831
+Position 31033555: 8727
+Position 31774212: 8695
+Position 32997482: 8685
+Position 27209874: 8658
+Position 32289529: 8579
+Position 29022845: 8503
+Opening ./test_cases/q5_array_2threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_2threads.so processed in 158.919962344 seconds.
+
+Position 25067589: 37207
+Position 29231992: 34172
+Position 32080685: 31891
+Position 25836851: 31244
+Position 24553211: 30274
+Position 34007656: 30070
+Position 28138307: 29227
+Position 29539657: 28572
+Position 28480919: 27581
+Position 28924821: 25651
+Position 23762837: 25576
+Position 26160202: 25259
+Position 27209874: 25072
+Position 31774212: 24940
+Position 32997482: 24854
+Position 31033555: 24671
+Position 29022845: 24546
+Position 32289529: 24343
+Position 29138268: 24068
+Position 30533538: 23714
+Opening ./test_cases/q5_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_4threads.so processed in 38.469312049999999 seconds.
+
+Position 25067589: 11446
+Position 29231992: 11369
+Position 24553211: 9960
+Position 32080685: 9851
+Position 25836851: 9808
+Position 34007656: 8879
+Position 28138307: 8602
+Position 28480919: 8522
+Position 29539657: 8418
+Position 23762837: 8232
+Position 28924821: 8001
+Position 29138268: 7904
+Position 26160202: 7655
+Position 32997482: 7630
+Position 31033555: 7585
+Position 32289529: 7557
+Position 31774212: 7549
+Position 34554218: 7424
+Position 33921496: 7313
+Position 27209874: 7305
+Opening ./test_cases/q5_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_4threads.so processed in 7.1536947409999998 seconds.
+
+Position 25067589: 826
+Position 34007656: 787
+Position 29231992: 764
+Position 32080685: 716
+Position 29539657: 695
+Position 25836851: 664
+Position 28480919: 660
+Position 24553211: 590
+Position 28138307: 584
+Position 30533538: 583
+Position 27209874: 576
+Position 27846818: 573
+Position 33921496: 555
+Position 26160202: 554
+Position 32997482: 548
+Position 28924821: 548
+Position 24418789: 541
+Position 29138268: 538
+Position 33618139: 538
+Position 31774212: 536
+Opening ./test_cases/q5_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_4threads.so processed in 63.795861148999997 seconds.
+
+Position 29231992: 18851
+Position 25067589: 17937
+Position 25836851: 16612
+Position 32080685: 15544
+Position 24553211: 15119
+Position 34007656: 14519
+Position 28138307: 14479
+Position 28480919: 14007
+Position 29539657: 13495
+Position 23762837: 13080
+Position 29138268: 12980
+Position 28924821: 12470
+Position 31033555: 12197
+Position 31774212: 12148
+Position 26160202: 11970
+Position 32997482: 11844
+Position 33618139: 11695
+Position 27209874: 11694
+Position 32289529: 11462
+Position 30533538: 11431
+Opening ./test_cases/q5_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_4threads.so processed in 34.205719881 seconds.
+
+Position 25067589: 13300
+Position 29231992: 13012
+Position 25836851: 11551
+Position 32080685: 11474
+Position 24553211: 11243
+Position 34007656: 10364
+Position 28138307: 10177
+Position 29539657: 10175
+Position 28480919: 9961
+Position 23762837: 9134
+Position 26160202: 9006
+Position 28924821: 9005
+Position 29138268: 8999
+Position 33921496: 8831
+Position 31033555: 8727
+Position 31774212: 8695
+Position 32997482: 8685
+Position 27209874: 8658
+Position 32289529: 8579
+Position 29022845: 8503
+Opening ./test_cases/q5_array_4threads.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q5_array_4threads.so processed in 91.762498562000005 seconds.
+
+Position 25067589: 37207
+Position 29231992: 34172
+Position 32080685: 31891
+Position 25836851: 31244
+Position 24553211: 30274
+Position 34007656: 30070
+Position 28138307: 29227
+Position 29539657: 28572
+Position 28480919: 27581
+Position 28924821: 25651
+Position 23762837: 25576
+Position 26160202: 25259
+Position 27209874: 25072
+Position 31774212: 24940
+Position 32997482: 24854
+Position 31033555: 24671
+Position 29022845: 24546
+Position 32289529: 24343
+Position 29138268: 24068
+Position 30533538: 23714
