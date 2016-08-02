@@ -1,0 +1,131 @@
+...24489750 lines read in.
+First pass
+
+Second pass
+
+UA: index map is of size 24489750
+
+Completed 24489750 row accesses
+Number of fragments = 24489750
+Min fragment size = 1
+Max fragment size = 1
+ID of Max = 1
+Mean fragment size = 1
+Standard deviation = 0
+
+encoding 1 has byte size in index 0 of 1
+index 0 has map byte size of 4
+Total loading time: 10.8482 sec
+
+...536814334 lines read in.
+First pass
+
+Second pass
+
+UA: index map is of size 24489750
+
+Completed 536814334 row accesses
+Number of fragments = 24489750
+Min fragment size = 1
+Max fragment size = 4660744
+ID of Max = 23326834
+Mean fragment size = 21.92
+Standard deviation = 2867.66
+
+encoding 1 has byte size in index 1 of 4
+index 1 has map byte size of 4
+Total loading time: 19.2216 sec
+
+
+...Indices have been loaded...
+
+...Automated results will be sent tooutput3.txt
+test file = queries3.txt
+calling int autohandle with func q3_mesh_array_0threads and rpos 1 and ids 1570,2584
+Opening ./test_cases/q3_mesh_array_0threads
+Cannot open library: ./test_cases/q3_mesh_array_0threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_0threads and rpos 1 and ids 4446,1478
+Opening ./test_cases/q3_mesh_array_0threads
+Cannot open library: ./test_cases/q3_mesh_array_0threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_0threads and rpos 1 and ids 4446,535
+Opening ./test_cases/q3_mesh_array_0threads
+Cannot open library: ./test_cases/q3_mesh_array_0threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_0threads and rpos 1 and ids 535,1478
+Opening ./test_cases/q3_mesh_array_0threads
+Cannot open library: ./test_cases/q3_mesh_array_0threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_0threads and rpos 1 and ids 7608,3646
+Opening ./test_cases/q3_mesh_array_0threads
+Cannot open library: ./test_cases/q3_mesh_array_0threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_0threads and rpos 1 and ids 90725,1570
+Opening ./test_cases/q3_mesh_array_0threads
+Cannot open library: ./test_cases/q3_mesh_array_0threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_0threads and rpos 1 and ids 90725,2584
+Opening ./test_cases/q3_mesh_array_0threads
+Cannot open library: ./test_cases/q3_mesh_array_0threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_1threads and rpos 1 and ids 1570,2584
+Opening ./test_cases/q3_mesh_array_1threads
+Cannot open library: ./test_cases/q3_mesh_array_1threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_1threads and rpos 1 and ids 4446,1478
+Opening ./test_cases/q3_mesh_array_1threads
+Cannot open library: ./test_cases/q3_mesh_array_1threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_1threads and rpos 1 and ids 4446,535
+Opening ./test_cases/q3_mesh_array_1threads
+Cannot open library: ./test_cases/q3_mesh_array_1threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_1threads and rpos 1 and ids 535,1478
+Opening ./test_cases/q3_mesh_array_1threads
+Cannot open library: ./test_cases/q3_mesh_array_1threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_1threads and rpos 1 and ids 7608,3646
+Opening ./test_cases/q3_mesh_array_1threads
+Cannot open library: ./test_cases/q3_mesh_array_1threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_1threads and rpos 1 and ids 90725,1570
+Opening ./test_cases/q3_mesh_array_1threads
+Cannot open library: ./test_cases/q3_mesh_array_1threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_1threads and rpos 1 and ids 90725,2584
+Opening ./test_cases/q3_mesh_array_1threads
+Cannot open library: ./test_cases/q3_mesh_array_1threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_2threads and rpos 1 and ids 1570,2584
+Opening ./test_cases/q3_mesh_array_2threads
+Cannot open library: ./test_cases/q3_mesh_array_2threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_2threads and rpos 1 and ids 4446,1478
+Opening ./test_cases/q3_mesh_array_2threads
+Cannot open library: ./test_cases/q3_mesh_array_2threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_2threads and rpos 1 and ids 4446,535
+Opening ./test_cases/q3_mesh_array_2threads
+Cannot open library: ./test_cases/q3_mesh_array_2threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_2threads and rpos 1 and ids 535,1478
+Opening ./test_cases/q3_mesh_array_2threads
+Cannot open library: ./test_cases/q3_mesh_array_2threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_2threads and rpos 1 and ids 7608,3646
+Opening ./test_cases/q3_mesh_array_2threads
+Cannot open library: ./test_cases/q3_mesh_array_2threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_2threads and rpos 1 and ids 90725,1570
+Opening ./test_cases/q3_mesh_array_2threads
+Cannot open library: ./test_cases/q3_mesh_array_2threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_2threads and rpos 1 and ids 90725,2584
+Opening ./test_cases/q3_mesh_array_2threads
+Cannot open library: ./test_cases/q3_mesh_array_2threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_4threads and rpos 1 and ids 1570,2584
+Opening ./test_cases/q3_mesh_array_4threads
+Cannot open library: ./test_cases/q3_mesh_array_4threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_4threads and rpos 1 and ids 4446,1478
+Opening ./test_cases/q3_mesh_array_4threads
+Cannot open library: ./test_cases/q3_mesh_array_4threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_4threads and rpos 1 and ids 4446,535
+Opening ./test_cases/q3_mesh_array_4threads
+Cannot open library: ./test_cases/q3_mesh_array_4threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_4threads and rpos 1 and ids 535,1478
+Opening ./test_cases/q3_mesh_array_4threads
+Cannot open library: ./test_cases/q3_mesh_array_4threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_4threads and rpos 1 and ids 7608,3646
+Opening ./test_cases/q3_mesh_array_4threads
+Cannot open library: ./test_cases/q3_mesh_array_4threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_4threads and rpos 1 and ids 90725,1570
+Opening ./test_cases/q3_mesh_array_4threads
+Cannot open library: ./test_cases/q3_mesh_array_4threads: cannot open shared object file: No such file or directory
+calling int autohandle with func q3_mesh_array_4threads and rpos 1 and ids 90725,2584
+Opening ./test_cases/q3_mesh_array_4threads
+Cannot open library: ./test_cases/q3_mesh_array_4threads: cannot open shared object file: No such file or directory
+calling int autohandle with func  and rpos 1 and id 90725
+Opening ./test_cases/
+Cannot open library: ./test_cases/: cannot read file data: Is a directory
+Deleting globals
