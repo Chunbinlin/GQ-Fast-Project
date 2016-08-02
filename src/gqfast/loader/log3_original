@@ -1,0 +1,735 @@
+Loading indices took 162.75 seconds.
+
+...Indices have been loaded...
+
+...Automated results will be sent to 'output.txt'
+test file = queries3.txt
+calling int autohandle with func q3_mesh_array_0threads_1570_2584.soand rpos 4
+Opening ./test_cases/q3_mesh_array_0threads_1570_2584.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_0threads_1570_2584.so processed in 0.0531578 seconds.
+
+Position 8678699: 254
+Position 1229987: 191
+Position 7175065: 133
+Position 740091: 129
+Position 3962863: 122
+Position 2295706: 97
+Position 2169275: 97
+Position 2667399: 90
+Position 4639464: 89
+Position 11565699: 87
+Position 4930915: 87
+Position 10330776: 85
+Position 12035009: 83
+Position 9760559: 83
+Position 9851285: 82
+Position 10818082: 80
+Position 10277001: 71
+Position 1429186: 68
+Position 2862251: 65
+Position 5620735: 64
+calling int autohandle with func q3_mesh_array_0threads_4446_1478.soand rpos 4
+Opening ./test_cases/q3_mesh_array_0threads_4446_1478.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_0threads_4446_1478.so processed in 0.013227309 seconds.
+
+Position 11468536: 8
+Position 8937713: 7
+Position 3471292: 7
+Position 4350831: 7
+Position 8109043: 7
+Position 7365486: 6
+Position 3843934: 5
+Position 1909640: 5
+Position 3596450: 5
+Position 7215270: 5
+Position 11986183: 5
+Position 11256366: 5
+Position 1801809: 5
+Position 8459511: 5
+Position 7762475: 5
+Position 3501967: 4
+Position 11733111: 4
+Position 2270371: 4
+Position 2953121: 4
+Position 6881845: 4
+calling int autohandle with func q3_mesh_array_0threads_4446_535.soand rpos 4
+Opening ./test_cases/q3_mesh_array_0threads_4446_535.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_0threads_4446_535.so processed in 0.050364627000000002 seconds.
+
+Position 2270371: 55
+Position 8489235: 54
+Position 3471292: 49
+Position 11468536: 45
+Position 2712806: 29
+Position 8024168: 27
+Position 8459511: 26
+Position 566762: 25
+Position 7626215: 24
+Position 6857814: 24
+Position 1796572: 24
+Position 9100918: 24
+Position 3010879: 22
+Position 4915451: 21
+Position 8626147: 21
+Position 3565967: 20
+Position 1646668: 20
+Position 3813852: 20
+Position 1282510: 20
+Position 11986183: 20
+calling int autohandle with func q3_mesh_array_0threads_535_1478.soand rpos 4
+Opening ./test_cases/q3_mesh_array_0threads_535_1478.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_0threads_535_1478.so processed in 0.066019691000000005 seconds.
+
+Position 6781872: 168
+Position 7051377: 134
+Position 8337326: 110
+Position 11329010: 100
+Position 3723425: 99
+Position 3519404: 96
+Position 6983534: 91
+Position 5447462: 91
+Position 2473066: 88
+Position 11586972: 84
+Position 1755583: 83
+Position 2286847: 80
+Position 9447478: 75
+Position 3485482: 74
+Position 4110326: 72
+Position 9402343: 70
+Position 8321717: 69
+Position 3717454: 68
+Position 5681988: 68
+Position 10243459: 67
+calling int autohandle with func q3_mesh_array_0threads_7608_3646.soand rpos 4
+Opening ./test_cases/q3_mesh_array_0threads_7608_3646.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_0threads_7608_3646.so processed in 0.01309894 seconds.
+
+Position 5346211: 17
+Position 5185465: 10
+Position 4605556: 8
+Position 3691473: 7
+Position 10559495: 7
+Position 4140343: 7
+Position 5457985: 6
+Position 8050017: 6
+Position 11411394: 5
+Position 4354492: 4
+Position 9069037: 4
+Position 1870439: 4
+Position 10743377: 4
+Position 11223582: 4
+Position 1853228: 4
+Position 7142084: 4
+Position 2209171: 4
+Position 4476337: 4
+Position 10877181: 3
+Position 7184650: 3
+calling int autohandle with func q3_mesh_array_0threads_90725_1570.soand rpos 4
+Opening ./test_cases/q3_mesh_array_0threads_90725_1570.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_0threads_90725_1570.so processed in 0.033305598999999998 seconds.
+
+Position 992787: 5
+Position 11477824: 3
+Position 6269828: 3
+Position 4474141: 2
+Position 4062695: 1
+Position 4120776: 1
+Position 10823899: 1
+Position 10282073: 1
+Position 5003594: 1
+Position 4859821: 1
+Position 8847762: 1
+Position 9310018: 1
+Position 11991627: 1
+Position 6825313: 1
+Position 12059915: 1
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+calling int autohandle with func q3_mesh_array_0threads_90725_2584.soand rpos 4
+Opening ./test_cases/q3_mesh_array_0threads_90725_2584.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_0threads_90725_2584.so processed in 0.015392305 seconds.
+
+Position 992787: 5
+Position 11477824: 3
+Position 6269828: 3
+Position 4474141: 2
+Position 4062695: 1
+Position 4120776: 1
+Position 10823899: 1
+Position 10282073: 1
+Position 5003594: 1
+Position 4859821: 1
+Position 8847762: 1
+Position 9310018: 1
+Position 11991627: 1
+Position 6825313: 1
+Position 12059915: 1
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+calling int autohandle with func q3_mesh_array_1threads_1570_2584.soand rpos 4
+Opening ./test_cases/q3_mesh_array_1threads_1570_2584.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_1threads_1570_2584.so processed in 0.064150533999999995 seconds.
+
+Position 8678699: 254
+Position 1229987: 191
+Position 7175065: 133
+Position 740091: 129
+Position 3962863: 122
+Position 2295706: 97
+Position 2169275: 97
+Position 2667399: 90
+Position 4639464: 89
+Position 11565699: 87
+Position 4930915: 87
+Position 10330776: 85
+Position 12035009: 83
+Position 9760559: 83
+Position 9851285: 82
+Position 10818082: 80
+Position 10277001: 71
+Position 1429186: 68
+Position 2862251: 65
+Position 5620735: 64
+calling int autohandle with func q3_mesh_array_1threads_4446_1478.soand rpos 4
+Opening ./test_cases/q3_mesh_array_1threads_4446_1478.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_1threads_4446_1478.so processed in 0.014830961 seconds.
+
+Position 11468536: 8
+Position 8937713: 7
+Position 3471292: 7
+Position 4350831: 7
+Position 8109043: 7
+Position 7365486: 6
+Position 3843934: 5
+Position 1909640: 5
+Position 3596450: 5
+Position 7215270: 5
+Position 11986183: 5
+Position 11256366: 5
+Position 1801809: 5
+Position 8459511: 5
+Position 7762475: 5
+Position 3501967: 4
+Position 11733111: 4
+Position 2270371: 4
+Position 2953121: 4
+Position 6881845: 4
+calling int autohandle with func q3_mesh_array_1threads_4446_535.soand rpos 4
+Opening ./test_cases/q3_mesh_array_1threads_4446_535.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_1threads_4446_535.so processed in 0.051406687 seconds.
+
+Position 2270371: 55
+Position 8489235: 54
+Position 3471292: 49
+Position 11468536: 45
+Position 2712806: 29
+Position 8024168: 27
+Position 8459511: 26
+Position 566762: 25
+Position 7626215: 24
+Position 6857814: 24
+Position 1796572: 24
+Position 9100918: 24
+Position 3010879: 22
+Position 4915451: 21
+Position 8626147: 21
+Position 3565967: 20
+Position 1646668: 20
+Position 3813852: 20
+Position 1282510: 20
+Position 11986183: 20
+calling int autohandle with func q3_mesh_array_1threads_535_1478.soand rpos 4
+Opening ./test_cases/q3_mesh_array_1threads_535_1478.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_1threads_535_1478.so processed in 0.074734957000000005 seconds.
+
+Position 6781872: 168
+Position 7051377: 134
+Position 8337326: 110
+Position 11329010: 100
+Position 3723425: 99
+Position 3519404: 96
+Position 6983534: 91
+Position 5447462: 91
+Position 2473066: 88
+Position 11586972: 84
+Position 1755583: 83
+Position 2286847: 80
+Position 9447478: 75
+Position 3485482: 74
+Position 4110326: 72
+Position 9402343: 70
+Position 8321717: 69
+Position 3717454: 68
+Position 5681988: 68
+Position 10243459: 67
+calling int autohandle with func q3_mesh_array_1threads_7608_3646.soand rpos 4
+Opening ./test_cases/q3_mesh_array_1threads_7608_3646.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_1threads_7608_3646.so processed in 0.014299722000000001 seconds.
+
+Position 5346211: 17
+Position 5185465: 10
+Position 4605556: 8
+Position 3691473: 7
+Position 10559495: 7
+Position 4140343: 7
+Position 5457985: 6
+Position 8050017: 6
+Position 11411394: 5
+Position 4354492: 4
+Position 9069037: 4
+Position 1870439: 4
+Position 10743377: 4
+Position 11223582: 4
+Position 1853228: 4
+Position 7142084: 4
+Position 2209171: 4
+Position 4476337: 4
+Position 10877181: 3
+Position 7184650: 3
+calling int autohandle with func q3_mesh_array_1threads_90725_1570.soand rpos 4
+Opening ./test_cases/q3_mesh_array_1threads_90725_1570.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_1threads_90725_1570.so processed in 0.034255688999999999 seconds.
+
+Position 992787: 5
+Position 11477824: 3
+Position 6269828: 3
+Position 4474141: 2
+Position 4062695: 1
+Position 4120776: 1
+Position 10823899: 1
+Position 10282073: 1
+Position 5003594: 1
+Position 4859821: 1
+Position 8847762: 1
+Position 9310018: 1
+Position 11991627: 1
+Position 6825313: 1
+Position 12059915: 1
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+calling int autohandle with func q3_mesh_array_1threads_90725_2584.soand rpos 4
+Opening ./test_cases/q3_mesh_array_1threads_90725_2584.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_1threads_90725_2584.so processed in 0.015914197000000001 seconds.
+
+Position 992787: 5
+Position 11477824: 3
+Position 6269828: 3
+Position 4474141: 2
+Position 4062695: 1
+Position 4120776: 1
+Position 10823899: 1
+Position 10282073: 1
+Position 5003594: 1
+Position 4859821: 1
+Position 8847762: 1
+Position 9310018: 1
+Position 11991627: 1
+Position 6825313: 1
+Position 12059915: 1
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+calling int autohandle with func q3_mesh_array_2threads_1570_2584.soand rpos 4
+Opening ./test_cases/q3_mesh_array_2threads_1570_2584.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_2threads_1570_2584.so processed in 0.052047916 seconds.
+
+Position 8678699: 254
+Position 1229987: 191
+Position 7175065: 133
+Position 740091: 129
+Position 3962863: 122
+Position 2295706: 97
+Position 2169275: 97
+Position 2667399: 90
+Position 4639464: 89
+Position 11565699: 87
+Position 4930915: 87
+Position 10330776: 85
+Position 12035009: 83
+Position 9760559: 83
+Position 9851285: 82
+Position 10818082: 80
+Position 10277001: 71
+Position 1429186: 68
+Position 2862251: 65
+Position 5620735: 64
+calling int autohandle with func q3_mesh_array_2threads_4446_1478.soand rpos 4
+Opening ./test_cases/q3_mesh_array_2threads_4446_1478.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_2threads_4446_1478.so processed in 0.014623766 seconds.
+
+Position 11468536: 8
+Position 8937713: 7
+Position 3471292: 7
+Position 4350831: 7
+Position 8109043: 7
+Position 7365486: 6
+Position 3843934: 5
+Position 1909640: 5
+Position 3596450: 5
+Position 7215270: 5
+Position 11986183: 5
+Position 11256366: 5
+Position 1801809: 5
+Position 8459511: 5
+Position 7762475: 5
+Position 3501967: 4
+Position 11733111: 4
+Position 2270371: 4
+Position 2953121: 4
+Position 6881845: 4
+calling int autohandle with func q3_mesh_array_2threads_4446_535.soand rpos 4
+Opening ./test_cases/q3_mesh_array_2threads_4446_535.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_2threads_4446_535.so processed in 0.050412875000000003 seconds.
+
+Position 2270371: 55
+Position 8489235: 54
+Position 3471292: 49
+Position 11468536: 45
+Position 2712806: 29
+Position 8024168: 27
+Position 8459511: 26
+Position 566762: 25
+Position 7626215: 24
+Position 6857814: 24
+Position 1796572: 24
+Position 9100918: 24
+Position 3010879: 22
+Position 4915451: 21
+Position 8626147: 21
+Position 3565967: 20
+Position 1646668: 20
+Position 3813852: 20
+Position 1282510: 20
+Position 11986183: 20
+calling int autohandle with func q3_mesh_array_2threads_535_1478.soand rpos 4
+Opening ./test_cases/q3_mesh_array_2threads_535_1478.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_2threads_535_1478.so processed in 0.063610062999999994 seconds.
+
+Position 6781872: 168
+Position 7051377: 134
+Position 8337326: 110
+Position 11329010: 100
+Position 3723425: 99
+Position 3519404: 96
+Position 6983534: 91
+Position 5447462: 91
+Position 2473066: 88
+Position 11586972: 84
+Position 1755583: 83
+Position 2286847: 80
+Position 9447478: 75
+Position 3485482: 74
+Position 4110326: 72
+Position 9402343: 70
+Position 8321717: 69
+Position 3717454: 68
+Position 5681988: 68
+Position 10243459: 67
+calling int autohandle with func q3_mesh_array_2threads_7608_3646.soand rpos 4
+Opening ./test_cases/q3_mesh_array_2threads_7608_3646.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_2threads_7608_3646.so processed in 0.014313261000000001 seconds.
+
+Position 5346211: 17
+Position 5185465: 10
+Position 4605556: 8
+Position 3691473: 7
+Position 10559495: 7
+Position 4140343: 7
+Position 5457985: 6
+Position 8050017: 6
+Position 11411394: 5
+Position 4354492: 4
+Position 9069037: 4
+Position 1870439: 4
+Position 10743377: 4
+Position 11223582: 4
+Position 1853228: 4
+Position 7142084: 4
+Position 2209171: 4
+Position 4476337: 4
+Position 10877181: 3
+Position 7184650: 3
+calling int autohandle with func q3_mesh_array_2threads_90725_1570.soand rpos 4
+Opening ./test_cases/q3_mesh_array_2threads_90725_1570.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_2threads_90725_1570.so processed in 0.033926837000000001 seconds.
+
+Position 992787: 5
+Position 11477824: 3
+Position 6269828: 3
+Position 4474141: 2
+Position 4062695: 1
+Position 4120776: 1
+Position 10823899: 1
+Position 10282073: 1
+Position 5003594: 1
+Position 4859821: 1
+Position 8847762: 1
+Position 9310018: 1
+Position 11991627: 1
+Position 6825313: 1
+Position 12059915: 1
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+calling int autohandle with func q3_mesh_array_2threads_90725_2584.soand rpos 4
+Opening ./test_cases/q3_mesh_array_2threads_90725_2584.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_2threads_90725_2584.so processed in 0.016316285999999999 seconds.
+
+Position 992787: 5
+Position 11477824: 3
+Position 6269828: 3
+Position 4474141: 2
+Position 4062695: 1
+Position 4120776: 1
+Position 10823899: 1
+Position 10282073: 1
+Position 5003594: 1
+Position 4859821: 1
+Position 8847762: 1
+Position 9310018: 1
+Position 11991627: 1
+Position 6825313: 1
+Position 12059915: 1
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+calling int autohandle with func q3_mesh_array_4threads_1570_2584.soand rpos 4
+Opening ./test_cases/q3_mesh_array_4threads_1570_2584.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_4threads_1570_2584.so processed in 0.047971377000000003 seconds.
+
+Position 8678699: 254
+Position 1229987: 191
+Position 7175065: 133
+Position 740091: 129
+Position 3962863: 122
+Position 2295706: 97
+Position 2169275: 97
+Position 2667399: 90
+Position 4639464: 89
+Position 11565699: 87
+Position 4930915: 87
+Position 10330776: 85
+Position 12035009: 83
+Position 9760559: 83
+Position 9851285: 82
+Position 10818082: 80
+Position 10277001: 71
+Position 1429186: 68
+Position 2862251: 65
+Position 5620735: 64
+calling int autohandle with func q3_mesh_array_4threads_4446_1478.soand rpos 4
+Opening ./test_cases/q3_mesh_array_4threads_4446_1478.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_4threads_4446_1478.so processed in 0.014218863 seconds.
+
+Position 11468536: 8
+Position 8937713: 7
+Position 3471292: 7
+Position 4350831: 7
+Position 8109043: 7
+Position 7365486: 6
+Position 3843934: 5
+Position 1909640: 5
+Position 3596450: 5
+Position 7215270: 5
+Position 11986183: 5
+Position 11256366: 5
+Position 1801809: 5
+Position 8459511: 5
+Position 7762475: 5
+Position 3501967: 4
+Position 11733111: 4
+Position 2270371: 4
+Position 2953121: 4
+Position 6881845: 4
+calling int autohandle with func q3_mesh_array_4threads_4446_535.soand rpos 4
+Opening ./test_cases/q3_mesh_array_4threads_4446_535.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_4threads_4446_535.so processed in 0.049885334000000003 seconds.
+
+Position 2270371: 55
+Position 8489235: 54
+Position 3471292: 49
+Position 11468536: 45
+Position 2712806: 29
+Position 8024168: 27
+Position 8459511: 26
+Position 566762: 25
+Position 7626215: 24
+Position 6857814: 24
+Position 1796572: 24
+Position 9100918: 24
+Position 3010879: 22
+Position 4915451: 21
+Position 8626147: 21
+Position 3565967: 20
+Position 1646668: 20
+Position 3813852: 20
+Position 1282510: 20
+Position 11986183: 20
+calling int autohandle with func q3_mesh_array_4threads_535_1478.soand rpos 4
+Opening ./test_cases/q3_mesh_array_4threads_535_1478.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_4threads_535_1478.so processed in 0.061728941000000002 seconds.
+
+Position 6781872: 168
+Position 7051377: 134
+Position 8337326: 110
+Position 11329010: 100
+Position 3723425: 99
+Position 3519404: 96
+Position 6983534: 91
+Position 5447462: 91
+Position 2473066: 88
+Position 11586972: 84
+Position 1755583: 83
+Position 2286847: 80
+Position 9447478: 75
+Position 3485482: 74
+Position 4110326: 72
+Position 9402343: 70
+Position 8321717: 69
+Position 3717454: 68
+Position 5681988: 68
+Position 10243459: 67
+calling int autohandle with func q3_mesh_array_4threads_7608_3646.soand rpos 4
+Opening ./test_cases/q3_mesh_array_4threads_7608_3646.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_4threads_7608_3646.so processed in 0.014400421 seconds.
+
+Position 5346211: 17
+Position 5185465: 10
+Position 4605556: 8
+Position 3691473: 7
+Position 10559495: 7
+Position 4140343: 7
+Position 5457985: 6
+Position 8050017: 6
+Position 11411394: 5
+Position 4354492: 4
+Position 9069037: 4
+Position 1870439: 4
+Position 10743377: 4
+Position 11223582: 4
+Position 1853228: 4
+Position 7142084: 4
+Position 2209171: 4
+Position 4476337: 4
+Position 10877181: 3
+Position 7184650: 3
+calling int autohandle with func q3_mesh_array_4threads_90725_1570.soand rpos 4
+Opening ./test_cases/q3_mesh_array_4threads_90725_1570.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_4threads_90725_1570.so processed in 0.034389123000000001 seconds.
+
+Position 992787: 5
+Position 11477824: 3
+Position 6269828: 3
+Position 4474141: 2
+Position 4062695: 1
+Position 4120776: 1
+Position 10823899: 1
+Position 10282073: 1
+Position 5003594: 1
+Position 4859821: 1
+Position 8847762: 1
+Position 9310018: 1
+Position 11991627: 1
+Position 6825313: 1
+Position 12059915: 1
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+calling int autohandle with func q3_mesh_array_4threads_90725_2584.soand rpos 4
+Opening ./test_cases/q3_mesh_array_4threads_90725_2584.so
+Loading symbol query_type...
+Closing library...
+Query ./test_cases/q3_mesh_array_4threads_90725_2584.so processed in 0.016269591999999999 seconds.
+
+Position 992787: 5
+Position 11477824: 3
+Position 6269828: 3
+Position 4474141: 2
+Position 4062695: 1
+Position 4120776: 1
+Position 10823899: 1
+Position 10282073: 1
+Position 5003594: 1
+Position 4859821: 1
+Position 8847762: 1
+Position 9310018: 1
+Position 11991627: 1
+Position 6825313: 1
+Position 12059915: 1
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Position 0: 0
+Deleting globals
