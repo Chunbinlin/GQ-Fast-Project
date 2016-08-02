@@ -88,7 +88,7 @@ int main(int argc, char ** argv)
     int num_files = 0;
     int save_to_file = 0;
     int itable = 0;
-
+    bool two_param_flag = false;
     char* filename = "dummy.bin";
     char* auto_filename = "dummy.bin";
     char* outfile_name = "dummy.bin";
@@ -111,7 +111,7 @@ int main(int argc, char ** argv)
                  "[3]\tBB\n"
                  "[4]\tHuffman\n"
                  "[5]\tOptimal compression\n\n";
-    while ((c = getopt(argc, argv, "hs:l:d:c:i:a:o:")) != -1)
+    while ((c = getopt(argc, argv, "hs:l:d:c:i:a:o:t")) != -1)
     {
         switch (c)
         {
@@ -185,6 +185,12 @@ int main(int argc, char ** argv)
                 exit(0);
             }
             break;
+
+        case 't':
+
+            two_param_flag = true;
+
+            break;
         }
     }
 
@@ -194,7 +200,7 @@ int main(int argc, char ** argv)
         //load_index<uint32_t>(idx, filename);
         cerr << "\n...Indices have been loaded...\n";
         cerr << "\n...Automated results will be sent to" << outfile_name << "\n";
-        automatic_tests(auto_filename, outfile_name, true);
+        automatic_tests(auto_filename, outfile_name, two_param_flag);
     }
     else
     {
