@@ -1,0 +1,967 @@
+#ifndef gqfast_loader_
+#define gqfast_loader_
+
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <chrono>
+#include <cmath>
+#include <cstddef>
+#include <map>
+
+#include "gqfast_index.hpp"
+
+#define TERMINATING_BYTES 7
+
+#define CHAR_1BYTE 1
+#define INT_2BYTE 2
+#define INT_4BYTE 4
+#define INT_8BYTE 8
+
+#define MAX_INDICES 6
+
+// Metadata
+struct Metadata
+{
+    uint64_t idx_domain;
+    vector<uint64_t> idx_col_domains;
+    vector<uint32_t> idx_min_col_ids;
+    vector<int> idx_cols_byte_sizes;
+    int idx_map_byte_size;
+    int idx_num_encodings;
+    int idx_max_fragment_size;
+
+    Metadata() {}
+
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & idx_col_domains;
+        ar & idx_min_col_ids;
+        ar & idx_cols_byte_sizes;
+        ar & idx_map_byte_size;
+        ar & idx_num_encodings;
+        ar & idx_max_fragment_size;
+    }
+};
+
+
+int getByteSize(uint64_t domain);
+
+void collect_config(string config_filename, map<int,int> & encodings_map, int & index_col_id);
+
+void load_data_file(string data_filename, int index_col_id, vector<uint32_t> * & input_file, int & num_encodings, Metadata & metadata);
+
+Encodings** organize_encodings(map<int,int> encodings_map, int index_col_id, int num_encodings);
+
+template <typename TValue, typename TIndexMap>
+GqFastIndex<TIndexMap> * create_index(vector<TValue> * input_file, Encodings* encodings[], int num_encodings, Metadata & metadata);
+
+void serialize_index_to_disk(GqFastIndex<uint32_t> * new_index);
+
+void build_index(string data_filename, string config_filename)
+{
+
+    map<int, int> encodings_map;
+    int index_col_id;
+
+    collect_config(config_filename, encodings_map, index_col_id);
+
+    vector<uint32_t>* input_file;
+    int num_encodings;
+
+    Metadata metadata;
+    load_data_file(data_filename, index_col_id, input_file, num_encodings, metadata);
+
+    cerr << "Num encodings = " << metadata.idx_num_encodings << "\n";
+    cerr << "Domain = " << metadata.idx_domain << "\n";
+    for (int i=0; i<num_encodings; i++)
+    {
+        cerr << "Domain for encoded " << i << " = " << metadata.idx_col_domains[i] << "\n";
+        cerr << "Min id for col " << i << " = " << metadata.idx_min_col_ids[i] << "\n";
+        cerr << "Byte size for encoded " << i << " = " << metadata.idx_cols_byte_sizes[i] << "\n";
+    }
+    cerr << "Map byte size = " << metadata.idx_map_byte_size << "\n";
+
+    Encodings** encodings = organize_encodings(encodings_map, index_col_id, num_encodings);
+
+
+
+    //GqFastIndex<uint32_t>* new_index = create_index<uint32_t, uint32_t>(input_file, encodings, num_encodings, metadata);
+    //serialize_index_to_disk(new_index);
+
+}
+
+void collect_config(string config_filename, map<int,int> & encodings_map, int & index_col_id)
+{
+
+    string line;
+    ifstream myfile(config_filename);
+
+    while (getline(myfile,line))
+    {
+        if (line.find("<index_column_id>") != string::npos)
+        {
+            unsigned first = line.find("<index_column_id>");
+            unsigned last = line.find("</index_column_id>");
+            string index_col_id_string = line.substr (first+17,last-first-17);
+
+            index_col_id = stoi(index_col_id_string);
+            cerr << "index col id = " << index_col_id << "\n";
+        }
+        else if (line.find("<column_id_encoding_type>") != string::npos)
+        {
+            unsigned first = line.find("<column_id_encoding_type");
+            unsigned last = line.find("</column_id_encoding_type");
+
+            string encoding_string = line.substr(first+25, last-first-25);
+
+            istringstream ss(encoding_string);
+            string token;
+
+            getline(ss, token, ',');
+            int encoding_column = stoi(token);
+            getline(ss, token);
+
+            int curr_encoding = -1;
+
+            if (!strcmp(token.c_str(), "BCA"))
+            {
+                curr_encoding = ENCODING_BIT_ALIGNED_COMPRESSED;
+            }
+            else if (!strcmp(token.c_str(), "BB"))
+            {
+                curr_encoding = ENCODING_BYTE_ALIGNED_BITMAP;
+            }
+            else if (!strcmp(token.c_str(), "HU"))
+            {
+                curr_encoding = ENCODING_HUFFMAN;
+            }
+
+            cerr << "col " << encoding_column << " is of encoding " << curr_encoding << "\n";
+            encodings_map[encoding_column] = curr_encoding;
+        }
+    }
+}
+
+void load_data_file(string data_filename, int index_col_id, vector<uint32_t> * & input_file, int & num_encodings, Metadata & metadata)
+{
+
+    string line;
+    ifstream myfile(data_filename);
+
+    // First line counts the number of columns
+    getline(myfile, line);
+    stringstream lineStream(line);
+    string cell;
+    num_encodings = -1;
+    while(getline(lineStream,cell,','))
+    {
+        num_encodings++;
+    }
+
+    input_file = new vector<uint32_t>[num_encodings+1];
+    uint32_t* max_column_ids = new uint32_t[num_encodings+1]();           // To find table's domain sizes for each column
+    uint32_t* min_column_ids = new uint32_t[num_encodings+1]();
+
+    uint64_t lines_read_in = 0;
+
+    while (getline(myfile,line))
+    {
+        lines_read_in++;
+        stringstream lineStream(line);
+        string cell;
+        int current;
+        int counter = 0;
+        while(getline(lineStream,cell,','))
+        {
+            current =  atoi(cell.c_str());
+            int adjusted_index = -1;
+            if (counter < index_col_id)
+            {
+                adjusted_index = counter+1;
+            }
+            else if (counter == index_col_id)
+            {
+                adjusted_index = 0;
+            }
+            else
+            {
+                adjusted_index = counter;
+            }
+            input_file[adjusted_index].push_back(current);
+
+            if (lines_read_in == 1)
+            {
+                min_column_ids[adjusted_index] = current;
+            }
+            else if (min_column_ids[adjusted_index] > current)
+            {
+                min_column_ids[adjusted_index] = current;
+            }
+            if (max_column_ids[adjusted_index] < current)
+            {
+                max_column_ids[adjusted_index] = current;
+            }
+
+            counter++;
+        }
+    }
+    myfile.close();
+
+    metadata.idx_domain = max_column_ids[0] + 1;
+    metadata.idx_num_encodings = num_encodings;
+    for (int i=1; i<num_encodings+1; i++)
+    {
+        metadata.idx_col_domains.push_back(max_column_ids[i]+1);
+        metadata.idx_min_col_ids.push_back(min_column_ids[i]);
+        int bytes_size = getByteSize(max_column_ids[i]+1);
+        metadata.idx_cols_byte_sizes.push_back(bytes_size);
+        // cerr << "encoding " << i << " has byte size in index " << index_id << " of " << bytes_size << "\n";
+    }
+
+    metadata.idx_map_byte_size = getByteSize(max_column_ids[0]+1);
+
+    delete[] max_column_ids;
+    delete[] min_column_ids;
+
+}
+
+
+Encodings** organize_encodings(map<int,int> encodings_map, int index_col_id, int num_encodings)
+{
+
+
+
+    return nullptr;
+}
+
+
+void serialize_index_to_disk(GqFastIndex<uint32_t> * new_index)
+{
+
+}
+
+
+template <typename T>
+void read_in_file(vector<T> * input_file, string filename, uint64_t max_column_ids[], uint64_t min_column_ids[])
+{
+
+    string line;
+    ifstream myfile(filename);
+
+    uint64_t lines_read_in = 0;
+
+    // skip line 1
+    getline(myfile, line);
+
+    while (getline(myfile,line))
+    {
+        lines_read_in++;
+        stringstream lineStream(line);
+        string cell;
+        int current;
+        int counter = 0;
+        while(getline(lineStream,cell,','))
+        {
+            current =  atoi(cell.c_str());
+            input_file[counter].push_back(current);
+            if (lines_read_in == 1)
+            {
+                min_column_ids[counter] = current;
+            }
+            else if (min_column_ids[counter] > current)
+            {
+                min_column_ids[counter] = current;
+            }
+            if (max_column_ids[counter] < current)
+            {
+                max_column_ids[counter] = current;
+            }
+            counter++;
+        }
+    }
+
+    myfile.close();
+
+
+
+
+    // cerr << "..." << lines_read_in << " lines read in.\n";
+
+}
+
+template <typename T>
+void init_dictionaries(vector<T> * input_file, dictionary** dict, Encodings* encodings[], int num_encodings,
+                       Metadata metadata)
+{
+
+    for (int i=0; i<num_encodings; i++)
+    {
+        if (encodings[i]->getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED)
+        {
+
+            uint64_t max = metadata.idx_col_domains[i];
+            uint64_t min = metadata.idx_min_col_ids[i];
+            uint64_t domain = max - min + 1;
+            // Create the dictionary
+            uint64_t offset = min-1;
+
+            // Create the dictionary
+            dict[i] = new dictionary(domain, offset);
+
+            // cerr << "Dictionary created on encoding " << i << ":\n";
+            // cerr << dict[i]->bits_info[0] << " bits needed to encode a value\n";
+
+        }
+        else
+        {
+            dict[i] = new dictionary(1, 0);
+        }
+    }
+}
+
+
+template <typename T>
+void init_huffman_structures(vector<T> * input_file, Encodings* encodings[], int num_encodings,
+                             vector<Node<T> *> & huffman_tree, uint32_t** & huffman_tree_array, bool** & huffman_terminator_array,
+                             vector<encoding_dict<T> *> & encoding_dictionary, int huffman_tree_sizes[])
+{
+
+    for (int i=0; i<num_encodings; i++)
+    {
+        if (encodings[i]->getEncoding() == ENCODING_HUFFMAN)
+        {
+
+            // cerr << "Huffman: encoded column " << i << " is of size " << input_file[i+1].size() << "\n";
+
+            Node<T> * tree;
+            generate_array_tree_representation(input_file[i+1], input_file[i+1].size(), huffman_tree_array[i],
+                                               huffman_tree_sizes[i], huffman_terminator_array[i], tree);
+
+            encoding_dict<T> * dict_temp = new encoding_dict<T>();
+            build_inverse_mapping(tree, *dict_temp);
+            encoding_dictionary[i] = dict_temp;
+
+            huffman_tree[i] = tree;
+            // cerr << "...Huffman encoding complete for encoded column " << i << "\n";
+        }
+        else
+        {
+            // Encoding of column is not Huffman
+            huffman_tree[i] = nullptr;
+            huffman_tree_array[i] = new T[1]();
+            huffman_terminator_array[i] = new bool[1]();
+            huffman_tree_sizes[i] = 1;
+            encoding_dictionary[i] = nullptr;
+        }
+    }
+}
+
+
+template <typename T>
+void process_old_value(vector<T> & keys, vector<uint32_t> & key_counts, int num_encodings, uint32_t bit_count[],
+                       vector<vector<uint32_t> > & byte_count, vector<vector<T> > & fragment_to_encode, uint32_t key_counter,
+                       vector<encoding_dict<T> *> & encoding_dictionary, T oldValue, Encodings* encodings[],
+                       vector<vector<unsigned char*> > & huffman_column, vector<vector<unsigned char *> > & bitmap_column,
+                       dictionary ** dict)
+{
+
+    // Update with old key
+    keys.push_back(oldValue);
+    key_counts.push_back(key_counter);
+
+    // Additional work for compression of columns
+    for (int i=0; i<num_encodings; i++)
+    {
+
+        // Calculate bytes for bit-aligned compression
+        if (encodings[i]->getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED)
+        {
+            uint32_t bytes = ceil((float)bit_count[i] * key_counter / 8);
+            byte_count[i].push_back(bytes);
+        }
+
+        // Huffman fragment encoding is done here to preserve byte-alignment between fragments
+        // encode() is found in the file "huffman.hpp"
+        else if (encodings[i]->getEncoding() == ENCODING_HUFFMAN)
+        {
+
+            uint32_t bytes = 0;
+            unsigned char* compressed_terms = encode(fragment_to_encode[i], key_counter, *(encoding_dictionary[i]),
+                                              bytes);
+
+            huffman_column[i].push_back(compressed_terms);
+            byte_count[i].push_back(bytes);
+
+            fragment_to_encode[i].clear();
+
+        }
+        // encode_bitmap() in byte_aligned_bitmap.hpp
+        else if (encodings[i]->getEncoding() == ENCODING_BYTE_ALIGNED_BITMAP)
+        {
+            uint32_t bytes = 0;
+            encode_bitmap(fragment_to_encode[i], bitmap_column[i], bytes);
+            byte_count[i].push_back(bytes);
+            fragment_to_encode[i].clear();
+        }
+    }
+}
+
+
+template <typename TValue, typename TIndexMap>
+void assign_data_uncompressed(unsigned char * fragment_column, TIndexMap ** index_map, uint64_t map_size, int curr_col,
+                              vector<TValue> & keys, vector<uint32_t> & key_counts, vector<TValue> & column, int data_type)
+{
+
+    // Assumes keys are sorted in ascending order
+    TIndexMap fragment_col_ptr = 0;
+    uint32_t column_iterator = 0;
+    uint32_t key_iterator = 0;
+
+    if (data_type == INT_4BYTE)
+    {
+
+        for (uint64_t i=0; i<map_size; i++)
+        {
+
+            index_map[i][curr_col] = fragment_col_ptr;
+
+            // map position has fragment
+            if (i == keys[key_iterator])
+            {
+                uint32_t curr_count = key_counts[key_iterator];
+                for (uint32_t j=column_iterator; j<column_iterator+curr_count; j++)
+                {
+
+                    TValue * frag_value = (TValue *) &(fragment_column[fragment_col_ptr]);
+                    *frag_value = column[j];
+                    fragment_col_ptr += sizeof(TValue);
+                }
+                column_iterator += curr_count;
+                key_iterator++;
+            }
+
+        }
+        index_map[map_size][curr_col] = fragment_col_ptr;
+    }
+    else if (data_type == CHAR_1BYTE)
+    {
+
+        for (uint64_t i=0; i<map_size; i++)
+        {
+
+            index_map[i][curr_col] = fragment_col_ptr;
+            // map position has fragment
+            if (i == keys[key_iterator])
+            {
+
+                uint32_t curr_count = key_counts[key_iterator];
+                for (uint32_t j=column_iterator; j<column_iterator+curr_count; j++)
+                {
+                    fragment_column[fragment_col_ptr++] = (unsigned char) column[j];
+                }
+
+                column_iterator += curr_count;
+                key_iterator++;
+            }
+
+        }
+        index_map[map_size][curr_col] = fragment_col_ptr;
+    }
+}
+
+template <typename TValue, typename TIndexMap>
+void assign_data_dictionary(unsigned char * fragment_column, TIndexMap ** index_map, uint64_t map_size, int curr_col,
+                            vector<uint32_t> & byte_count, vector<TValue> & keys, vector<uint32_t> & key_counts, vector<TValue> & column,
+                            dictionary * dict)
+{
+
+    TIndexMap fragment_col_ptr = 0;      // to maintain the position which we are at in fragment_column
+    uint32_t column_iterator = 0;       // to iterate accross column
+    uint32_t key_iterator = 0;
+
+    int bits_size = dict->bits_info[0];
+    uint64_t offset = dict->offset;
+
+    for (uint64_t i=0; i<map_size; i++)
+    {
+
+        index_map[i][curr_col] = fragment_col_ptr;
+
+        if (i == keys[key_iterator])
+        {
+            uint32_t curr_count = key_counts[key_iterator];
+
+            int bit_pos = 0, byte_pos = 0;
+
+            for (uint32_t j=column_iterator; j<column_iterator+curr_count; j++)
+            {
+
+                uint32_t encoded_val = column[j]-offset;
+
+                // Get access to current + next 7 bytes
+                uint64_t * column_address = (uint64_t *) &(fragment_column[fragment_col_ptr+byte_pos]);
+
+                encoded_val = encoded_val << bit_pos;
+
+                // Emplaces the value
+                *column_address |= encoded_val;
+
+                // Move the bit and byte pointers
+                byte_pos += (bit_pos+bits_size)/8;
+                bit_pos = (bit_pos + bits_size) % 8;
+
+            }
+
+            // Move the pointers
+            fragment_col_ptr += byte_count[key_iterator];
+            column_iterator += curr_count;
+            key_iterator++;
+        }
+    }
+    index_map[map_size][curr_col] = fragment_col_ptr;
+}
+
+template <typename TValue, typename TIndexMap>
+void assign_data_huffman(unsigned char * fragment_column, TIndexMap ** index_map, uint64_t map_size, int curr_col,
+                         vector<TValue> & keys, vector<uint32_t> & key_counts, vector<uint32_t> & byte_count,
+                         vector<unsigned char*> & huffman_column)
+{
+
+    TIndexMap fragment_col_ptr = 0;
+    uint32_t key_iterator = 0;
+
+    for (uint64_t i=0; i<map_size; i++)
+    {
+        index_map[i][curr_col] = fragment_col_ptr;
+
+        if (i == keys[key_iterator])
+        {
+            uint32_t curr_count = key_counts[key_iterator];
+
+            unsigned char * my_char_ptr = huffman_column[key_iterator];
+
+            for (uint32_t j=0; j<byte_count[key_iterator]; j++)
+            {
+                fragment_column[fragment_col_ptr++] = my_char_ptr[j];
+            }
+
+            key_iterator++;
+        }
+
+    }
+    index_map[map_size][curr_col] = fragment_col_ptr;
+    // Delete previously copied char arrays
+    for (int i=0; i<huffman_column.size(); i++)
+    {
+        delete[] huffman_column[i];
+    }
+
+}
+
+
+template <typename TValue, typename TIndexMap>
+void assign_data_bitmap(unsigned char * fragment_column, TIndexMap ** index_map, uint64_t map_size, int curr_col,
+                        vector<TValue> & keys, vector<uint32_t> & key_counts, vector<uint32_t> & byte_count,
+                        vector<unsigned char *> & bitmap_column)
+{
+
+    TIndexMap fragment_col_ptr = 0;
+    uint32_t key_iterator = 0;
+
+    for (uint64_t i=0; i<map_size; i++)
+    {
+
+        index_map[i][curr_col] = fragment_col_ptr;
+
+
+        if (i == keys[key_iterator])
+        {
+            uint32_t curr_count = key_counts[key_iterator];
+            // Assign values to the fragment column
+            // Simple because encoding has already been achieved
+            unsigned char * my_char_ptr = bitmap_column[key_iterator];
+
+            for (int j=0; j<byte_count[key_iterator]; j++)
+            {
+                fragment_column[fragment_col_ptr] = my_char_ptr[j];
+                fragment_col_ptr++;
+            }
+
+            key_iterator++;
+        }
+
+    }
+    index_map[map_size][curr_col] = fragment_col_ptr;
+    // Delete copied unsigned char arrays
+    for (int i=0; i<bitmap_column.size(); i++)
+    {
+        delete[] bitmap_column[i];
+    }
+
+}
+
+
+int getByteSize(uint64_t domain)
+{
+
+    if (domain/0x100000000)
+    {
+        return INT_8BYTE;
+    }
+    else if (domain/0x10000)
+    {
+        return INT_4BYTE;
+    }
+    else if (domain/0x100)
+    {
+        return INT_2BYTE;
+    }
+    else
+    {
+        return CHAR_1BYTE;
+    }
+}
+
+template <typename TValue, typename TIndexMap>
+GqFastIndex<TIndexMap> * create_index(vector<TValue> * input_file, Encodings* encodings[], int num_encodings, Metadata & metadata)
+{
+
+    //vector<int> & domains, int & max_frag_size) {
+
+    // cerr << "\n...Begin loading file " << filename << "\n";
+
+
+    //vector<TValue> * input_file = new vector<TValue>[num_encodings+1];    // To store table in memory
+
+    // Reads in file
+    //read_in_file(input_file, filename, max_column_ids, min_column_ids);
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    // dict[x] stores bits per encoding and decoding integer for column 'x' if 'x' is to be bit-aligned compressed
+    dictionary** dict = new dictionary*[num_encodings];
+    init_dictionaries(input_file, dict, encodings, num_encodings, metadata);
+
+    // Create Huffman trees, decoding arrays, and encoding dictionaries for Huffman encodings
+    vector<Node<TValue> *> huffman_tree;
+    huffman_tree.resize(num_encodings);
+    uint32_t** huffman_tree_array = new uint32_t*[num_encodings];
+    int* huffman_tree_sizes = new int[num_encodings]();
+    bool ** huffman_terminator_array = new bool*[num_encodings];
+
+    vector<encoding_dict<TValue> *> encoding_dictionary;
+    encoding_dictionary.resize(num_encodings);
+    init_huffman_structures(input_file, encodings, num_encodings, huffman_tree, huffman_tree_array,
+                            huffman_terminator_array, encoding_dictionary, huffman_tree_sizes);
+
+    // domain_size (of first column) will specify the size of the index map
+    // +1 because we want to access the index at the last value
+    uint64_t domain_size = metadata.idx_domain;
+
+    vector<TValue> keys;                         // Each unique key, in order of appearance
+    vector<uint32_t> key_counts;            // For each key in table, # of times the key appears
+
+    uint32_t key_counter = 0;               // A temporary holder of the number of times current key has appeared
+    uint32_t total_row_count = 0;           // Total row count of the table
+
+    vector<vector<uint32_t> > byte_count;   // The number of bytes needed for each key (compressed only)
+    byte_count.resize(num_encodings);
+
+    vector<vector<unsigned char*> > huffman_column;
+    huffman_column.resize(num_encodings);
+
+    vector<vector<TValue> > fragment_to_encode;                      // for Huffman or Byte-aligned bitmap
+    fragment_to_encode.resize(num_encodings);
+
+    vector< vector<unsigned char *> > bitmap_column;            // for Byte aligned bitmap
+    bitmap_column.resize(num_encodings);
+
+    uint32_t bit_count[num_encodings];       // The number of bits per encoding (bit-aligned compressed)
+    for (int i=0; i<num_encodings; i++)
+    {
+        // get the bit encoding size
+        if (encodings[i]->getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED)
+        {
+            bit_count[i] = dict[i]->bits_info[0];
+        }
+    }
+
+
+    //
+    // FIRST PASS: Begin processing according to encoding type
+    //
+    // cerr << "First pass\n\n";
+
+    TValue currValue;                        // To keep track of the key currently being processed
+    TValue oldValue = input_file[0][0];      // To keep track of when the current key has changed. Init to
+    // first key in table.
+
+    int next_val;
+
+    for (uint32_t n=0; n<input_file[0].size(); n++)
+    {
+        total_row_count++;
+
+        currValue = input_file[0][n];
+
+        // When next key has been reached
+        // call process_old_value() to update various related structures
+        if (currValue != oldValue)
+        {
+            process_old_value(keys, key_counts, num_encodings, bit_count, byte_count, fragment_to_encode,
+                              key_counter, encoding_dictionary, oldValue, encodings, huffman_column, bitmap_column, dict);
+            oldValue = currValue;
+            // Reset the key counter
+            key_counter = 0;
+        }
+
+        key_counter++;
+
+        // fragment_to_encode will store a copy of values for a given key when encoding is Huffman or
+        // Byte-aligned Bitmap
+        for (int i=0; i<num_encodings; i++)
+        {
+            next_val = input_file[i+1][n];
+            int curr_encoding = encodings[i]->getEncoding();
+
+            if (curr_encoding == ENCODING_HUFFMAN || curr_encoding == ENCODING_BYTE_ALIGNED_BITMAP)
+            {
+                fragment_to_encode[i].push_back(next_val);
+            }
+
+        }
+
+    }
+    // We process the last key, as it was missed by the loop
+    process_old_value(keys, key_counts, num_encodings, bit_count, byte_count, fragment_to_encode, key_counter,
+                      encoding_dictionary, oldValue, encodings, huffman_column, bitmap_column, dict);
+
+    // Free some of the memory in the input_file that is no longer needed
+    input_file[0].clear();
+    for (int i=0; i<num_encodings; i++)
+    {
+        if  (!(encodings[i]->getEncoding() == ENCODING_BIT_ALIGNED_COMPRESSED) &&
+                !(encodings[i]->getEncoding() == ENCODING_UNCOMPRESSED))
+        {
+            input_file[i+1].clear();
+        }
+    }
+
+    // Statistical Measurements
+    uint32_t max_size = 0;
+    uint32_t max_id;
+    for (int i=0; i<key_counts.size(); i++)
+    {
+        if (key_counts[i] > max_size)
+        {
+            max_size = key_counts[i];
+            max_id = keys[i];
+        }
+    }
+
+    uint32_t min_size = max_size;
+    for (int i=0; i<key_counts.size(); i++)
+    {
+        if (key_counts[i] < min_size)
+        {
+            min_size = key_counts[i];
+        }
+    }
+
+    double avg_size = total_row_count/(double)keys.size();
+
+    double variance = 0;
+    for (int i=0; i<key_counts.size(); i++)
+    {
+        double curr_temp = (double) key_counts[i];
+        variance += ((curr_temp-avg_size)*(curr_temp-avg_size));
+    }
+    variance = variance / key_counts.size();
+
+    double std_dev = sqrt(variance);
+
+    //
+    //  SECOND PASS: Allocate fragment arrays, now that sizes are known, and set-up the index map
+    //
+    // cerr << "Second pass\n\n";
+
+    unsigned char ** fragment_data = new unsigned char *[num_encodings];
+    TIndexMap ** index_map = new TIndexMap *[domain_size+1];
+
+    // cerr << "Creating index map of size " << sizeof(TIndexMap) * (domain_size+1) * num_encodings << "\n";
+    for (uint64_t i=0; i<domain_size+1; i++)
+    {
+        index_map[i] = new TIndexMap[num_encodings]();
+    }
+
+    uint32_t * size_of_current_array = new uint32_t[num_encodings]();
+
+    // Each fragment (one per key) reserves space to store its size
+    for (int i=0; i<num_encodings; i++)
+    {
+
+        switch(encodings[i]->getEncoding())
+        {
+
+        case ENCODING_UNCOMPRESSED:
+        {
+
+            int data_type;
+            if (getByteSize(metadata.idx_col_domains[i]) == CHAR_1BYTE)
+            {
+                size_of_current_array[i] = total_row_count;
+                data_type = CHAR_1BYTE;
+
+            }
+            else
+            {
+                size_of_current_array[i] = sizeof(TValue) * total_row_count;
+                data_type = INT_4BYTE;
+            }
+
+            // Allocate and initialize
+            // cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
+            fragment_data[i] = new unsigned char[size_of_current_array[i]]();
+
+            assign_data_uncompressed(fragment_data[i], index_map, domain_size, i, keys, key_counts,
+                                     input_file[i+1], data_type);
+            break;
+        }
+        case ENCODING_BIT_ALIGNED_COMPRESSED:
+        {
+
+            uint32_t sum = 0;
+            for (uint32_t j=0; j<byte_count[i].size(); j++)
+            {
+                sum += byte_count[i][j];
+            }
+            // We need TERMINATING_BYTES for read-ahead encoding and decoding
+            size_of_current_array[i] = sum + TERMINATING_BYTES;
+
+            // Allocate and initialize
+            // cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
+            fragment_data[i] = new unsigned char[size_of_current_array[i]]();
+
+            assign_data_dictionary(fragment_data[i], index_map, domain_size, i, byte_count[i], keys,
+                                   key_counts, input_file[i+1], dict[i]);
+            break;
+        }
+        case ENCODING_HUFFMAN:
+        {
+
+            uint32_t sum = 0;
+            for (uint32_t j=0; j<byte_count[i].size(); j++)
+            {
+                sum += byte_count[i][j];
+            }
+            size_of_current_array[i] = sum;
+
+            // Allocate and initialize
+            // cerr << "creating fragment data of size = " << size_of_current_array[i] << "\n";
+            fragment_data[i] = new unsigned char[size_of_current_array[i]]();
+
+            assign_data_huffman(fragment_data[i], index_map, domain_size, i, keys, key_counts,
+                                byte_count[i], huffman_column[i]);
+            break;
+        }
+        case ENCODING_BYTE_ALIGNED_BITMAP:
+        {
+            uint32_t sum = 0;
+            int max_bytes = 0;
+            for (uint32_t j=0; j<byte_count[i].size(); j++)
+            {
+                sum += byte_count[i][j];
+                if (max_bytes < byte_count[i][j])
+                {
+                    max_bytes = byte_count[i][j];
+                }
+            }
+            // cerr << "\nMax size of BB fragment in bytes is " << max_bytes << "\n\n";
+            size_of_current_array[i] = sum + 1;
+
+            // Allocate and initialize
+            // cerr << "Creating fragment data of size = " << size_of_current_array[i] << "\n";
+            fragment_data[i] = new unsigned char[size_of_current_array[i]]();
+
+            assign_data_bitmap(fragment_data[i], index_map, domain_size, i, keys, key_counts,
+                               byte_count[i], bitmap_column[i]);
+            break;
+        }
+        }
+    }
+
+
+    // Now the input file is definitely no longer necessary
+    for (int i=1; i<num_encodings+1; i++)
+    {
+        input_file[i].clear();
+    }
+    delete[] input_file;
+
+
+    // Sets the index to point to the new map
+    int * encoding_types = new int[num_encodings];
+    for (int i=0; i<num_encodings; i++)
+    {
+        encoding_types[i] = encodings[i]->getEncoding();
+    }
+
+    GqFastIndex<TIndexMap>* new_index = new GqFastIndex<TIndexMap>(domain_size, num_encodings, size_of_current_array, encoding_types);
+    new_index->set_index_map(index_map);
+    new_index->set_data(fragment_data);
+    new_index->set_huffman(huffman_tree_array, huffman_terminator_array, huffman_tree_sizes);
+    new_index->set_dictionary(dict);
+    // cerr << "\nCompleted " << total_row_count << " row accesses\n";
+    // cerr << "Number of fragments = " << keys.size() << "\n";
+    // cerr << "Min fragment size = " << min_size << "\n";
+    // cerr << "Max fragment size = " << max_size << "\n";
+    // cerr << "ID of Max = " << max_id << "\n";
+    // cerr << "Mean fragment size = " << avg_size << "\n";
+    // cerr << "Standard deviation = " << std_dev << "\n\n";
+
+
+    // cerr << "index " << index_id << " has map byte size of " << metadata.idx_map_byte_size[index_id] << "\n";
+
+    //Update metadata for encodings
+    metadata.idx_max_fragment_size = max_size;
+
+    // Memory clean-up
+    for (int i=0; i<num_encodings; i++)
+    {
+        huffman_column[i].clear();
+        fragment_to_encode[i].clear();
+        if (huffman_tree[i])
+        {
+            delete huffman_tree[i];
+        }
+        if (encoding_dictionary[i])
+        {
+            for (auto it=encoding_dictionary[i]->begin(); it != encoding_dictionary[i]->end(); ++it)
+            {
+                if (it->second.bits)
+                {
+                    delete[] it->second.bits;
+                }
+            }
+            delete encoding_dictionary[i];
+        }
+    }
+
+
+    huffman_tree.clear();
+    encoding_dictionary.clear();
+
+    keys.clear();
+    key_counts.clear();
+
+    auto t_cts = std::chrono::high_resolution_clock::now();
+    cerr << "Total loading time: "
+         << std::chrono::duration<double>(t_cts-t_start).count()
+         << " sec\n\n";
+
+    return new_index;
+}
+
+#endif
