@@ -12,7 +12,7 @@ void automatic_tests(char* input_file, char* output_file, bool two_ids_flag)
     string test_file(input_file);
     string output_file_string (output_file);
 
-    cout << "test file = " << test_file << "\n";
+    cerr << "test file = " << test_file << "\n";
     string line;
     ifstream myfile(test_file);
     ofstream outfile(output_file_string);
@@ -62,14 +62,14 @@ void automatic_tests(char* input_file, char* output_file, bool two_ids_flag)
         {
             if (output_type == 'i')
             {
-                cout << "calling int autohandle with func " << func_name << " and rpos " << r_pos << " and ids " << id_to_test << "," << id2_to_test << "\n";
+                cerr << "calling int autohandle with func " << func_name << " and rpos " << r_pos << " and ids " << id_to_test << "," << id2_to_test << "\n";
                 time_span = auto_handle_input<int>(func_name, r_pos, id_to_test, id2_to_test);
             //    time_span2 = auto_handle_input<int>(func_name, r_pos);
             //    time_span3 = auto_handle_input<int>(func_name, r_pos);
             }
             else if (output_type == 'd')
             {
-                cout << "calling double autohandle with func " << func_name << " and rpos " << r_pos << " and ids " << id_to_test << "," << id2_to_test << "\n";
+                cerr << "calling double autohandle with func " << func_name << " and rpos " << r_pos << " and ids " << id_to_test << "," << id2_to_test << "\n";
                 time_span = auto_handle_input<double>(func_name, r_pos, id_to_test, id2_to_test);
             //    time_span2 = auto_handle_input<double>(func_name, r_pos);
             //    time_span3 = auto_handle_input<double>(func_name, r_pos);
@@ -81,14 +81,14 @@ void automatic_tests(char* input_file, char* output_file, bool two_ids_flag)
         {
              if (output_type == 'i')
             {
-                cout << "calling int autohandle with func " << func_name << " and rpos " << r_pos << " and id " << id_to_test << "\n";
+                cerr << "calling int autohandle with func " << func_name << " and rpos " << r_pos << " and id " << id_to_test << "\n";
                 time_span = auto_handle_input<int>(func_name, r_pos, id_to_test);
             //    time_span2 = auto_handle_input<int>(func_name, r_pos);
             //    time_span3 = auto_handle_input<int>(func_name, r_pos);
             }
             else if (output_type == 'd')
             {
-                cout << "calling double autohandle with func " << func_name << " and rpos " << r_pos << " and id " << id_to_test << "\n";
+                cerr << "calling double autohandle with func " << func_name << " and rpos " << r_pos << " and id " << id_to_test << "\n";
                 time_span = auto_handle_input<double>(func_name, r_pos, id_to_test);
             //    time_span2 = auto_handle_input<double>(func_name, r_pos);
             //    time_span3 = auto_handle_input<double>(func_name, r_pos);
