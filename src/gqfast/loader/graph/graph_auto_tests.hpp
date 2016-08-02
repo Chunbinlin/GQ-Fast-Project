@@ -75,7 +75,7 @@ void automatic_tests(char* input_file, char* output_file, bool two_ids_flag)
             //    time_span3 = auto_handle_input<double>(func_name, r_pos);
             }
 
-            outfile << func_name << ", " << time_span.count() << " sec\n";// << time_span2.count() << " sec, " << time_span3.count() << " sec\n";
+            outfile << func_name << ", " << id_to_test << "," << id2_to_test << "," << time_span.count() << " sec\n";// << time_span2.count() << " sec, " << time_span3.count() << " sec\n";
         }
         else
         {
@@ -94,7 +94,7 @@ void automatic_tests(char* input_file, char* output_file, bool two_ids_flag)
             //    time_span3 = auto_handle_input<double>(func_name, r_pos);
             }
 
-            outfile << func_name << ", " << time_span.count() << " sec\n";// << time_span2.count() << " sec, " << time_span3.count() << " sec\n";
+            outfile << func_name << ", " << id_to_test << "," << time_span.count() << " sec\n";// << time_span2.count() << " sec, " << time_span3.count() << " sec\n";
 
 
 
