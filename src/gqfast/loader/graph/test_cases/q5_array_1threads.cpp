@@ -13,7 +13,7 @@ static args_threading arguments[NUM_THREADS];
 
 static uint32_t doc1_col0_element;
 
-static double* R;
+static int* R;
 static int* RC;
 
 static pthread_spinlock_t* r_spin_locks;
@@ -149,7 +149,7 @@ void q5_array_1threads_author2_col0_decode_UA_threaded(int thread_id, uint32_t* 
 	author2_fragment_size = buffer_it;
 }
 
-extern "C" double* q5_array_1threads(int** null_checks, int author1) {
+extern "C" int* q5_array_1threads(int** null_checks, int author1) {
 
 	benchmark_t1 = chrono::steady_clock::now();
 
@@ -180,7 +180,7 @@ extern "C" double* q5_array_1threads(int** null_checks, int author1) {
 	}
 
 	RC = new int[metadata.idx_domains[1][0]]();
-	R = new double[metadata.idx_domains[1][0]]();
+	R = new int[metadata.idx_domains[1][0]]();
 
 	r_spin_locks = spin_locks[1];
 

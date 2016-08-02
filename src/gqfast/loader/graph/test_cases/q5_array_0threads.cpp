@@ -8,7 +8,7 @@
 
 using namespace std;
 
-static double* R;
+static int* R;
 static int* RC;
 
 static uint64_t* doc1_col0_buffer;
@@ -94,7 +94,7 @@ void q5_array_0threads_author2_col0_decode_UA(uint32_t* author2_col0_ptr, uint32
 	author2_fragment_size = buffer_it;
 }
 
-extern "C" double* q5_array_0threads(int** null_checks, int author1) {
+extern "C" int* q5_array_0threads(int** null_checks, int author1) {
 
 	benchmark_t1 = chrono::steady_clock::now();
 
@@ -114,7 +114,7 @@ extern "C" double* q5_array_0threads(int** null_checks, int author1) {
 	author2_col0_buffer = new uint64_t[max_frag];
 
 	RC = new int[metadata.idx_domains[1][0]]();
-	R = new double[metadata.idx_domains[1][0]]();
+	R = new int[metadata.idx_domains[1][0]]();
 
 
 	uint64_t author1_list[1];
