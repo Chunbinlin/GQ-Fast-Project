@@ -10,6 +10,7 @@
 #include <ctime>
 #include <cstddef>
 #include <map>
+#include <algorithm>
 
 #include "gqfast_index.hpp"
 #include "serialization.hpp"
@@ -25,7 +26,7 @@
 
 int getByteSize(uint64_t domain);
 
-void collect_config(string config_filename, map<int,int> & encodings_map, int & index_col_id);
+void collect_config(string config_filename, map<int,int> & encodings_map, int & index_col_id, Metadata & metadata);
 
 void load_data_file(string data_filename, int index_col_id, vector<uint32_t> * & input_file, int & num_encodings, Metadata & metadata);
 
@@ -42,14 +43,17 @@ void build_index(string data_filename, string config_filename)
     map<int, int> encodings_map;
     int index_col_id;
 
-    collect_config(config_filename, encodings_map, index_col_id);
+    Metadata metadata;
+    collect_config(config_filename, encodings_map, index_col_id, metadata);
 
+    cerr << metadata.idx_table_name << "\n";
     vector<uint32_t>* input_file;
     int num_encodings;
 
-    Metadata metadata;
+
     load_data_file(data_filename, index_col_id, input_file, num_encodings, metadata);
 
+    cerr << "Lookup col name = " << metadata.idx_lookup_name << "\n";
     cerr << "Num encodings = " << metadata.idx_num_encodings << "\n";
     cerr << "Domain = " << metadata.idx_domain << "\n";
     for (int i=0; i<num_encodings; i++)
@@ -67,7 +71,7 @@ void build_index(string data_filename, string config_filename)
 
 }
 
-void collect_config(string config_filename, map<int,int> & encodings_map, int & index_col_id)
+void collect_config(string config_filename, map<int,int> & encodings_map, int & index_col_id, Metadata & metadata)
 {
 
     string line;
@@ -86,8 +90,8 @@ void collect_config(string config_filename, map<int,int> & encodings_map, int & 
         }
         else if (line.find("<column_id_encoding_type>") != string::npos)
         {
-            unsigned first = line.find("<column_id_encoding_type");
-            unsigned last = line.find("</column_id_encoding_type");
+            unsigned first = line.find("<column_id_encoding_type>");
+            unsigned last = line.find("</column_id_encoding_type>");
 
             string encoding_string = line.substr(first+25, last-first-25);
 
@@ -98,23 +102,35 @@ void collect_config(string config_filename, map<int,int> & encodings_map, int & 
             int encoding_column = stoi(token);
             getline(ss, token);
 
+
+            transform(token.begin(), token.end(), token.begin(), ::tolower);
+
             int curr_encoding = -1;
 
-            if (!strcmp(token.c_str(), "BCA"))
+            if (!strcmp(token.c_str(), "bca"))
             {
                 curr_encoding = ENCODING_BIT_ALIGNED_COMPRESSED;
             }
-            else if (!strcmp(token.c_str(), "BB"))
+            else if (!strcmp(token.c_str(), "bb"))
             {
                 curr_encoding = ENCODING_BYTE_ALIGNED_BITMAP;
             }
-            else if (!strcmp(token.c_str(), "HU"))
+            else if (!strcmp(token.c_str(), "hu"))
             {
                 curr_encoding = ENCODING_HUFFMAN;
             }
 
             cerr << "col " << encoding_column << " is of encoding " << curr_encoding << "\n";
             encodings_map[encoding_column] = curr_encoding;
+        }
+        else if (line.find("<table_name>") != string::npos)
+        {
+            unsigned first = line.find("<table_name>");
+            unsigned last = line.find("</table_name>");
+
+            string table_string = line.substr(first+12, last-first-12);
+            transform(table_string.begin(), table_string.end(), table_string.begin(), ::tolower);
+            metadata.idx_table_name = table_string;
         }
     }
 }
@@ -130,8 +146,13 @@ void load_data_file(string data_filename, int index_col_id, vector<uint32_t> * &
     stringstream lineStream(line);
     string cell;
     num_encodings = -1;
+    vector<string> col_names_original_order;
+
+
     while(getline(lineStream,cell,','))
     {
+        transform(cell.begin(), cell.end(), cell.begin(), ::tolower);
+        col_names_original_order.push_back(cell);
         num_encodings++;
     }
 
@@ -140,6 +161,9 @@ void load_data_file(string data_filename, int index_col_id, vector<uint32_t> * &
     uint32_t* min_column_ids = new uint32_t[num_encodings+1]();
 
     uint64_t lines_read_in = 0;
+
+    vector<string> col_names_adjusted;
+    col_names_adjusted.resize(num_encodings);
 
     while (getline(myfile,line))
     {
@@ -166,6 +190,10 @@ void load_data_file(string data_filename, int index_col_id, vector<uint32_t> * &
             }
             input_file[adjusted_index].push_back(current);
 
+            if (counter != index_col_id)
+            {
+                col_names_adjusted[adjusted_index-1] = col_names_original_order[counter];
+            }
             if (lines_read_in == 1)
             {
                 min_column_ids[adjusted_index] = current;
@@ -196,7 +224,8 @@ void load_data_file(string data_filename, int index_col_id, vector<uint32_t> * &
     }
 
     metadata.idx_map_byte_size = getByteSize(max_column_ids[0]+1);
-
+    metadata.idx_col_names = col_names_adjusted;
+    metadata.idx_lookup_name = col_names_original_order[index_col_id];
     delete[] max_column_ids;
     delete[] min_column_ids;
 
@@ -240,18 +269,43 @@ Encodings** organize_encodings(map<int,int> encodings_map, int index_col_id, int
 void serialize_index_to_disk(string data_filename, GqFastIndex<uint32_t> * new_index, Metadata & metadata)
 {
 
-    auto t = time(nullptr);
-    auto now = localtime(&t);
+    string out_filename = metadata.idx_table_name + "_" + metadata.idx_lookup_name + ".txt";
+    // Serialization
+    save_index(new_index, out_filename.c_str());
 
-    char timestamp[16];
 
-    strftime(timestamp,16,"%y%m%d_%H%M%S",now);
+    // Generate metadata file
+    string meta_filename = metadata.idx_table_name + "_" + metadata.idx_lookup_name + "_meta.txt";
 
-    string time_temp(timestamp);
+    ofstream my_meta_file(meta_filename);
+    my_meta_file << metadata.idx_table_name << "\n";
+    my_meta_file << metadata.idx_lookup_name << "\n";
+    my_meta_file << metadata.idx_num_encodings << "\n";
 
-    string out_filename = data_filename + "_" + time_temp;
+    my_meta_file << metadata.idx_lookup_name;
+    for (int i=0; i<metadata.idx_col_names.size(); i++)
+    {
+        my_meta_file << "," << metadata.idx_col_names[i];
+    }
+    my_meta_file << "\n";
 
-    save_index(new_index, metadata, out_filename.c_str());
+    my_meta_file << metadata.idx_domain;
+    for (int i=0; i<metadata.idx_col_domains.size(); i++)
+    {
+        my_meta_file << "," << metadata.idx_col_domains[i];
+    }
+    my_meta_file << "\n";
+
+    my_meta_file << metadata.idx_map_byte_size;
+    for (int i=0; i<metadata.idx_cols_byte_sizes.size(); i++)
+    {
+        my_meta_file << "," << metadata.idx_cols_byte_sizes[i];
+    }
+    my_meta_file << "\n";
+
+    my_meta_file << metadata.idx_max_fragment_size << "\n";
+
+    my_meta_file.close();
 
 }
 

@@ -8,6 +8,7 @@
 #include "encodings.hpp"
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/version.hpp>
+#include <boost/serialization/vector.hpp>
 #include <cstring>
 #include <utility>
 #include <memory>
@@ -67,7 +68,7 @@ public:
         huffman_terminator_array = new bool*[num_fragment_data];
         for (int i=0; i<num_fragment_data; i++)
         {
-            huffman_tree_array[i] = new int[huffman_tree_array_size[i]]();
+            huffman_tree_array[i] = new uint32_t[huffman_tree_array_size[i]]();
             huffman_terminator_array[i] = new bool[huffman_tree_array_size[i]]();
         }
     }
@@ -293,9 +294,12 @@ struct Metadata
     int idx_map_byte_size;
     int idx_num_encodings;
     int idx_max_fragment_size;
+    string idx_table_name;
+    string idx_lookup_name;
+    vector<string> idx_col_names;
 
     Metadata() {}
-
+    /*
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
     {
@@ -306,6 +310,7 @@ struct Metadata
         ar & idx_num_encodings;
         ar & idx_max_fragment_size;
     }
+    */
 };
 
 

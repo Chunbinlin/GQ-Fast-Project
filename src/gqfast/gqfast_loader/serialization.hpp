@@ -8,7 +8,7 @@
 #include <fstream>
 
 template <typename T>
-void save_index(GqFastIndex<T>* s, Metadata & metadata, const char * filename)
+void save_index(GqFastIndex<T>* s, const char * filename)
 {
 
     chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
@@ -31,7 +31,7 @@ void save_index(GqFastIndex<T>* s, Metadata & metadata, const char * filename)
     oa << s->load_flag;
     oa << *s;
 
-    oa << metadata;
+    //oa << metadata;
 
     chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
 
@@ -46,7 +46,7 @@ void save_index(GqFastIndex<T>* s, Metadata & metadata, const char * filename)
 }
 
 template <typename T>
-void load_index(GqFastIndex<T>* & s, Metadata & metadata, const char * filename)
+void load_index(GqFastIndex<T>* & s, const char * filename)
 {
     //cerr << "loading database\n";
     chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
@@ -80,7 +80,7 @@ void load_index(GqFastIndex<T>* & s, Metadata & metadata, const char * filename)
         //   cerr << "setting index\n";
     s = temp_index;
 
-    ia >> metadata;
+    //ia >> metadata;
 
     chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
     /*
