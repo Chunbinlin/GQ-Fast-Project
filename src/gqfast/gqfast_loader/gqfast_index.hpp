@@ -282,6 +282,31 @@ inline void load_construct_data(
 }
 }
 
+// Metadata
+struct Metadata
+{
+    // Domains are +1 to accommodate offset lookup
+    uint64_t idx_domain;
+    vector<uint64_t> idx_col_domains;
+    vector<uint32_t> idx_min_col_ids;
+    vector<int> idx_cols_byte_sizes;
+    int idx_map_byte_size;
+    int idx_num_encodings;
+    int idx_max_fragment_size;
+
+    Metadata() {}
+
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & idx_col_domains;
+        ar & idx_min_col_ids;
+        ar & idx_cols_byte_sizes;
+        ar & idx_map_byte_size;
+        ar & idx_num_encodings;
+        ar & idx_max_fragment_size;
+    }
+};
 
 
 #endif

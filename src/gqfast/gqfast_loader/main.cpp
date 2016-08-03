@@ -5,6 +5,7 @@
 
 int main(int argc, char ** argv)
 {
-    build_index("./pubmed/da1.csv", "config.xml");
+    build_index("./pubmed/dt1_mesh.csv", "config.xml");
+
     return 0;
 }

@@ -8,9 +8,9 @@ GQ-Fast currently also support the following encoding methods:
 
 -->
 <configuration>
-	<index_column_id>0</index_column_id>
+	<index_column_id>1</index_column_id>
 	<encodings>
-		<column_id_encoding_type>1,BCA</column_id_encoding_type> <!-- Use the abbreviation name of encoding method that defined above, e.g., BCA, BB -->
-		<column_id_encoding_type>2,BB</column_id_encoding_type>
+		<column_id_encoding_type>2,BCA</column_id_encoding_type> <!-- Use the abbreviation name of encoding method that defined above, e.g., BCA, BB -->
+		<column_id_encoding_type>0,BB</column_id_encoding_type>
 	</encodings>
 </configuration>

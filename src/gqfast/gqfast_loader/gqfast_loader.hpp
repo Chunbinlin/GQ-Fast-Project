@@ -7,10 +7,12 @@
 #include <fstream>
 #include <chrono>
 #include <cmath>
+#include <ctime>
 #include <cstddef>
 #include <map>
 
 #include "gqfast_index.hpp"
+#include "serialization.hpp"
 
 #define TERMINATING_BYTES 7
 
@@ -20,32 +22,6 @@
 #define INT_8BYTE 8
 
 #define MAX_INDICES 6
-
-// Metadata
-struct Metadata
-{
-    uint64_t idx_domain;
-    vector<uint64_t> idx_col_domains;
-    vector<uint32_t> idx_min_col_ids;
-    vector<int> idx_cols_byte_sizes;
-    int idx_map_byte_size;
-    int idx_num_encodings;
-    int idx_max_fragment_size;
-
-    Metadata() {}
-
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version)
-    {
-        ar & idx_col_domains;
-        ar & idx_min_col_ids;
-        ar & idx_cols_byte_sizes;
-        ar & idx_map_byte_size;
-        ar & idx_num_encodings;
-        ar & idx_max_fragment_size;
-    }
-};
-
 
 int getByteSize(uint64_t domain);
 
@@ -58,7 +34,7 @@ Encodings** organize_encodings(map<int,int> encodings_map, int index_col_id, int
 template <typename TValue, typename TIndexMap>
 GqFastIndex<TIndexMap> * create_index(vector<TValue> * input_file, Encodings* encodings[], int num_encodings, Metadata & metadata);
 
-void serialize_index_to_disk(GqFastIndex<uint32_t> * new_index);
+void serialize_index_to_disk(string data_file, GqFastIndex<uint32_t> * new_index, Metadata & metadata);
 
 void build_index(string data_filename, string config_filename)
 {
@@ -86,10 +62,8 @@ void build_index(string data_filename, string config_filename)
 
     Encodings** encodings = organize_encodings(encodings_map, index_col_id, num_encodings);
 
-
-
-    //GqFastIndex<uint32_t>* new_index = create_index<uint32_t, uint32_t>(input_file, encodings, num_encodings, metadata);
-    //serialize_index_to_disk(new_index);
+    GqFastIndex<uint32_t>* new_index = create_index<uint32_t, uint32_t>(input_file, encodings, num_encodings, metadata);
+    serialize_index_to_disk(data_filename, new_index, metadata);
 
 }
 
@@ -232,63 +206,52 @@ void load_data_file(string data_filename, int index_col_id, vector<uint32_t> * &
 Encodings** organize_encodings(map<int,int> encodings_map, int index_col_id, int num_encodings)
 {
 
+    Encodings** encodings = new Encodings*[num_encodings];
 
-
-    return nullptr;
-}
-
-
-void serialize_index_to_disk(GqFastIndex<uint32_t> * new_index)
-{
-
-}
-
-
-template <typename T>
-void read_in_file(vector<T> * input_file, string filename, uint64_t max_column_ids[], uint64_t min_column_ids[])
-{
-
-    string line;
-    ifstream myfile(filename);
-
-    uint64_t lines_read_in = 0;
-
-    // skip line 1
-    getline(myfile, line);
-
-    while (getline(myfile,line))
+    for (int i=0; i<num_encodings+1; i++)
     {
-        lines_read_in++;
-        stringstream lineStream(line);
-        string cell;
-        int current;
-        int counter = 0;
-        while(getline(lineStream,cell,','))
+        int curr_enc = ENCODING_UNCOMPRESSED;
+        if (encodings_map[i])
         {
-            current =  atoi(cell.c_str());
-            input_file[counter].push_back(current);
-            if (lines_read_in == 1)
-            {
-                min_column_ids[counter] = current;
-            }
-            else if (min_column_ids[counter] > current)
-            {
-                min_column_ids[counter] = current;
-            }
-            if (max_column_ids[counter] < current)
-            {
-                max_column_ids[counter] = current;
-            }
-            counter++;
+            curr_enc = encodings_map[i];
         }
+
+        if (i < index_col_id)
+        {
+            encodings[i] = new Encodings(i, curr_enc);
+        }
+        else if (i > index_col_id)
+        {
+            encodings[i-1] = new Encodings(i-1, curr_enc);
+        }
+
     }
 
-    myfile.close();
+    for (int i=0; i<num_encodings; i++)
+    {
+        cerr << "Adjusted col " << i << " has encoding " << encodings[i]->getEncoding() << "\n";
+    }
 
 
+    return encodings;
+}
 
 
-    // cerr << "..." << lines_read_in << " lines read in.\n";
+void serialize_index_to_disk(string data_filename, GqFastIndex<uint32_t> * new_index, Metadata & metadata)
+{
+
+    auto t = time(nullptr);
+    auto now = localtime(&t);
+
+    char timestamp[16];
+
+    strftime(timestamp,16,"%y%m%d_%H%M%S",now);
+
+    string time_temp(timestamp);
+
+    string out_filename = data_filename + "_" + time_temp;
+
+    save_index(new_index, metadata, out_filename.c_str());
 
 }
 
@@ -611,13 +574,13 @@ int getByteSize(uint64_t domain)
     {
         return INT_8BYTE;
     }
-    else if (domain/0x10000)
+    /*else if (domain/0x10000)
     {
         return INT_4BYTE;
-    }
+    }*/
     else if (domain/0x100)
     {
-        return INT_2BYTE;
+        return INT_4BYTE;
     }
     else
     {
