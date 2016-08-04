@@ -19,14 +19,13 @@ public class MetaData {
 	public static final int BYTES_8 = 8;
 	
 	private HashMap<Integer, MetaIndex> indexMap;
-	private List<MetaQuery> queryList;
-	
-	private int currentQueryID;
+	private MetaQuery query;
+
+	private int aggregation_domain_index_id;
 	
 	public MetaData() {
 		indexMap = new HashMap<Integer, MetaIndex>();
-		queryList = new LinkedList<MetaQuery>();
-		currentQueryID = 0;
+	
 	}
 	
 	public void setIndexMap(HashMap<Integer, MetaIndex> indexList)
@@ -34,21 +33,26 @@ public class MetaData {
 		this.indexMap = indexList;
 	}
 
-	public int getCurrentQueryID() {
-		return currentQueryID;
-	}
-
-	public void setCurrentQueryID(int currentQueryID) {
-		this.currentQueryID = currentQueryID;
-	}
-
 	public HashMap<Integer, MetaIndex> getIndexMap() {
 		return indexMap;
 	}
 
-	public List<MetaQuery> getQueryList() {
-		return queryList;
+	public MetaQuery getQuery() {
+		return query;
 	}
+
+	public void setQuery(MetaQuery query) {
+		this.query = query;
+	}
+
+	public int getAggregation_domain_index_id() {
+		return aggregation_domain_index_id;
+	}
+
+	public void setAggregation_domain_index_id(int aggregation_domain_index_id) {
+		this.aggregation_domain_index_id = aggregation_domain_index_id;
+	}
+
 
 /*	public int getMaxIndexID() {
 		int max = 0;

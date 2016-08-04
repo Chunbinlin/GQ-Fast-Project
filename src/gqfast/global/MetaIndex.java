@@ -9,24 +9,27 @@ public class MetaIndex {
 	private int numColumns;
 	private int indexMapByteSize;
 	private long indexDomain;
+	private int maxFragmentSize;
 	
 	private List<Integer> columnEncodingsList;
 	private List<Integer> columnEncodedByteSizesList;
 	private List<Long> columnDomains;
 	
 	public MetaIndex(int gqFastIndexID, int numColumns, int indexMapByteSize,
-			long indexDomain, List<Integer> columnEncodingsList,
+			long indexDomain, int maxFragmentSize, List<Integer> columnEncodingsList,
 			List<Integer> columnEncodedByteSizesList, List<Long> columnDomains) {
 		//this.indexID = indexID;
 		this.gqFastIndexID = gqFastIndexID;
 		this.numColumns = numColumns;
 		this.indexMapByteSize = indexMapByteSize;
 		this.indexDomain = indexDomain;
+		this.maxFragmentSize = maxFragmentSize;
 		this.columnEncodingsList = columnEncodingsList;
 		this.columnEncodedByteSizesList = columnEncodedByteSizesList;
 		this.columnDomains = columnDomains;
 	}
 
+	
 	
 	public int getGQFastIndexID() {
 		return gqFastIndexID;
@@ -52,6 +55,12 @@ public class MetaIndex {
 	public long getIndexDomain() {
 		return indexDomain;
 	}
+
+
+	public int getMaxFragmentSize() {
+		return maxFragmentSize;
+	}
+
 
 
 	public List<Long> getColumnDomains() {
