@@ -58,8 +58,8 @@ public class CodeGenerator {
 		// Initial Code
 		initCppCode += "#ifndef " + query.getQueryName() + "_\n"; 
 		initCppCode += "#define " + query.getQueryName() + "_\n";
-		initCppCode += "\n#include \"../fastr_index.hpp\"\n";
-		initCppCode += "#include \"../global_vars.hpp\"\n\n";
+		//initCppCode += "\n#include \"../fastr_index.hpp\"\n";
+		initCppCode += "#include \"../gqfast_executor.hpp\"\n\n";
 		initCppCode += "#include <atomic>\n";
 		if (hasThreading) {
 			initCppCode += "#define NUM_THREADS " + query.getNumThreads() + "\n";
@@ -84,7 +84,7 @@ public class CodeGenerator {
 
 		String openingCppCode = "\nextern \"C\" ";
 		if (resultDataType == AggregationOperator.AGGREGATION_INT) {
-			openingCppCode += "int* ";
+			openingCppCode += "uint32_t* ";
 		}
 		else if (resultDataType == AggregationOperator.AGGREGATION_DOUBLE) {
 			openingCppCode += "double* ";
@@ -314,7 +314,7 @@ public class CodeGenerator {
 		
 		if (resultDataType == AggregationOperator.AGGREGATION_INT) {
 		//	resultString += "\tR = new int[metadata.idx_domains[" + gqFastIndexID + "][0]]();\n";
-			resultString += "\tR = new int[" + domain + "]();\n";
+			resultString += "\tR = new uint32_t[" + domain + "]();\n";
 		}
 		else if (resultDataType == AggregationOperator.AGGREGATION_DOUBLE) {
 		//	resultString += "\tR = new double[metadata.idx_domains[" + gqFastIndexID + "][0]]();\n";
@@ -322,7 +322,7 @@ public class CodeGenerator {
 		}
 		
 		if (hasThreading) {
-			resultString += "\n\tr_spin_locks = spin_locks[" + gqFastIndexID + "];\n";
+			//resultString += "\n\tr_spin_locks = spin_locks[" + gqFastIndexID + "];\n";
 			
 		}
 		
@@ -584,7 +584,7 @@ public class CodeGenerator {
 
 		
 		if (resultDataType == AggregationOperator.AGGREGATION_INT)  {		
-			resultsGlobals += "\nstatic int* R;\n";
+			resultsGlobals += "\nstatic uint32_t* R;\n";
 		}
 		else if (resultDataType == AggregationOperator.AGGREGATION_DOUBLE) {
 			resultsGlobals += "\nstatic double* R;\n";	
@@ -592,7 +592,7 @@ public class CodeGenerator {
 		resultsGlobals += "static int* RC;\n";
 		if (hasThreading) {
 			
-			resultsGlobals += "\nstatic pthread_spinlock_t* r_spin_locks;\n";
+			//resultsGlobals += "\nstatic pthread_spinlock_t* r_spin_locks;\n";
 		}
 		
 		globalsCppCode.add(resultsGlobals);
@@ -1283,17 +1283,25 @@ public class CodeGenerator {
 		if (currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 			//int drivingAliasID = drivingAlias.getAliasID();
 			//int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
-			//int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
+			int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
 			//int drivingAppearance = joinAliasAppearanceIDs.get(drivingAlias);
 			if (hasThreading) {
 				if (threadID) {
-					mainString += "\n" + tabString + "if (!(" + drivAliasString 
-							+ "_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]])) {\n";
-					closingBraces[0]++;
+					String bufferString = drivAliasString + "_col" + drivingAliasCol + "_buffer[thread_id]["+drivAliasString+"_it]";
+					mainString += "\n" + tabString + "bool " + drivAliasString + "_unvisited = false;\n";
+					mainString += tabString + "pthread_spin_lock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
+					mainString += tabString + "if (!(" + drivAliasString 
+							+ "_bool_array["+bufferString+"])) {\n";
 					tabString.append("\t");
 					mainString += tabString + drivAliasString + 
 							"_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]] = true;\n";
-					
+					mainString += tabString + drivAliasString + "_unvisited = true;\n";
+					mainString += tabString + "}\n";
+					tabString.setLength(tabString.length() - 1);
+					mainString += tabString + "pthread_spin_unlock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
+					mainString += tabString + "if (" + drivAliasString + "_unvisited) {\n";
+					tabString.append("\t");
+					closingBraces[0]++;
 				}
 				else {
 					mainString += "\n" + tabString + "if (!(" + drivAliasString 
@@ -1385,16 +1393,25 @@ public class CodeGenerator {
 			//int drivingAliasID = drivingAlias.getAliasID();
 			//int drivingAppearance = joinAliasAppearanceIDs.get(drivingAlias);
 			//int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
-			//int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
+			int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
 			String drivAliasString = drivingAlias.getAlias();
 			if (hasThreading) {
 				if (threadID) {
-					mainString += "\n" + tabString + "if (!(" + drivAliasString 
-							+ "_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]])) {\n";
-					closingBraces[0]++;
+					String bufferString = drivAliasString + "_col" + drivingAliasCol + "_buffer[thread_id]["+drivAliasString+"_it]";
+					mainString += "\n" + tabString + "bool " + drivAliasString + "_unvisited = false;\n";
+					mainString += tabString + "pthread_spin_lock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
+					mainString += tabString + "if (!(" + drivAliasString 
+							+ "_bool_array["+bufferString+"])) {\n";
 					tabString.append("\t");
 					mainString += tabString + drivAliasString + 
 							"_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]] = true;\n";
+					mainString += tabString + drivAliasString + "_unvisited = true;\n";
+					mainString += tabString + "}\n";
+					tabString.setLength(tabString.length() - 1);
+					mainString += tabString + "pthread_spin_unlock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
+					mainString += tabString + "if (" + drivAliasString + "_unvisited) {\n";
+					tabString.append("\t");
+					closingBraces[0]++;
 				}
 				else {
 					mainString += "\n" + tabString + "if (!(" + drivAliasString 
@@ -1582,17 +1599,26 @@ public class CodeGenerator {
 		if (currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 			//int drivingAliasID = drivingAlias.getAliasID();
 			//int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
-			//int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
+			int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
 			String drivAliasString = drivingAlias.getAlias();
 			//int drivingAppearance = joinAliasAppearanceIDs.get(drivingAlias);
 			if (hasThreading) {
 				if (justStartedThreading) {
-					mainString += "\n" + tabString + "if (!(" + drivAliasString 
-							+ "_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]])) {\n";
-					closingBraces[0]++;
+					String bufferString = drivAliasString + "_col" + drivingAliasCol + "_buffer[thread_id]["+drivAliasString+"_it]";
+					mainString += "\n" + tabString + "bool " + drivAliasString + "_unvisited = false;\n";
+					mainString += tabString + "pthread_spin_lock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
+					mainString += tabString + "if (!(" + drivAliasString 
+							+ "_bool_array["+bufferString+"])) {\n";
 					tabString.append("\t");
 					mainString += tabString + drivAliasString + 
 							"_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]] = true;\n";
+					mainString += tabString + drivAliasString + "_unvisited = true;\n";
+					mainString += tabString + "}\n";
+					tabString.setLength(tabString.length() - 1);
+					mainString += tabString + "pthread_spin_unlock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
+					mainString += tabString + "if (" + drivAliasString + "_unvisited) {\n";
+					tabString.append("\t");
+					closingBraces[0]++;
 				}
 				else {
 					mainString += "\n" + tabString + "if (!(" + drivAliasString 
@@ -2135,14 +2161,14 @@ public class CodeGenerator {
 			mainString += "\n" + tabString + "RC[" + elementString + "] = 1;\n";
 			
 			if (!preThreading) {
-				mainString += "\n" + tabString + "pthread_spin_lock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
+			//	mainString += "\n" + tabString + "pthread_spin_lock(&r_spin_locks["+ elementString +"]);\n";
 			}
 			
 						
 			mainString += tabString + "R[" + elementString +"] = 1;";
 			
 			if (!preThreading) {
-				mainString += "\n" + tabString + "pthread_spin_unlock(&spin_locks["+ drivingAliasIndex + "]["+ elementString +"]);\n";
+			//	mainString += "\n" + tabString + "pthread_spin_unlock(&r_spin_locks["+ elementString +"]);\n";
 			}
 		}
 
