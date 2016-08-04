@@ -22,8 +22,8 @@ public class PubmedQuerySD {
 		List<Alias> aliases = new ArrayList<Alias>();
 		
 		Alias alias0 = new Alias(0, "doc1");
-		Alias alias1 = new Alias(1, "term1", metadata.getIndexList().get(0));
-		Alias alias2 = new Alias(2, "doc2", metadata.getIndexList().get(1));
+		Alias alias1 = new Alias(1, "term1", metadata.getIndexMap().get(2));
+		Alias alias2 = new Alias(2, "doc2", metadata.getIndexMap().get(3));
 		
 		aliases.add(alias0);
 		aliases.add(alias1);
@@ -32,9 +32,11 @@ public class PubmedQuerySD {
 		// public MetaQuery(int queryID, String queryName, int numThreads,
 		// int numBuffers, int bufferPoolSize, List<String> aliases)
 		MetaQuery q2Optimal = new MetaQuery(0, queryName, numThreads, aliases);
-				
-		metadata.getQueryList().add(q2Optimal);
-		metadata.setCurrentQueryID(metadata.getQueryList().size()-1);
+		
+		metadata.setQuery(q2Optimal);
+		metadata.setAggregation_domain_index_id(2);
+		//metadata.getQueryList().add(q2Optimal);
+		//metadata.setCurrentQueryID(metadata.getQueryList().size()-1);
 		
 	}
 	
@@ -51,8 +53,14 @@ public class PubmedQuerySD {
 		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList2.add(MetaData.BYTES_1);
 		
-		MetaIndex DT1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.getIndexList().put(indexID, DT1);
+		long indexDomain = 5001;
+		int max_fragment_size = 133;
+		List<Long> columnDomains = new ArrayList<Long>();
+		columnDomains.add((long) 751);
+		columnDomains.add((long) 255);
+			
+		MetaIndex DT1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, indexDomain, max_fragment_size, columnEncodingsList2, columnEncodedByteSizesList2, columnDomains);
+		metadata.getIndexMap().put(indexID, DT1);
 		
 		// DT2
 		indexID = 3;
@@ -65,8 +73,14 @@ public class PubmedQuerySD {
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().put(indexID, DT2);
+		indexDomain = 751;
+		max_fragment_size = 753;
+		columnDomains.clear();
+		columnDomains.add((long)5001);
+		columnDomains.add((long)255);
+		
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, indexDomain, max_fragment_size, columnEncodingsList3, columnEncodedByteSizesList3, columnDomains);
+		metadata.getIndexMap().put(indexID, DT2);
 		
 
 	}
@@ -85,8 +99,14 @@ public class PubmedQuerySD {
 		columnEncodedByteSizesList2.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList2.add(MetaData.BYTES_1);
 		
-		MetaIndex DT1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList2, columnEncodedByteSizesList2);
-		metadata.getIndexList().put(indexID, DT1);
+		long indexDomain = 5001;
+		int max_fragment_size = 133;
+		List<Long> columnDomains = new ArrayList<Long>();
+		columnDomains.add((long) 751);
+		columnDomains.add((long) 255);
+		
+		MetaIndex DT1 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, indexDomain, max_fragment_size, columnEncodingsList2, columnEncodedByteSizesList2, columnDomains);
+		metadata.getIndexMap().put(indexID, DT1);
 		
 		// DT2
 		indexID = 3;
@@ -95,12 +115,18 @@ public class PubmedQuerySD {
 		columnEncodingsList3.add(MetaData.ENCODING_BB);
 		columnEncodingsList3.add(MetaData.ENCODING_HUFFMAN);
 		
+		indexDomain = 751;
+		max_fragment_size = 753;
+		columnDomains.clear();
+		columnDomains.add((long)5001);
+		columnDomains.add((long)255);
+		
 		List<Integer >columnEncodedByteSizesList3 = new ArrayList<Integer>();
 		columnEncodedByteSizesList3.add(MetaData.BYTES_4);
 		columnEncodedByteSizesList3.add(MetaData.BYTES_1);
 		
-		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, columnEncodingsList3, columnEncodedByteSizesList3);
-		metadata.getIndexList().put(indexID, DT2);
+		MetaIndex DT2 = new MetaIndex(indexID, numColumns, MetaData.BYTES_4, indexDomain, max_fragment_size, columnEncodingsList3, columnEncodedByteSizesList3, columnDomains);
+		metadata.getIndexMap().put(indexID, DT2);
 
 	}
 	private static void initQ1Operators(List<Operator> operators, MetaQuery query, List<Integer> selections) {
@@ -191,8 +217,7 @@ public class PubmedQuerySD {
 		
 		initQ1Indexes(metadata, encoding);
 		initQ1Queries(metadata, queryName, numThreads);
-		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID());
-		
+		MetaQuery query = metadata.getQuery();
 		
 		if (numThreads > 1) {
 			initQ1OperatorsThreaded(operators, query, selections);
@@ -209,7 +234,7 @@ public class PubmedQuerySD {
 		MetaData metadata = new MetaData();
 		initQ1Indexes(metadata);
 		initQ1Queries(metadata, queryName, numThreads);
-		MetaQuery query = metadata.getQueryList().get(metadata.getCurrentQueryID());
+		MetaQuery query = metadata.getQuery();
 		if (numThreads > 1) {
 			initQ1OperatorsThreaded(operators, query, selections);
 		}
@@ -249,7 +274,7 @@ public class PubmedQuerySD {
 		runQ1("q1_opt_0threads_17996791", 1, selection2, true);
 		runQ1("q1_opt_2threads_17996791", 2, selection2, true);
 		runQ1("q1_opt_4threads_17996791", 4, selection2, true);
-		runQ1("q1_opt_1threads_17966791", 10, selection2, true);
+		runQ1("q1_opt_1threads_17996791", 10, selection2, true);
 		
 		runQ1("q1_opt_0threads_17044542", 1, selection3, true);
 		runQ1("q1_opt_2threads_17044542", 2, selection3, true);
@@ -285,7 +310,7 @@ public class PubmedQuerySD {
 		runQ1("q1_array_0threads_17996791", 1, selection2, MetaData.ENCODING_UA);
 		runQ1("q1_array_2threads_17996791", 2, selection2, MetaData.ENCODING_UA);
 		runQ1("q1_array_4threads_17996791", 4, selection2, MetaData.ENCODING_UA);
-		runQ1("q1_array_1threads_17966791", 10, selection2, MetaData.ENCODING_UA);
+		runQ1("q1_array_1threads_17996791", 10, selection2, MetaData.ENCODING_UA);
 		
 		runQ1("q1_array_0threads_17044542", 1, selection3, MetaData.ENCODING_UA);
 		runQ1("q1_array_2threads_17044542", 2, selection3, MetaData.ENCODING_UA);

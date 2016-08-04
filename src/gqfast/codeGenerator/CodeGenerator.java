@@ -154,7 +154,8 @@ public class CodeGenerator {
 				String currAliasString = currAlias.getAlias();
 				//int gqFastIndexID = currAlias.getAssociatedIndex().getGQFastIndexID();
 				//bufferInitString += "\n\tmax_frag = metadata.idx_max_fragment_sizes[" + gqFastIndexID + "];\n";
-				bufferInitString += "\n\tmax_frag = " + currAlias.getAssociatedIndex().getMaxFragmentSize() + ";\n";
+				//bufferInitString += "\n\tmax_frag = " + currAlias.getAssociatedIndex().getMaxFragmentSize() + ";\n";
+				int maxFragmentSize = currAlias.getAssociatedIndex().getMaxFragmentSize();
 				for (int currColID : colIDs) {
 					String bufferName = currAliasString + "_col" + currColID + "_buffer";
 					joinBufferNames.add(bufferName);
@@ -162,12 +163,12 @@ public class CodeGenerator {
 						globalCodeString += "static uint64_t** " + bufferName + ";\n";
 						bufferInitString += "\t" + bufferName + " = new uint64_t*[NUM_THREADS];\n";
 						bufferInitString += "\tfor (int i=0; i<NUM_THREADS; i++) {\n";
-						bufferInitString += "\t\t" + bufferName + "[i] = new uint64_t[max_frag];\n";
+						bufferInitString += "\t\t" + bufferName + "[i] = new uint64_t["+maxFragmentSize+"];\n";
 						bufferInitString += "\t}\n";
 					}
 					else{
 						globalCodeString += "static uint64_t* " + bufferName + ";\n";
-						bufferInitString += "\t" + bufferName + " = new uint64_t[max_frag];\n";
+						bufferInitString += "\t" + bufferName + " = new uint64_t["+maxFragmentSize+"];\n";
 					}
 				}
 				
@@ -2497,7 +2498,7 @@ public class CodeGenerator {
 		// Array initializations
 		mainCppCode.add(bufferInitCode(operators, globalsCppCode));
 	
-		mainCppCode.add(initResultArray(resultDataType, lastOp));
+		mainCppCode.add(initResultArray(resultDataType, metadata));
 		mainCppCode.add(initSemiJoinArray(operators, metadata, globalsCppCode));
 		
 		// Initializations for BCA and Huffman Decodes
