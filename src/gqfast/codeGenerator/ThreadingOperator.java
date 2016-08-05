@@ -2,10 +2,10 @@ package gqfast.codeGenerator;
 
 import gqfast.global.Alias;
 import gqfast.global.Global.Optypes;
-
+//insert the thread directly after the join operator
 public class ThreadingOperator extends Operator {
 
-	private Alias drivingAlias;
+	private Alias drivingAlias;//dt1, first join. 
 	private boolean threadingAfterIntersection;
 	
 	public ThreadingOperator(Alias drivingAlias, boolean threadingAfterIntersection) {

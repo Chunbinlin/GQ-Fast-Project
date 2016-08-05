@@ -8,12 +8,12 @@ import java.util.List;
 public class JoinOperator extends Operator {
 	
 	private  boolean entityFlag; // ENTITY = 1; RELATIONSHIP = 0
-	private List<Integer> columnIDs; 
+	private List<Integer> columnIDs;  //for SD query, 0 (for term)
 	
-	private Alias alias;
+	private Alias alias; // (dt2)
 	
-	private Alias drivingAlias;
-	private int drivingAliasColumn;
+	private Alias drivingAlias; //(dt1)
+	private int drivingAliasColumn; //(term column id in dt1)
 
 
 	

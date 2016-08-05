@@ -7,10 +7,10 @@ import java.util.List;
 
 public class IntersectionOperator extends Operator {
 
-	private boolean bitwiseFlag;
-	private List<Alias> aliases;
-	private List<Integer> columnIDs; 
-	private List<Integer> selections;
+	private boolean bitwiseFlag;//0: no bitmap, 1: bitmap. set to 0 for mow
+	private List<Alias> aliases; //dt1 for each selection
+	private List<Integer> columnIDs; //0: term column in dt1
+	private List<Integer> selections;//5,7
 	
 	public IntersectionOperator(boolean bitwiseFlag, List<Alias> aliases, 
 		List<Integer> columnIDs, List<Integer> selections) {

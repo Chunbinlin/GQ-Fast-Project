@@ -7,7 +7,7 @@ import java.util.List;
 
 public class SemiJoinOperator extends Operator {
 	
-	private boolean entityFlag;
+	private boolean entityFlag;//always set to 0 for now
 	private List<Integer> columnIDs; 
 
 	private Alias alias;
