@@ -5,7 +5,7 @@ import java.util.List;
 public class MetaIndex {
 
 	//private int indexID;
-	private int gqFastIndexID;
+	private int gqFastIndexID; //0
 	private int numColumns;
 	private int indexMapByteSize;
 	private long indexDomain;

@@ -3,9 +3,9 @@ package gqfast.global;
 public class Term {
 	private String variable;
 	private String column;
-	private String col_constant;
+	private int col_constant;
 	
-	public Term(String col_con) {
+	public Term(int col_con) {
 		this.variable = null;
 		this.column = null;
 		this.col_constant = col_con;
@@ -14,7 +14,7 @@ public class Term {
 	public Term(String var, String col) {
 		this.variable = var;
 		this.column = col;
-		this.col_constant = null;
+		this.col_constant = 0;
 	}
 	
 	public String get_variable() {
@@ -25,12 +25,12 @@ public class Term {
 		return this.column;
 	}
 	
-	public String get_constant() {
+	public int get_constant() {
 		return this.col_constant;
 	}
 	
 	public void print() {
-		if (this.col_constant == null) {
+		if (this.col_constant == 0) {
 			if (this.column != "")
 				System.out.print(this.variable+"."+this.column);
 			else

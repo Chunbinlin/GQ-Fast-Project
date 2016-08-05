@@ -9,11 +9,11 @@ import java.util.Set;
 
 public class MetaQuery {
 
-	private int queryID;
+	private int queryID; //need it? from where
 	private String queryName; 
-	private int numThreads;
-	private List<Alias> aliases;
-	private boolean[] preThreading;
+	private int numThreads; //fix to 4
+	private List<Alias> aliases; 
+	private boolean[] preThreading;//?
 	
 	public MetaQuery(int queryID, String queryName, int numThreads,
 			 List<Alias> aliases) {

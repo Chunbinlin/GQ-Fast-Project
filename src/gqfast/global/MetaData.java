@@ -7,8 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MetaData {
-	
-	public static final int ENCODING_UA = 1;
+	//encoding flags
+	public static final int ENCODING_UA = 1; 
 	public static final int ENCODING_BCA = 2;
 	public static final int ENCODING_BB = 3;
 	public static final int ENCODING_HUFFMAN = 4;
