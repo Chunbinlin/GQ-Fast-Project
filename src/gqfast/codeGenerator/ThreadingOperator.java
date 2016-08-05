@@ -6,12 +6,12 @@ import gqfast.global.Global.Optypes;
 public class ThreadingOperator extends Operator {
 
 	private Alias drivingAlias;//dt1, first join. 
-	private boolean threadingAfterIntersection;
+	private boolean threadingAfterIntersection; // always false for now
 	
 	public ThreadingOperator(Alias drivingAlias, boolean threadingAfterIntersection) {
 		super(Optypes.THREADING_OPERATOR);
 		this.drivingAlias = drivingAlias;
-		this.threadingAfterIntersection = threadingAfterIntersection;
+		this.threadingAfterIntersection = false;
 	}
 
 	public Alias getDrivingAlias() {

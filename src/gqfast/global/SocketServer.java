@@ -69,7 +69,7 @@ public class SocketServer {
 		out.write(bytes);
 		out.flush();
 		int numCols = loadIndexDA1.getNumEncodedCols();
-		out.writeInt(numCols);
+		out.writeBytes(numCols + "");
 		out.flush();
 		String[] names = loadIndexDA1.getEncodedColNames();
 		Encodings[] encs = loadIndexDA1.getEncodedColEncodings();
@@ -108,7 +108,7 @@ public class SocketServer {
         int portNumber = 7235;
         
         
-        String shutdown = "Shutdown signal";
+        
         
         Socket firstSocket = new Socket(hostName, portNumber);
       
@@ -126,6 +126,10 @@ public class SocketServer {
         
     	sendMessage(loadIndexDA1, out);
         
+    	String shutdown = "Shutdown signal\0";
+    	byte[] bytes = shutdown.getBytes(StandardCharsets.UTF_8);
+    	out.write(bytes);
+    	out.flush();
         
         		
         in.close();

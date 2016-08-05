@@ -9,16 +9,15 @@ import java.util.Set;
 
 public class MetaQuery {
 
-	private int queryID; //need it? from where
 	private String queryName; 
 	private int numThreads; //fix to 4
 	private List<Alias> aliases; 
 	private boolean[] preThreading;//?
 	
-	public MetaQuery(int queryID, String queryName, int numThreads,
+	public MetaQuery(String queryName, int numThreads,
 			 List<Alias> aliases) {
 	
-		this.queryID = queryID;
+		
 		this.queryName = queryName;
 		this.numThreads = numThreads;
 		this.aliases = aliases;	
@@ -34,10 +33,6 @@ public class MetaQuery {
 			}
 		}
 		return indexIDs;
-	}
-
-	public int getQueryID() {
-		return queryID;
 	}
 
 	public String getQueryName() {

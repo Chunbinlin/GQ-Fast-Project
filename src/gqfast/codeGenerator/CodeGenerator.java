@@ -288,10 +288,10 @@ public class CodeGenerator {
 	@SuppressWarnings("incomplete-switch")
 	private static String initResultArray(int resultDataType, MetaData metadata) {
 		
-		int metaindexId = metadata.getAggregation_domain_index_id(); 
-		MetaIndex currIndex = metadata.getIndexMap().get(metaindexId);
-		long domain = currIndex.getIndexDomain();
-		int gqFastIndexID = currIndex.getGQFastIndexID();
+		//int metaindexId = metadata.getAggregation_domain_index_id(); 
+		//MetaIndex currIndex = metadata.getIndexMap().get(metaindexId);
+		long domain = metadata.getAggregationDomain();
+		//int gqFastIndexID = currIndex.getGQFastIndexID();
 		/*Optypes opType = lastOp.getType();
 		switch (opType) {
 		case JOIN_OPERATOR:
