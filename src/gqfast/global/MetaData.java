@@ -21,7 +21,7 @@ public class MetaData {
 	private HashMap<Integer, MetaIndex> indexMap;
 	private MetaQuery query;
 
-	private int aggregation_domain_index_id;
+	private int aggregationDomain;
 	
 	public MetaData() {
 		indexMap = new HashMap<Integer, MetaIndex>();
@@ -45,12 +45,12 @@ public class MetaData {
 		this.query = query;
 	}
 
-	public int getAggregation_domain_index_id() {
-		return aggregation_domain_index_id;
+	public int getAggregationDomain() {
+		return aggregationDomain;
 	}
 
-	public void setAggregation_domain_index_id(int aggregation_domain_index_id) {
-		this.aggregation_domain_index_id = aggregation_domain_index_id;
+	public void setAggregationDomain(int aggregationDomain) {
+		this.aggregationDomain = aggregationDomain;
 	}
 
 
