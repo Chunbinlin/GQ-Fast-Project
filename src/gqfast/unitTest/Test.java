@@ -18,7 +18,7 @@ public class Test {
 	
 	public static void main(String[] args) {
         TestTree_logical2RQNA test = new TestTree_logical2RQNA();
-        test.TreeFSD();
+        test.TreeSD();
         System.out.println("=======================================");
         System.out.println("Input Relational Algebra:");
         test.print(test.getroot());

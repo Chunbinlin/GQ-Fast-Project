@@ -29,7 +29,7 @@ public class TestTree_logical2RQNA {
 
 	public void Tree1() {//Nothing need to be changed
 		Term t1 = new Term("d", "Year");
-		Term t2 = new Term("2012");
+		Term t2 = new Term(2012);
 		Property p1 = new Property(t1, Conditions.eq, t2);
 		List<Property> l1 = new ArrayList<Property>();
 		l1.add(p1);
@@ -57,7 +57,7 @@ public class TestTree_logical2RQNA {
 		l1s.add(s1);
 
 		Term t3 = new Term("dt", "Term");
-		Term t4 = new Term("t");
+		Term t4 = new Term(100);
 		Property p2 = new Property(t3, Conditions.eq, t4);
 		List<Property> l2 = new ArrayList<Property>();
 		l2.add(p2);
@@ -85,7 +85,7 @@ public class TestTree_logical2RQNA {
 		TreeNode root = new TreeNode(l0, l1, l1s);
 
 		Term t3 = new Term("dt", "Term");
-		Term t4 = new Term("t");
+		Term t4 = new Term(100);
 		Property p2 = new Property(t3, Conditions.eq, t4);
 		List<Property> l2 = new ArrayList<Property>();
 		l2.add(p2);
@@ -151,7 +151,7 @@ public class TestTree_logical2RQNA {
 		l4.add(t7);
 		root.left.left.right = new TreeNode(l4);
 		Term t81 = new Term("dt", "Term");
-		Term t82 = new Term("t1");
+		Term t82 = new Term(100);
 		Property p42 = new Property(t81, Conditions.eq, t82);
 		List<Property> l42 = new ArrayList<Property>();
 		l42.add(p42);
@@ -168,7 +168,7 @@ public class TestTree_logical2RQNA {
 		l43.add(t72);
 		root.left.left.left = new TreeNode(l43);
 		Term t812 = new Term("dt", "Term");
-		Term t822 = new Term("t2");
+		Term t822 = new Term(288);
 		Property p422 = new Property(t812, Conditions.eq, t822);
 		List<Property> l422 = new ArrayList<Property>();
 		l422.add(p422);
@@ -193,7 +193,7 @@ public class TestTree_logical2RQNA {
 		l1s.add(s1);
 
 		Term t3 = new Term("dt1", "Doc");
-		Term t4 = new Term("d");
+		Term t4 = new Term(100);
 		Property p2 = new Property(t3, Conditions.eq, t4);
 		List<Property> l2 = new ArrayList<Property>();
 		l2.add(p2);
@@ -288,7 +288,7 @@ public class TestTree_logical2RQNA {
 		l4.add(t7);
 		root.left.right.right = new TreeNode(l4);
 		Term t81 = new Term("cs", "CID");
-		Term t82 = new Term("a1");
+		Term t82 = new Term(100);
 		Property p42 = new Property(t81, Conditions.eq, t82);
 		List<Property> l42 = new ArrayList<Property>();
 		l42.add(p42);
@@ -305,7 +305,7 @@ public class TestTree_logical2RQNA {
 		l43.add(t72);
 		root.left.right.left = new TreeNode(l43);
 		Term t812 = new Term("cs", "CID");
-		Term t822 = new Term("a2");
+		Term t822 = new Term(200);
 		Property p422 = new Property(t812, Conditions.eq, t822);
 		List<Property> l422 = new ArrayList<Property>();
 		l422.add(p422);
@@ -331,7 +331,7 @@ public class TestTree_logical2RQNA {
 		TreeNode root = new TreeNode(l0, l1, l1s);
 
 		Term t3 = new Term("dt1", "Doc");
-		Term t4 = new Term("d0");
+		Term t4 = new Term(100);
 		Property p2 = new Property(t3, Conditions.eq, t4);
 		List<Property> l2 = new ArrayList<Property>();
 		l2.add(p2);
@@ -377,7 +377,7 @@ public class TestTree_logical2RQNA {
 		TreeNode root = new TreeNode(l0, l1, l1s);
 		
 		Term t31 = new Term("d1", "ID");
-		Term t32 = new Term("d0");
+		Term t32 = new Term(100);
 		Property p2 = new Property(t31, Conditions.eq, t32);
 		List<Property> l2 = new ArrayList<Property>();
 		l2.add(p2);
@@ -471,7 +471,7 @@ public class TestTree_logical2RQNA {
 		l4.add(t7);
 		root.left.left.right = new TreeNode(l4);
 		Term t81 = new Term("dt", "Term");
-		Term t82 = new Term("t1");
+		Term t82 = new Term(100);
 		Property p42 = new Property(t81, Conditions.eq, t82);
 		List<Property> l42 = new ArrayList<Property>();
 		l42.add(p42);
@@ -488,7 +488,7 @@ public class TestTree_logical2RQNA {
 		l43.add(t72);
 		root.left.left.left = new TreeNode(l43);
 		Term t812 = new Term("dt", "Term");
-		Term t822 = new Term("t2");
+		Term t822 = new Term(200);
 		Property p422 = new Property(t812, Conditions.eq, t822);
 		List<Property> l422 = new ArrayList<Property>();
 		l422.add(p422);
@@ -518,7 +518,7 @@ public class TestTree_logical2RQNA {
 		TreeNode root = new TreeNode(l0, l1, l1s);
 		
 		Term t31 = new Term("da1", "Author");
-		Term t32 = new Term("a");
+		Term t32 = new Term(100);
 		Property p2 = new Property(t31, Conditions.eq, t32);
 		List<Property> l2 = new ArrayList<Property>();
 		l2.add(p2);
@@ -601,7 +601,7 @@ public class TestTree_logical2RQNA {
 		TreeNode root = new TreeNode(l0, l1, l1s);
 		
 		Term t31 = new Term("c1", "CID");
-		Term t32 = new Term("c");
+		Term t32 = new Term(100);
 		Property p2 = new Property(t31, Conditions.eq, t32);
 		List<Property> l2 = new ArrayList<Property>();
 		l2.add(p2);
