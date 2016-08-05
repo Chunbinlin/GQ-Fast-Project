@@ -5,8 +5,10 @@ import gqfast.global.MetaData;
 
 import java.util.List;
 
+//R2P_Ouupt is an input of the code generator
 public class R2P_Output
 {
+	
 	private MetaData metaData;
 	private List<Operator> operators;
 	
