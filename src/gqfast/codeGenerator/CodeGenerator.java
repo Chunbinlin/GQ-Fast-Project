@@ -18,6 +18,7 @@ import java.util.Set;
 
 public class CodeGenerator {
 	
+
 	static boolean hasThreading;
 	static int threadOpIndex;
 	static boolean hasIntersection;
@@ -264,7 +265,7 @@ public class CodeGenerator {
 				String alias = semiOp.getDrivingAlias().getAlias();
 				semiDeallocString += "\tdelete[] " + alias + "_bool_array;\n";
 				if (hasThreading && i > threadOpIndex) {
-					semiDeallocString += "\tdelete[] " + alias + "_spin_lock;\n";
+				//	semiDeallocString += "\tdelete[] " + alias + "_spin_lock;\n";
 				}
 				semiDeallocString += "\n";	
 			}
@@ -357,7 +358,7 @@ public class CodeGenerator {
 				
 				String globalDeclarationString = "\nstatic atomic<bool>* " + alias + "_bool_array;\n";
 				if (hasThreading && i > threadOpIndex) {
-					globalDeclarationString += "static pthread_spinlock_t* " + alias + "_spin_lock;\n";
+				//	globalDeclarationString += "static pthread_spinlock_t* " + alias + "_spin_lock;\n";
 				}
 				globalsCppCode.add(globalDeclarationString);
 				
@@ -1283,25 +1284,17 @@ public class CodeGenerator {
 		if (currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 			//int drivingAliasID = drivingAlias.getAliasID();
 			//int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
-			int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
+			//int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
 			//int drivingAppearance = joinAliasAppearanceIDs.get(drivingAlias);
 			if (hasThreading) {
 				if (threadID) {
-					String bufferString = drivAliasString + "_col" + drivingAliasCol + "_buffer[thread_id]["+drivAliasString+"_it]";
-					mainString += "\n" + tabString + "bool " + drivAliasString + "_unvisited = false;\n";
-					mainString += tabString + "pthread_spin_lock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
-					mainString += tabString + "if (!(" + drivAliasString 
-							+ "_bool_array["+bufferString+"])) {\n";
-					tabString.append("\t");
-					mainString += tabString + drivAliasString + 
+					mainString += "\n" + tabString + "if (!(" + drivAliasString 
+							+ "_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]])) {\n";
+						closingBraces[0]++;
+						tabString.append("\t");
+						mainString += tabString + drivAliasString + 
 							"_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]] = true;\n";
-					mainString += tabString + drivAliasString + "_unvisited = true;\n";
-					mainString += tabString + "}\n";
-					tabString.setLength(tabString.length() - 1);
-					mainString += tabString + "pthread_spin_unlock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
-					mainString += tabString + "if (" + drivAliasString + "_unvisited) {\n";
-					tabString.append("\t");
-					closingBraces[0]++;
+					
 				}
 				else {
 					mainString += "\n" + tabString + "if (!(" + drivAliasString 
@@ -1393,25 +1386,16 @@ public class CodeGenerator {
 			//int drivingAliasID = drivingAlias.getAliasID();
 			//int drivingAppearance = joinAliasAppearanceIDs.get(drivingAlias);
 			//int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
-			int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
+			//int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
 			String drivAliasString = drivingAlias.getAlias();
 			if (hasThreading) {
 				if (threadID) {
-					String bufferString = drivAliasString + "_col" + drivingAliasCol + "_buffer[thread_id]["+drivAliasString+"_it]";
-					mainString += "\n" + tabString + "bool " + drivAliasString + "_unvisited = false;\n";
-					mainString += tabString + "pthread_spin_lock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
-					mainString += tabString + "if (!(" + drivAliasString 
-							+ "_bool_array["+bufferString+"])) {\n";
+					mainString += "\n" + tabString + "if (!(" + drivAliasString 
+							+ "_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]])) {\n";
+					closingBraces[0]++;
 					tabString.append("\t");
 					mainString += tabString + drivAliasString + 
 							"_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]] = true;\n";
-					mainString += tabString + drivAliasString + "_unvisited = true;\n";
-					mainString += tabString + "}\n";
-					tabString.setLength(tabString.length() - 1);
-					mainString += tabString + "pthread_spin_unlock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
-					mainString += tabString + "if (" + drivAliasString + "_unvisited) {\n";
-					tabString.append("\t");
-					closingBraces[0]++;
 				}
 				else {
 					mainString += "\n" + tabString + "if (!(" + drivAliasString 
@@ -1599,26 +1583,17 @@ public class CodeGenerator {
 		if (currentOp.getType() == Optypes.SEMIJOIN_OPERATOR) {
 			//int drivingAliasID = drivingAlias.getAliasID();
 			//int drivingPool = query.getBufferPoolID(drivingAliasID, drivingAliasCol);
-			int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
+			//int drivingGQFastIndexID = drivingAlias.getAssociatedIndex().getGQFastIndexID();
 			String drivAliasString = drivingAlias.getAlias();
 			//int drivingAppearance = joinAliasAppearanceIDs.get(drivingAlias);
 			if (hasThreading) {
 				if (justStartedThreading) {
-					String bufferString = drivAliasString + "_col" + drivingAliasCol + "_buffer[thread_id]["+drivAliasString+"_it]";
-					mainString += "\n" + tabString + "bool " + drivAliasString + "_unvisited = false;\n";
-					mainString += tabString + "pthread_spin_lock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
-					mainString += tabString + "if (!(" + drivAliasString 
-							+ "_bool_array["+bufferString+"])) {\n";
+					mainString += "\n" + tabString + "if (!(" + drivAliasString 
+							+ "_bool_array[" + drivAliasString + "_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]])) {\n";
+					closingBraces[0]++;
 					tabString.append("\t");
 					mainString += tabString + drivAliasString + 
-							"_bool_array[" + drivAliasString +"_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]] = true;\n";
-					mainString += tabString + drivAliasString + "_unvisited = true;\n";
-					mainString += tabString + "}\n";
-					tabString.setLength(tabString.length() - 1);
-					mainString += tabString + "pthread_spin_unlock(&s_spin_locks["+ drivingGQFastIndexID + "]["+bufferString+"]);\n";
-					mainString += tabString + "if (" + drivAliasString + "_unvisited) {\n";
-					tabString.append("\t");
-					closingBraces[0]++;
+							"_bool_array[" + drivAliasString + "_col" + drivingAliasCol +"_buffer[thread_id]["+drivAliasString+ "_it]] = true;\n";
 				}
 				else {
 					mainString += "\n" + tabString + "if (!(" + drivAliasString 
@@ -2484,7 +2459,6 @@ public class CodeGenerator {
 		//intersectionAliasAppearanceIDs = new ArrayList<Integer>();
 		joinBufferNames = new ArrayList<String>();
 		intersectionBufferNames = new ArrayList<String>();
-		
 		
 		hasIntersection = false;
 		int resultDataType = 0;
