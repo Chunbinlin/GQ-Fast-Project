@@ -10,32 +10,27 @@ public class AggregationOperator extends Operator {
 	public static final int AGGREGATION_INT = 1;
 	public static final int AGGREGATION_DOUBLE = 2;
 	
-	private int gqFastIndexID;
-	private int dataType;
-
-	private String aggregationString;
-
-
-	private List<Alias> aggregationVariablesAliases;
-	private List<Integer> aggregationVariablesColumns;
+	public static final int FUNCTION_COUNT = 1;
+	public static final int FUNCTION_SUM = 2;
 	
+	
+	private int dataType; // Always INT for now	
+	private int aggregationFunction; // COUNT or SUM for now
 	private Alias drivingAlias;
 	private int drivingAliasColumn;
-	//private int drivingOperator;
 	
+	private Alias aggregationAlias;
+	private int aggregationAliasColumn;
 	
-	public AggregationOperator(int gqFastIndexID, int dataType, String aggregationString, 
-			List<Alias> aggregationVariablesAliases, List<Integer> aggregationVariablesColumns, Alias drivingAlias, 
-			int drivingAliasColumn) {
+	public AggregationOperator(int dataType, int aggregationFunction, Alias drivingAlias, 
+			int drivingAliasColumn, Alias aggregationAlias, int aggregationAliasColumn) {
 		super(Optypes.AGGREGATION_OPERATOR);
-		this.gqFastIndexID = gqFastIndexID;
-		this.dataType = dataType;
-		this.aggregationString = aggregationString;
-		this.aggregationVariablesAliases = aggregationVariablesAliases;		
-		this.aggregationVariablesColumns = aggregationVariablesColumns;
+		this.dataType = AGGREGATION_INT; // Ignores incoming argument
+		this.aggregationFunction = aggregationFunction;
 		this.drivingAlias = drivingAlias;
 		this.drivingAliasColumn = drivingAliasColumn;
-
+		this.aggregationAlias = aggregationAlias;
+		this.aggregationAliasColumn = aggregationAliasColumn;
 		
 	}
 	
@@ -44,21 +39,12 @@ public class AggregationOperator extends Operator {
 		return dataType;
 	}
 
-	public int getGQFastIndexID() {
-		return gqFastIndexID;
+	
+	
+	public int getAggregationFunction() {
+		return aggregationFunction;
 	}
 
-	public String getAggregationString() {
-		return aggregationString;
-	}
-
-	public List<Alias> getAggregationVariablesAliases() {
-		return aggregationVariablesAliases;
-	}
-
-	public List<Integer> getAggregationVariablesColumns() {
-		return aggregationVariablesColumns;
-	}
 
 	public Alias getDrivingAlias() {
 		return drivingAlias;
@@ -66,5 +52,15 @@ public class AggregationOperator extends Operator {
 
 	public int getDrivingAliasColumn() {
 		return drivingAliasColumn;
+	}
+
+
+	public Alias getAggregationAlias() {
+		return aggregationAlias;
+	}
+
+
+	public int getAggregationAliasColumn() {
+		return aggregationAliasColumn;
 	}
 }

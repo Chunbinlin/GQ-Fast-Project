@@ -286,7 +286,6 @@ public class CodeGenerator {
 	 * 			
 	 *
 	 */
-	@SuppressWarnings("incomplete-switch")
 	private static String initResultArray(int resultDataType, MetaData metadata) {
 		
 		//int metaindexId = metadata.getAggregation_domain_index_id(); 
@@ -453,7 +452,7 @@ public class CodeGenerator {
 							mainCppCode.add(nextMain);
 						}
 						else if (columnEncoding == MetaData.ENCODING_HUFFMAN) {
-							String nextGlobal = "\nstatic int* "+ alias + "_col" + j + "_huffman_tree_array;\n";
+							String nextGlobal = "\nstatic uint32_t* "+ alias + "_col" + j + "_huffman_tree_array;\n";
 							nextGlobal += "static bool* " + alias + "_col" + j + "_huffman_terminator_array;\n";
 							globalsCppCode.add(nextGlobal);
 							String nextMain = "\n\t" + alias + "_col" + j + "_huffman_tree_array = idx[" + gqFastIndexID + "]->huffman_tree_array[" + columnID + "];\n";
@@ -509,7 +508,7 @@ public class CodeGenerator {
 							mainCppCode.add(nextMain2);
 						}
 						else if (columnEncoding == MetaData.ENCODING_HUFFMAN) {
-							String nextGlobal2 = "\nstatic int* "+ alias + "_col" + j + "_huffman_tree_array;\n";
+							String nextGlobal2 = "\nstatic uint32_t* "+ alias + "_col" + j + "_huffman_tree_array;\n";
 							nextGlobal2 += "static bool* " + alias + "_col" + j + "_huffman_terminator_array;\n";
 							globalsCppCode.add(nextGlobal2);
 							String nextMain2 = "\n\t" + alias + "_col" + j + "_huffman_tree_array = idx[" + gqFastIndexID + "]->huffman_tree_array[" + columnID + "];\n";
@@ -622,7 +621,7 @@ public class CodeGenerator {
 		else if (currentEncoding == MetaData.ENCODING_HUFFMAN) {
 			function += tabString + "int mask = 0x100;\n";
 			function += tabString + "bool* terminator_array = &("+alias+"_col"+currentCol+"_huffman_terminator_array[0]);\n";
-			function += tabString + "int* tree_array = &("+alias+"_col"+currentCol+"_huffman_tree_array[0]);\n";
+			function += tabString + "uint32_t* tree_array = &("+alias+"_col"+currentCol+"_huffman_tree_array[0]);\n";
 			function += "\n" + tabString + "while(!*terminator_array) {\n";
 			tabString += "\t";
 			function += "\n" + tabString + "char direction = *" + pointerName + " & (mask >>= 1);\n";
@@ -749,13 +748,13 @@ public class CodeGenerator {
 			else if (currentEncoding == MetaData.ENCODING_HUFFMAN) {
 				
 				function += tabString + "bool* terminate_start = &("+ alias + "_col" + currentCol + "_huffman_terminator_array[0]);\n" ;
-				function += tabString + "int* tree_array_start = &("+ alias + "_col" + currentCol + "_huffman_tree_array[0]);\n";
+				function += tabString + "uint32_t* tree_array_start = &("+ alias + "_col" + currentCol + "_huffman_tree_array[0]);\n";
 				
 				function += "\n" + tabString + "int mask = 0x100;\n";
 				function += "\n" + tabString + "while ("+ currentFragmentBytesName + " > 1) {\n";
 				tabString += "\t";
 				function += "\n" + tabString + "bool* terminator_array = terminate_start;\n";
-				function += tabString + "int* tree_array = tree_array_start;\n";
+				function += tabString + "uint32_t* tree_array = tree_array_start;\n";
 				function += "\n" + tabString + "while(!*terminator_array) { \n";
 				tabString += "\t";
 				function += "\n" + tabString + "char direction = *" + pointerName + " & (mask >>= 1);\n";
@@ -790,7 +789,7 @@ public class CodeGenerator {
 				function += tabString + "if (bit) {\n";
 				tabString += "\t";
 				function += tabString + "bool* terminator_array = terminate_start;\n";
-				function += tabString + "int* tree_array = tree_array_start;\n";
+				function += tabString + "uint32_t* tree_array = tree_array_start;\n";
 				function += "\n" + tabString + "while (!*terminator_array) {\n";
 				tabString += "\t";
 				function += tabString + "char direction = *" + pointerName + " & (mask >>= 1);\n";
@@ -881,13 +880,13 @@ public class CodeGenerator {
 			else if (currentEncoding == MetaData.ENCODING_HUFFMAN) {
 				
 				function += tabString + "bool* terminate_start = &("+alias+ "_col" + currentCol + "_huffman_terminator_array[0]);\n" ;
-				function += tabString + "int* tree_array_start = &("+alias + "_col" + currentCol + "_huffman_tree_array[0]);\n";
+				function += tabString + "uint32_t* tree_array_start = &("+alias + "_col" + currentCol + "_huffman_tree_array[0]);\n";
 				
 				function += "\n" + tabString + "int mask = 0x100;\n";
 				function += "\n" + tabString + "for (uint32_t i=0; i<"+sizeName+"; i++) {\n";
 				tabString += "\t";
 				function += "\n" + tabString + "bool* terminator_array = terminate_start;\n";
-				function += tabString + "int* tree_array = tree_array_start;\n";
+				function += tabString + "uint32_t* tree_array = tree_array_start;\n";
 				function += "\n" + tabString + "while(!*terminator_array) { \n";
 				tabString += "\t";
 				function += "\n" + tabString + "char direction = *" + pointerName + " & (mask >>= 1);\n";
@@ -2083,6 +2082,19 @@ public class CodeGenerator {
 				mainString += "\n" + tabString + "pthread_spin_lock(&r_spin_locks["+ elementString +"]);\n";
 			}
 
+			if (aggregationOp.getAggregationFunction() == AggregationOperator.FUNCTION_COUNT)
+			{
+				mainString += tabString + "R[" + elementString +"] += 1;";
+			}
+			else if (aggregationOp.getAggregationFunction() == AggregationOperator.FUNCTION_SUM)
+			{
+				String alias = aggregationOp.getAggregationAlias().getAlias();
+				int aliasCol = aggregationOp.getAggregationAliasColumn();
+				String fullElementName = alias + "_col" + aliasCol + "_element";
+				mainString += tabString + "R[" + elementString +"] += " + fullElementName + ";";
+			}
+			
+				/*
 			if (aggregationOp.getAggregationString() != null) {
 				String delims = "[ ]+";
 				String[] tokens = aggregationOp.getAggregationString().split(delims);
@@ -2106,6 +2118,7 @@ public class CodeGenerator {
 				mainString += tabString + "R[" + elementString +"] += " + reconstructedString + ";";
 
 			}
+			*/
 			
 			if (!preThreading) {
 				mainString += "\n" + tabString + "pthread_spin_unlock(&r_spin_locks["+ elementString +"]);\n";
@@ -2116,19 +2129,19 @@ public class CodeGenerator {
 		else {
 			String drivingAlias = "";
 			int drivingAliasCol = -1;
-			int drivingAliasIndex = -1;
+			//int drivingAliasIndex = -1;
 			
 			if (opType == Optypes.JOIN_OPERATOR) {
 				JoinOperator joinOp = (JoinOperator) lastOp;
 				drivingAlias = joinOp.getDrivingAlias().getAlias();
 				drivingAliasCol = joinOp.getDrivingAliasColumn();
-				drivingAliasIndex = joinOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
+				//drivingAliasIndex = joinOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
 			}
 			else if (opType == Optypes.SEMIJOIN_OPERATOR) {
 				SemiJoinOperator semiJoinOp = (SemiJoinOperator) lastOp;
 				drivingAlias = semiJoinOp.getDrivingAlias().getAlias();
 				drivingAliasCol = semiJoinOp.getDrivingAliasColumn();
-				drivingAliasIndex = semiJoinOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
+				//drivingAliasIndex = semiJoinOp.getDrivingAlias().getAssociatedIndex().getGQFastIndexID();
 			}
 			String elementString = drivingAlias + "_col" + drivingAliasCol + "_element";
 			
