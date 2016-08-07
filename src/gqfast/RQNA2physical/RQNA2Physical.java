@@ -5,6 +5,8 @@ import gqfast.codeGenerator.IntersectionOperator;
 import gqfast.codeGenerator.JoinOperator;
 import gqfast.codeGenerator.Operator;
 import gqfast.codeGenerator.SelectionOperator;
+import gqfast.codeGenerator.SemiJoinOperator;
+import gqfast.codeGenerator.ThreadingOperator;
 import gqfast.global.Alias;
 import gqfast.global.Global.Optypes;
 import gqfast.global.MetaData;
@@ -26,19 +28,37 @@ import java.util.List;
 
 public class RQNA2Physical
 {
+	//input of code generator (operators, metadata)
 	public List<Operator> operators = new ArrayList<Operator>();
-	public HashMap<String, String> alias_2_table_name  = new HashMap<String, String>();
-	public HashMap<String, String> alias_2_index_name  = new HashMap<String, String>();
+	public MetaData metadata = new MetaData();
+
+	//alias mapping
+	public HashMap<String, String> alias_2_table_name  = new HashMap<String, String>();//dt1->DT
+	public HashMap<String, String> alias_2_index_name  = new HashMap<String, String>();//dt1->dt_doc
+	public HashMap<String, Integer> alias_clumn_name_2_id = new HashMap<String, Integer>();
+	public HashMap<String, Alias> alias_2_AliasClass = new HashMap<String, Alias>();
+	HashMap<String, MetaIndex> alias_2_meta_index = new HashMap<String, MetaIndex>();
+	HashMap<String, List<Integer>> alias_2_all_columns = new HashMap<String, List<Integer>>();
+	List<Alias> aliases = new ArrayList<Alias>();
+	
+	
+	
 	public int number_of_joins = 0;
 	public int number_of_operators = 0;
-	public boolean is_intersection_query = false;//0: no intersection. 1: has intersection
+	public int current_operator_number = 0;
+	public boolean has_intersection = false;//0: no intersection. 1: has intersection
+	public boolean has_join = true;// 0: no join. 1: has join
 	List<Alias> aliases_4_intersection = new ArrayList<Alias>(); //dt1 for each selection
-	public HashMap<String, Integer> alias_clumn_name_2_id = new HashMap<String, Integer>();
+	List<Integer> columnIDs_4_intersection = new ArrayList<Integer>();; //0: term column in dt1
+	List<Integer> selections_4_intersection = new ArrayList<Integer>();;//5,7
+	
+//	List<Integer>
+	public int global_alias_id = 0;
 	public static void main(String[] args)
 	{
 		String query_name = "SD";
         TestTree_logical2RQNA test = new TestTree_logical2RQNA();
-        test.TreeSD();
+        test.TreeFSD();
         test.print(test.getroot());
         System.out.println("\n---------------------------------------------------------------------------------------");
         RelationalAlgebra2RQNA ra = new RelationalAlgebra2RQNA(test.getroot()); 
@@ -49,70 +69,87 @@ public class RQNA2Physical
 	public R2P_Output RQNA2Physical(HashMap<Integer, MetaIndex> indexList, TreeNode RQNA, String query_name)
 	{
 		R2P_Output output = new R2P_Output();
-		//input of code generator
-		MetaData metadata = new MetaData();
+		
+		//indexMap and meta_query are for meta-data
 		HashMap<Integer, MetaIndex> indexMap = new HashMap<Integer, MetaIndex>();
+		MetaQuery meta_query = null;
 		
 		//set MetaQuery
-		MetaQuery meta_query = null;
-		int queryID = 0; // no need to use it now, set to 0
-		boolean[] preThreading = null;//always set to null
 		int numThreads = 4;//fixed
 		String queryName = query_name; 
-		List<Alias> aliases = new ArrayList<Alias>();
 		
-		//set indexMap 
+		
+		//set alias_2_table_name and alias_2_index_name
 		System.out.println("Begin parsing all the aliases in the query...");
-		getRename(RQNA);
+		getAlias2TableName(RQNA);
+		getAlias2IndexName(RQNA);
 		System.out.println("---------------------------------------------");
+		System.out.println("alias 2 table_name:");
 		for(String alias:alias_2_table_name.keySet())
 		{
 			System.out.println(alias+" --> "+alias_2_table_name.get(alias));
 		}
+		System.out.println("alias 2 index_name:");
+		for(String alias:alias_2_index_name.keySet())
+		{
+			System.out.println(alias+" --> "+alias_2_index_name.get(alias));
+		}
 		System.out.println("---------------------------------------------");
 		System.out.println("Finish parsing all the aliases in the query...");
 		System.out.println("Begin analyzing query relevant metadata...");
-		getIndexName(RQNA);
 		String path="";
-		int index_id=0;
+		
+		//set meta_index, alias_name_2_meta_index, aliases-list 
 		MetaIndex meta_index=null;
 		Alias alias_class = null;
+		alias_class = new Alias(0, "d0" ); //I guess ben need this dummy alias, let me double check
+		aliases.add(alias_class);
+		int index_id=1;
 		for(String alias:alias_2_index_name.keySet())
 		{
 			path="GQFast/MetaData/meta_"+alias_2_index_name.get(alias).toLowerCase()+".gqfast";
 			meta_index=getMetaIndexFromDisk(path, alias, index_id);
-//			System.out.println(alias+" --> "+alias_2_index_name.get(alias));
 			alias_class = new Alias(index_id, alias, meta_index);
 			aliases.add(alias_class);
+			alias_2_AliasClass.put(alias, alias_class);
 			indexMap.put(index_id, meta_index);//it is correct
+			alias_2_meta_index.put(alias, meta_index);
 			index_id++;
 		}
-		meta_query = new MetaQuery(queryID, queryName, numThreads,aliases);
+		
+		//set meta_query
+		meta_query = new MetaQuery(queryName, numThreads,aliases);
+		
+		//set meta-data
 		metadata.setIndexMap(indexMap);
 		metadata.setQuery(meta_query);
+		
 		System.out.println("Finish analyzing query relevant metadata...");
 		System.out.println("Begin generating physical operators...");
 		System.out.println("/////////////////////////////////////");
 		number_of_operators = number_of_joins+1+1; //not include aggregation here. +1 is for selection/intersection. +1 is for thread_operator
-		getOperators(RQNA);
+		System.out.println("---------------------------------------------");
+		System.out.println("alias_column 2 id:");
+		for(String alias_column: alias_clumn_name_2_id.keySet())
+		{
+			System.out.println(alias_column+" --> "+alias_clumn_name_2_id.get(alias_column));
+		}
+		System.out.println("---------------------------------------------");
 		
-		
-		
-//		travel(RQNA);
-//		query = new  MetaQuery(queryID, queryName, numThreads,
-//				 aliases);
-//		//add meatQuery into metaData
-//		metadata.getQueryList().add(query);
-//		//add meatIndex into metaData
-//		metadata.setCurrentQueryID(queryID);
-//		//add queryID into metaData
-//		metadata.setIndexMap(indexList);
-		
+		//set operators
+		prepareSelectionOperator(RQNA);
+		prepareIntersectionOperator(RQNA);
+		prepareJoinOperator(RQNA);
+		prepareAggregationOperator(RQNA);
+
+		//set output
 		output.setMetaData(metadata);
 		output.setOperators(operators);
 		return output;
 	}
-	public void getRename(TreeNode t) {
+	
+	//set to alias_2_table_name
+	public void getAlias2TableName(TreeNode t) {
 		if (t != null) {
 			//rename
 			if (t.get_Optype() == Optypes.RENAME_OPERATOR)
@@ -122,28 +159,21 @@ public class RQNA2Physical
 					//System.out.println("[rename]:"+prop.get(i).getTerm2().get_variable()+"->"+prop.get(i).getTerm1().get_variable());
 					//get alias2tablename mapping
 					alias_2_table_name.put(prop.get(i).getTerm1().get_variable(), prop.get(i).getTerm2().get_variable());
-					
+					List<Integer> columns_per_table = new ArrayList<Integer>();
+					alias_2_all_columns.put(prop.get(i).getTerm1().get_variable(), columns_per_table);
 				}
 			}
-			getRename(t.left);
-			getRename(t.right);
+			
+			getAlias2TableName(t.left);
+			getAlias2TableName(t.right);
 		}
 	}
-	public void getIndexName(TreeNode t) {
+	//set to alias_2_index_name
+	public void getAlias2IndexName(TreeNode t) {
 		if (t != null) {
-			//selection [deal selection first here, since selection after intersection in the tree, so selection should be done before intersection]
+			//selection
 			if(t.get_Optype() == Optypes.SELECTION_OPERATOR)
 			{
-				//for code generator
-				List<Integer> selectionsList = new ArrayList<Integer>(); //85
-				Alias alias = null;
-				
-				boolean bitwiseFlag = false;
-				
-				List<Integer> columnIDs = new ArrayList<Integer>(); //0: term column in dt1
-				List<Integer> selections =new ArrayList<Integer>();//5,7
-				
-				
 				List<Property> prop = t.get_Property();
 				String index_name = "";
 				for (int i = 0; i <prop.size(); i++){
@@ -152,25 +182,8 @@ public class RQNA2Physical
 					index_name=alias_2_table_name.get(prop.get(i).getTerm1().get_variable())+"_"+prop.get(i).getTerm1().get_column();
 					alias_2_index_name.put(prop.get(i).getTerm1().get_variable(), index_name);
 					index_name="";
-					alias = new Alias(0,"d0");//dummy alias
-					selectionsList.add(prop.get(i).getTerm2().get_constant());
-					
-					columnIDs.add(alias_clumn_name_2_id.get(prop.get(i).getTerm1().get_variable()+"_"+prop.get(i).getTerm1().get_column().toLowerCase()));
-					selections.add(prop.get(i).getTerm2().get_constant());
 				}
 				
-				if(is_intersection_query==false)//selection operator goes to final operators
-				{
-					System.out.println("is_intersection_query:"+is_intersection_query);
-					Operator selection_operator = new SelectionOperator(selectionsList, alias);
-					operators.add(0, selection_operator);
-				}
-				else // else goes to intersection
-				{
-					System.out.println("is_intersection_query:"+is_intersection_query);
-					Operator intersection_operator = new IntersectionOperator(bitwiseFlag, aliases_4_intersection, columnIDs, selections);
-					operators.add(0, intersection_operator);
-				}
 			}
 			//join
 			if(t.get_Optype() == Optypes.JOIN_OPERATOR || t.get_Optype() == Optypes.SEMIJOIN_OPERATOR)
@@ -185,7 +198,90 @@ public class RQNA2Physical
 					index_name="";
 				}
 				number_of_joins++;
+				has_join = true;
 			}
+			//intersection
+			if(t.get_Optype() == Optypes.INTERSECTION_OPERATOR)
+			{
+				has_intersection = true;
+			}
+			//projection
+			if(t.get_Optype() == Optypes.PROJECTION_OPERATOR)
+			{
+				List<Term> terms = t.get_TermList();
+				String alias_name = terms.get(0).get_variable();
+				List<Integer> columns_in_one_table = alias_2_all_columns.get(alias_name);
+				System.out.print("[Projection]");
+				for (int i = 0; i < terms.size(); i++){
+					System.out.print(terms.get(i).get_variable()+"."+terms.get(i).get_column()+";");
+					columns_in_one_table.add(alias_clumn_name_2_id.get(alias_name+"_"+terms.get(i).get_column().toLowerCase()));
+					
+				}
+				System.out.println("");
+			}
+			getAlias2IndexName(t.left);
+			getAlias2IndexName(t.right);
+		}
+	}
+	public void prepareSelectionOperator(TreeNode t) {
+		if (t != null) {
+			//selection [deal selection first here, since selection after intersection in the tree, so selection should be done before intersection]
+			if(t.get_Optype() == Optypes.SELECTION_OPERATOR)
+			{
+				
+				
+//				//for intersection_operator
+//				boolean bitwiseFlag = false;
+//				List<Integer> columnIDs = new ArrayList<Integer>(); //0: term column in dt1
+//				List<Integer> selections =new ArrayList<Integer>();//5,7
+				List<Property> prop = t.get_Property();
+				for (int i = 0; i <prop.size(); i++){
+					System.out.println("[Selection]:"+prop.get(i).getTerm1().get_variable()+"."+prop.get(i).getTerm1().get_column()
+					+" eq "+prop.get(i).getTerm2().get_constant());
+
+					//for seelction_operator
+					List<Integer> selectionsList = new ArrayList<Integer>(); //85
+					selectionsList.add(prop.get(i).getTerm2().get_constant());
+					Operator selection_operator = new SelectionOperator(selectionsList, aliases.get(0));
+					String alias_name = prop.get(i).getTerm1().get_variable();
+					if(has_intersection==false)//selection operator goes to final operators
+					{
+						//TODO: change it when there are multiple selections
+						operators.add(0, selection_operator);
+						current_operator_number = 1;
+						if(has_join ==  true)
+						{
+							
+							//for join_operator
+							boolean entityFlag = false; // ENTITY = 1; RELATIONSHIP = 0
+							Alias driving_alias = aliases.get(0); //(dt1)
+							int driving_alias_column = 0; //(term column id in dt1)
+							Alias join_alias = alias_2_AliasClass.get(alias_name); // (dt2)
+							List<Integer> join_columnIDs = alias_2_all_columns.get(alias_name);
+							
+							Operator join_operator = new JoinOperator(entityFlag, join_columnIDs, join_alias, driving_alias, driving_alias_column) ;
+							operators.add(1, join_operator);
+							
+							//threading operator
+							Operator thread_operator = new ThreadingOperator(driving_alias, false); 
+							operators.add(2, thread_operator);
+							current_operator_number = 3;
+						}
+					}
+					else
+					{
+						aliases_4_intersection.add(alias_2_AliasClass.get(alias_name));
+						columnIDs_4_intersection.add(alias_clumn_name_2_id.get(alias_name+"_"+prop.get(i).getTerm1().get_column().toLowerCase()));
+						selections_4_intersection.add(prop.get(i).getTerm2().get_constant());
+					}
+				}
+			}
+			prepareSelectionOperator(t.left);
+			prepareSelectionOperator(t.right);
+		}
+	}
+	public void prepareIntersectionOperator(TreeNode t) {
+		if (t != null) {
 			//intersection
 			if(t.get_Optype() == Optypes.INTERSECTION_OPERATOR)
 			{
@@ -193,14 +289,85 @@ public class RQNA2Physical
 				for (int i = 0; i <prop.size(); i++){
 					System.out.println("[intersection]:"+prop.get(i).getTerm2().get_variable()+"."+prop.get(i).getTerm2().get_column()
 							+" eq "+prop.get(i).getTerm1().get_variable()+"."+prop.get(i).getTerm1().get_column());
-					aliases_4_intersection.add(new Alias(i*2, prop.get(i).getTerm2().get_variable()));
-					aliases_4_intersection.add(new Alias(i*2+1, prop.get(i).getTerm1().get_variable()));
-				}
-				is_intersection_query = true;
-			}
+					Operator intersection_operator = new IntersectionOperator(false, aliases_4_intersection, 
+							columnIDs_4_intersection, selections_4_intersection);
+					operators.add(0,intersection_operator);
 					
-			getIndexName(t.left);
-			getIndexName(t.right);
+					//threading operator
+					Operator thread_operator = new ThreadingOperator(alias_2_AliasClass.get(prop.get(i).getTerm1().get_variable()), false); 
+					operators.add(1, thread_operator);
+					current_operator_number = 2;
+				}
+			}
+			prepareIntersectionOperator(t.left);
+			prepareIntersectionOperator(t.right);
+		}
+	}
+	public void prepareJoinOperator(TreeNode t) {
+		if (t != null) {
+			//join
+			if(t.get_Optype() == Optypes.JOIN_OPERATOR)
+			{
+				List<Property> prop = t.get_Property();
+				for (int i = 0; i <prop.size(); i++){
+					System.out.println("[join]:"+prop.get(i).getTerm2().get_variable()+"."+prop.get(i).getTerm2().get_column()
+							+" eq "+prop.get(i).getTerm1().get_variable()+"."+prop.get(i).getTerm1().get_column());
+					
+					String previous_alias_name = prop.get(i).getTerm1().get_variable();
+					String current_alias_name = prop.get(i).getTerm2().get_variable();
+					//for join_operator
+					boolean entityFlag = false; // ENTITY = 1; RELATIONSHIP = 0
+					Alias driving_alias = alias_2_AliasClass.get(previous_alias_name); //(dt1)
+					int driving_alias_column = alias_clumn_name_2_id.get(previous_alias_name+"_"+prop.get(i).getTerm1().get_column().toLowerCase()); //(term column id in dt1)
+					Alias join_alias = alias_2_AliasClass.get(current_alias_name); // (dt2)
+					List<Integer> join_columnIDs = alias_2_all_columns.get(current_alias_name);
+					
+					Operator join_operator = new JoinOperator(entityFlag, join_columnIDs, join_alias, driving_alias, driving_alias_column) ;
+					operators.add(current_operator_number++, join_operator);
+				}
+			}
+			//semi-join
+			if(t.get_Optype() == Optypes.SEMIJOIN_OPERATOR)
+			{
+				List<Property> prop = t.get_Property();
+				for (int i = 0; i <prop.size(); i++){
+					System.out.println("[semi-join]:"+prop.get(i).getTerm2().get_variable()+"."+prop.get(i).getTerm2().get_column()
+							+" eq "+prop.get(i).getTerm1().get_variable()+"."+prop.get(i).getTerm1().get_column());
+					
+					String previous_alias_name = prop.get(i).getTerm1().get_variable();
+					String current_alias_name = prop.get(i).getTerm2().get_variable();
+					//for join_operator
+					boolean entityFlag = false; // ENTITY = 1; RELATIONSHIP = 0
+					Alias driving_alias = alias_2_AliasClass.get(previous_alias_name); //(dt1)
+					int driving_alias_column = alias_clumn_name_2_id.get(previous_alias_name+"_"+prop.get(i).getTerm1().get_column().toLowerCase()); //(term column id in dt1)
+					Alias join_alias = alias_2_AliasClass.get(current_alias_name); // (dt2)
+					List<Integer> join_columnIDs = alias_2_all_columns.get(current_alias_name);
+					
+					Operator semi_join_operator = new SemiJoinOperator(entityFlag, join_columnIDs, join_alias, driving_alias, driving_alias_column) ;
+					operators.add(current_operator_number++, semi_join_operator);
+				}
+			}
+			prepareJoinOperator(t.left);
+			prepareJoinOperator(t.right);
+		}
+	}
+	public void prepareAggregationOperator(TreeNode t) {
+		if (t != null) {
+			//aggregation
+			if(t.get_Optype() == Optypes.AGGREGATION_OPERATOR)
+			{
+				List<Term> aggr_term = t.get_AggrTerm();
+				List<String> aggr= t.get_AggrList();
+				
+				for (int i = 0; i < aggr_term.size(); i++){
+					System.out.print("[aggregation]"+aggr_term.get(i).get_variable()+","+aggr_term.get(i).get_column()+";");
+				}
+				for (int i = 0; i < aggr.size(); i++){
+					System.out.println(aggr.get(i)+",");
+				}
+			}
+			prepareAggregationOperator(t.left);
+			prepareAggregationOperator(t.right);
 		}
 	}
 	public MetaIndex getMetaIndexFromDisk(String path, String alias, int index_id)
@@ -242,7 +409,8 @@ public class RQNA2Physical
 			  column_names = curr_line.split(",");
 			  for(int i=0;i<column_names.length;i++)
 			  {
-				  alias_clumn_name_2_id.put(alias+"_"+column_names[i], i);
+				  alias_clumn_name_2_id.put(alias+"_"+column_names[i].toLowerCase(), i);
+				  System.out.println("[alias_clumn_name_2_id]:"+alias+"_"+column_names[i]+","+i);
 			  }
 			  
 			  curr_line = br.readLine();//line 5
@@ -283,67 +451,9 @@ public class RQNA2Physical
 		}
 		catch(Exception e)
 		{
-			System.out.println("//// error reading ////////");
+			System.err.println("//// error reading ////////");
 		}
 		return meta_index;
 	}
 	
-	public void getOperators(TreeNode t) {
-		if (t != null) {
-			//join
-			if(t.get_Optype() == Optypes.JOIN_OPERATOR)
-			{
-				//for code generator
-				boolean entityFlag = false; // ENTITY = 1; RELATIONSHIP = 0
-				List<Integer> columnIDs;  //for SD query, 0 (for term)
-				Alias alias; // (dt2)
-				Alias drivingAlias; //(dt1)
-				int drivingAliasColumn; //(term column id in dt1)
-				
-				List<Property> prop = t.get_Property();
-				for (int i = 0; i <prop.size(); i++){
-					//get all the renames
-					System.out.println("[join]:"+prop.get(i).getTerm2().get_variable()+"."+prop.get(i).getTerm2().get_column()
-							+" eq "+prop.get(i).getTerm1().get_variable()+"."+prop.get(i).getTerm1().get_column());
-				}
-				
-			}
-			//semi-join
-			if(t.get_Optype() == Optypes.SEMIJOIN_OPERATOR)
-			{
-				List<Property> prop = t.get_Property();
-				for (int i = 0; i <prop.size(); i++){
-					//get all the renames
-					System.out.println("[semi-join]:"+prop.get(i).getTerm2().get_variable()+"."+prop.get(i).getTerm2().get_column()
-							+" eq "+prop.get(i).getTerm1().get_variable()+"."+prop.get(i).getTerm1().get_column());
-				}
-				
-			}
-			//projection
-			if(t.get_Optype() == Optypes.PROJECTION_OPERATOR)
-			{
-				List<Term> terms = t.get_TermList();
-				System.out.print("[Projection]");
-				for (int i = 0; i < terms.size(); i++){
-					System.out.print(terms.get(i).get_variable()+"."+terms.get(i).get_column()+";");
-				}
-				System.out.println("");
-			}
-			//aggregation
-			if(t.get_Optype() == Optypes.AGGREGATION_OPERATOR)
-			{
-				List<Term> aggr_term = t.get_AggrTerm();
-				List<String> aggr= t.get_AggrList();
-				
-				for (int i = 0; i < aggr_term.size(); i++){
-					System.out.print("[aggregation]"+aggr_term.get(i).get_variable()+","+aggr_term.get(i).get_column()+";");
-				}
-				for (int i = 0; i < aggr.size(); i++){
-					System.out.println(aggr.get(i)+",");
-				}
-			}
-			getOperators(t.left);
-			getOperators(t.right);
-		}
-	}
 }

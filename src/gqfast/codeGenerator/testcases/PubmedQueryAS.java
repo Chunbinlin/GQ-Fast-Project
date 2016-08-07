@@ -254,13 +254,21 @@ public class PubmedQueryAS {
 	private static void initQ5Operators(List<Operator> operators, MetaQuery query, List<Integer> selections) {
 		List<Alias> aliases = query.getAliases();
 		
+		// Alias alias0 = new Alias(0, "author1");
+		// Alias alias1 = new Alias(1, "doc1", metadata.getIndexMap().get(0));
+		// Alias alias5 = new Alias(5, "year", metadata.getIndexMap().get(1));
+		// Alias alias2 = new Alias(2, "term", metadata.getIndexMap().get(2));
+		// Alias alias3 = new Alias(3, "doc2", metadata.getIndexMap().get(3));
+		// Alias alias4 = new Alias(4, "author2", metadata.getIndexMap().get(4));
+		
+
 		Operator selection1 = new SelectionOperator(selections, aliases.get(0));
 		operators.add(selection1);
 		
 		List<Integer> column1IDs = new ArrayList<Integer>();
 		column1IDs.add(0);
 		
-		// JoinOperator(boolean entityFlag, List<Integer> columnIDs,  Alias alias, int loopColumn, Alias drivingAlias, int drivingAliasColumn) {
+		//JoinOperator(boolean entityFlag, List<Integer> columnIDs,  Alias alias, Alias drivingAlias, int drivingAliasColumn) 
 		Operator join1 = new JoinOperator(false, column1IDs, aliases.get(1), aliases.get(0), 0);	
 		operators.add(join1);
 		
