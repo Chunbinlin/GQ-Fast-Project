@@ -1,19 +1,22 @@
 package gqfast.codeGenerator;
 
+import gqfast.RQNA2physical.R2P_Output;
+import gqfast.RQNA2physical.RQNA2Physical;
 import gqfast.global.Alias;
+import gqfast.global.Global.Optypes;
 import gqfast.global.MetaData;
 import gqfast.global.MetaIndex;
 import gqfast.global.MetaQuery;
-import gqfast.global.Global.Optypes;
+import gqfast.global.TreeNode;
+import gqfast.logical2RQNA.RelationalAlgebra2RQNA;
+import gqfast.unitTest.TestTree_logical2RQNA;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 
 public class CodeGenerator {
@@ -2458,7 +2461,7 @@ public class CodeGenerator {
 */
 	private static void writeToFile(String fullCppCode, String queryName) {
 
-		try(  PrintWriter out = new PrintWriter(new File("./src/gqfast/loader/test_cases/" + queryName + ".cpp"))){
+		try(  PrintWriter out = new PrintWriter(new File("/home/ben/git/GQ-Fast-Final/Query/" + queryName + ".cpp"))){
 		    out.println(fullCppCode);
 		} catch (FileNotFoundException e) {
 			System.err.println("Error in writeToFile: FileNotFoundException");
@@ -2467,8 +2470,19 @@ public class CodeGenerator {
 	
 	}
 
-	public static void generateCode(List<Operator> operators, MetaData metadata) {
-		
+	public static void generateCode(){
+		String query_name = "SD2";
+        TestTree_logical2RQNA test = new TestTree_logical2RQNA();
+        test.TreeSD();
+        test.print(test.getroot());
+        System.out.println("\n---------------------------------------------------------------------------------------");
+        RelationalAlgebra2RQNA ra = new RelationalAlgebra2RQNA(test.getroot()); 
+        TreeNode RQNA = ra.RA2RQNA(true);
+        RQNA2Physical rqna2physical = new RQNA2Physical();
+        R2P_Output input_of_code_generator = rqna2physical.RQNA2Physical(null,RQNA,query_name);
+        List<Operator> operators = input_of_code_generator.getOperators();
+        MetaData metadata = input_of_code_generator.getMetaData();
+        
 		//intersectionAliasAppearanceIDs = new ArrayList<Integer>();
 		joinBufferNames = new ArrayList<String>();
 		intersectionBufferNames = new ArrayList<String>();
@@ -2557,8 +2571,12 @@ public class CodeGenerator {
 	}
 
 	
-	
+	public static void main(String[] args)
+	{
+		generateCode();
+	}
 
+	
 
 
 
