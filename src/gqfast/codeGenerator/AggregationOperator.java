@@ -16,11 +16,11 @@ public class AggregationOperator extends Operator {
 	
 	private int dataType; // Always INT for now	
 	private int aggregationFunction; // COUNT or SUM for now
-	private Alias drivingAlias;
-	private int drivingAliasColumn;
+	private Alias drivingAlias; // This should be the alias driving the 'for' loop of the aggregation 
+	private int drivingAliasColumn; // Alias column
 	
-	private Alias aggregationAlias;
-	private int aggregationAliasColumn;
+	private Alias aggregationAlias; // For SUM only: from what alias are we summing up?
+	private int aggregationAliasColumn; //  For SUM only: from which column?
 	
 	public AggregationOperator(int dataType, int aggregationFunction, Alias drivingAlias, 
 			int drivingAliasColumn, Alias aggregationAlias, int aggregationAliasColumn) {
