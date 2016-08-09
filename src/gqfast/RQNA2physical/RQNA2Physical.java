@@ -211,7 +211,7 @@ public class RQNA2Physical
 		try 
 		{                                                                        
         	out = new BufferedWriter(new OutputStreamWriter( 
-        		new FileOutputStream(setting_path, true)));                              
+        		new FileOutputStream(setting_path, false)));                              
         	out.write(alias_2_index_name.size()+"");
         	out.newLine();
         	out.write(aggregation_domain_size+"");
@@ -636,7 +636,7 @@ public class RQNA2Physical
 			  column_domains = curr_line.split(",");
 			  indexDomain = Long.parseLong(column_domains[0]);
 			  
-			  for(int i=1;i<numColumns;i++)
+			  for(int i=1;i<numColumns+1;i++)
 			  {
 				  columnDomains.add(Long.parseLong(column_domains[i]));
 				  
@@ -656,14 +656,14 @@ public class RQNA2Physical
 			  curr_line = br.readLine();//line 7
 			  column_bytes = curr_line.split(",");
 			  indexMapByteSize=Integer.parseInt(column_bytes[0]);
-			  for(int i=1;i<numColumns;i++)
+			  for(int i=1;i<numColumns+1;i++)
 			  {
 				  columnEncodedByteSizesList.add(Integer.parseInt(column_bytes[i]));
 			  }
 			  
 			  curr_line = br.readLine();//line 8
 			  column_encodings = curr_line.split(",");
-			  for(int i=1;i<numColumns;i++)
+			  for(int i=1;i<numColumns+1;i++)
 			  {
 				  columnEncodingsList.add(Integer.parseInt(column_encodings[i]));
 			  }
