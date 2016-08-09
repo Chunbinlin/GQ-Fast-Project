@@ -19,9 +19,12 @@ import gqfast.logical2RQNA.RelationalAlgebra2RQNA;
 import gqfast.unitTest.TestTree_logical2RQNA;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +39,7 @@ public class RQNA2Physical
 	public HashMap<String, String> alias_2_table_name  = new HashMap<String, String>();//dt1->DT
 	public HashMap<String, String> alias_2_index_name  = new HashMap<String, String>();//dt1->dt_doc
 	public HashMap<String, Integer> alias_clumn_name_2_id = new HashMap<String, Integer>();
+	public HashMap<String,Long> alias_clumn_name_2_domain_size  = new HashMap<String, Long>();//dt1.doc = 50001
 	public HashMap<String, Alias> alias_2_AliasClass = new HashMap<String, Alias>();
 	HashMap<String, MetaIndex> alias_2_meta_index = new HashMap<String, MetaIndex>();
 	HashMap<String, List<Integer>> alias_2_all_columns = new HashMap<String, List<Integer>>();
@@ -43,7 +47,7 @@ public class RQNA2Physical
 	public HashMap<String, Integer> alias_2_table_type  = new HashMap<String, Integer>();//dt1->0; d->1
 	public boolean has_entity_table = false; 
 	public boolean is_join_operator_changed = false;
-	
+	public long aggregation_domain_size = 0;
 	
 	public int number_of_operators = 0;
 	public int number_of_joins = 0;
@@ -61,7 +65,7 @@ public class RQNA2Physical
 	{
 		String query_name = "AD";
         TestTree_logical2RQNA test = new TestTree_logical2RQNA();
-        test.TreeAS();
+        test.TreeSD();
         test.print(test.getroot());
         System.out.println("\n---------------------------------------------------------------------------------------");
         RelationalAlgebra2RQNA ra = new RelationalAlgebra2RQNA(test.getroot()); 
@@ -71,6 +75,7 @@ public class RQNA2Physical
 	}
 	public R2P_Output RQNA2Physical(HashMap<Integer, MetaIndex> indexList, TreeNode RQNA, String query_name)
 	{
+		String setting_path = "GQFast/MetaData/"+ query_name +".setting";
 		R2P_Output output = new R2P_Output();
 		
 		//indexMap and meta_query are for meta-data
@@ -195,9 +200,41 @@ public class RQNA2Physical
 		}
 		prepareAggregationOperator(RQNA);
 
+		metadata.setAggregationDomain(aggregation_domain_size);
 		//set output
 		output.setMetaData(metadata);
 		output.setOperators(operators);
+		
+		//write setting file
+		System.out.println("///////////////////////////////////");
+		BufferedWriter out = null;    
+		try 
+		{                                                                        
+        	out = new BufferedWriter(new OutputStreamWriter( 
+        		new FileOutputStream(setting_path, true)));                              
+        	out.write(alias_2_index_name.size()+"");
+        	out.newLine();
+        	out.write(aggregation_domain_size+"");
+        	out.newLine();
+        	for(String alias:alias_2_index_name.keySet())
+    		{
+        		out.write(alias_2_index_name.get(alias).toLowerCase());
+        		out.newLine();
+    		}
+        	out.flush();
+      	   	out.close();
+      	 }
+		catch (Exception e) 
+        {                                                     
+            e.printStackTrace();                                                    
+        }
+		
+		System.out.println("# of indices:"+alias_2_index_name.size());
+		System.out.println("aggregation_domain_size:"+aggregation_domain_size);
+		for(String alias:alias_2_index_name.keySet())
+		{
+			System.out.println(alias_2_index_name.get(alias).toLowerCase());
+		}
 		return output;
 	}
 	
@@ -526,7 +563,9 @@ public class RQNA2Physical
 				
 				Alias drivingAlias = alias_2_AliasClass.get(alias_name); // This should be the alias driving the 'for' loop of the aggregation 
 				int drivingAliasColumn = alias_clumn_name_2_id.get(alias_name+"_"+column_name); // Alias column
-			
+				System.out.println("aggregation_size:"+(alias_name+"_"+column_name));
+				aggregation_domain_size = alias_clumn_name_2_domain_size.get(alias_name+"_"+column_name);
+				
 				Alias aggregationAlias = null;
 				int aggregationAliasColumn = 0;
 				if(aggregationFunction ==  FUNCTION_COUNT)
@@ -596,10 +635,19 @@ public class RQNA2Physical
 			  curr_line = br.readLine();//line 5
 			  column_domains = curr_line.split(",");
 			  indexDomain = Long.parseLong(column_domains[0]);
+			  
 			  for(int i=1;i<numColumns;i++)
 			  {
 				  columnDomains.add(Long.parseLong(column_domains[i]));
+				  
 			  }
+			  System.out.println("========> number of columns:" +numColumns);
+			  for(int i=0;i<column_names.length;i++)
+			  {
+				  System.out.println("========>[domain_size_setting]"+alias+"_"+column_names[i].toLowerCase()+"===>"+ Long.parseLong(column_domains[i]));
+				  alias_clumn_name_2_domain_size.put(alias+"_"+column_names[i].toLowerCase(), Long.parseLong(column_domains[i]));
+			  }
+			  
 			  
 			  curr_line = br.readLine();//line 6
 			  column_mins = curr_line.split(",");
@@ -620,9 +668,9 @@ public class RQNA2Physical
 				  columnEncodingsList.add(Integer.parseInt(column_encodings[i]));
 			  }
 			  
-			  maxFragmentSize = Integer.parseInt( br.readLine());
+			  maxFragmentSize = Integer.parseInt( br.readLine());//line 9
 			  
-			  table_type = Integer.parseInt( br.readLine());
+			  table_type = Integer.parseInt( br.readLine()); //line 10
 			  alias_2_table_type.put(alias, table_type);
 			  if(table_type == 1)
 			  {
