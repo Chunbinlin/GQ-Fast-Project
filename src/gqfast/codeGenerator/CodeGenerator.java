@@ -1235,7 +1235,7 @@ public class CodeGenerator {
 	private static String getElementPrimitive(int colBytes) {
 		switch (colBytes) {
 		case MetaData.BYTES_1:	return "unsigned char";
-		case MetaData.BYTES_2:	return "uint16_t";
+		case MetaData.BYTES_2:	return "uint32_t";
 		case MetaData.BYTES_4:	return "uint32_t";
 		case MetaData.BYTES_8:	return "uint64_t";
 		}
@@ -1255,7 +1255,7 @@ public class CodeGenerator {
 	private static String getIndexPrimitive(int colBytes) {
 		switch (colBytes) {
 		case MetaData.BYTES_1:	return "unsigned char";
-		case MetaData.BYTES_2:	return "uint16_t";
+		case MetaData.BYTES_2:	return "uint32_t";
 		case MetaData.BYTES_4:	return "uint32_t";
 		case MetaData.BYTES_8:	return "uint64_t";
 		}
@@ -2470,19 +2470,8 @@ public class CodeGenerator {
 	
 	}
 
-	public static void generateCode(){
-		String query_name = "SD2";
-        TestTree_logical2RQNA test = new TestTree_logical2RQNA();
-        test.TreeSD();
-        test.print(test.getroot());
-        System.out.println("\n---------------------------------------------------------------------------------------");
-        RelationalAlgebra2RQNA ra = new RelationalAlgebra2RQNA(test.getroot()); 
-        TreeNode RQNA = ra.RA2RQNA(true);
-        RQNA2Physical rqna2physical = new RQNA2Physical();
-        R2P_Output input_of_code_generator = rqna2physical.RQNA2Physical(null,RQNA,query_name);
-        List<Operator> operators = input_of_code_generator.getOperators();
-        MetaData metadata = input_of_code_generator.getMetaData();
-        
+	public static void generateCode(List<Operator> operators, MetaData metadata){
+		
 		//intersectionAliasAppearanceIDs = new ArrayList<Integer>();
 		joinBufferNames = new ArrayList<String>();
 		intersectionBufferNames = new ArrayList<String>();
@@ -2570,11 +2559,26 @@ public class CodeGenerator {
 		writeToFile(fullCppCode, query.getQueryName());
 	}
 
-	
 	public static void main(String[] args)
 	{
-		generateCode();
+		
+		String query_name = "SD";
+        TestTree_logical2RQNA test = new TestTree_logical2RQNA();
+        test.TreeSD();
+        test.print(test.getroot());
+        System.out.println("\n---------------------------------------------------------------------------------------");
+        RelationalAlgebra2RQNA ra = new RelationalAlgebra2RQNA(test.getroot()); 
+        TreeNode RQNA = ra.RA2RQNA(true);
+        RQNA2Physical rqna2physical = new RQNA2Physical();
+        R2P_Output input_of_code_generator = rqna2physical.RQNA2Physical(null,RQNA,query_name);
+        List<Operator> operators = input_of_code_generator.getOperators();
+        MetaData metadata = input_of_code_generator.getMetaData();
+        
+		generateCode(operators, metadata);
+
 	}
+
+	
 
 	
 
