@@ -40,12 +40,15 @@ public class RQNA2Physical
 	HashMap<String, MetaIndex> alias_2_meta_index = new HashMap<String, MetaIndex>();
 	HashMap<String, List<Integer>> alias_2_all_columns = new HashMap<String, List<Integer>>();
 	List<Alias> aliases = new ArrayList<Alias>();
+	public HashMap<String, Integer> alias_2_table_type  = new HashMap<String, Integer>();//dt1->0; d->1
+	public boolean has_entity_table = false; 
+	public boolean is_join_operator_changed = false;
 	
 	
-	
-	public int number_of_joins = 0;
 	public int number_of_operators = 0;
+	public int number_of_joins = 0;
 	public int current_operator_number = 0;
+	public int current_join_operator_number = 0;
 	public boolean has_intersection = false;//0: no intersection. 1: has intersection
 	public boolean has_join = true;// 0: no join. 1: has join
 	List<Alias> aliases_4_intersection = new ArrayList<Alias>(); //dt1 for each selection
@@ -58,7 +61,7 @@ public class RQNA2Physical
 	{
 		String query_name = "AD";
         TestTree_logical2RQNA test = new TestTree_logical2RQNA();
-        test.TreeAD();
+        test.TreeAS();
         test.print(test.getroot());
         System.out.println("\n---------------------------------------------------------------------------------------");
         RelationalAlgebra2RQNA ra = new RelationalAlgebra2RQNA(test.getroot()); 
@@ -107,7 +110,7 @@ public class RQNA2Physical
 		int index_id=1;
 		for(String alias:alias_2_index_name.keySet())
 		{
-			path="/home/ben/git/GQ-Fast-Project/src/gqfast/gqfast_loader/MetaData/meta_"+alias_2_index_name.get(alias).toLowerCase()+".gqfast";
+			path="GQFast/MetaData/meta_"+alias_2_index_name.get(alias).toLowerCase()+".gqfast";
 			meta_index=getMetaIndexFromDisk(path, alias, index_id);
 			alias_class = new Alias(index_id, alias, meta_index);
 			aliases.add(alias_class);
@@ -124,13 +127,20 @@ public class RQNA2Physical
 		metadata.setIndexMap(indexMap);
 		metadata.setQuery(meta_query);
 		
+		System.out.println("---------------------------------------------");
+		System.out.println("entity table, relationship table checking:");
+		for(String alias: alias_2_table_type.keySet())
+		{
+			System.out.println(alias+" --> "+alias_2_table_type.get(alias));
+		}
+		System.out.println("---------------------------------------------");
 		
 		
 		
 		System.out.println("Finish analyzing query relevant metadata...");
 		System.out.println("Begin generating physical operators...");
 		System.out.println("/////////////////////////////////////");
-		number_of_operators = number_of_joins+1+1; //not include aggregation here. +1 is for selection/intersection. +1 is for thread_operator
+		
 		System.out.println("---------------------------------------------");
 		System.out.println("alias_column 2 id:");
 		for(String alias_column: alias_clumn_name_2_id.keySet())
@@ -139,16 +149,50 @@ public class RQNA2Physical
 		}
 		System.out.println("---------------------------------------------");
 		
-		//set column_id;
+		//set query-related column ids;
 		getColumnID4alias(RQNA);
 		
+		System.out.println("---------------------------------------------");
+		System.out.println("alias 2 all needed ids:");
+		List<Integer> columns_in_one_table = null;
+		for(String alias: alias_2_all_columns.keySet())
+		{
+			columns_in_one_table = alias_2_all_columns.get(alias);
+			System.out.print(alias+" --> ");
+			for(int i=0;i<columns_in_one_table.size();i++)
+			{
+				System.out.print(columns_in_one_table.get(i)+",");
+			}
+			System.out.println("");
+		}
+		System.out.println("---------------------------------------------");
+		
+		//calcualte number of operators
+		if(has_intersection==true)//has intersection
+		{
+			number_of_operators = number_of_joins +3;//1 for intersection, 1 for threading, 1 for aggregation
+		}
+		else
+		{
+			number_of_operators = number_of_joins+4;////1 for selection, 1 for dummy join, 1 for threading, 1 for aggregation
+		}
+		for(int i=0;i<number_of_operators;i++)
+		{
+			operators.add(new SelectionOperator(null, null));
+		}
 		
 		
 		
 		//set operators
 		prepareSelectionOperator(RQNA);
-		prepareIntersectionOperator(RQNA);
-		prepareJoinOperator(RQNA);
+		if(has_intersection==true)//has intersection
+		{
+			prepareIntersectionOperator(RQNA);
+		}
+		if(has_join ==  true)//has join
+		{
+			prepareJoinOperator(RQNA);
+		}
 		prepareAggregationOperator(RQNA);
 
 		//set output
@@ -223,8 +267,11 @@ public class RQNA2Physical
 	{
 		if (t != null) {
 			//selection
+			
 			if(t.get_Optype() == Optypes.SELECTION_OPERATOR)
 			{
+				String column_name = "";
+				int column_id= 0;
 				List<Property> prop = t.get_Property();
 				String alias_name = "";
 				alias_name=prop.get(0).getTerm1().get_variable();
@@ -232,9 +279,14 @@ public class RQNA2Physical
 				for (int i = 0; i <prop.size(); i++){
 //					System.out.println("[Selection]:"+prop.get(i).getTerm1().get_variable()+"."+prop.get(i).getTerm1().get_column()
 //					+" eq "+prop.get(i).getTerm2().get_constant());
-					if(alias_clumn_name_2_id.get(alias_name+"_"+prop.get(i).getTerm1().get_column().toLowerCase())!=null)
+					column_name = prop.get(i).getTerm1().get_column().toLowerCase();
+					if(alias_clumn_name_2_id.get(alias_name+"_"+column_name)!=null)
 					{
-						columns_in_one_table.add(alias_clumn_name_2_id.get(alias_name+"_"+prop.get(i).getTerm1().get_column().toLowerCase()));
+						column_id = alias_clumn_name_2_id.get(alias_name+"_"+column_name);
+						if(!columns_in_one_table.contains(column_id))
+						{
+							columns_in_one_table.add(column_id);
+						}
 					}
 				}
 				
@@ -244,14 +296,26 @@ public class RQNA2Physical
 			{
 				List<Term> terms = t.get_TermList();
 				String alias_name = terms.get(0).get_variable();
+				String column_name = "";
+				int column_id= 0;
 				List<Integer> columns_in_one_table = alias_2_all_columns.get(alias_name);
+				if(alias_2_table_type.get(alias_name)==1)//entity table, add the column id for the dummy column
+				{
+					columns_in_one_table.add(0);
+				}
 				System.out.print("[Projection]");
 				for (int i = 0; i < terms.size(); i++){
 					System.out.print(terms.get(i).get_variable()+"."+terms.get(i).get_column()+";");
-					if(alias_clumn_name_2_id.get(alias_name+"_"+terms.get(i).get_column().toLowerCase())!=null)
+					column_name = terms.get(i).get_column().toLowerCase();
+					if(alias_clumn_name_2_id.get(alias_name+"_"+column_name)!=null)
 					{
-						columns_in_one_table.add(alias_clumn_name_2_id.get(alias_name+"_"+terms.get(i).get_column().toLowerCase()));
+						column_id = alias_clumn_name_2_id.get(alias_name+"_"+column_name);
+						if(!columns_in_one_table.contains(column_id))
+						{
+							columns_in_one_table.add(column_id);
+						}
 					}
+					
 //					System.out.println("alias_name:"+alias_name+"-->"+alias_clumn_name_2_id.get(alias_name+"_"+terms.get(i).get_column().toLowerCase())+" , for column:"+alias_name+"_"+terms.get(i).get_column().toLowerCase());
 				}
 				System.out.println("");
@@ -260,6 +324,9 @@ public class RQNA2Physical
 			getColumnID4alias(t.right);
 		}
 	}
+	
+	
+	
 	public void prepareSelectionOperator(TreeNode t) {
 		if (t != null) {
 			//selection [deal selection first here, since selection after intersection in the tree, so selection should be done before intersection]
@@ -330,10 +397,13 @@ public class RQNA2Physical
 							columnIDs_4_intersection, selections_4_intersection);
 					operators.add(0,intersection_operator);
 					
-					//threading operator
-					Operator thread_operator = new ThreadingOperator(alias_2_AliasClass.get(prop.get(i).getTerm1().get_variable()), false); 
-					operators.add(1, thread_operator);
-					current_operator_number = 2;
+					if(has_join ==  true)
+					{
+						//threading operator
+						Operator thread_operator = new ThreadingOperator(alias_2_AliasClass.get(prop.get(i).getTerm1().get_variable()), false); 
+						operators.add(1, thread_operator);
+						current_operator_number = 2;
+					}
 				}
 			}
 			prepareIntersectionOperator(t.left);
@@ -351,16 +421,29 @@ public class RQNA2Physical
 							+" eq "+prop.get(i).getTerm1().get_variable()+"."+prop.get(i).getTerm1().get_column());
 					
 					String previous_alias_name = prop.get(i).getTerm1().get_variable();
+					Alias driving_alias = alias_2_AliasClass.get(previous_alias_name); //(dt1)
+					int driving_alias_column= 0;
+					if(alias_2_table_type.get(previous_alias_name) == 1 && is_join_operator_changed == false) //entity table check
+					{
+						driving_alias_column= 0;//the column id of the dummy column
+						is_join_operator_changed = true;
+					}
+					else
+					{
+						driving_alias_column = alias_clumn_name_2_id.get(previous_alias_name+"_"+prop.get(i).getTerm1().get_column().toLowerCase()); //(term column id in dt1)
+					}
+					
+					
 					String current_alias_name = prop.get(i).getTerm2().get_variable();
 					//for join_operator
 					boolean entityFlag = false; // ENTITY = 1; RELATIONSHIP = 0
-					Alias driving_alias = alias_2_AliasClass.get(previous_alias_name); //(dt1)
-					int driving_alias_column = alias_clumn_name_2_id.get(previous_alias_name+"_"+prop.get(i).getTerm1().get_column().toLowerCase()); //(term column id in dt1)
 					Alias join_alias = alias_2_AliasClass.get(current_alias_name); // (dt2)
 					List<Integer> join_columnIDs = alias_2_all_columns.get(current_alias_name);
 					
 					Operator join_operator = new JoinOperator(entityFlag, join_columnIDs, join_alias, driving_alias, driving_alias_column) ;
-					operators.add(current_operator_number++, join_operator);
+					operators.add(current_operator_number+number_of_joins-current_join_operator_number-1, join_operator);
+					current_join_operator_number++;
+					
 				}
 			}
 			//semi-join
@@ -381,7 +464,8 @@ public class RQNA2Physical
 					List<Integer> join_columnIDs = alias_2_all_columns.get(current_alias_name);
 					
 					Operator semi_join_operator = new SemiJoinOperator(entityFlag, join_columnIDs, join_alias, driving_alias, driving_alias_column) ;
-					operators.add(current_operator_number++, semi_join_operator);
+					operators.add(current_operator_number+number_of_joins-current_join_operator_number-1, semi_join_operator);
+					current_join_operator_number++;
 				}
 			}
 			prepareJoinOperator(t.left);
@@ -395,13 +479,72 @@ public class RQNA2Physical
 			{
 				List<Term> aggr_term = t.get_AggrTerm();
 				List<String> aggr= t.get_AggrList();
+
+				int AGGREGATION_INT = 1, AGGREGATION_DOUBLE = 2;
+				int FUNCTION_COUNT = 1, FUNCTION_SUM = 2;
+				
+				int dataType = AGGREGATION_INT; // Always INT for now	
+				int aggregationFunction =FUNCTION_COUNT; // COUNT or SUM for now
+				String alias_name = "", column_name = "";
+				String sum_alias = "";
+				String sum_column = "";
 				
 				for (int i = 0; i < aggr_term.size(); i++){
-					System.out.print("[aggregation]"+aggr_term.get(i).get_variable()+","+aggr_term.get(i).get_column()+";");
+					System.out.print("[aggregation]"+aggr_term.get(i).get_variable()+"."+aggr_term.get(i).get_column()+";");
+					alias_name = aggr_term.get(i).get_variable();
+					column_name= aggr_term.get(i).get_column().toLowerCase();
 				}
 				for (int i = 0; i < aggr.size(); i++){
 					System.out.println(aggr.get(i)+",");
+					if(aggr.get(i).toLowerCase().indexOf("sum")!=-1)//sum
+					{
+						aggregationFunction = FUNCTION_SUM;
+						//since now we only support one aggregation column inside function
+						String b = aggr.get(i).substring(aggr.get(i).indexOf("(")+1, aggr.get(i).indexOf(")"));
+						if(b.indexOf("*")!=-1)
+						{
+							b = b.substring(0, b.indexOf("*"));
+						}
+						if(b.indexOf("+")!=-1)
+						{
+							b = b.substring(0, b.indexOf("+"));
+						}
+						if(b.indexOf("-")!=-1)
+						{
+							b = b.substring(0, b.indexOf("-"));
+						}
+						
+						sum_alias = b.substring(0,b.indexOf("."));
+						sum_column = b.substring(b.indexOf(".")+1).toLowerCase();
+//						System.out.println("sum_alias:"+sum_alias+" , sum_column:"+sum_column);
+					}
+					else if(aggr.get(i).toLowerCase().indexOf("count")!=-1)
+					{
+						aggregationFunction = FUNCTION_COUNT;
+					}
 				}
+				
+				Alias drivingAlias = alias_2_AliasClass.get(alias_name); // This should be the alias driving the 'for' loop of the aggregation 
+				int drivingAliasColumn = alias_clumn_name_2_id.get(alias_name+"_"+column_name); // Alias column
+			
+				Alias aggregationAlias = null;
+				int aggregationAliasColumn = 0;
+				if(aggregationFunction ==  FUNCTION_COUNT)
+				{
+					aggregationAlias = null;
+					aggregationAliasColumn = 0;
+				}
+				else if(aggregationFunction ==  FUNCTION_SUM)
+				{
+					aggregationAlias=alias_2_AliasClass.get(sum_alias); // For SUM only: from what alias are we summing up?
+					aggregationAliasColumn = alias_clumn_name_2_id.get(sum_alias+"_"+sum_column); //  For SUM only: from which column?
+				}
+				
+				
+				 
+				Operator aggregation_operator = new AggregationOperator( dataType,  aggregationFunction,  drivingAlias, 
+						 drivingAliasColumn,  aggregationAlias,  aggregationAliasColumn);
+				operators.add(current_operator_number+number_of_joins,aggregation_operator);
 			}
 			prepareAggregationOperator(t.left);
 			prepareAggregationOperator(t.right);
@@ -428,7 +571,7 @@ public class RQNA2Physical
 		long indexDomain=0;//lookup domain
 		int indexMapByteSize=0;//lookup byte size
 		int maxFragmentSize=0;
-		
+		int table_type = 0; //0: relationship table, 1: entity table
 		List<Long> columnDomains = new ArrayList<Long>();//exclude lookup column
 		List<Integer> columnEncodedByteSizesList =  new ArrayList<Integer>();//exclude lookup column
 		List<Integer> columnEncodingsList = new ArrayList<Integer>();//exclude lookup column
@@ -479,7 +622,12 @@ public class RQNA2Physical
 			  
 			  maxFragmentSize = Integer.parseInt( br.readLine());
 			  
-			
+			  table_type = Integer.parseInt( br.readLine());
+			  alias_2_table_type.put(alias, table_type);
+			  if(table_type == 1)
+			  {
+				  has_entity_table = true;
+			  }
 			  meta_index  = new MetaIndex(gqFastIndexID, numColumns, indexMapByteSize, indexDomain, maxFragmentSize, 
 					  columnEncodingsList, columnEncodedByteSizesList, columnDomains);
 			  
