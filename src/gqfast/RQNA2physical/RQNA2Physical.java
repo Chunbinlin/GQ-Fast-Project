@@ -56,9 +56,9 @@ public class RQNA2Physical
 	public int global_alias_id = 0;
 	public static void main(String[] args)
 	{
-		String query_name = "SD";
+		String query_name = "AD";
         TestTree_logical2RQNA test = new TestTree_logical2RQNA();
-        test.TreeFSD();
+        test.TreeAD();
         test.print(test.getroot());
         System.out.println("\n---------------------------------------------------------------------------------------");
         RelationalAlgebra2RQNA ra = new RelationalAlgebra2RQNA(test.getroot()); 
@@ -107,7 +107,7 @@ public class RQNA2Physical
 		int index_id=1;
 		for(String alias:alias_2_index_name.keySet())
 		{
-			path="GQFast/MetaData/meta_"+alias_2_index_name.get(alias).toLowerCase()+".gqfast";
+			path="/home/ben/git/GQ-Fast-Project/src/gqfast/gqfast_loader/MetaData/meta_"+alias_2_index_name.get(alias).toLowerCase()+".gqfast";
 			meta_index=getMetaIndexFromDisk(path, alias, index_id);
 			alias_class = new Alias(index_id, alias, meta_index);
 			aliases.add(alias_class);
@@ -124,6 +124,9 @@ public class RQNA2Physical
 		metadata.setIndexMap(indexMap);
 		metadata.setQuery(meta_query);
 		
+		
+		
+		
 		System.out.println("Finish analyzing query relevant metadata...");
 		System.out.println("Begin generating physical operators...");
 		System.out.println("/////////////////////////////////////");
@@ -135,6 +138,12 @@ public class RQNA2Physical
 			System.out.println(alias_column+" --> "+alias_clumn_name_2_id.get(alias_column));
 		}
 		System.out.println("---------------------------------------------");
+		
+		//set column_id;
+		getColumnID4alias(RQNA);
+		
+		
+		
 		
 		//set operators
 		prepareSelectionOperator(RQNA);
@@ -156,8 +165,8 @@ public class RQNA2Physical
 			{
 				List<Property> prop = t.get_Property();
 				for (int i = 0; i <prop.size(); i++){
-					//System.out.println("[rename]:"+prop.get(i).getTerm2().get_variable()+"->"+prop.get(i).getTerm1().get_variable());
-					//get alias2tablename mapping
+					System.out.println("[rename]:"+prop.get(i).getTerm2().get_variable()+"->"+prop.get(i).getTerm1().get_variable());
+//					get alias2tablename mapping
 					alias_2_table_name.put(prop.get(i).getTerm1().get_variable(), prop.get(i).getTerm2().get_variable());
 					List<Integer> columns_per_table = new ArrayList<Integer>();
 					alias_2_all_columns.put(prop.get(i).getTerm1().get_variable(), columns_per_table);
@@ -205,6 +214,31 @@ public class RQNA2Physical
 			{
 				has_intersection = true;
 			}
+			
+			getAlias2IndexName(t.left);
+			getAlias2IndexName(t.right);
+		}
+	}
+	public void getColumnID4alias(TreeNode t)
+	{
+		if (t != null) {
+			//selection
+			if(t.get_Optype() == Optypes.SELECTION_OPERATOR)
+			{
+				List<Property> prop = t.get_Property();
+				String alias_name = "";
+				alias_name=prop.get(0).getTerm1().get_variable();
+				List<Integer> columns_in_one_table = alias_2_all_columns.get(alias_name);
+				for (int i = 0; i <prop.size(); i++){
+//					System.out.println("[Selection]:"+prop.get(i).getTerm1().get_variable()+"."+prop.get(i).getTerm1().get_column()
+//					+" eq "+prop.get(i).getTerm2().get_constant());
+					if(alias_clumn_name_2_id.get(alias_name+"_"+prop.get(i).getTerm1().get_column().toLowerCase())!=null)
+					{
+						columns_in_one_table.add(alias_clumn_name_2_id.get(alias_name+"_"+prop.get(i).getTerm1().get_column().toLowerCase()));
+					}
+				}
+				
+			}
 			//projection
 			if(t.get_Optype() == Optypes.PROJECTION_OPERATOR)
 			{
@@ -214,13 +248,16 @@ public class RQNA2Physical
 				System.out.print("[Projection]");
 				for (int i = 0; i < terms.size(); i++){
 					System.out.print(terms.get(i).get_variable()+"."+terms.get(i).get_column()+";");
-					columns_in_one_table.add(alias_clumn_name_2_id.get(alias_name+"_"+terms.get(i).get_column().toLowerCase()));
-					
+					if(alias_clumn_name_2_id.get(alias_name+"_"+terms.get(i).get_column().toLowerCase())!=null)
+					{
+						columns_in_one_table.add(alias_clumn_name_2_id.get(alias_name+"_"+terms.get(i).get_column().toLowerCase()));
+					}
+//					System.out.println("alias_name:"+alias_name+"-->"+alias_clumn_name_2_id.get(alias_name+"_"+terms.get(i).get_column().toLowerCase())+" , for column:"+alias_name+"_"+terms.get(i).get_column().toLowerCase());
 				}
 				System.out.println("");
 			}
-			getAlias2IndexName(t.left);
-			getAlias2IndexName(t.right);
+			getColumnID4alias(t.left);
+			getColumnID4alias(t.right);
 		}
 	}
 	public void prepareSelectionOperator(TreeNode t) {
@@ -263,7 +300,7 @@ public class RQNA2Physical
 							operators.add(1, join_operator);
 							
 							//threading operator
-							Operator thread_operator = new ThreadingOperator(driving_alias, false); 
+							Operator thread_operator = new ThreadingOperator(join_alias, false); 
 							operators.add(2, thread_operator);
 							current_operator_number = 3;
 						}
@@ -407,10 +444,10 @@ public class RQNA2Physical
 			  numColumns =Integer.parseInt(br.readLine());//line 3
 			  curr_line = br.readLine();//line 4
 			  column_names = curr_line.split(",");
-			  for(int i=0;i<column_names.length;i++)
+			  for(int i=1;i<column_names.length;i++)
 			  {
-				  alias_clumn_name_2_id.put(alias+"_"+column_names[i].toLowerCase(), i);
-				  System.out.println("[alias_clumn_name_2_id]:"+alias+"_"+column_names[i]+","+i);
+				  alias_clumn_name_2_id.put(alias+"_"+column_names[i].toLowerCase(), i-1);
+				  System.out.println("[alias_clumn_name_2_id]:"+alias+"_"+column_names[i]+","+(i-1));
 			  }
 			  
 			  curr_line = br.readLine();//line 5
