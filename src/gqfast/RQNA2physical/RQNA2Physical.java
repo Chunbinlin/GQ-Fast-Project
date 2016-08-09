@@ -75,7 +75,7 @@ public class RQNA2Physical
 	}
 	public R2P_Output RQNA2Physical(HashMap<Integer, MetaIndex> indexList, TreeNode RQNA, String query_name)
 	{
-		String setting_path = "GQFast/MetaData/"+ query_name +".setting";
+		String setting_path = "/home/ben/git/GQ-Fast-Final/MetaData/"+ query_name +".setting";
 		R2P_Output output = new R2P_Output();
 		
 		//indexMap and meta_query are for meta-data
@@ -112,10 +112,10 @@ public class RQNA2Physical
 		Alias alias_class = null;
 		alias_class = new Alias(0, "d0" ); //I guess ben need this dummy alias, let me double check
 		aliases.add(alias_class);
-		int index_id=1;
+		int index_id=0;
 		for(String alias:alias_2_index_name.keySet())
 		{
-			path="GQFast/MetaData/meta_"+alias_2_index_name.get(alias).toLowerCase()+".gqfast";
+			path="/home/ben/git/GQ-Fast-Final/MetaData/meta_"+alias_2_index_name.get(alias).toLowerCase()+".gqfast";
 			meta_index=getMetaIndexFromDisk(path, alias, index_id);
 			alias_class = new Alias(index_id, alias, meta_index);
 			aliases.add(alias_class);
