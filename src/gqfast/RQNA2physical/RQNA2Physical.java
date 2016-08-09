@@ -183,7 +183,7 @@ public class RQNA2Physical
 		}
 		for(int i=0;i<number_of_operators;i++)
 		{
-			operators.add(new SelectionOperator(null, null));
+			operators.add(null);
 		}
 		
 		
@@ -388,7 +388,7 @@ public class RQNA2Physical
 					if(has_intersection==false)//selection operator goes to final operators
 					{
 						//TODO: change it when there are multiple selections
-						operators.add(0, selection_operator);
+						operators.set(0, selection_operator);
 						current_operator_number = 1;
 						if(has_join ==  true)
 						{
@@ -401,11 +401,11 @@ public class RQNA2Physical
 							List<Integer> join_columnIDs = alias_2_all_columns.get(alias_name);
 							
 							Operator join_operator = new JoinOperator(entityFlag, join_columnIDs, join_alias, driving_alias, driving_alias_column) ;
-							operators.add(1, join_operator);
+							operators.set(1, join_operator);
 							
 							//threading operator
 							Operator thread_operator = new ThreadingOperator(join_alias, false); 
-							operators.add(2, thread_operator);
+							operators.set(2, thread_operator);
 							current_operator_number = 3;
 						}
 					}
@@ -432,13 +432,13 @@ public class RQNA2Physical
 							+" eq "+prop.get(i).getTerm1().get_variable()+"."+prop.get(i).getTerm1().get_column());
 					Operator intersection_operator = new IntersectionOperator(false, aliases_4_intersection, 
 							columnIDs_4_intersection, selections_4_intersection);
-					operators.add(0,intersection_operator);
+					operators.set(0,intersection_operator);
 					
 					if(has_join ==  true)
 					{
 						//threading operator
 						Operator thread_operator = new ThreadingOperator(alias_2_AliasClass.get(prop.get(i).getTerm1().get_variable()), false); 
-						operators.add(1, thread_operator);
+						operators.set(1, thread_operator);
 						current_operator_number = 2;
 					}
 				}
@@ -478,7 +478,7 @@ public class RQNA2Physical
 					List<Integer> join_columnIDs = alias_2_all_columns.get(current_alias_name);
 					
 					Operator join_operator = new JoinOperator(entityFlag, join_columnIDs, join_alias, driving_alias, driving_alias_column) ;
-					operators.add(current_operator_number+number_of_joins-current_join_operator_number-1, join_operator);
+					operators.set(current_operator_number+number_of_joins-current_join_operator_number-1, join_operator);
 					current_join_operator_number++;
 					
 				}
@@ -501,7 +501,7 @@ public class RQNA2Physical
 					List<Integer> join_columnIDs = alias_2_all_columns.get(current_alias_name);
 					
 					Operator semi_join_operator = new SemiJoinOperator(entityFlag, join_columnIDs, join_alias, driving_alias, driving_alias_column) ;
-					operators.add(current_operator_number+number_of_joins-current_join_operator_number-1, semi_join_operator);
+					operators.set(current_operator_number+number_of_joins-current_join_operator_number-1, semi_join_operator);
 					current_join_operator_number++;
 				}
 			}
@@ -583,7 +583,7 @@ public class RQNA2Physical
 				 
 				Operator aggregation_operator = new AggregationOperator( dataType,  aggregationFunction,  drivingAlias, 
 						 drivingAliasColumn,  aggregationAlias,  aggregationAliasColumn);
-				operators.add(current_operator_number+number_of_joins,aggregation_operator);
+				operators.set(current_operator_number+number_of_joins,aggregation_operator);
 			}
 			prepareAggregationOperator(t.left);
 			prepareAggregationOperator(t.right);
