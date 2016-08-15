@@ -128,48 +128,48 @@ template <typename TValue, typename TIndexMap>
 void semmeddb_create_indices(int encoding_name)
 {
 
-/*
-    Encodings encoding1("CONCEPT_SEMTYPE_ID", encoding_name);
-    Encodings first_index_encodings[1] = {encoding1};
+
+    Encodings* encoding1 = new Encodings("CONCEPT_SEMTYPE_ID", encoding_name);
+    Encodings* first_index_encodings[1] = {encoding1};
 
     idx[0] = buildIndex<TValue, TIndexMap>("./semmeddb/cs1.csv", first_index_encodings, 1, 0);
     init_buffer(0);
 
-    Encodings encoding2("PREDICATION_ID", encoding_name);
-    Encodings second_index_encodings[1] = {encoding2};
+    Encodings* encoding2 = new Encoding("PREDICATION_ID", encoding_name);
+    Encodings* second_index_encodings[1] = {encoding2};
 
     idx[1] = buildIndex<TValue, TIndexMap>("./semmeddb/pa1.csv", second_index_encodings, 1, 1);
     init_buffer(1);
 
-    Encodings encoding3("SENTENCE_ID", encoding_name);
+    Encodings* encoding3 = new Encodings("SENTENCE_ID", encoding_name);
 
-    Encodings third_index_encodings[1] = {encoding3};
+    Encodings* third_index_encodings[1] = {encoding3};
 
     idx[2] = buildIndex<TValue, TIndexMap>("./semmeddb/sp1.csv", third_index_encodings, 1, 2);
     init_buffer(2);
 
-    Encodings encoding4("PREDICATION_ID", encoding_name);
+    Encodings* encoding4 = new Encodings("PREDICATION_ID", encoding_name);
 
-    Encodings fourth_index_encodings[1] = {encoding4};
+    Encodings* fourth_index_encodings[1] = {encoding4};
 
     idx[3] = buildIndex<TValue, TIndexMap>("./semmeddb/sp2.csv", fourth_index_encodings, 1, 3);
     init_buffer(3);
 
 
-    Encodings encoding5("CONCEPT_SEMTYPE_ID", encoding_name);
+    Encodings* encoding5 = new Encodings("CONCEPT_SEMTYPE_ID", encoding_name);
 
-    Encodings fifth_index_encodings[1] = {encoding5};
+    Encodings* fifth_index_encodings[1] = {encoding5};
 
     idx[4] = buildIndex<TValue, TIndexMap>("./semmeddb/pa2.csv", fifth_index_encodings, 1, 4);
     init_buffer(4);
 
-    Encodings encoding6("CONCEPT_ID", encoding_name);
+    Encodings* encoding6 = new Encodings("CONCEPT_ID", encoding_name);
 
-    Encodings sixth_index_encodings[1] = {encoding6};
+    Encodings* sixth_index_encodings[1] = {encoding6};
 
     idx[5] = buildIndex<TValue, TIndexMap>("./semmeddb/cs2.csv", sixth_index_encodings, 1, 5);
     init_buffer(5);
-*/
+
 }
 
 
