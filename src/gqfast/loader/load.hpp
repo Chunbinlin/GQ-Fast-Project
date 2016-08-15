@@ -224,8 +224,8 @@ void semmeddb_create_optimal_indices()
 template <typename TValue, typename TIndexMap>
 int load_individual_table(int itable, int database, int encoding_name)
 {
-/*
-    if (database == SEMMEDDB)
+
+    /*if (database == SEMMEDDB)
     {
         switch (itable)
         {
@@ -288,12 +288,13 @@ int load_individual_table(int itable, int database, int encoding_name)
             break;
         }
         }
-    }
-    else if (database == PUBMED_MESH_ONLY)
+    }*/
+    if (database == PUBMED_MESH_ONLY)
     {
 
         switch(itable)
         {
+        /*
         case 0:
         {
 
@@ -313,18 +314,19 @@ int load_individual_table(int itable, int database, int encoding_name)
             init_buffer(1);
 
             break;
-        }
+        }*/
         case 2:
         {
             if (encoding_name == ENCODING_BYTE_ALIGNED_BITMAP)
             {
-                Encodings encoding3("Term", encoding_name);
-                Encodings encoding4("Fre",ENCODING_UNCOMPRESSED);
-                Encodings third_index_encodings[2] = {encoding3, encoding4};
+                Encodings* encoding3 = new Encodings("Term", encoding_name);
+                Encodings* encoding4 = new Encodings("Fre",ENCODING_HUFFMAN);
+                Encodings* third_index_encodings[2] = {encoding3, encoding4};
 
                 idx[2] = buildIndex<TValue, TIndexMap>(DT1_MESH, third_index_encodings, 2, 2);
                 init_buffer(2);
             }
+            /*
             else
             {
                 Encodings encoding3("Term", encoding_name);
@@ -334,7 +336,7 @@ int load_individual_table(int itable, int database, int encoding_name)
                 idx[2] = buildIndex<TValue, TIndexMap>(DT1_MESH, third_index_encodings, 2, 2);
                 init_buffer(2);
 
-            }
+            }*/
             break;
         }
         case 3:
@@ -343,15 +345,16 @@ int load_individual_table(int itable, int database, int encoding_name)
             {
 
 
-                Encodings encoding5("Doc", encoding_name);
-                Encodings encoding6("Fre", ENCODING_UNCOMPRESSED);
+                Encodings* encoding5 = new Encodings("Doc", encoding_name);
+                Encodings* encoding6 = new Encodings("Fre", ENCODING_HUFFMAN);
 
-                Encodings fourth_index_encodings[2] = {encoding5, encoding6};
+                Encodings* fourth_index_encodings[2] = {encoding5, encoding6};
 
                 idx[3] = buildIndex<TValue, TIndexMap>(DT2_MESH, fourth_index_encodings, 2, 3);
                 init_buffer(3);
 
             }
+            /*
             else
             {
 
@@ -363,9 +366,9 @@ int load_individual_table(int itable, int database, int encoding_name)
                 idx[3] = buildIndex<TValue, TIndexMap>(DT2_MESH, fourth_index_encodings, 2, 3);
                 init_buffer(3);
 
-            }
+            }*/
             break;
-        }
+        }/*
         case 4:
         {
 
@@ -377,13 +380,13 @@ int load_individual_table(int itable, int database, int encoding_name)
             init_buffer(4);
 
             break;
-        }
+        }*/
         }
     }
     else if (database == PUBMED_MESH_PLUS_SUPP)
     {
         switch(itable)
-        {
+        {/*
         case 0:
         {
             Encodings encoding1("Doc", encoding_name);
@@ -402,18 +405,18 @@ int load_individual_table(int itable, int database, int encoding_name)
             init_buffer(1);
 
             break;
-        }
+        }*/
         case 2:
         {
             if (encoding_name == ENCODING_BYTE_ALIGNED_BITMAP)
             {
-                Encodings encoding3("Term", encoding_name);
-                Encodings encoding4("Fre",ENCODING_UNCOMPRESSED);
-                Encodings third_index_encodings[2] = {encoding3, encoding4};
+                Encodings* encoding3 = new Encodings("Term", encoding_name);
+                Encodings* encoding4 = new Encodings("Fre",ENCODING_HUFFMAN);
+                Encodings* third_index_encodings[2] = {encoding3, encoding4};
 
                 idx[2] = buildIndex<TValue, TIndexMap>(DT1_TAG, third_index_encodings, 2, 2);
                 init_buffer(2);
-            }
+            }/*
             else
             {
                 Encodings encoding3("Term", encoding_name);
@@ -423,7 +426,7 @@ int load_individual_table(int itable, int database, int encoding_name)
                 idx[2] = buildIndex<TValue, TIndexMap>(DT1_TAG, third_index_encodings, 2, 2);
                 init_buffer(2);
 
-            }
+            }*/
             break;
         }
         case 3:
@@ -432,15 +435,15 @@ int load_individual_table(int itable, int database, int encoding_name)
             {
 
 
-                Encodings encoding5("Doc", encoding_name);
-                Encodings encoding6("Fre", ENCODING_UNCOMPRESSED);
+                Encodings* encoding5 = new Encodings("Doc", encoding_name);
+                Encodings* encoding6 = new Encodings("Fre", ENCODING_HUFFMAN);
 
-                Encodings fourth_index_encodings[2] = {encoding5, encoding6};
+                Encodings* fourth_index_encodings[2] = {encoding5, encoding6};
 
                 idx[3] = buildIndex<TValue, TIndexMap>(DT2_TAG, fourth_index_encodings, 2, 3);
                 init_buffer(3);
 
-            }
+            }/*
             else
             {
 
@@ -452,9 +455,9 @@ int load_individual_table(int itable, int database, int encoding_name)
                 idx[3] = buildIndex<TValue, TIndexMap>(DT2_TAG, fourth_index_encodings, 2, 3);
                 init_buffer(3);
 
-            }
+            }*/
             break;
-        }
+        }/*
         case 4:
         {
 
@@ -467,11 +470,11 @@ int load_individual_table(int itable, int database, int encoding_name)
             init_buffer(4);
 
             break;
-        }
+        }*/
         }
 
     }
-*/
+
 }
 
 template <typename TValue, typename TIndexMap>
