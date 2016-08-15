@@ -135,7 +135,7 @@ void semmeddb_create_indices(int encoding_name)
     idx[0] = buildIndex<TValue, TIndexMap>("./semmeddb/cs1.csv", first_index_encodings, 1, 0);
     init_buffer(0);
 
-    Encodings* encoding2 = new Encoding("PREDICATION_ID", encoding_name);
+    Encodings* encoding2 = new Encodings("PREDICATION_ID", encoding_name);
     Encodings* second_index_encodings[1] = {encoding2};
 
     idx[1] = buildIndex<TValue, TIndexMap>("./semmeddb/pa1.csv", second_index_encodings, 1, 1);
