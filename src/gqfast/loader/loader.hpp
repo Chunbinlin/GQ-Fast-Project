@@ -527,7 +527,7 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings* encodings[], int
     // Reads in file
     auto temp_start = std::chrono::high_resolution_clock::now();
     read_in_file(input_file, filename, max_column_ids, min_column_ids);
-    auto temp_end = std::chrono::high_resolution_clock::now();s
+    auto temp_end = std::chrono::high_resolution_clock::now();
 
      cerr << "Total loading time from disk to memm: "
          << std::chrono::duration<double>(temp_end-temp_start).count()
