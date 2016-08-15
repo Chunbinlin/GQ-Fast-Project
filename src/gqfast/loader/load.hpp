@@ -224,7 +224,7 @@ void semmeddb_create_optimal_indices()
 template <typename TValue, typename TIndexMap>
 int load_individual_table(int itable, int database, int encoding_name)
 {
-/*
+
     if (database == SEMMEDDB)
     {
         switch (itable)
@@ -319,7 +319,7 @@ int load_individual_table(int itable, int database, int encoding_name)
             if (encoding_name == ENCODING_BYTE_ALIGNED_BITMAP)
             {
                 Encodings encoding3("Term", encoding_name);
-                Encodings encoding4("Fre",ENCODING_UNCOMPRESSED);
+                Encodings encoding4("Fre",ENCODING_HUFFMAN);
                 Encodings third_index_encodings[2] = {encoding3, encoding4};
 
                 idx[2] = buildIndex<TValue, TIndexMap>(DT1_MESH, third_index_encodings, 2, 2);
@@ -344,7 +344,7 @@ int load_individual_table(int itable, int database, int encoding_name)
 
 
                 Encodings encoding5("Doc", encoding_name);
-                Encodings encoding6("Fre", ENCODING_UNCOMPRESSED);
+                Encodings encoding6("Fre", ENCODING_HUFFMAN);
 
                 Encodings fourth_index_encodings[2] = {encoding5, encoding6};
 
@@ -408,7 +408,7 @@ int load_individual_table(int itable, int database, int encoding_name)
             if (encoding_name == ENCODING_BYTE_ALIGNED_BITMAP)
             {
                 Encodings encoding3("Term", encoding_name);
-                Encodings encoding4("Fre",ENCODING_UNCOMPRESSED);
+                Encodings encoding4("Fre",ENCODING_HUFFMAN);
                 Encodings third_index_encodings[2] = {encoding3, encoding4};
 
                 idx[2] = buildIndex<TValue, TIndexMap>(DT1_TAG, third_index_encodings, 2, 2);
@@ -433,7 +433,7 @@ int load_individual_table(int itable, int database, int encoding_name)
 
 
                 Encodings encoding5("Doc", encoding_name);
-                Encodings encoding6("Fre", ENCODING_UNCOMPRESSED);
+                Encodings encoding6("Fre", ENCODING_HUFFMAN);
 
                 Encodings fourth_index_encodings[2] = {encoding5, encoding6};
 
@@ -471,7 +471,7 @@ int load_individual_table(int itable, int database, int encoding_name)
         }
 
     }
-*/
+
 }
 
 template <typename TValue, typename TIndexMap>
