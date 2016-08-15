@@ -525,7 +525,14 @@ fastr_index<TIndexMap> * buildIndex(string filename, Encodings* encodings[], int
     uint64_t* max_column_ids = new uint64_t[num_encodings+1]();           // To find table's domain sizes for each column
     uint64_t* min_column_ids = new uint64_t[num_encodings+1]();
     // Reads in file
+    auto temp_start = std::chrono::high_resolution_clock::now();
     read_in_file(input_file, filename, max_column_ids, min_column_ids);
+    auto temp_end = std::chrono::high_resolution_clock::now();s
+
+     cerr << "Total loading time from disk to memm: "
+         << std::chrono::duration<double>(temp_end-temp_start).count()
+         << " sec\n\n";
+
 
     auto t_start = std::chrono::high_resolution_clock::now();
     // dict[x] stores bits per encoding and decoding integer for column 'x' if 'x' is to be bit-aligned compressed
