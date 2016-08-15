@@ -208,6 +208,7 @@ int main(int argc, char ** argv)
         {
             load_index<uint32_t>(idx, filename);
             cout << "\n...Indices have been loaded...\n";
+            save_index<uint32_t>("temp.bin", filename);
             char testing = 'y';
             while (testing == 'y')
             {
